@@ -402,8 +402,8 @@ impl TwitchService {
         }
     }
 
-    pub async fn connect(&self, app: AppHandle) -> Result<(), String> {
-        self.run_websocket_client(app).await?;
+    pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
+        self.run_websocket_client(app.clone()).await?;
 
         Ok(())
     }

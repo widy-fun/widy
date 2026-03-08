@@ -50,7 +50,7 @@ impl TelegramService {
         }
     }
 
-    pub async fn connect(&mut self, app: AppHandle) -> Result<(), String> {
+    pub async fn connect(&mut self, app: &AppHandle) -> Result<(), String> {
         let reconnection_policy = &*Box::leak(Box::new(FixedReconnect {
             attempts: 10,
             delay: std::time::Duration::from_secs(1),
@@ -81,7 +81,7 @@ impl TelegramService {
         if is_authorized {
             self.set_authorized(&app, true).await?;
 
-            self.listen_tribute(app).await?;
+            self.listen_tribute(&app).await?;
         } else {
             self.set_authorized(&app, false).await?;
         }
@@ -98,7 +98,8 @@ impl TelegramService {
             .await
     }
 
-    pub async fn listen_tribute(&self, app: AppHandle) -> Result<(), String> {
+    pub async fn listen_tribute(&self, app: &AppHandle) -> Result<(), String> {
+        let app = app.clone();
         #[cfg(not(debug_assertions))]
         let tribute_id: i64 = 6675346585;
         #[cfg(debug_assertions)]
@@ -193,7 +194,7 @@ impl TelegramService {
 
                     self.set_authorized(&app, true).await?;
 
-                    self.listen_tribute(app.clone()).await?;
+                    self.listen_tribute(&app).await?;
                 }
                 Err(e) => match e {
                     SignInError::PasswordRequired(password_token) => {
@@ -232,7 +233,7 @@ impl TelegramService {
                             e.to_string()
                         })?;
                     self.set_authorized(&app, true).await?;
-                    self.listen_tribute(app.clone()).await?;
+                    self.listen_tribute(&app).await?;
                     return Ok(());
                 }
                 Err(e) => {

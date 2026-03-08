@@ -1,5 +1,5 @@
 use lingua::{Language, LanguageDetector};
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use tauri::{AppHandle, Manager};
 use tokio::{fs::File, io::AsyncWriteExt};
 
@@ -8,9 +8,9 @@ pub struct TTSService {
     audio_path: PathBuf,
 }
 impl TTSService {
-    pub fn new(audio_path: impl AsRef<Path>) -> Self {
+    pub fn new(audio_path: &PathBuf) -> Self {
         Self {
-            audio_path: audio_path.as_ref().to_path_buf(),
+            audio_path: audio_path.clone(),
         }
     }
     pub async fn make_audio(

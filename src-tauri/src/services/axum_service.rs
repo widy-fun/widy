@@ -54,15 +54,15 @@ pub struct AxumService {
 }
 
 impl AxumService {
-    pub fn new(widget_path: PathBuf, static_path: PathBuf, auc_fighter_path: PathBuf) -> Self {
+    pub fn new(widget_path: &PathBuf, static_path: &PathBuf, auc_fighter_path: &PathBuf) -> Self {
         Self {
-            widget_path,
-            static_path,
-            auc_fighter_path,
+            widget_path: widget_path.clone(),
+            static_path: static_path.clone(),
+            auc_fighter_path: auc_fighter_path.clone(),
         }
     }
 
-    pub async fn run(&self, app: AppHandle) -> Result<(), String> {
+    pub async fn run(&self, app: &AppHandle) -> Result<(), String> {
         let widget_path = self.widget_path.clone();
         let static_path = self.static_path.clone();
         let auc_fighter_path = self.auc_fighter_path.clone();
