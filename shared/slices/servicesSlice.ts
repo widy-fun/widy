@@ -57,6 +57,18 @@ const initialState: ServicesState = {
 			authPath: `/streamlabs/token`,
 			settingsPath: "",
 		},
+		[ServiceType.Donatello]: {
+			active: false,
+			color: "#3579f6",
+			authPath: `/donatello/token`,
+			settingsPath: "",
+		},
+		[ServiceType.Donatik]: {
+			active: false,
+			color: "#7a44ed",
+			authPath: `/donatik/token`,
+			settingsPath: "",
+		},
 	},
 };
 

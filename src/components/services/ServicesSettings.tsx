@@ -1,22 +1,11 @@
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import { IconButton } from "@mui/material";
-import { Route, Routes, useNavigate } from "react-router";
+import { Route, Routes } from "react-router";
+import NavigateBackButton from "../NavigateBackButton";
 import TwitchServiceSettings from "./components/TwitchServiceSettings";
 
 const ServicesSettings = () => {
-	const navigate = useNavigate();
-
 	return (
 		<div style={{ padding: 15 }}>
-			<div style={{ position: "absolute", top: 10, left: 10 }}>
-				<IconButton
-					onClick={() => {
-						navigate(-1);
-					}}
-				>
-					<ArrowBackIosIcon />
-				</IconButton>
-			</div>
+			<NavigateBackButton />
 			<Routes>
 				<Route path="twitch" element={<TwitchServiceSettings />} />
 			</Routes>

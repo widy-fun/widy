@@ -32,6 +32,8 @@ mod m20260131_232002_add_widy_sol_service;
 mod m20260214_231116_add_widy_ton_service;
 mod m20260306_172034_add_donation_alerts_service;
 mod m20260307_000508_add_stream_labs_service;
+mod m20260308_122456_add_donatello_service;
+mod m20260308_122513_add_donatik_service;
 
 pub struct Migrator;
 
@@ -72,6 +74,8 @@ impl MigratorTrait for Migrator {
             Box::new(m20260214_231116_add_widy_ton_service::Migration),
             Box::new(m20260306_172034_add_donation_alerts_service::Migration),
             Box::new(m20260307_000508_add_stream_labs_service::Migration),
+            Box::new(m20260308_122456_add_donatello_service::Migration),
+            Box::new(m20260308_122513_add_donatik_service::Migration),
         ]
     }
 }

@@ -108,6 +108,8 @@ export enum ServiceType {
 	WidyTon = "WidyTon",
 	DonationAlerts = "DonationAlerts",
 	StreamLabs = "StreamLabs",
+	Donatello = "Donatello",
+	Donatik = "Donatik",
 }
 
 export enum StreamElementsEventType {

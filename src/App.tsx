@@ -10,6 +10,8 @@ import { useInitMutation } from "./api";
 import { useGetSettingsQuery } from "./api/settingsApi";
 import { AppSnackBar } from "./components/AppSnackBar";
 import Dashboard from "./components/dashboard/Dashboard";
+import Donatello from "./components/donatello/Donatello";
+import Donatik from "./components/donatik/Donatik";
 import DonationAlerts from "./components/donationalerts/DonationAlerts";
 import ServicesSettings from "./components/services/ServicesSettings";
 import StreamElements from "./components/streamelements/StreamElements";
@@ -103,6 +105,8 @@ function App() {
 					<Route path="/twitch/*" element={<Twitch />} />
 					<Route path="/widy/*" element={<Widy />} />
 					<Route path="/donationalerts/*" element={<DonationAlerts />} />
+					<Route path="/donatello/*" element={<Donatello />} />
+					<Route path="/donatik/*" element={<Donatik />} />
 					<Route path="/dashboard/*" element={<Dashboard />} />
 					<Route path="/services-settings/*" element={<ServicesSettings />} />
 				</Routes>

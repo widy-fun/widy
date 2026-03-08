@@ -8,6 +8,7 @@ import { AlertSeverity, ServiceType } from "../../../../shared/enums";
 import { showSnackBar } from "../../../../shared/slices/snackBarSlice";
 import { useGetServiceByIdQuery } from "../../../api/servicesApi";
 import useStreamElementsSocketService from "../../../hooks/useStreamElementsService";
+import YouCanFindByUrl from "../../YouCanFindByUrl";
 
 const Token = () => {
 	const { t } = useTranslation();
@@ -37,7 +38,8 @@ const Token = () => {
 						value={token}
 						type="password"
 						onChange={(e) => setToken(e.target.value)}
-					></TextField>
+					/>
+
 					<Button
 						variant="contained"
 						onClick={async () => {
@@ -59,6 +61,9 @@ const Token = () => {
 					>
 						{t("save")}
 					</Button>
+					<YouCanFindByUrl
+						url={"https://streamelements.com/dashboard/account/channels"}
+					/>
 				</>
 			)}
 		</>

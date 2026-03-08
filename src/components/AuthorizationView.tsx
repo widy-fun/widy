@@ -1,26 +1,16 @@
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import { Box, IconButton, useMediaQuery, useTheme } from "@mui/material";
+import { Box, useMediaQuery, useTheme } from "@mui/material";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router";
+import NavigateBackButton from "./NavigateBackButton";
 
 const AuthorizationView = ({ children }: { children: ReactNode }) => {
-	const navigate = useNavigate();
 	const theme = useTheme();
 	const matches = useMediaQuery(theme.breakpoints.down("sm"));
 	const { t } = useTranslation();
 
 	return (
 		<>
-			<div style={{ position: "absolute", top: 10, left: 10 }}>
-				<IconButton
-					onClick={() => {
-						navigate(-1);
-					}}
-				>
-					<ArrowBackIosIcon />
-				</IconButton>
-			</div>
+			<NavigateBackButton />
 			<Box
 				sx={{
 					display: "grid",

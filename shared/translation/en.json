@@ -16,7 +16,10 @@
 		"telegram_code": "Code from telegram",
 		"your_code": "Your code",
 		"2fa_password": "2fa Password",
-		"password": "Password"
+		"password": "Password",
+		"streamelements": "You need connect with StreamElements JWT first",
+		"you_can_find_by_url": "You can find it by this url",
+		"set_id_and_jwt": "You need set StreamElements Account ID and JWT for {{service}}"
 	},
 	"error": {
 		"wrong_lots_format": "Wrong lots format",

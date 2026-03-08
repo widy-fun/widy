@@ -46,6 +46,10 @@ pub enum ServiceType {
     DonationAlerts,
     #[sea_orm(string_value = "StreamLabs")]
     StreamLabs,
+    #[sea_orm(string_value = "Donatello")]
+    Donatello,
+    #[sea_orm(string_value = "Donatik")]
+    Donatik,
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
 #[serde(untagged)]
