@@ -49,9 +49,16 @@ impl StreamLabsService {
             ..
         }) = service
         {
-            if let Err(e) = self.run_socket_io_client(app.clone(), auth.jwt).await {
+            if let Err(e) = self
+                .run_socket_io_client(app.clone(), auth.jwt.clone())
+                .await
+            {
                 database_service
-                    .update_service_auth(ServiceType::StreamLabs, None, false)
+                    .update_service_auth(
+                        ServiceType::StreamLabs,
+                        Some(ServiceAuth::StreamLabs(auth)),
+                        false,
+                    )
                     .await
                     .map_err(|e| format!("Failed to clear auth after connection error: {e}"))?;
 

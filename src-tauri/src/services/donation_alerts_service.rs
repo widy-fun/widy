@@ -116,9 +116,16 @@ impl DonationAlertsService {
             ..
         }) = service
         {
-            if let Err(e) = self.run_websocket_client(app.clone(), auth.token).await {
+            if let Err(e) = self
+                .run_websocket_client(app.clone(), auth.token.clone())
+                .await
+            {
                 database_service
-                    .update_service_auth(ServiceType::DonationAlerts, None, false)
+                    .update_service_auth(
+                        ServiceType::DonationAlerts,
+                        Some(ServiceAuth::DonationAlerts(auth)),
+                        false,
+                    )
                     .await
                     .map_err(|e| format!("Failed to clear auth after connection error: {e}"))?;
 
