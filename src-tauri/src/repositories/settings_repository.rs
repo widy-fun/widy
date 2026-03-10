@@ -31,6 +31,8 @@ impl SettingsRepository for DatabaseService {
             language: Set(settings.language),
             currency: Set(settings.currency),
             id: Set(1),
+            tts_type: Set(settings.tts_type),
+            tts_settings: Set(settings.tts_settings),
         })
         .exec(&self.connection)
         .await

@@ -1,13 +1,20 @@
+use entity::settings::TtsType;
 use lingua::{Language, LanguageDetector};
+use msedge_tts::{
+    tts::{client::connect_async, SpeechConfig},
+    voice::get_voices_list_async,
+};
 use std::path::PathBuf;
 use tauri::{AppHandle, Manager};
 use tokio::{fs::File, io::AsyncWriteExt};
 
-#[derive(Clone)]
-pub struct TTSService {
+use crate::{repositories::SettingsRepository, services::DatabaseService};
+
+#[derive(Clone, Debug)]
+pub struct TtsService {
     audio_path: PathBuf,
 }
-impl TTSService {
+impl TtsService {
     pub fn new(audio_path: &PathBuf) -> Self {
         Self {
             audio_path: audio_path.clone(),
@@ -16,23 +23,43 @@ impl TTSService {
     pub async fn make_audio(
         &self,
         text: &str,
-        file_name: String,
-        app: AppHandle,
+        file_name: &str,
+        app: &AppHandle,
+    ) -> Result<String, String> {
+        let language = self
+            .detect_language(text, app.clone())
+            .map(|lang| lang)
+            .unwrap_or_else(|| Language::English);
+
+        let settings = app
+            .state::<DatabaseService>()
+            .get_settings()
+            .await?
+            .ok_or_else(|| "Settings not found".to_string())?;
+
+        match settings.tts_type {
+            TtsType::Google => self.make_google_audio(text, file_name, &language).await,
+            TtsType::Edge => match self.make_edge_audio(text, file_name, &language).await {
+                Ok(result) => Ok(result),
+                Err(_) => self.make_google_audio(text, file_name, &language).await,
+            },
+        }
+    }
+
+    async fn make_google_audio(
+        &self,
+        text: &str,
+        file_name: &str,
+        language: &Language,
     ) -> Result<String, String> {
         let mut audio_bytes = Vec::new();
-
-        let language = match self.detect_language(&text, app.clone()) {
-            Some(language) => language.iso_code_639_1().to_string(),
-            None => "en".to_string(),
-        };
-
         for text_parts in self.split_text(text, 100) {
             let encoded_text = urlencoding::encode(&text_parts);
 
             let url = format!(
                 "https://translate.google.com/translate_tts?ie=UTF-8&q={}&tl={}&total=1&idx=0&textlen={}&client=tw-ob",
                 encoded_text,
-                language,
+                language.iso_code_639_1(),
                 text_parts.chars().count()
             );
 
@@ -56,6 +83,36 @@ impl TTSService {
             .await
             .map_err(|e| e.to_string())?;
 
+        Ok(format!("{}.mp3", file_name))
+    }
+
+    async fn make_edge_audio(
+        &self,
+        text: &str,
+        file_name: &str,
+        language: &Language,
+    ) -> Result<String, String> {
+        let voices = get_voices_list_async().await.map_err(|e| e.to_string())?;
+        for voice in &voices {
+            if let Some(locale) = &voice.locale {
+                if locale.contains(&language.iso_code_639_1().to_string()) {
+                    let config = SpeechConfig::from(voice);
+                    let mut tts = connect_async().await.map_err(|e| e.to_string())?;
+                    let audio = tts
+                        .synthesize(text, &config)
+                        .await
+                        .map_err(|e| e.to_string())?;
+                    let audio_file_path = self.audio_path.join(format!("{}.mp3", file_name));
+                    let mut file = File::create(audio_file_path)
+                        .await
+                        .map_err(|e| e.to_string())?;
+                    file.write_all(&audio.audio_bytes)
+                        .await
+                        .map_err(|e| e.to_string())?;
+                    break;
+                }
+            }
+        }
         Ok(format!("{}.mp3", file_name))
     }
 

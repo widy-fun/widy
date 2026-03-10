@@ -13,7 +13,7 @@ use crate::{
     enums::AppEvent,
     repositories::{DonationsRepository, SettingsRepository},
     services::{
-        DatabaseService, EventMessage, ExchangeRatesService, MediaService, TTSService,
+        DatabaseService, EventMessage, ExchangeRatesService, MediaService, TtsService,
         WebSocketBroadcaster,
     },
     utils::{goal_handler, remove_black_listed_words, remove_links},
@@ -37,7 +37,7 @@ pub async fn on_new_donation(
     };
     let media_service = app.state::<MediaService>();
     let database_service = app.state::<DatabaseService>();
-    let tts_service = app.state::<TTSService>();
+    let tts_service = app.state::<TtsService>();
     let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
     let exchange_rates_service_mutex = app.state::<Mutex<ExchangeRatesService>>();
 
@@ -83,7 +83,7 @@ pub async fn on_new_donation(
 
     let audio = if let Some(text) = text.clone() {
         match tts_service
-            .make_audio(&remove_links(&text), id.clone(), app.clone())
+            .make_audio(&remove_links(&text), &id, &app)
             .await
         {
             Ok(audio) => Some(audio),

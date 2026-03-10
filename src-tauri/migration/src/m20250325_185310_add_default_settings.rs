@@ -18,6 +18,8 @@ impl MigrationTrait for Migration {
             black_list: Set("".to_string()),
             language: Set("en".to_string()),
             currency: Set(Currency::EUR),
+            tts_type: Set(TtsType::Edge),
+            tts_settings: Set(None),
         }
         .insert(connection)
         .await?;

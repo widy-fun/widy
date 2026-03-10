@@ -1,7 +1,7 @@
 use crate::services::{
     AxumService, ConfigService, DatabaseService, DeepLinkDispatcherService, DonationAlertsService,
-    ExchangeRatesService, MediaService, StreamElementsService, StreamLabsService, TTSService,
-    TelegramService, TwitchService, WebSocketBroadcaster, WidySolService, WidyTonService,
+    ExchangeRatesService, MediaService, StreamElementsService, StreamLabsService, TelegramService,
+    TtsService, TwitchService, WebSocketBroadcaster, WidySolService, WidyTonService,
 };
 use crate::utils::copy_assets_to_static;
 use grammers_client::types::{LoginToken, PasswordToken};
@@ -55,7 +55,7 @@ pub async fn init(app: AppHandle, flag: State<'_, ExecutionFlag>) -> Result<(), 
     app.manage(language_detector);
 
     //tts
-    let tts_service = TTSService::new(&config_service.static_path);
+    let tts_service = TtsService::new(&config_service.static_path);
     app.manage(tts_service);
 
     //http client
