@@ -33,7 +33,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Settings {
+pub enum Settings {
     #[sea_orm(iden = "settings")]
     Table,
     Id,

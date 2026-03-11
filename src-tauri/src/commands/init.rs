@@ -29,6 +29,10 @@ pub async fn init(app: AppHandle, flag: State<'_, ExecutionFlag>) -> Result<(), 
     let config_service = ConfigService::new(&app)?;
     app.manage(config_service.clone());
 
+    //db
+    let database_service = DatabaseService::new(&config_service.db_path, &version).await?;
+    app.manage(database_service);
+
     //exchange
     let mut exchange_rates_service = ExchangeRatesService::new();
     exchange_rates_service.get_exchange_rates().await;
@@ -41,10 +45,6 @@ pub async fn init(app: AppHandle, flag: State<'_, ExecutionFlag>) -> Result<(), 
         .build()
         .map_err(|e| format!("reqwest build error: {}", e))?;
     app.manage(reqwest_client);
-
-    //db
-    let database_service = DatabaseService::new(&config_service.db_path, &version).await?;
-    app.manage(database_service);
 
     //ws
     let websocket_broadcaster = WebSocketBroadcaster::new();

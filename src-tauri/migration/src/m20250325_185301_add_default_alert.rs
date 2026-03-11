@@ -42,4 +42,16 @@ impl MigrationTrait for Migration {
             .await?;
         Ok(())
     }
+
+    async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        manager
+            .exec_stmt(
+                Query::delete()
+                    .from_table(Alerts::Table)
+                    .and_where(Expr::col(Alerts::Id).eq("default"))
+                    .to_owned(),
+            )
+            .await?;
+        Ok(())
+    }
 }

@@ -34,7 +34,7 @@ mod m20260306_172034_add_donation_alerts_service;
 mod m20260307_000508_add_stream_labs_service;
 mod m20260308_122456_add_donatello_service;
 mod m20260308_122513_add_donatik_service;
-mod m20260310_224044_add_tts_to_settings;
+mod m20260310_224044_add_column_tts_type_tts_settings_to_settings;
 
 pub struct Migrator;
 
@@ -77,7 +77,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20260307_000508_add_stream_labs_service::Migration),
             Box::new(m20260308_122456_add_donatello_service::Migration),
             Box::new(m20260308_122513_add_donatik_service::Migration),
-            Box::new(m20260310_224044_add_tts_to_settings::Migration),
+            Box::new(m20260310_224044_add_column_tts_type_tts_settings_to_settings::Migration),
         ]
     }
 }

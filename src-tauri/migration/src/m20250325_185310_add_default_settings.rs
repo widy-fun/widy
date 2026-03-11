@@ -1,28 +1,53 @@
-use entity::settings::*;
-
+use entity::settings::Currency;
 use sea_orm_migration::prelude::*;
-use sea_orm_migration::sea_orm::entity::*;
+
+use crate::m20250324_221133_create_table_settings::Settings;
+
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        let connection = manager.get_connection();
-        ActiveModel {
-            id: Set(1),
-            moderation_duration: Set(0),
-            alert_paused: Set(false),
-            remove_links: Set(false),
-            tts_volume: Set(50),
-            black_list: Set("".to_string()),
-            language: Set("en".to_string()),
-            currency: Set(Currency::EUR),
-            tts_type: Set(TtsType::Edge),
-            tts_settings: Set(None),
-        }
-        .insert(connection)
-        .await?;
+        manager
+            .exec_stmt(
+                Query::insert()
+                    .into_table(Settings::Table)
+                    .columns([
+                        Settings::Id,
+                        Settings::ModerationDuration,
+                        Settings::AlertPaused,
+                        Settings::RemoveLinks,
+                        Settings::TtsVolume,
+                        Settings::BlackList,
+                        Settings::Language,
+                        Settings::Currency,
+                    ])
+                    .values_panic([
+                        1.into(),
+                        0.into(),
+                        false.into(),
+                        false.into(),
+                        50.into(),
+                        "".into(),
+                        "en".into(),
+                        Currency::EUR.into(),
+                    ])
+                    .to_owned(),
+            )
+            .await?;
+        Ok(())
+    }
+    async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        manager
+            .exec_stmt(
+                Query::delete()
+                    .from_table(Settings::Table)
+                    .and_where(Expr::col(Settings::Id).eq(1))
+                    .to_owned(),
+            )
+            .await?;
+
         Ok(())
     }
 }
