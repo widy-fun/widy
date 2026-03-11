@@ -100,7 +100,8 @@
 		"remove_links": "移除链接",
 		"language": "语言",
 		"sec": "秒",
-		"currency": "货币"
+		"currency": "货币",
+		"tts_type": "TTS 类型"
 	},
 	"wheel": {
 		"normal": "普通",

@@ -100,7 +100,8 @@
 		"remove_links": "إزالة الروابط",
 		"language": "اللغة",
 		"sec": "ثانية",
-		"currency": "العملة"
+		"currency": "العملة",
+		"tts_type": "نوع TTS"
 	},
 	"wheel": {
 		"normal": "عادي",

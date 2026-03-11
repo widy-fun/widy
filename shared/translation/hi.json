@@ -100,7 +100,8 @@
 		"remove_links": "लिंक हटाएं",
 		"language": "भाषा",
 		"sec": "सेकंड",
-		"currency": "मुद्रा"
+		"currency": "मुद्रा",
+		"tts_type": "टीटीएस प्रकार"
 	},
 	"wheel": {
 		"normal": "सामान्य",

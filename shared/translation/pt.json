@@ -100,7 +100,8 @@
 		"remove_links": "Remover links",
 		"language": "Idioma",
 		"sec": "Seg",
-		"currency": "Moeda"
+		"currency": "Moeda",
+		"tts_type": "Tipo de TTS"
 	},
 	"wheel": {
 		"normal": "Normal",

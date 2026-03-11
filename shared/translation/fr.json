@@ -100,7 +100,8 @@
 		"remove_links": "Supprimer les liens",
 		"language": "Langue",
 		"sec": "sec",
-		"currency": "Devise"
+		"currency": "Devise",
+		"tts_type": "Type de TTS"
 	},
 	"wheel": {
 		"normal": "Normal",

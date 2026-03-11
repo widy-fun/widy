@@ -100,7 +100,8 @@
 		"remove_links": "Видаляти посилання",
 		"language": "Мова",
 		"sec": "сек",
-		"currency": "Валюта"
+		"currency": "Валюта",
+		"tts_type": "Тип TTS"
 	},
 	"wheel": {
 		"normal": "Звичайне",
