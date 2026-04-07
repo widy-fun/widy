@@ -1,5 +1,6 @@
 import AddLinkIcon from "@mui/icons-material/AddLink";
 import CampaignIcon from "@mui/icons-material/Campaign";
+import InfoIcon from "@mui/icons-material/Info";
 import MapIcon from "@mui/icons-material/Map";
 import MessageIcon from "@mui/icons-material/Message";
 import MovieIcon from "@mui/icons-material/Movie";
@@ -12,6 +13,7 @@ import AuctionIcon from "../components/dashboard/components/auction/components/A
 import AucFighter from "../components/dashboard/components/fighter/AucFighter";
 import GoalIcon from "../components/dashboard/components/goals/components/GoalIcon";
 import Goals from "../components/dashboard/components/goals/Goals";
+import Info from "../components/dashboard/components/info/Info";
 import Maption from "../components/dashboard/components/maption/Maption";
 import Media from "../components/dashboard/components/media/Media";
 import Messages from "../components/dashboard/components/messages/Messages";
@@ -79,5 +81,11 @@ export const dashboardRouts = [
 		element: <Widgets />,
 		icon: <WidgetsIcon />,
 		name: "widgets",
+	},
+	{
+		path: "info",
+		element: <Info />,
+		icon: <InfoIcon />,
+		name: "info",
 	},
 ];

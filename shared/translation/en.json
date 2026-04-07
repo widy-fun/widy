@@ -72,7 +72,8 @@
 		"auction": "Auction",
 		"maption": "Maption",
 		"fighter": "Fighter",
-		"widgets": "Widgets"
+		"widgets": "Widgets",
+		"info": "Info"
 	},
 	"messages": {
 		"title": "Last messages"
