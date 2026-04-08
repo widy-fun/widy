@@ -25,8 +25,11 @@ pub fn run() {
 
     #[cfg(not(debug_assertions))]
     {
+        use tauri_plugin_log::RotationStrategy;
+
         let log_plugin = tauri_plugin_log::Builder::new()
             .level(log::LevelFilter::Error)
+            .rotation_strategy(RotationStrategy::KeepSome(2))
             .build();
 
         builder = builder.plugin(log_plugin);
