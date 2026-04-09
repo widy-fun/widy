@@ -22,13 +22,6 @@ const Info = () => {
 						<Typography variant="body1" color="text.secondary" gutterBottom>
 							{t("version")}: 0.2.4
 						</Typography>
-						<Typography variant="body2" sx={{ mt: 2, mb: 2 }}>
-							Widy is a platform for streamers that provides a unified alert and
-							widget system across multiple services and platforms. It
-							aggregates events from different sources, normalizes them into a
-							single format, and delivers consistent alerts for overlays and
-							streaming tools.
-						</Typography>
 						<Box sx={{ mt: 2 }}>
 							<Button
 								variant="outlined"
