@@ -1,7 +1,7 @@
 use crate::services::DatabaseService;
 use async_trait::async_trait;
 use entity::widget::*;
-use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
+use sea_orm::{ActiveValue::Set, ColumnTrait, EntityTrait, QueryFilter};
 use uuid::Uuid;
 
 #[async_trait]
@@ -10,6 +10,7 @@ pub trait WidgetsRepository: Send + Sync {
     async fn get_widgets(&self) -> Result<Vec<Model>, String>;
     async fn add_widget(&self, dev_path: Option<String>, manifest: Manifest) -> Result<(), String>;
     async fn delete_widget_by_id(&self, id: String) -> Result<(), String>;
+    async fn update_widget(&self, widget: Model) -> Result<(), String>;
 }
 
 #[async_trait]
@@ -53,6 +54,22 @@ impl WidgetsRepository for DatabaseService {
                 log::error!("Delete widget by id error: {}", e);
                 e.to_string()
             })?;
+        Ok(())
+    }
+    async fn update_widget(&self, widget: Model) -> Result<(), String> {
+        Entity::update(ActiveModel {
+            id: Set(widget.id),
+            widget_id: Set(widget.widget_id),
+            dev_path: Set(widget.dev_path),
+            manifest: Set(widget.manifest),
+            storage: Set(widget.storage),
+        })
+        .exec(&self.connection)
+        .await
+        .map_err(|e| {
+            log::error!("Update widget error: {}", e);
+            e.to_string()
+        })?;
         Ok(())
     }
 }

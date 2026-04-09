@@ -8,6 +8,7 @@ use crate::services::{ConfigService, DatabaseService, EventMessage, WebSocketBro
 use axum::extract::ws::{Message, WebSocket};
 use axum::extract::{Path, Query};
 use axum::http::HeaderValue;
+use axum::routing::put;
 use axum::Json;
 use axum::{
     extract::{State, WebSocketUpgrade},
@@ -82,6 +83,7 @@ impl AxumService {
                 "/api/widgets/{widget_id}",
                 get(AxumService::get_widget_by_widget_id),
             )
+            .route("/api/widgets", put(AxumService::update_widget))
             .route(
                 "/api/auc-fighter-settings",
                 get(AxumService::get_auc_fighter_settings),
@@ -217,6 +219,18 @@ impl AxumService {
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
         Ok(Json(widget))
+    }
+    async fn update_widget(
+        State(state): State<AxumState>,
+        Json(widget): Json<entity::widget::Model>,
+    ) -> Result<StatusCode, StatusCode> {
+        let database_service = state.app.state::<DatabaseService>();
+        database_service
+            .update_widget(widget)
+            .await
+            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        Ok(StatusCode::OK)
     }
 
     async fn get_auc_fighter_settings(

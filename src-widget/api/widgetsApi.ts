@@ -7,6 +7,15 @@ export const widgetsApi = api.injectEndpoints({
 			query: (args) => ({
 				url: `/widgets/${args.widgetId}`,
 			}),
+			providesTags: ["Widgets"],
+		}),
+		updateWidget: builder.mutation<void, IWidget>({
+			query: (args) => ({
+				url: "/widgets",
+				body: args,
+				method: "PUT",
+			}),
+			invalidatesTags: ["Widgets"],
 		}),
 	}),
 });

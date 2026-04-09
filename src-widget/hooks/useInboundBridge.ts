@@ -25,6 +25,7 @@ import { aucFighterApi } from "../api/aucFighterApi";
 import { goalsApi } from "../api/goalsApi";
 import { messagesApi } from "../api/messagesApi";
 import { settingsApi } from "../api/settingsApi";
+import { widgetsApi } from "../api/widgetsApi";
 
 const useInboundBridge = (widget?: IWidget) => {
 	const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -397,6 +398,31 @@ const useInboundBridge = (widget?: IWidget) => {
 								event: AppEvent.SkipAlert,
 								data: payload as MessageId,
 							});
+							break;
+						case "widgets:storage.read":
+							const { data } = await dispatch(
+								widgetsApi.endpoints.getWidgetByWidgetId.initiate({
+									widgetId: widget.widget_id,
+								}),
+							);
+							iframeRef.current?.contentWindow?.postMessage(
+								{ id, result: data?.storage },
+								"*",
+							);
+
+							break;
+						case "widgets:storage.write":
+							await dispatch(
+								widgetsApi.endpoints.updateWidget.initiate({
+									...widget,
+									storage: payload as string,
+								}),
+							);
+							iframeRef.current?.contentWindow?.postMessage(
+								{ id, result: payload },
+								"*",
+							);
+
 							break;
 						default:
 							break;
