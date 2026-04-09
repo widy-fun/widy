@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { useDeleteWidgetMutation } from "../../../../../api/widgetApi";
 import WarningDialog from "../../../../WarningDialog";
+import WidgetUrl from "../../alerts/components/WidgetUrl";
 import WidgetDescription from "./WidgetDescription";
 
 const InstalledWidgetCard = ({ widget }: { widget: IWidget }) => {
@@ -13,6 +14,7 @@ const InstalledWidgetCard = ({ widget }: { widget: IWidget }) => {
 	const [deleteWidget] = useDeleteWidgetMutation();
 	const navigate = useNavigate();
 	const [warningOpen, setWarningOpen] = useState(false);
+	const widgetUrl = `http://localhost:12553/widget/${widget.widget_id}`;
 
 	const handleDelete = () => {
 		deleteWidget({ widget }).unwrap();
@@ -39,7 +41,7 @@ const InstalledWidgetCard = ({ widget }: { widget: IWidget }) => {
 				}}
 			>
 				<WidgetDescription manifest={widget.manifest} />
-
+				<WidgetUrl widgetUrl={widgetUrl} text={t("widgets.view_url")} />
 				<Box
 					sx={{
 						display: "flex",

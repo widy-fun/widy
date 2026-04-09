@@ -322,7 +322,8 @@
 		"delete_confirm": "Are you sure you want to delete this widget?",
 		"invalid_manifest": "Invalid widget manifest",
 		"add_confirm": "Adding will allow {{widget_name}} to:",
-		"installing": "Installing..."
+		"installing": "Installing...",
+		"view_url": "View url"
 	},
 	"scopes": {
 		"widgets:messages.read": "Read messages",
