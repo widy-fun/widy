@@ -5,7 +5,7 @@ import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import ReplayIcon from "@mui/icons-material/Replay";
 import { IconButton, Typography } from "@mui/material";
-import { useCallback } from "react";
+import { memo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import dayjs from "../../../../../../shared/dayjs";
@@ -47,8 +47,8 @@ const Timer = ({
 
 	const handleStartTimer = useCallback(() => {
 		const interval = setInterval(() => {
-			dispatch(subtractTime(10));
-		}, 10);
+			dispatch(subtractTime(100));
+		}, 100);
 		dispatch(setIsStopped(false));
 		dispatch(setCurrentIntervalId(interval));
 	}, [dispatch, setCurrentIntervalId, setIsStopped, subtractTime]);
@@ -106,4 +106,4 @@ const Timer = ({
 	);
 };
 
-export default Timer;
+export default memo(Timer);

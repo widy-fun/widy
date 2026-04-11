@@ -29,8 +29,7 @@ const SideBar = styled("div")(({ theme }: { theme?: AppTheme }) => ({
 		width: MENU_WIDTH_MD,
 	},
 }));
-
-export default function DashboardSidebar() {
+const DashboardSidebar = () => {
 	const location = useLocation();
 	const currentPath = location.pathname;
 	const theme = useTheme();
@@ -93,4 +92,5 @@ export default function DashboardSidebar() {
 			</List>
 		</SideBar>
 	);
-}
+};
+export default DashboardSidebar;

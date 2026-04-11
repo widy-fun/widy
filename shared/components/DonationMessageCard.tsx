@@ -1,6 +1,7 @@
 import ReplayIcon from "@mui/icons-material/Replay";
 import { Box, Button, Card, IconButton, Typography } from "@mui/material";
 import { AppEvent, type IClientMessage, type MessageId } from "@widy/sdk";
+import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import type { AppState } from "../../src/store";
@@ -142,4 +143,4 @@ const DonationMessageCard = ({
 		</>
 	);
 };
-export default DonationMessageCard;
+export default memo(DonationMessageCard);

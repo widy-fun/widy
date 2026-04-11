@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 interface TimerState {
 	time: number;
-	currentIntervalId: NodeJS.Timeout | undefined;
+	currentIntervalId: number | undefined;
 	isStopped: boolean;
 }
 
@@ -60,7 +60,7 @@ export const createTimerSlice = (name: string) =>
 			setCurrentIntervalId: (
 				state,
 				action: {
-					payload: NodeJS.Timeout;
+					payload: number;
 				},
 			) => {
 				state.currentIntervalId = action.payload;

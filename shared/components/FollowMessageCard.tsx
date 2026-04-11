@@ -1,5 +1,6 @@
 import { Box, Button, Card, Typography } from "@mui/material";
 import { AppEvent, type IClientMessage, type MessageId } from "@widy/sdk";
+import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import type { AppState } from "../../src/store";
@@ -113,4 +114,4 @@ const FollowMessageCard = ({
 		</>
 	);
 };
-export default FollowMessageCard;
+export default memo(FollowMessageCard);
