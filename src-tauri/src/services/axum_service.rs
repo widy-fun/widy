@@ -69,9 +69,14 @@ impl AxumService {
         let widget_path = self.widget_path.clone();
         let static_path = self.static_path.clone();
         let auc_fighter_path = self.auc_fighter_path.clone();
+        #[cfg(debug_assertions)]
         let cors = CorsLayer::new()
             .allow_origin(HeaderValue::from_static("http://localhost:12553"))
             .allow_origin(HeaderValue::from_static("http://localhost:1420"));
+        #[cfg(not(debug_assertions))]
+        let cors = CorsLayer::new()
+            .allow_origin(HeaderValue::from_static("http://localhost:12553"))
+            .allow_origin(HeaderValue::from_static("http://tauri.localhost"));
 
         let axum_router: Router = Router::new()
             .route("/ws", get(AxumService::websocket_handler))
@@ -164,10 +169,10 @@ impl AxumService {
             let response = Response::builder()
                 .status(StatusCode::OK)
                 .header(header::CONTENT_TYPE, mime.as_ref())
-                // .header(
-                //     header::CONTENT_SECURITY_POLICY,
-                //     "default-src 'none'; connect-src http://localhost:12553 https://google.com",
-                // )
+                .header(
+                    header::CONTENT_SECURITY_POLICY,
+                    "default-src 'self' 'unsafe-inline'; connect-src 'none';",
+                )
                 .body(axum::body::Body::from(content))
                 .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 

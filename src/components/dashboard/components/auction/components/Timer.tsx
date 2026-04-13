@@ -46,7 +46,7 @@ const Timer = ({
 	};
 
 	const handleStartTimer = useCallback(() => {
-		const interval = setInterval(() => {
+		const interval = window.setInterval(() => {
 			dispatch(subtractTime(100));
 		}, 100);
 		dispatch(setIsStopped(false));

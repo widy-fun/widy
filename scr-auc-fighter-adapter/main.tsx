@@ -68,7 +68,7 @@ HitSystem.prototype.register = function (details: HitDetails) {
 };
 
 const setTimer = () => {
-	const intervalId = setInterval(() => {
+	const intervalId = window.setInterval(() => {
 		store.dispatch(subtractTime(10));
 	}, 10);
 	store.dispatch(setCurrentIntervalId(intervalId));
