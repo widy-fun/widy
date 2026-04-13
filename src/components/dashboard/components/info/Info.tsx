@@ -30,12 +30,6 @@ const Info = () => {
 							>
 								Visit Widy.fun
 							</Button>
-							<Button
-								variant="outlined"
-								onClick={() => openUrl("https://github.com/ik1s3v/widy")}
-							>
-								GitHub Repository
-							</Button>
 						</Box>
 					</CardContent>
 				</Card>
