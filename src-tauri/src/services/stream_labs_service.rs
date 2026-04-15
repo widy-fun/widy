@@ -14,6 +14,10 @@ use crate::{repositories::ServicesRepository, services::DatabaseService, utils::
 struct DonationMessage {
     message: Vec<Donation>,
 }
+#[derive(Debug, Clone, Deserialize, Serialize)]
+struct ConnectError {
+    message: String,
+}
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 struct Donation {
@@ -70,7 +74,7 @@ impl StreamLabsService {
     }
 
     async fn run_socket_io_client(&self, app: AppHandle, jwt: String) -> Result<(), String> {
-        let database_service = app.state::<DatabaseService>();
+        let database_service: tauri::State<'_, DatabaseService> = app.state::<DatabaseService>();
         database_service
             .update_service_auth(
                 ServiceType::StreamLabs,
@@ -81,11 +85,44 @@ impl StreamLabsService {
         tauri::async_runtime::spawn(async move {
             let stream_labs_service = app.state::<StreamLabsService>();
             let mut sign_out_receiver = stream_labs_service.sign_out_sender.subscribe();
+            let app_error_clone = app.clone();
+            let app_event_clone = app.clone();
             let socket =
                 ClientBuilder::new(format!("https://sockets.streamlabs.com?token={}", jwt))
                     .transport_type(TransportType::Websocket)
-                    .on("event", move |payload, _socket| {
-                        let app_clone = app.clone();
+                    .on("error", move |err, socket| {
+                        let app_clone = app_error_clone.clone();
+                        async move {
+                            if let Payload::Text(values) = err {
+                                if let Some(value) = values.first() {
+                                    if let Some(s) = value.as_str() {
+                                        if let Some(start) = s.find('{') {
+                                            let json_part = &s[start..];
+
+                                            if let Ok(_) =
+                                                serde_json::from_str::<ConnectError>(json_part)
+                                            {
+                                                let database_service =
+                                                    app_clone.state::<DatabaseService>();
+
+                                                let _ = database_service
+                                                    .update_service_auth(
+                                                        ServiceType::StreamLabs,
+                                                        None,
+                                                        false,
+                                                    )
+                                                    .await;
+                                                let _ = socket.disconnect().await;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .boxed()
+                    })
+                    .on("event", move |payload, _| {
+                        let app_clone = app_event_clone.clone();
                         async move {
                             if let Payload::Text(values) = payload {
                                 if let Some(value) = values.first() {
@@ -120,8 +157,9 @@ impl StreamLabsService {
                     })
                     .unwrap();
             sign_out_receiver.recv().await.ok();
-            socket.disconnect().await.unwrap();
+            let _ = socket.disconnect().await;
         });
+
         Ok(())
     }
 

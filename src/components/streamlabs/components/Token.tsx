@@ -11,6 +11,7 @@ import {
 	useUpdateServiceAuthMutation,
 } from "../../../api/servicesApi";
 import { useStreamLabsConnectMutation } from "../../../api/streamLabsApi";
+import YouCanFindByUrl from "../../YouCanFindByUrl";
 
 const Token = () => {
 	const { t } = useTranslation();
@@ -58,6 +59,9 @@ const Token = () => {
 					>
 						{t("save")}
 					</Button>
+					<YouCanFindByUrl
+						url={"https://streamlabs.com/dashboard#/settings/api-settings"}
+					/>
 				</>
 			)}
 		</>
