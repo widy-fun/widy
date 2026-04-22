@@ -180,6 +180,12 @@ impl WidySolService {
         ))?;
         let subscription = program
             .on(move |ctx: &EventContext, event: DonationEvent| {
+                if ctx.signature.to_string()
+                    == "1111111111111111111111111111111111111111111111111111111111111111"
+                        .to_string()
+                {
+                    return;
+                }
                 let app = app.clone();
                 let signature = ctx.signature.to_string();
                 let amount = event.amount;
