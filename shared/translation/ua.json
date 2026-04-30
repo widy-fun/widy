@@ -2,12 +2,12 @@
 	"on": "Увімкнено",
 	"off": "Вимкнено",
 	"select": "Вибрати",
-	"success": "Успіх",
+	"success": "Успішно",
 	"ok": "Ок",
 	"cancel": "Скасувати",
 	"sound_volume": "Гучність звуку",
-	"skip_media": "Скорочення пропуску медіа",
-	"skip_alert": "Скорочення пропуску сповіщення",
+	"skip_media": "Скорочення пропустити медіа",
+	"skip_alert": "Скорочення пропустити сповіщення",
 	"authorization": {
 		"title": "Авторизація",
 		"code": "Запитати код",
@@ -40,7 +40,7 @@
 		"tiktok": "TikTok"
 	},
 	"integration": {
-		"tribute": "Показувати tribute-повідомлення"
+		"tribute": "Показувати повідомлення подяки"
 	},
 	"auction": {
 		"lots": "Лоти",
@@ -54,7 +54,7 @@
 		"finish": "Завершити",
 		"lat_error": "Широта повинна бути від -90 до 90",
 		"lng_error": "Довгота повинна бути від -180 до 180",
-		"rules": "Щоб вказівник автоматично змінював позицію в повідомленні, має бути лише одне слово з:"
+		"rules": "Для того, щоб вказівник автоматично змінював позицію в повідомленні, має бути лише одне слово з:"
 	},
 	"media_settings": {
 		"enabled": "Увімкнено",
@@ -70,8 +70,8 @@
 		"media": "Медіа",
 		"goals": "Цілі",
 		"auction": "Аукціон",
-		"maption": "Maption",
-		"fighter": "Бій",
+		"maption": "Маптіон",
+		"fighter": "Боєць",
 		"widgets": "Віджети",
 		"info": "Інформація"
 	},
@@ -85,7 +85,7 @@
 		"followed": "{{user_name}} підписався",
 		"subscribed": "{{user_name}} оформив підписку",
 		"gifted_subscriptions": "{{user_name}} подарував {{total}} підписок",
-		"raided_with": "{{user_name}} зарейдив з {{viewers}} глядачами"
+		"raided_with": "{{user_name}} здійснив рейд з {{viewers}} глядачами"
 	},
 	"filter": {
 		"title": "Фільтр повідомлень",
@@ -107,7 +107,7 @@
 	},
 	"wheel": {
 		"normal": "Звичайне",
-		"dropout": "Випадання",
+		"dropout": "Вибування",
 		"spin": "Обертання",
 		"speed": "Швидкість колеса"
 	},
@@ -120,7 +120,7 @@
 		"add_timex2": "Додати час ×2"
 	},
 	"fighter": {
-		"title": "Бій",
+		"title": "Боєць",
 		"match": "Матч",
 		"final": "Фінал",
 		"game": "Гра",
@@ -154,9 +154,9 @@
 		"leader_change": "Зміна лідера",
 		"new_lot": "Новий лот",
 		"new_donation": "Новий донат",
-		"show_odds": "Показувати шанси",
+		"show_odds": "Показувати коефіцієнти",
 		"show_total_sum": "Показувати загальну суму",
-		"greater_timer_adding_time": "Додавання часу при більшому таймері",
+		"greater_timer_adding_time": "Додавання часу при більшій ставці",
 		"not_add_time_if": "Не додавати час якщо",
 		"adding_time": "Час"
 	},
@@ -174,7 +174,7 @@
 	},
 	"services": {
 		"title": "Сервіси",
-		"tribute": "Tribute",
+		"tribute": "Подяка",
 		"streamelements": "StreamElements",
 		"connect": "Підключити",
 		"integrations": "Інтеграції",
@@ -182,7 +182,7 @@
 		"confirm_sign_out": "Ви впевнені, що хочете вийти з цього сервісу?"
 	},
 	"twitch": {
-		"device_code_expired": "Термін дії коду пристрою закінчився. Спробуйте ще раз.",
+		"device_code_expired": "Код пристрою застарів. Будь ласка, спробуйте ще раз.",
 		"user_code": "Код користувача",
 		"authorize_with_code": "Авторизуватися за кодом",
 		"waiting_authorization": "Очікування авторизації..."
@@ -190,9 +190,9 @@
 	"widy": {
 		"donation_account_name": "Назва акаунту для донатів",
 		"donation_url": "URL донатів",
-		"create_donation_account": "Створити акаунт донатів Widy",
+		"create_donation_account": "Створити акаунт Widy для донатів",
 		"connect_to_existing_account": "Підключитися до існуючого акаунту",
-		"create_donation_account_pending": "Створення акаунту донатів..."
+		"create_donation_account_pending": "Створення акаунту для донатів..."
 	},
 	"twitch_service_settings": {
 		"title": "Налаштування Twitch",
@@ -221,7 +221,7 @@
 		"variation_condition": "Умова варіації",
 		"group": "Група",
 		"Random": "Випадковий",
-		"AmountIsGreater": "Сума більша за",
+		"AmountIsGreater": "Сума більша",
 		"AmountIsEqual": "Сума дорівнює",
 		"delete": "Видалити",
 		"sure_delete": "Ви впевнені, що хочете видалити цей варіант?",
@@ -278,7 +278,7 @@
 		"copy": "Копіювати",
 		"launch": "Запустити",
 		"url": "URL віджета",
-		"obs_dock_url": "OBS dock URL"
+		"obs_dock_url": "URL для OBS Dock"
 	},
 	"view": {
 		"top": "Зображення зверху, текст знизу",
@@ -298,8 +298,8 @@
 		"italics": "Курсив",
 		"underline": "Підкреслений",
 		"transformation": "Трансформація",
-		"letter_spacing": "Міжлітерний інтервал",
-		"word_spacing": "Міжслівний інтервал",
+		"letter_spacing": "Відстань між літерами",
+		"word_spacing": "Відстань між словами",
 		"horizontal_alignment": "Горизонтальне вирівнювання",
 		"vertical_alignment": "Вертикальне вирівнювання",
 		"text_preview": "Це попередній перегляд!",
@@ -316,6 +316,7 @@
 		"install": "Встановити",
 		"delete": "Видалити",
 		"installed": "Встановлено",
+		"update": "Оновити",
 		"all": "Всі",
 		"settings": "Налаштування",
 		"control": "Керування",
@@ -323,7 +324,9 @@
 		"invalid_manifest": "Невірний маніфест віджета",
 		"add_confirm": "Додавання дозволить {{widget_name}}:",
 		"installing": "Встановлення...",
-		"view_url": "URL перегляду"
+		"updating": "Оновлення...",
+		"view_url": "URL перегляду",
+		"widget_connection": "Віджет отримує або надсилає запити до:"
 	},
 	"scopes": {
 		"widgets:messages.read": "Читати повідомлення",
@@ -347,10 +350,10 @@
 		"widgets:alert:replay.send": "Надсилати повтор сповіщення",
 		"widgets:alert:skip.send": "Надсилати пропуск сповіщення",
 		"widgets:messages.subscription": "Підписка на повідомлення",
-		"widgets:goal.subscription": "Підписка на ціль",
+		"widgets:goal.subscription": "Підписка на цілі",
 		"widgets:settings.subscription": "Підписка на налаштування",
 		"widgets:auc-fighter:start-match.subscription": "Підписка на початок матчу",
-		"widgets:auc-fighter:pause-match.subscription": "Підписка на призупинення матчу",
+		"widgets:auc-fighter:pause-match.subscription": "Підписка на паузу матчу",
 		"widgets:auc-fighter:resume-match.subscription": "Підписка на відновлення матчу",
 		"widgets:auc-fighter:cancel-match.subscription": "Підписка на скасування матчу",
 		"widgets:auc-fighter:update-match.subscription": "Підписка на оновлення матчу",
@@ -358,18 +361,22 @@
 		"widgets:alert:replay.subscription": "Підписка на повтор сповіщення",
 		"widgets:alert:skip.subscription": "Підписка на пропуск сповіщення",
 		"widgets:alert:test.subscription": "Підписка на тест сповіщення",
-		"widgets:alert:skip-playing.subscription": "Підписка на пропуск відтворюваного сповіщення",
+		"widgets:alert:skip-playing.subscription": "Підписка на пропуск під час відтворення",
 		"widgets:alert:alerts.subscription": "Підписка на сповіщення",
 		"widgets:media:replay.subscription": "Підписка на повтор медіа",
 		"widgets:media:settings.subscription": "Підписка на налаштування медіа",
 		"widgets:media:skip.subscription": "Підписка на пропуск медіа",
-		"widgets:media:skip-playing-media.subscription": "Підписка на пропуск відтворюваного медіа",
+		"widgets:media:skip-playing-media.subscription": "Підписка на пропуск під час відтворення медіа",
 		"widgets:media:end.subscription": "Підписка на завершення медіа",
 		"widgets:media:error.subscription": "Підписка на помилку медіа",
 		"widgets:media:pause.subscription": "Підписка на паузу медіа",
 		"widgets:media:play.subscription": "Підписка на відтворення медіа",
 		"widgets:alert:played.subscription": "Підписка на відтворене сповіщення",
-		"widgets:storage.read": "Читати сховище віджета",
-		"widgets:storage.write": "Записувати в сховище віджета"
+		"widgets:view:storage.read": "Читати сховище вигляду віджета",
+		"widgets:control:storage.read": "Читати сховище керування віджетом",
+		"widgets:view:storage.write": "Записувати у сховище вигляду віджета",
+		"widgets:control:storage.write": "Записувати у сховище керування віджетом",
+		"widgets:view:storage.subscription": "Підписка на сховище вигляду віджета",
+		"widgets:control:storage.subscription": "Підписка на сховище керування віджетом"
 	}
 }

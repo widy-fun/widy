@@ -1,25 +1,40 @@
 import DownloadIcon from "@mui/icons-material/Download";
 import { Box, Button, Card } from "@mui/material";
 import type { SerializedError } from "@reduxjs/toolkit";
-import { AlertSeverity, type IManifest } from "@widy/sdk";
+import { AlertSeverity, type IManifest, type IWidget } from "@widy/sdk";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { showSnackBar } from "../../../../../../shared/slices/snackBarSlice";
-import { useInstallWidgetMutation } from "../../../../../api/widgetApi";
+import {
+	useInstallWidgetMutation,
+	useUpdateWidgetMutation,
+} from "../../../../../api/widgetsApi";
 import WarningDialog from "../../../../WarningDialog";
-import ScopesWarning from "./ScopesWarning";
 import WidgetDescription from "./WidgetDescription";
+import WidgetWarning from "./WidgetWarning";
 
 const WidgetCard = ({
 	manifest,
-	installed,
+	installedWidgets,
 }: {
 	manifest: IManifest;
-	installed: boolean;
+	installedWidgets: IWidget[];
 }) => {
+	const installed = !!installedWidgets.find(
+		(widget) => widget.manifest.id === manifest.id && !widget.dev_path,
+	);
+	const update = installedWidgets.find(
+		(widget) =>
+			widget.manifest.id === manifest.id &&
+			widget.manifest.version !== manifest.version &&
+			!widget.dev_path,
+	);
 	const { t } = useTranslation();
-	const [installWidget, { isLoading }] = useInstallWidgetMutation();
+	const [installWidget, { isLoading: isLoadingInstallWidget }] =
+		useInstallWidgetMutation();
+	const [updateWidget, { isLoading: isLoadingUpdateWidget }] =
+		useUpdateWidgetMutation();
 	const dispatch = useDispatch();
 	const [warningOpen, setWarningOpen] = useState(false);
 
@@ -44,14 +59,42 @@ const WidgetCard = ({
 		}
 	};
 
+	const handleUpdate = async () => {
+		if (!update) return;
+		setWarningOpen(false);
+		try {
+			await updateWidget({ manifest, id: update.id }).unwrap();
+			dispatch(
+				showSnackBar({
+					message: t("success"),
+					alertSeverity: AlertSeverity.success,
+				}),
+			);
+		} catch (error) {
+			const err = error as SerializedError;
+			dispatch(
+				showSnackBar({
+					message: err.message as string,
+					alertSeverity: AlertSeverity.error,
+				}),
+			);
+		}
+	};
+
 	return (
 		<>
 			<WarningDialog
 				open={warningOpen}
 				setOpen={setWarningOpen}
 				title={t("widgets.install")}
-				warning={<ScopesWarning manifest={manifest} />}
-				onClick={handleInstall}
+				warning={<WidgetWarning manifest={manifest} />}
+				onClick={() => {
+					if (update) {
+						handleUpdate();
+					} else {
+						handleInstall();
+					}
+				}}
 			/>
 			<Card
 				sx={{
@@ -66,17 +109,35 @@ const WidgetCard = ({
 				<WidgetDescription manifest={manifest} />
 
 				<Box sx={{ display: "flex", gap: "8px", marginTop: "12px" }}>
-					<Button
-						disabled={installed || isLoading}
-						variant="contained"
-						size="small"
-						startIcon={<DownloadIcon />}
-						onClick={() => {
-							setWarningOpen(true);
-						}}
-					>
-						{isLoading ? t("widgets.installing") : t("widgets.install")}
-					</Button>
+					{update ? (
+						<Button
+							disabled={isLoadingUpdateWidget}
+							variant="contained"
+							size="small"
+							startIcon={<DownloadIcon />}
+							onClick={() => {
+								setWarningOpen(true);
+							}}
+						>
+							{isLoadingUpdateWidget
+								? t("widgets.updating")
+								: t("widgets.update")}
+						</Button>
+					) : (
+						<Button
+							disabled={installed || isLoadingInstallWidget}
+							variant="contained"
+							size="small"
+							startIcon={<DownloadIcon />}
+							onClick={() => {
+								setWarningOpen(true);
+							}}
+						>
+							{isLoadingInstallWidget
+								? t("widgets.installing")
+								: t("widgets.install")}
+						</Button>
+					)}
 				</Box>
 			</Card>
 		</>

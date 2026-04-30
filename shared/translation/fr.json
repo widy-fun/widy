@@ -3,14 +3,14 @@
 	"off": "Désactivé",
 	"select": "Sélectionner",
 	"success": "Succès",
-	"ok": "Ok",
+	"ok": "OK",
 	"cancel": "Annuler",
 	"sound_volume": "Volume du son",
-	"skip_media": "Raccourci pour passer le média",
-	"skip_alert": "Raccourci pour passer l'alerte",
+	"skip_media": "Raccourci passer le média",
+	"skip_alert": "Raccourci passer l'alerte",
 	"authorization": {
 		"title": "Autorisation",
-		"code": "Demander un code",
+		"code": "Demander le code",
 		"sign_in": "Se connecter",
 		"phone": "Numéro de téléphone",
 		"telegram_code": "Code de Telegram",
@@ -40,11 +40,11 @@
 		"tiktok": "TikTok"
 	},
 	"integration": {
-		"tribute": "Afficher les messages de tribut"
+		"tribute": "Afficher les messages de tribute"
 	},
 	"auction": {
 		"lots": "Lots",
-		"wheel": "Roulette",
+		"wheel": "Roue",
 		"settings": "Paramètres"
 	},
 	"maption": {
@@ -85,7 +85,7 @@
 		"followed": "{{user_name}} s'est abonné",
 		"subscribed": "{{user_name}} s'est abonné",
 		"gifted_subscriptions": "{{user_name}} a offert {{total}} abonnements",
-		"raided_with": "{{user_name}} a raidé avec {{viewers}} viewers"
+		"raided_with": "{{user_name}} a fait un raid avec {{viewers}} viewers"
 	},
 	"filter": {
 		"title": "Filtrer les messages",
@@ -125,7 +125,7 @@
 		"final": "Finale",
 		"game": "Partie",
 		"cancel": "Annuler la partie",
-		"winner": "Gagnant",
+		"winner": "Vainqueur",
 		"settings": "Paramètres",
 		"create_game": "Créer une partie à partir des lots",
 		"start": "Démarrer",
@@ -156,7 +156,7 @@
 		"new_donation": "Nouveau don",
 		"show_odds": "Afficher les cotes",
 		"show_total_sum": "Afficher la somme totale",
-		"greater_timer_adding_time": "Ajout de temps pour le timer supérieur",
+		"greater_timer_adding_time": "Temps d'ajout pour timer supérieur",
 		"not_add_time_if": "Ne pas ajouter de temps si",
 		"adding_time": "Temps"
 	},
@@ -182,7 +182,7 @@
 		"confirm_sign_out": "Êtes-vous sûr de vouloir vous déconnecter de ce service ?"
 	},
 	"twitch": {
-		"device_code_expired": "Code appareil expiré. Veuillez réessayer.",
+		"device_code_expired": "Le code de l'appareil a expiré. Veuillez réessayer.",
 		"user_code": "Code utilisateur",
 		"authorize_with_code": "Autoriser avec le code",
 		"waiting_authorization": "En attente d'autorisation..."
@@ -206,7 +206,7 @@
 	"alert": {
 		"image": "Image",
 		"audio": "Audio",
-		"view": "Vue",
+		"view": "Affichage",
 		"title": "Titre",
 		"message": "Message",
 		"test_name": "Test",
@@ -218,11 +218,11 @@
 		"variant_title": "Titre de la variante",
 		"variant_group": "Groupe de la variante",
 		"status": "Statut",
-		"variation_condition": "Condition de variation",
+		"variation_condition": "Condition de la variation",
 		"group": "Groupe",
 		"Random": "Aléatoire",
-		"AmountIsGreater": "Le montant est supérieur",
-		"AmountIsEqual": "Le montant est égal",
+		"AmountIsGreater": "Le montant est supérieur à",
+		"AmountIsEqual": "Le montant est égal à",
 		"delete": "Supprimer",
 		"sure_delete": "Êtes-vous sûr de vouloir supprimer cette variation ?",
 		"type": "Type",
@@ -306,7 +306,7 @@
 		"name": "Nom"
 	},
 	"audio": {
-		"play": "Jouer",
+		"play": "Lire",
 		"stop": "Arrêter"
 	},
 	"version": "Version",
@@ -316,6 +316,7 @@
 		"install": "Installer",
 		"delete": "Supprimer",
 		"installed": "Installé",
+		"update": "Mettre à jour",
 		"all": "Tous",
 		"settings": "Paramètres",
 		"control": "Contrôle",
@@ -323,7 +324,9 @@
 		"invalid_manifest": "Manifeste du widget invalide",
 		"add_confirm": "L'ajout permettra à {{widget_name}} de :",
 		"installing": "Installation en cours...",
-		"view_url": "URL de visualisation"
+		"updating": "Mise à jour en cours...",
+		"view_url": "URL d'affichage",
+		"widget_connection": "Le widget peut envoyer ou recevoir des requêtes vers :"
 	},
 	"scopes": {
 		"widgets:messages.read": "Lire les messages",
@@ -332,22 +335,22 @@
 		"widgets:settings.read": "Lire les paramètres du widget",
 		"widgets:alerts.read": "Lire les alertes",
 		"widgets:media:settings.read": "Lire les paramètres média",
-		"widgets:auc-fighter:match-playing.send": "Envoyer match en cours",
-		"widgets:auc-fighter:match-winner.send": "Envoyer gagnant du match",
-		"widgets:auc-fighter:match-paused.send": "Envoyer match en pause",
+		"widgets:auc-fighter:match-playing.send": "Envoyer le match en cours",
+		"widgets:auc-fighter:match-winner.send": "Envoyer le vainqueur du match",
+		"widgets:auc-fighter:match-paused.send": "Envoyer le match en pause",
 		"widgets:auc-fighter:match-id.send": "Envoyer l'ID du match",
-		"widgets:alert:played.send": "Envoyer alerte jouée",
-		"widgets:alert:playing.send": "Envoyer alerte en cours",
-		"widgets:media:played.send": "Envoyer média joué",
-		"widgets:media:end.send": "Envoyer fin du média",
-		"widgets:media:playing.send": "Envoyer média en cours",
-		"widgets:media:paused.send": "Envoyer média en pause",
-		"widgets:media:error.send": "Envoyer erreur média",
-		"widgets:media:replay.send": "Envoyer relecture média",
-		"widgets:alert:replay.send": "Envoyer relecture alerte",
-		"widgets:alert:skip.send": "Envoyer passer alerte",
+		"widgets:alert:played.send": "Envoyer l'alerte jouée",
+		"widgets:alert:playing.send": "Envoyer l'alerte en cours",
+		"widgets:media:played.send": "Envoyer le média joué",
+		"widgets:media:end.send": "Envoyer la fin du média",
+		"widgets:media:playing.send": "Envoyer le média en cours",
+		"widgets:media:paused.send": "Envoyer le média en pause",
+		"widgets:media:error.send": "Envoyer l'erreur média",
+		"widgets:media:replay.send": "Envoyer la relecture du média",
+		"widgets:alert:replay.send": "Envoyer la relecture de l'alerte",
+		"widgets:alert:skip.send": "Envoyer le skip de l'alerte",
 		"widgets:messages.subscription": "S'abonner aux messages",
-		"widgets:goal.subscription": "S'abonner à l'objectif",
+		"widgets:goal.subscription": "S'abonner aux objectifs",
 		"widgets:settings.subscription": "S'abonner aux paramètres",
 		"widgets:auc-fighter:start-match.subscription": "S'abonner au démarrage du match",
 		"widgets:auc-fighter:pause-match.subscription": "S'abonner à la pause du match",
@@ -356,20 +359,24 @@
 		"widgets:auc-fighter:update-match.subscription": "S'abonner à la mise à jour du match",
 		"widgets:auc-fighter:settings.subscription": "S'abonner aux paramètres auc-fighter",
 		"widgets:alert:replay.subscription": "S'abonner à la relecture d'alerte",
-		"widgets:alert:skip.subscription": "S'abonner au passage d'alerte",
+		"widgets:alert:skip.subscription": "S'abonner au skip d'alerte",
 		"widgets:alert:test.subscription": "S'abonner au test d'alerte",
-		"widgets:alert:skip-playing.subscription": "S'abonner au passage d'alerte en cours",
+		"widgets:alert:skip-playing.subscription": "S'abonner au skip d'alerte en cours",
 		"widgets:alert:alerts.subscription": "S'abonner aux alertes",
-		"widgets:media:replay.subscription": "S'abonner à la relecture média",
+		"widgets:media:replay.subscription": "S'abonner à la relecture du média",
 		"widgets:media:settings.subscription": "S'abonner aux paramètres média",
-		"widgets:media:skip.subscription": "S'abonner au passage média",
-		"widgets:media:skip-playing-media.subscription": "S'abonner au passage du média en cours",
+		"widgets:media:skip.subscription": "S'abonner au skip du média",
+		"widgets:media:skip-playing-media.subscription": "S'abonner au skip du média en cours",
 		"widgets:media:end.subscription": "S'abonner à la fin du média",
 		"widgets:media:error.subscription": "S'abonner à l'erreur média",
-		"widgets:media:pause.subscription": "S'abonner à la pause média",
-		"widgets:media:play.subscription": "S'abonner à la lecture média",
+		"widgets:media:pause.subscription": "S'abonner à la pause du média",
+		"widgets:media:play.subscription": "S'abonner à la lecture du média",
 		"widgets:alert:played.subscription": "S'abonner à l'alerte jouée",
-		"widgets:storage.read": "Lire le stockage du widget",
-		"widgets:storage.write": "Écrire dans le stockage du widget"
+		"widgets:view:storage.read": "Lire le stockage de la vue du widget",
+		"widgets:control:storage.read": "Lire le stockage du contrôle du widget",
+		"widgets:view:storage.write": "Écrire dans le stockage de la vue du widget",
+		"widgets:control:storage.write": "Écrire dans le stockage du contrôle du widget",
+		"widgets:view:storage.subscription": "S'abonner au stockage de la vue du widget",
+		"widgets:control:storage.subscription": "S'abonner au stockage du contrôle du widget"
 	}
 }

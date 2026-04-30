@@ -4,7 +4,7 @@ import type { IWidget } from "@widy/sdk";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
-import { useDeleteWidgetMutation } from "../../../../../api/widgetApi";
+import { useDeleteWidgetMutation } from "../../../../../api/widgetsApi";
 import WarningDialog from "../../../../WarningDialog";
 import WidgetUrl from "../../alerts/components/WidgetUrl";
 import WidgetDescription from "./WidgetDescription";

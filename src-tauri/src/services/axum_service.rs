@@ -8,7 +8,7 @@ use crate::services::{ConfigService, DatabaseService, EventMessage, WebSocketBro
 use axum::extract::ws::{Message, WebSocket};
 use axum::extract::{Path, Query};
 use axum::http::HeaderValue;
-use axum::routing::put;
+use axum::routing::patch;
 use axum::Json;
 use axum::{
     extract::{State, WebSocketUpgrade},
@@ -20,12 +20,15 @@ use entity::goal::GoalType;
 use entity::message::ClientMessage;
 use futures::{sink::SinkExt, stream::StreamExt};
 use http::header;
+#[cfg(debug_assertions)]
 use reqwest::StatusCode;
 use serde::Deserialize;
 use std::path::PathBuf;
 use tauri::{AppHandle, Manager};
 use tokio::fs;
 use tokio::sync::mpsc;
+#[cfg(debug_assertions)]
+use tower_http::cors::Any;
 use tower_http::cors::CorsLayer;
 use tower_http::services::{ServeDir, ServeFile};
 type Tx = mpsc::UnboundedSender<Message>;
@@ -72,11 +75,15 @@ impl AxumService {
         #[cfg(debug_assertions)]
         let cors = CorsLayer::new()
             .allow_origin(HeaderValue::from_static("http://localhost:12553"))
-            .allow_origin(HeaderValue::from_static("http://localhost:1420"));
+            .allow_origin(HeaderValue::from_static("http://localhost:1420"))
+            .allow_methods(Any)
+            .allow_headers(Any);
         #[cfg(not(debug_assertions))]
         let cors = CorsLayer::new()
             .allow_origin(HeaderValue::from_static("http://localhost:12553"))
-            .allow_origin(HeaderValue::from_static("http://tauri.localhost"));
+            .allow_origin(HeaderValue::from_static("http://tauri.localhost"))
+            .allow_methods(Any)
+            .allow_headers(Any);
 
         let axum_router: Router = Router::new()
             .route("/ws", get(AxumService::websocket_handler))
@@ -85,7 +92,14 @@ impl AxumService {
             .route("/api/messages", get(AxumService::get_messages))
             .route("/api/goals", get(AxumService::get_not_ended_goal))
             .route("/api/widgets/{id}", get(AxumService::get_widget_by_id))
-            .route("/api/widgets", put(AxumService::update_widget))
+            .route(
+                "/api/widgets/view/storage/{id}",
+                patch(AxumService::update_widget_view_storage),
+            )
+            .route(
+                "/api/widgets/control/storage/{id}",
+                patch(AxumService::update_widget_control_storage),
+            )
             .route(
                 "/api/auc-fighter-settings",
                 get(AxumService::get_auc_fighter_settings),
@@ -138,7 +152,7 @@ impl AxumService {
         let database_service = state.app.state::<DatabaseService>();
         if let Ok(Some(widget)) = database_service.get_widget_by_id(id).await {
             let config_service = state.app.state::<ConfigService>();
-            let widget_path = match widget.dev_path {
+            let widget_path = match widget.dev_path.clone() {
                 Some(dev_path) => PathBuf::new().join(&dev_path),
                 None => config_service
                     .widgets_path
@@ -166,13 +180,18 @@ impl AxumService {
 
             let mime = mime_guess::from_path(&canonical).first_or_octet_stream();
 
+            let csp_value = match widget.dev_path {
+                Some(_) => &format!(
+                    "default-src 'self' 'unsafe-inline'; connect-src {};",
+                    widget.manifest.connect_src.join(" ")
+                ),
+                None => "default-src 'self' 'unsafe-inline'; connect-src 'none';",
+            };
+
             let response = Response::builder()
                 .status(StatusCode::OK)
                 .header(header::CONTENT_TYPE, mime.as_ref())
-                .header(
-                    header::CONTENT_SECURITY_POLICY,
-                    "default-src 'self' 'unsafe-inline'; connect-src 'none';",
-                )
+                .header(header::CONTENT_SECURITY_POLICY, csp_value)
                 .body(axum::body::Body::from(content))
                 .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
@@ -226,17 +245,50 @@ impl AxumService {
 
         Ok(Json(widget))
     }
-    async fn update_widget(
+    async fn update_widget_view_storage(
         State(state): State<AxumState>,
-        Json(widget): Json<entity::widget::Model>,
+        Path(id): Path<String>,
+        body: String,
     ) -> Result<StatusCode, StatusCode> {
         let database_service = state.app.state::<DatabaseService>();
-        database_service
-            .update_widget(widget)
+        if let Some(widget) = database_service
+            .update_view_storage(body.clone(), id)
             .await
-            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+        {
+            let websocket_broadcaster = state.app.state::<WebSocketBroadcaster>();
+            websocket_broadcaster
+                .broadcast_event_message(&EventMessage {
+                    event: AppEvent::WidgetViewStorage,
+                    data: widget,
+                })
+                .await;
+            return Ok(StatusCode::OK);
+        }
+        Ok(StatusCode::NOT_FOUND)
+    }
 
-        Ok(StatusCode::OK)
+    async fn update_widget_control_storage(
+        State(state): State<AxumState>,
+        Path(id): Path<String>,
+        body: String,
+    ) -> Result<StatusCode, StatusCode> {
+        let database_service = state.app.state::<DatabaseService>();
+        if let Some(widget) = database_service
+            .update_control_storage(body.clone(), id)
+            .await
+            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+        {
+            let websocket_broadcaster = state.app.state::<WebSocketBroadcaster>();
+            websocket_broadcaster
+                .broadcast_event_message(&EventMessage {
+                    event: AppEvent::WidgetControlStorage,
+                    data: widget,
+                })
+                .await;
+            return Ok(StatusCode::OK);
+        }
+        Ok(StatusCode::NOT_FOUND)
     }
 
     async fn get_auc_fighter_settings(

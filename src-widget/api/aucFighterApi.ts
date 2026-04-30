@@ -1,7 +1,7 @@
 import type { IAucFighterSettings } from "@widy/sdk";
-import { api } from ".";
+import { widgetApi } from ".";
 
-export const aucFighterApi = api.injectEndpoints({
+export const aucFighterApi = widgetApi.injectEndpoints({
 	endpoints: (builder) => ({
 		getAucFighterSettings: builder.query<IAucFighterSettings, void>({
 			query: () => ({

@@ -50,6 +50,7 @@ pub mod update_media_settings;
 pub mod update_service_auth;
 pub mod update_service_settings;
 pub mod update_settings;
+pub mod update_widget;
 pub mod widy_sol_sign_out;
 pub mod widy_ton_sign_out;
 
@@ -105,5 +106,6 @@ pub use update_media_settings::*;
 pub use update_service_auth::*;
 pub use update_service_settings::*;
 pub use update_settings::*;
+pub use update_widget::*;
 pub use widy_sol_sign_out::*;
 pub use widy_ton_sign_out::*;

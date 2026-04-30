@@ -316,6 +316,7 @@
 		"install": "Install",
 		"delete": "Delete",
 		"installed": "Installed",
+		"update": "Update",
 		"all": "All",
 		"settings": "Settings",
 		"control": "Control",
@@ -323,7 +324,9 @@
 		"invalid_manifest": "Invalid widget manifest",
 		"add_confirm": "Adding will allow {{widget_name}} to:",
 		"installing": "Installing...",
-		"view_url": "View url"
+		"updating": "Updating...",
+		"view_url": "View url",
+		"widget_connection": "Widget get or send requests to:"
 	},
 	"scopes": {
 		"widgets:messages.read": "Read messages",
@@ -369,7 +372,11 @@
 		"widgets:media:pause.subscription": "Subscribe media pause",
 		"widgets:media:play.subscription": "Subscribe media play",
 		"widgets:alert:played.subscription": "Subscribe alert played",
-		"widgets:storage.read": "Read widget storage",
-		"widgets:storage.write": "Write to widget storage"
+		"widgets:view:storage.read": "Read widget view storage",
+		"widgets:control:storage.read": "Read widget control storage",
+		"widgets:view:storage.write": "Write to widget view storage",
+		"widgets:control:storage.write": "Write to widget control storage",
+		"widgets:view:storage.subscription": "Subscribe widget view storage",
+		"widgets:control:storage.subscription": "Subscribe widget control storage"
 	}
 }

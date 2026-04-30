@@ -1,7 +1,7 @@
 import { IManifest, IWidget } from "@widy/sdk";
 import { api } from ".";
 
-export const widgetApi = api.injectEndpoints({
+export const widgetsApi = api.injectEndpoints({
 	endpoints: (builder) => ({
 		getWidgetById: builder.query<IWidget, { id: string }>({
 			query: (args) => ({
@@ -40,6 +40,13 @@ export const widgetApi = api.injectEndpoints({
 			}),
 			invalidatesTags: ["Widgets"],
 		}),
+		updateWidget: builder.mutation<void, { manifest: IManifest; id: string }>({
+			query: (args) => ({
+				command: "update_widget",
+				args,
+			}),
+			invalidatesTags: ["Widgets"],
+		}),
 	}),
 });
 export const {
@@ -48,4 +55,5 @@ export const {
 	useGetWidgetsQuery,
 	useDeleteWidgetMutation,
 	useInstallWidgetMutation,
-} = widgetApi;
+	useUpdateWidgetMutation,
+} = widgetsApi;

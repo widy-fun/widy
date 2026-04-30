@@ -1,6 +1,5 @@
 use entity::widget::Manifest;
 use tauri::State;
-use uuid::Uuid;
 
 use crate::{
     repositories::WidgetsRepository,
@@ -9,14 +8,14 @@ use crate::{
 };
 
 #[tauri::command]
-pub async fn install_widget(
+pub async fn update_widget(
     reqwest_client: State<'_, reqwest::Client>,
     config_service: State<'_, ConfigService>,
     database_service: State<'_, DatabaseService>,
     manifest: Manifest,
+    id: String,
 ) -> Result<(), String> {
-    let id = Uuid::new_v4().to_string();
     download_widget(&reqwest_client, &config_service, &manifest, &id).await?;
-    database_service.add_widget(None, manifest, id).await?;
+    database_service.update_widget(manifest, id).await?;
     Ok(())
 }

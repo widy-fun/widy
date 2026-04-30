@@ -1,7 +1,7 @@
 import type { IWidget } from "@widy/sdk";
-import { api } from ".";
+import { widgetApi } from ".";
 
-export const widgetsApi = api.injectEndpoints({
+export const widgetsApi = widgetApi.injectEndpoints({
 	endpoints: (builder) => ({
 		getWidgetById: builder.query<IWidget, { id?: string }>({
 			query: (args) => ({
@@ -9,14 +9,32 @@ export const widgetsApi = api.injectEndpoints({
 			}),
 			providesTags: ["Widgets"],
 		}),
-		updateWidget: builder.mutation<void, IWidget>({
+		updateWidgetViewStorage: builder.mutation<
+			void,
+			{ viewStorage: string; id: string }
+		>({
 			query: (args) => ({
-				url: "/widgets",
-				body: args,
-				method: "PUT",
+				url: `/widgets/view/storage/${args.id}`,
+				body: args.viewStorage,
+				method: "PATCH",
+			}),
+			invalidatesTags: ["Widgets"],
+		}),
+		updateControlViewStorage: builder.mutation<
+			void,
+			{ controlStorage: string; id: string }
+		>({
+			query: (args) => ({
+				url: `/widgets/control/storage/${args.id}`,
+				body: args.controlStorage,
+				method: "PATCH",
 			}),
 			invalidatesTags: ["Widgets"],
 		}),
 	}),
 });
-export const { useGetWidgetByIdQuery } = widgetsApi;
+export const {
+	useGetWidgetByIdQuery,
+	useUpdateControlViewStorageMutation,
+	useUpdateWidgetViewStorageMutation,
+} = widgetsApi;

@@ -8,6 +8,7 @@ import {
 	auctionTimerSlice,
 	maptionTimerSlice,
 } from "../../shared/slices/timerSlice.ts";
+import { widgetApi } from "../../src-widget/api/index.ts";
 import { api } from "../api";
 import calculateLotsProbabilityMiddleware from "./middlewares/calculateLotsProbabilityMiddleware";
 import lotsLeaderChangeAddTimeMiddleware from "./middlewares/lotsLeaderChangeAddTimeMiddleware";
@@ -47,6 +48,7 @@ export const rootReducer = combineReducers({
 	goalsState: goalsSlice.reducer,
 	servicesState: servicesSlice.reducer,
 	[api.reducerPath]: api.reducer,
+	[widgetApi.reducerPath]: widgetApi.reducer,
 });
 
 export const setupStore = (preloadedState?: Partial<AppState>) => {
@@ -55,6 +57,7 @@ export const setupStore = (preloadedState?: Partial<AppState>) => {
 		middleware: (getDefaultMiddleware) =>
 			getDefaultMiddleware()
 				.concat(api.middleware)
+				.concat(widgetApi.middleware)
 				.concat(lotsLeaderChangeAddTimeMiddleware)
 				.concat(newLotAddAuctionTimeMiddleware)
 				.concat(newDonationAddAuctionTimeMiddleware)

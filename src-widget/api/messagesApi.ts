@@ -1,18 +1,8 @@
 import type { IClientMessage, IMessagesFilter, IPageParm } from "@widy/sdk";
-import { api } from ".";
+import { widgetApi } from ".";
 
-export const messagesApi = api.injectEndpoints({
+export const messagesApi = widgetApi.injectEndpoints({
 	endpoints: (builder) => ({
-		messages: builder.query<
-			IClientMessage,
-			{ filter: IMessagesFilter } & IPageParm
-		>({
-			query: (args) => ({
-				params: { ...args },
-				url: "/messages",
-			}),
-			providesTags: ["Messages"],
-		}),
 		getMessages: builder.infiniteQuery<
 			IClientMessage[],
 			{ filter: IMessagesFilter },

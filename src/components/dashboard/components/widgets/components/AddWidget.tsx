@@ -7,9 +7,9 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { showSnackBar } from "../../../../../../shared/slices/snackBarSlice";
-import { useAddWidgetMutation } from "../../../../../api/widgetApi";
+import { useAddWidgetMutation } from "../../../../../api/widgetsApi";
 import WarningDialog from "../../../../WarningDialog";
-import ScopesWarning from "./ScopesWarning";
+import WidgetWarning from "./WidgetWarning";
 
 const AddWidget = () => {
 	const { t } = useTranslation();
@@ -26,7 +26,7 @@ const AddWidget = () => {
 					open={warningOpen}
 					setOpen={setWarningOpen}
 					title={t("widgets.add")}
-					warning={<ScopesWarning manifest={manifest} />}
+					warning={<WidgetWarning manifest={manifest} />}
 					onClick={async () => {
 						try {
 							await addWidget({ devPath, manifest }).unwrap();

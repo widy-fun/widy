@@ -9,7 +9,8 @@ pub struct Model {
     pub id: String,
     pub manifest: Manifest,
     pub dev_path: Option<String>,
-    pub storage: Option<String>,
+    pub view_storage: Option<String>,
+    pub control_storage: Option<String>,
 }
 
 impl ActiveModelBehavior for ActiveModel {}

@@ -1,7 +1,7 @@
 use crate::services::DatabaseService;
 use async_trait::async_trait;
 use entity::widget::*;
-use sea_orm::{ActiveValue::Set, ColumnTrait, EntityTrait, QueryFilter};
+use sea_orm::{ActiveModelTrait, ActiveValue::Set, ColumnTrait, EntityTrait, QueryFilter};
 
 #[async_trait]
 pub trait WidgetsRepository: Send + Sync {
@@ -15,7 +15,17 @@ pub trait WidgetsRepository: Send + Sync {
         id: String,
     ) -> Result<(), String>;
     async fn delete_widget_by_id(&self, id: String) -> Result<(), String>;
-    async fn update_widget(&self, widget: Model) -> Result<(), String>;
+    async fn update_widget(&self, manifest: Manifest, id: String) -> Result<(), String>;
+    async fn update_view_storage(
+        &self,
+        view_storage: String,
+        id: String,
+    ) -> Result<Option<Model>, String>;
+    async fn update_control_storage(
+        &self,
+        control_storage: String,
+        id: String,
+    ) -> Result<Option<Model>, String>;
 }
 
 #[async_trait]
@@ -77,19 +87,49 @@ impl WidgetsRepository for DatabaseService {
             })?;
         Ok(())
     }
-    async fn update_widget(&self, widget: Model) -> Result<(), String> {
-        Entity::update(ActiveModel {
-            id: Set(widget.id),
-            dev_path: Set(widget.dev_path),
-            manifest: Set(widget.manifest),
-            storage: Set(widget.storage),
-        })
-        .exec(&self.connection)
-        .await
-        .map_err(|e| {
-            log::error!("Update widget error: {}", e);
-            e.to_string()
-        })?;
-        Ok(())
+
+    async fn update_widget(&self, manifest: Manifest, id: String) -> Result<(), String> {
+        if let Some(widget) = self.get_widget_by_id(id).await? {
+            let mut pear: ActiveModel = widget.into();
+            pear.manifest = Set(manifest);
+            pear.update(&self.connection).await.map_err(|e| {
+                log::error!("Update widget error: {}", e.to_string());
+                e.to_string()
+            })?;
+            return Ok(());
+        }
+        Err("Widget not found".to_string())
+    }
+    async fn update_view_storage(
+        &self,
+        view_storage: String,
+        id: String,
+    ) -> Result<Option<Model>, String> {
+        if let Some(widget) = self.get_widget_by_id(id).await? {
+            let mut pear: ActiveModel = widget.into();
+            pear.view_storage = Set(Some(view_storage));
+            let widget = pear.update(&self.connection).await.map_err(|e| {
+                log::error!("Update view storage error: {}", e.to_string());
+                e.to_string()
+            })?;
+            return Ok(Some(widget));
+        }
+        Ok(None)
+    }
+    async fn update_control_storage(
+        &self,
+        control_storage: String,
+        id: String,
+    ) -> Result<Option<Model>, String> {
+        if let Some(widget) = self.get_widget_by_id(id).await? {
+            let mut pear: ActiveModel = widget.into();
+            pear.control_storage = Set(Some(control_storage));
+            let widget = pear.update(&self.connection).await.map_err(|e| {
+                log::error!("Update control storage error: {}", e.to_string());
+                e.to_string()
+            })?;
+            return Ok(Some(widget));
+        }
+        Ok(None)
     }
 }

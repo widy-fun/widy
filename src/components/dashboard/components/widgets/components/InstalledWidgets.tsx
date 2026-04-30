@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { useGetWidgetsQuery } from "../../../../../api/widgetApi";
+import { useGetWidgetsQuery } from "../../../../../api/widgetsApi";
 import AddWidget from "./AddWidget";
 import InstalledWidgetCard from "./InstalledWidgetCard";
 

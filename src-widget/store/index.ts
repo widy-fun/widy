@@ -3,21 +3,21 @@ import { alertsSlice } from "../../shared/slices/alertsSlice";
 import { mediaSlice } from "../../shared/slices/mediaSlice";
 import { messagesSlice } from "../../shared/slices/messagesSlice";
 import { servicesSlice } from "../../shared/slices/servicesSlice";
-import { api } from "../api";
+import { widgetApi } from "../api";
 
 export const rootReducer = combineReducers({
 	mediaState: mediaSlice.reducer,
 	alertsState: alertsSlice.reducer,
 	servicesState: servicesSlice.reducer,
 	messagesState: messagesSlice.reducer,
-	[api.reducerPath]: api.reducer,
+	[widgetApi.reducerPath]: widgetApi.reducer,
 });
 
 export const setupStore = (preloadedState?: Partial<AppState>) => {
 	return configureStore({
 		reducer: rootReducer,
 		middleware: (getDefaultMiddleware) =>
-			getDefaultMiddleware().concat(api.middleware),
+			getDefaultMiddleware().concat(widgetApi.middleware),
 		preloadedState,
 		devTools: process.env.NODE_ENV !== "production",
 	});

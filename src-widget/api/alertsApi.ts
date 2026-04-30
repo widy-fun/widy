@@ -1,7 +1,7 @@
 import type { IAlert } from "@widy/sdk";
-import { api } from ".";
+import { widgetApi } from ".";
 
-export const alertsApi = api.injectEndpoints({
+export const alertsApi = widgetApi.injectEndpoints({
 	endpoints: (builder) => ({
 		getAlerts: builder.query<IAlert[], void>({
 			query: () => ({

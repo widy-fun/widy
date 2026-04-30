@@ -15,7 +15,7 @@ const Widget = ({ type }: { type: "view" | "control" }) => {
 					ref={iframeRef}
 					src={`http://localhost:12553/widgets/${data.id}/${type}/index.html?${urlParams.toString()}`}
 					title="Widget"
-					sandbox="allow-scripts"
+					sandbox="allow-scripts allow-forms"
 					style={{
 						width: "100%",
 						height: "100dvh",

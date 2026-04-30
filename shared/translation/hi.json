@@ -17,27 +17,27 @@
 		"your_code": "आपका कोड",
 		"2fa_password": "2FA पासवर्ड",
 		"password": "पासवर्ड",
-		"streamelements": "आपको पहले StreamElements JWT से कनेक्ट करना होगा",
+		"streamelements": "सबसे पहले आपको StreamElements JWT से कनेक्ट करना होगा",
 		"you_can_find_by_url": "आप इसे इस URL से ढूंढ सकते हैं",
-		"set_id_and_jwt": "{{service}} के लिए आपको StreamElements Account ID और JWT सेट करना होगा"
+		"set_id_and_jwt": "{{service}} के लिए आपको StreamElements अकाउंट ID और JWT सेट करना होगा"
 	},
 	"error": {
 		"wrong_lots_format": "लॉट्स का फॉर्मेट गलत है",
-		"not_connected": "कनेक्ट नहीं है",
+		"not_connected": "कनेक्टेड नहीं है",
 		"request_error": "अनुरोध में त्रुटि"
 	},
 	"updater": {
 		"title": "अपडेट",
-		"description": "ऐप का नया वर्जन उपलब्ध है। क्या आप अपडेट करना चाहते हैं?",
+		"description": "ऐप का नया संस्करण उपलब्ध है। क्या आप अपडेट करना चाहते हैं?",
 		"update": "अपडेट करें",
 		"later": "बाद में",
 		"downloading": "डाउनलोड हो रहा है..."
 	},
 	"media": {
 		"title": "मीडिया",
-		"youtube": "YouTube",
-		"twitch": "Twitch",
-		"tiktok": "TikTok"
+		"youtube": "यूट्यूब",
+		"twitch": "ट्विच",
+		"tiktok": "टिकटॉक"
 	},
 	"integration": {
 		"tribute": "ट्रिब्यूट संदेश दिखाएं"
@@ -131,7 +131,7 @@
 		"start": "शुरू करें",
 		"pause": "रोकें",
 		"rematch": "रीमैच",
-		"resume": "जारी रखें"
+		"resume": "फिर से शुरू करें"
 	},
 	"lot": {
 		"name": "नाम",
@@ -156,8 +156,8 @@
 		"new_donation": "नया दान",
 		"show_odds": "ऑड्स दिखाएं",
 		"show_total_sum": "कुल राशि दिखाएं",
-		"greater_timer_adding_time": "बड़ा टाइमर समय जोड़ना",
-		"not_add_time_if": "समय न जोड़ें अगर",
+		"greater_timer_adding_time": "बड़ी टाइमर पर समय जोड़ना",
+		"not_add_time_if": "समय तब न जोड़ें अगर",
 		"adding_time": "समय"
 	},
 	"lots_options": {
@@ -165,7 +165,7 @@
 		"clear_lots": "लॉट्स साफ करें"
 	},
 	"auc_fighter_settings": {
-		"round_duration": "राउंड अवधि",
+		"round_duration": "राउंड की अवधि",
 		"add_players": "खिलाड़ी जोड़ें"
 	},
 	"alerts": {
@@ -175,30 +175,30 @@
 	"services": {
 		"title": "सेवाएं",
 		"tribute": "ट्रिब्यूट",
-		"streamelements": "StreamElements",
+		"streamelements": "स्ट्रीमएलीमेंट्स",
 		"connect": "कनेक्ट करें",
-		"integrations": "इंटीग्रेशन",
+		"integrations": "इंटीग्रेशन्स",
 		"sign_out": "साइन आउट",
 		"confirm_sign_out": "क्या आप वाकई इस सेवा से साइन आउट करना चाहते हैं?"
 	},
 	"twitch": {
-		"device_code_expired": "डिवाइस कोड समाप्त हो गया। कृपया दोबारा प्रयास करें।",
+		"device_code_expired": "डिवाइस कोड समाप्त हो गया। कृपया फिर से प्रयास करें।",
 		"user_code": "यूजर कोड",
 		"authorize_with_code": "कोड से अधिकृत करें",
-		"waiting_authorization": "अधिकृत होने की प्रतीक्षा कर रहा है..."
+		"waiting_authorization": "अधिकारण की प्रतीक्षा कर रहे हैं..."
 	},
 	"widy": {
-		"donation_account_name": "दान खाते का नाम",
+		"donation_account_name": "दान अकाउंट का नाम",
 		"donation_url": "दान URL",
-		"create_donation_account": "Widy दान खाता बनाएं",
-		"connect_to_existing_account": "मौजूदा खाते से कनेक्ट करें",
-		"create_donation_account_pending": "दान खाता बनाया जा रहा है..."
+		"create_donation_account": "Widy दान अकाउंट बनाएं",
+		"connect_to_existing_account": "मौजूदा अकाउंट से कनेक्ट करें",
+		"create_donation_account_pending": "दान अकाउंट बनाया जा रहा है..."
 	},
 	"twitch_service_settings": {
 		"title": "Twitch सेटिंग्स",
-		"points_currency_ratio": "पॉइंट्स मुद्रा अनुपात",
-		"rewards_name": "रिवॉर्ड नाम",
-		"rewards_list": "रिवॉर्ड सूची",
+		"points_currency_ratio": "पॉइंट्स करेंसी रेशियो",
+		"rewards_name": "रिवॉर्ड्स का नाम",
+		"rewards_list": "रिवॉर्ड्स सूची",
 		"add_reward": "रिवॉर्ड जोड़ें",
 		"cost": "लागत",
 		"color": "रंग"
@@ -206,7 +206,7 @@
 	"alert": {
 		"image": "छवि",
 		"audio": "ऑडियो",
-		"view": "दृश्य",
+		"view": "व्यू",
 		"title": "शीर्षक",
 		"message": "संदेश",
 		"test_name": "टेस्ट",
@@ -238,42 +238,42 @@
 	},
 	"goal": {
 		"new": "नया गोल",
-		"goal": "दृश्य",
+		"goal": "व्यू",
 		"type": "प्रकार",
 		"elements": "तत्व",
 		"progress": "प्रगति",
 		"goal_title": "गोल शीर्षक",
-		"amount_raise": "एकत्र करने की राशि",
-		"start_raising": "इससे एकत्र करना शुरू करें",
+		"amount_raise": "जुटाने की राशि",
+		"start_raising": "इस राशि से शुरू करें",
 		"end_date": "गोल समाप्ति तिथि",
 		"bar_height": "बार की ऊंचाई",
-		"rounding_radius": "गोलाई त्रिज्या",
+		"rounding_radius": "गोलाई की त्रिज्या",
 		"bar_stroke_thickness": "बार स्ट्रोक मोटाई",
-		"background_bar_color": "बैकग्राउंड बार रंग",
-		"progress_bar_color": "प्रगति बार रंग",
-		"goal_progress_bar": "गोल प्रगति बार",
-		"progress_bar_layout": "प्रगति बार लेआउट",
-		"remaining_time": "शेष समय",
+		"background_bar_color": "बैकग्राउंड बार का रंग",
+		"progress_bar_color": "प्रोग्रेस बार का रंग",
+		"goal_progress_bar": "गोल प्रोग्रेस बार",
+		"progress_bar_layout": "प्रोग्रेस बार लेआउट",
+		"remaining_time": "बचा हुआ समय",
 		"goal_amount_limits": "गोल राशि सीमाएं",
 		"widget_background": "विजेट बैकग्राउंड",
 		"background_color": "बैकग्राउंड रंग",
 		"OnTop": "ऊपर",
 		"Inside": "अंदर",
 		"Below": "नीचे",
-		"DoNotDisplay": "प्रदर्शित न करें",
+		"DoNotDisplay": "न दिखाएं",
 		"title": "शीर्षक",
 		"limits": "सीमाएं",
-		"raised": "एकत्र किया गया",
+		"raised": "जुटाई गई",
 		"days_left": "बचे दिन",
 		"finish_goal": "गोल समाप्त करें",
 		"sure_finish": "क्या आप वाकई इस गोल को समाप्त करना चाहते हैं?",
 		"Donation": "दान",
 		"TwitchSubscription": "Twitch सब्सक्रिप्शन",
 		"TwitchFollow": "Twitch फॉलो",
-		"goal_not_finished": "इस प्रकार का एक अधूरा गोल अभी भी है।"
+		"goal_not_finished": "इस प्रकार का एक अधूरा गोल पहले से मौजूद है।"
 	},
 	"save": "सेव करें",
-	"back": "वापस",
+	"back": "पीछे",
 	"widget": {
 		"copy": "कॉपी करें",
 		"launch": "लॉन्च करें",
@@ -283,8 +283,8 @@
 	"view": {
 		"top": "छवि ऊपर, टेक्स्ट नीचे",
 		"bottom": "छवि नीचे, टेक्स्ट ऊपर",
-		"left": "छवि बाएं, टेक्स्ट दाएं",
-		"right": "छवि दाएं, टेक्स्ट बाएं",
+		"left": "छवि बाईं ओर, टेक्स्ट दाईं ओर",
+		"right": "छवि दाईं ओर, टेक्स्ट बाईं ओर",
 		"overlay": "टेक्स्ट छवि पर ओवरले"
 	},
 	"image": {
@@ -302,28 +302,31 @@
 		"word_spacing": "शब्द स्पेसिंग",
 		"horizontal_alignment": "क्षैतिज संरेखण",
 		"vertical_alignment": "ऊर्ध्वाधर संरेखण",
-		"text_preview": "यह एक पूर्वावलोकन है!",
+		"text_preview": "यह एक प्रीव्यू है!",
 		"name": "नाम"
 	},
 	"audio": {
-		"play": "प्ले करें",
+		"play": "चलाएं",
 		"stop": "रोकें"
 	},
-	"version": "वर्जन",
+	"version": "संस्करण",
 	"widgets": {
 		"title": "विजेट्स",
 		"add": "विजेट जोड़ें",
 		"install": "इंस्टॉल करें",
 		"delete": "हटाएं",
 		"installed": "इंस्टॉल किया गया",
+		"update": "अपडेट करें",
 		"all": "सभी",
 		"settings": "सेटिंग्स",
 		"control": "कंट्रोल",
 		"delete_confirm": "क्या आप वाकई इस विजेट को हटाना चाहते हैं?",
-		"invalid_manifest": "अमान्य विजेट मैनिफेस्ट",
+		"invalid_manifest": "अमान्य विजेट मेनिफेस्ट",
 		"add_confirm": "जोड़ने से {{widget_name}} को निम्नलिखित की अनुमति मिलेगी:",
 		"installing": "इंस्टॉल हो रहा है...",
-		"view_url": "देखने का URL"
+		"updating": "अपडेट हो रहा है...",
+		"view_url": "व्यू URL",
+		"widget_connection": "विजेट को अनुरोध भेजने या प्राप्त करने की अनुमति:"
 	},
 	"scopes": {
 		"widgets:messages.read": "संदेश पढ़ें",
@@ -332,9 +335,9 @@
 		"widgets:settings.read": "विजेट सेटिंग्स पढ़ें",
 		"widgets:alerts.read": "अलर्ट्स पढ़ें",
 		"widgets:media:settings.read": "मीडिया सेटिंग्स पढ़ें",
-		"widgets:auc-fighter:match-playing.send": "मैच चल रहा है भेजें",
+		"widgets:auc-fighter:match-playing.send": "मैच खेला जा रहा है भेजें",
 		"widgets:auc-fighter:match-winner.send": "मैच विजेता भेजें",
-		"widgets:auc-fighter:match-paused.send": "मैच रोका गया भेजें",
+		"widgets:auc-fighter:match-paused.send": "मैच रोक दिया गया भेजें",
 		"widgets:auc-fighter:match-id.send": "मैच ID भेजें",
 		"widgets:alert:played.send": "अलर्ट प्ले किया गया भेजें",
 		"widgets:alert:playing.send": "अलर्ट चल रहा है भेजें",
@@ -343,33 +346,37 @@
 		"widgets:media:playing.send": "मीडिया चल रहा है भेजें",
 		"widgets:media:paused.send": "मीडिया रोका गया भेजें",
 		"widgets:media:error.send": "मीडिया त्रुटि भेजें",
-		"widgets:media:replay.send": "मीडिया रीप्ले भेजें",
-		"widgets:alert:replay.send": "अलर्ट रीप्ले भेजें",
+		"widgets:media:replay.send": "मीडिया रिप्ले भेजें",
+		"widgets:alert:replay.send": "अलर्ट रिप्ले भेजें",
 		"widgets:alert:skip.send": "अलर्ट स्किप भेजें",
-		"widgets:messages.subscription": "संदेश सब्सक्राइब करें",
-		"widgets:goal.subscription": "गोल सब्सक्राइब करें",
-		"widgets:settings.subscription": "सेटिंग्स सब्सक्राइब करें",
-		"widgets:auc-fighter:start-match.subscription": "मैच शुरू सब्सक्राइब करें",
-		"widgets:auc-fighter:pause-match.subscription": "मैच रोकना सब्सक्राइब करें",
-		"widgets:auc-fighter:resume-match.subscription": "मैच जारी रखना सब्सक्राइब करें",
-		"widgets:auc-fighter:cancel-match.subscription": "मैच रद्द सब्सक्राइब करें",
-		"widgets:auc-fighter:update-match.subscription": "मैच अपडेट सब्सक्राइब करें",
-		"widgets:auc-fighter:settings.subscription": "auc-fighter सेटिंग्स सब्सक्राइब करें",
-		"widgets:alert:replay.subscription": "अलर्ट रीप्ले सब्सक्राइब करें",
-		"widgets:alert:skip.subscription": "अलर्ट स्किप सब्सक्राइब करें",
-		"widgets:alert:test.subscription": "अलर्ट टेस्ट सब्सक्राइब करें",
-		"widgets:alert:skip-playing.subscription": "अलर्ट स्किप प्लेइंग सब्सक्राइब करें",
-		"widgets:alert:alerts.subscription": "अलर्ट्स सब्सक्राइब करें",
-		"widgets:media:replay.subscription": "मीडिया रीप्ले सब्सक्राइब करें",
-		"widgets:media:settings.subscription": "मीडिया सेटिंग्स सब्सक्राइब करें",
-		"widgets:media:skip.subscription": "मीडिया स्किप सब्सक्राइब करें",
-		"widgets:media:skip-playing-media.subscription": "मीडिया स्किप प्लेइंग सब्सक्राइब करें",
-		"widgets:media:end.subscription": "मीडिया समाप्त सब्सक्राइब करें",
-		"widgets:media:error.subscription": "मीडिया त्रुटि सब्सक्राइब करें",
-		"widgets:media:pause.subscription": "मीडिया रोकना सब्सक्राइब करें",
-		"widgets:media:play.subscription": "मीडिया प्ले सब्सक्राइब करें",
-		"widgets:alert:played.subscription": "अलर्ट प्ले किया गया सब्सक्राइब करें",
-		"widgets:storage.read": "विजेट स्टोरेज पढ़ें",
-		"widgets:storage.write": "विजेट स्टोरेज में लिखें"
+		"widgets:messages.subscription": "संदेशों की सदस्यता लें",
+		"widgets:goal.subscription": "गोल की सदस्यता लें",
+		"widgets:settings.subscription": "सेटिंग्स की सदस्यता लें",
+		"widgets:auc-fighter:start-match.subscription": "मैच शुरू होने की सदस्यता लें",
+		"widgets:auc-fighter:pause-match.subscription": "मैच रोकने की सदस्यता लें",
+		"widgets:auc-fighter:resume-match.subscription": "मैच फिर शुरू करने की सदस्यता लें",
+		"widgets:auc-fighter:cancel-match.subscription": "मैच रद्द करने की सदस्यता लें",
+		"widgets:auc-fighter:update-match.subscription": "मैच अपडेट की सदस्यता लें",
+		"widgets:auc-fighter:settings.subscription": "auc-fighter सेटिंग्स की सदस्यता लें",
+		"widgets:alert:replay.subscription": "अलर्ट रिप्ले की सदस्यता लें",
+		"widgets:alert:skip.subscription": "अलर्ट स्किप की सदस्यता लें",
+		"widgets:alert:test.subscription": "अलर्ट टेस्ट की सदस्यता लें",
+		"widgets:alert:skip-playing.subscription": "चल रहे अलर्ट स्किप की सदस्यता लें",
+		"widgets:alert:alerts.subscription": "अलर्ट्स की सदस्यता लें",
+		"widgets:media:replay.subscription": "मीडिया रिप्ले की सदस्यता लें",
+		"widgets:media:settings.subscription": "मीडिया सेटिंग्स की सदस्यता लें",
+		"widgets:media:skip.subscription": "मीडिया स्किप की सदस्यता लें",
+		"widgets:media:skip-playing-media.subscription": "चल रहे मीडिया स्किप की सदस्यता लें",
+		"widgets:media:end.subscription": "मीडिया समाप्ति की सदस्यता लें",
+		"widgets:media:error.subscription": "मीडिया त्रुटि की सदस्यता लें",
+		"widgets:media:pause.subscription": "मीडिया रोकने की सदस्यता लें",
+		"widgets:media:play.subscription": "मीडिया चलाने की सदस्यता लें",
+		"widgets:alert:played.subscription": "अलर्ट प्ले होने की सदस्यता लें",
+		"widgets:view:storage.read": "विजेट व्यू स्टोरेज पढ़ें",
+		"widgets:control:storage.read": "विजेट कंट्रोल स्टोरेज पढ़ें",
+		"widgets:view:storage.write": "विजेट व्यू स्टोरेज में लिखें",
+		"widgets:control:storage.write": "विजेट कंट्रोल स्टोरेज में लिखें",
+		"widgets:view:storage.subscription": "विजेट व्यू स्टोरेज की सदस्यता लें",
+		"widgets:control:storage.subscription": "विजेट कंट्रोल स्टोरेज की सदस्यता लें"
 	}
 }

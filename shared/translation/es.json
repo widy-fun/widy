@@ -6,7 +6,7 @@
 	"ok": "Aceptar",
 	"cancel": "Cancelar",
 	"sound_volume": "Volumen del sonido",
-	"skip_media": "Atajo para saltar medio",
+	"skip_media": "Atajo para saltar media",
 	"skip_alert": "Atajo para saltar alerta",
 	"authorization": {
 		"title": "Autorización",
@@ -17,7 +17,7 @@
 		"your_code": "Tu código",
 		"2fa_password": "Contraseña 2FA",
 		"password": "Contraseña",
-		"streamelements": "Primero necesitas conectar con StreamElements JWT",
+		"streamelements": "Necesitas conectar primero con StreamElements JWT",
 		"you_can_find_by_url": "Puedes encontrarlo en esta URL",
 		"set_id_and_jwt": "Necesitas configurar el ID de cuenta de StreamElements y el JWT para {{service}}"
 	},
@@ -59,7 +59,7 @@
 	"media_settings": {
 		"enabled": "Activado",
 		"min_amount": "Cantidad mínima",
-		"video_volume": "Volumen del vídeo",
+		"video_volume": "Volumen del video",
 		"min_views": "Vistas mínimas"
 	},
 	"dashboard": {
@@ -123,11 +123,11 @@
 		"title": "Luchador",
 		"match": "Combate",
 		"final": "Final",
-		"game": "Partida",
-		"cancel": "Cancelar partida",
+		"game": "Juego",
+		"cancel": "Cancelar juego",
 		"winner": "Ganador",
 		"settings": "Ajustes",
-		"create_game": "Crear partida desde lotes",
+		"create_game": "Crear juego desde lotes",
 		"start": "Iniciar",
 		"pause": "Pausar",
 		"rematch": "Revancha",
@@ -156,13 +156,13 @@
 		"new_donation": "Nueva donación",
 		"show_odds": "Mostrar probabilidades",
 		"show_total_sum": "Mostrar suma total",
-		"greater_timer_adding_time": "Añadir tiempo al temporizador mayor",
+		"greater_timer_adding_time": "Añadir tiempo si es mayor",
 		"not_add_time_if": "No añadir tiempo si",
 		"adding_time": "Tiempo"
 	},
 	"lots_options": {
 		"import_lots": "Importar lotes",
-		"clear_lots": "Borrar lotes"
+		"clear_lots": "Limpiar lotes"
 	},
 	"auc_fighter_settings": {
 		"round_duration": "Duración de la ronda",
@@ -182,7 +182,7 @@
 		"confirm_sign_out": "¿Estás seguro de que quieres cerrar sesión de este servicio?"
 	},
 	"twitch": {
-		"device_code_expired": "El código del dispositivo ha expirado. Por favor, inténtalo de nuevo.",
+		"device_code_expired": "El código de dispositivo ha expirado. Por favor, inténtalo de nuevo.",
 		"user_code": "Código de usuario",
 		"authorize_with_code": "Autorizar con código",
 		"waiting_authorization": "Esperando autorización..."
@@ -190,8 +190,8 @@
 	"widy": {
 		"donation_account_name": "Nombre de la cuenta de donaciones",
 		"donation_url": "URL de donación",
-		"create_donation_account": "Crear cuenta de donaciones de Widy",
-		"connect_to_existing_account": "Conectar a cuenta existente",
+		"create_donation_account": "Crear cuenta de donaciones Widy",
+		"connect_to_existing_account": "Conectar a una cuenta existente",
 		"create_donation_account_pending": "Creando cuenta de donaciones..."
 	},
 	"twitch_service_settings": {
@@ -200,7 +200,7 @@
 		"rewards_name": "Nombre de recompensas",
 		"rewards_list": "Lista de recompensas",
 		"add_reward": "Añadir recompensa",
-		"cost": "Coste",
+		"cost": "Costo",
 		"color": "Color"
 	},
 	"alert": {
@@ -216,7 +216,7 @@
 		"add_new_variant": "Añadir nueva variante",
 		"new_variant": "Nueva variante",
 		"variant_title": "Título de la variante",
-		"variant_group": "Grupo de la variante",
+		"variant_group": "Grupo de variante",
 		"status": "Estado",
 		"variation_condition": "Condición de variación",
 		"group": "Grupo",
@@ -238,7 +238,7 @@
 	},
 	"goal": {
 		"new": "Nueva meta",
-		"goal": "Meta",
+		"goal": "Ver",
 		"type": "Tipo",
 		"elements": "Elementos",
 		"progress": "Progreso",
@@ -249,15 +249,15 @@
 		"bar_height": "Altura de la barra",
 		"rounding_radius": "Radio de redondeo",
 		"bar_stroke_thickness": "Grosor del borde de la barra",
-		"background_bar_color": "Color de la barra de fondo",
-		"progress_bar_color": "Color de la barra de progreso",
+		"background_bar_color": "Color de barra de fondo",
+		"progress_bar_color": "Color de barra de progreso",
 		"goal_progress_bar": "Barra de progreso de la meta",
-		"progress_bar_layout": "Diseño de la barra de progreso",
+		"progress_bar_layout": "Diseño de barra de progreso",
 		"remaining_time": "Tiempo restante",
 		"goal_amount_limits": "Límites de cantidad de la meta",
 		"widget_background": "Fondo del widget",
 		"background_color": "Color de fondo",
-		"OnTop": "Encima",
+		"OnTop": "Arriba",
 		"Inside": "Dentro",
 		"Below": "Debajo",
 		"DoNotDisplay": "No mostrar",
@@ -270,7 +270,7 @@
 		"Donation": "Donación",
 		"TwitchSubscription": "Suscripción de Twitch",
 		"TwitchFollow": "Follow de Twitch",
-		"goal_not_finished": "Ya tienes una meta sin finalizar de este tipo."
+		"goal_not_finished": "Tienes una meta sin finalizar de este tipo."
 	},
 	"save": "Guardar",
 	"back": "Atrás",
@@ -283,8 +283,8 @@
 	"view": {
 		"top": "Imagen arriba, texto abajo",
 		"bottom": "Imagen abajo, texto arriba",
-		"left": "Imagen a la izquierda, texto a la derecha",
-		"right": "Imagen a la derecha, texto a la izquierda",
+		"left": "Imagen izquierda, texto derecha",
+		"right": "Imagen derecha, texto izquierda",
 		"overlay": "Texto superpuesto sobre la imagen"
 	},
 	"image": {
@@ -302,7 +302,7 @@
 		"word_spacing": "Espaciado entre palabras",
 		"horizontal_alignment": "Alineación horizontal",
 		"vertical_alignment": "Alineación vertical",
-		"text_preview": "¡Esta es una vista previa!",
+		"text_preview": "¡Esto es una vista previa!",
 		"name": "Nombre"
 	},
 	"audio": {
@@ -315,15 +315,18 @@
 		"add": "Añadir widget",
 		"install": "Instalar",
 		"delete": "Eliminar",
-		"installed": "Instalados",
+		"installed": "Instalado",
+		"update": "Actualizar",
 		"all": "Todos",
 		"settings": "Ajustes",
 		"control": "Control",
 		"delete_confirm": "¿Estás seguro de que quieres eliminar este widget?",
-		"invalid_manifest": "Manifiesto del widget inválido",
-		"add_confirm": "Añadir permitirá a {{widget_name}}:",
+		"invalid_manifest": "Manifiesto de widget inválido",
+		"add_confirm": "Añadir permitirá que {{widget_name}}:",
 		"installing": "Instalando...",
-		"view_url": "Ver URL"
+		"updating": "Actualizando...",
+		"view_url": "Ver URL",
+		"widget_connection": "El widget obtiene o envía solicitudes a:"
 	},
 	"scopes": {
 		"widgets:messages.read": "Leer mensajes",
@@ -347,7 +350,7 @@
 		"widgets:alert:replay.send": "Enviar repetición de alerta",
 		"widgets:alert:skip.send": "Enviar salto de alerta",
 		"widgets:messages.subscription": "Suscribirse a mensajes",
-		"widgets:goal.subscription": "Suscribirse a metas",
+		"widgets:goal.subscription": "Suscribirse a meta",
 		"widgets:settings.subscription": "Suscribirse a ajustes",
 		"widgets:auc-fighter:start-match.subscription": "Suscribirse al inicio de combate",
 		"widgets:auc-fighter:pause-match.subscription": "Suscribirse a pausa de combate",
@@ -364,12 +367,16 @@
 		"widgets:media:settings.subscription": "Suscribirse a ajustes de medios",
 		"widgets:media:skip.subscription": "Suscribirse a salto de medio",
 		"widgets:media:skip-playing-media.subscription": "Suscribirse a salto de medio en reproducción",
-		"widgets:media:end.subscription": "Suscribirse al fin de medio",
+		"widgets:media:end.subscription": "Suscribirse a fin de medio",
 		"widgets:media:error.subscription": "Suscribirse a error de medio",
 		"widgets:media:pause.subscription": "Suscribirse a pausa de medio",
 		"widgets:media:play.subscription": "Suscribirse a reproducción de medio",
 		"widgets:alert:played.subscription": "Suscribirse a alerta reproducida",
-		"widgets:storage.read": "Leer almacenamiento del widget",
-		"widgets:storage.write": "Escribir en el almacenamiento del widget"
+		"widgets:view:storage.read": "Leer almacenamiento de vista del widget",
+		"widgets:control:storage.read": "Leer almacenamiento de control del widget",
+		"widgets:view:storage.write": "Escribir en almacenamiento de vista del widget",
+		"widgets:control:storage.write": "Escribir en almacenamiento de control del widget",
+		"widgets:view:storage.subscription": "Suscribirse al almacenamiento de vista del widget",
+		"widgets:control:storage.subscription": "Suscribirse al almacenamiento de control del widget"
 	}
 }
