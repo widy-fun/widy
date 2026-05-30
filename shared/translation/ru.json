@@ -6,8 +6,12 @@
 	"ok": "Ок",
 	"cancel": "Отмена",
 	"sound_volume": "Громкость звука",
-	"skip_media": "Быстрый пропуск медиа",
-	"skip_alert": "Быстрый пропуск алерта",
+	"skip_media": "Скип медиа",
+	"skip_alert": "Скип алерта",
+	"none": "Нет",
+	"start": "Запуск",
+	"stop": "Стоп",
+	"disconnected": "Отключено",
 	"authorization": {
 		"title": "Авторизация",
 		"code": "Запросить код",
@@ -58,22 +62,23 @@
 	},
 	"media_settings": {
 		"enabled": "Включено",
-		"min_amount": "Минимальная сумма",
+		"min_amount": "Мин. сумма",
 		"video_volume": "Громкость видео",
-		"min_views": "Минимальное количество просмотров"
+		"min_views": "Мин. просмотров"
 	},
 	"dashboard": {
 		"messages": "Сообщения",
 		"settings": "Настройки",
 		"services": "Сервисы",
-		"alerts": "Алерты",
+		"alerts": "Алёрты",
 		"media": "Медиа",
 		"goals": "Цели",
 		"auction": "Аукцион",
 		"maption": "Maption",
-		"fighter": "Файтер",
+		"fighter": "Fighter",
 		"widgets": "Виджеты",
-		"info": "Информация"
+		"info": "Инфо",
+		"nsfw": "NSFW"
 	},
 	"messages": {
 		"title": "Последние сообщения"
@@ -81,7 +86,7 @@
 	"message": {
 		"skip": "Пропустить",
 		"replay": "Повторить",
-		"donated": "{{user_name}} задонатил {{amount}}{{currency}}",
+		"donated": "{{user_name}} донатнул {{amount}}{{currency}}",
 		"followed": "{{user_name}} подписался",
 		"subscribed": "{{user_name}} оформил подписку",
 		"gifted_subscriptions": "{{user_name}} подарил {{total}} подписок",
@@ -90,7 +95,7 @@
 	"filter": {
 		"title": "Фильтр сообщений",
 		"exclude_donations": "Исключить донаты",
-		"exclude_follows": "Исключить подписки (follow)",
+		"exclude_follows": "Исключить подписки",
 		"exclude_subscriptions": "Исключить подписки",
 		"exclude_raids": "Исключить рейды"
 	},
@@ -101,26 +106,26 @@
 		"black_list": "Чёрный список",
 		"remove_links": "Удалять ссылки",
 		"language": "Язык",
-		"sec": "сек",
+		"sec": "Сек",
 		"currency": "Валюта",
 		"tts_type": "Тип TTS"
 	},
 	"wheel": {
 		"normal": "Обычное",
-		"dropout": "Выпадение",
+		"dropout": "Выбывание",
 		"spin": "Крутить",
 		"speed": "Скорость колеса"
 	},
 	"timer": {
 		"continue": "Продолжить",
 		"pause": "Пауза",
-		"reset": "Сбросить",
+		"reset": "Сброс",
 		"add_time": "Добавить время",
 		"reduce_time": "Уменьшить время",
 		"add_timex2": "Добавить время ×2"
 	},
 	"fighter": {
-		"title": "Файтер",
+		"title": "Fighter",
 		"match": "Матч",
 		"final": "Финал",
 		"game": "Игра",
@@ -156,12 +161,12 @@
 		"new_donation": "Новый донат",
 		"show_odds": "Показывать шансы",
 		"show_total_sum": "Показывать общую сумму",
-		"greater_timer_adding_time": "Добавление времени при большем таймере",
-		"not_add_time_if": "Не добавлять время, если",
+		"greater_timer_adding_time": "Добавление времени при большей ставке",
+		"not_add_time_if": "Не добавлять время если",
 		"adding_time": "Время"
 	},
 	"lots_options": {
-		"import_lots": "Импортировать лоты",
+		"import_lots": "Импорт лотов",
 		"clear_lots": "Очистить лоты"
 	},
 	"auc_fighter_settings": {
@@ -169,7 +174,7 @@
 		"add_players": "Добавить игроков"
 	},
 	"alerts": {
-		"title": "Алерты",
+		"title": "Алёрты",
 		"group": "Группа"
 	},
 	"services": {
@@ -182,17 +187,17 @@
 		"confirm_sign_out": "Вы уверены, что хотите выйти из этого сервиса?"
 	},
 	"twitch": {
-		"device_code_expired": "Срок действия кода устройства истёк. Попробуйте ещё раз.",
+		"device_code_expired": "Код устройства устарел. Попробуйте снова.",
 		"user_code": "Код пользователя",
 		"authorize_with_code": "Авторизоваться по коду",
 		"waiting_authorization": "Ожидание авторизации..."
 	},
 	"widy": {
-		"donation_account_name": "Название донат-аккаунта",
-		"donation_url": "URL доната",
-		"create_donation_account": "Создать донат-аккаунт Widy",
-		"connect_to_existing_account": "Подключиться к существующему аккаунту",
-		"create_donation_account_pending": "Создание донат-аккаунта..."
+		"donation_account_name": "Название аккаунта донатов",
+		"donation_url": "Ссылка на донаты",
+		"create_donation_account": "Создать Widy аккаунт донатов",
+		"connect_to_existing_account": "Подключить существующий аккаунт",
+		"create_donation_account_pending": "Создание аккаунта донатов..."
 	},
 	"twitch_service_settings": {
 		"title": "Настройки Twitch",
@@ -206,7 +211,7 @@
 	"alert": {
 		"image": "Изображение",
 		"audio": "Аудио",
-		"view": "Отображение",
+		"view": "Вид",
 		"title": "Заголовок",
 		"message": "Сообщение",
 		"test_name": "Тест",
@@ -228,7 +233,7 @@
 		"type": "Тип",
 		"Donation": "Донат",
 		"Subscription": "Подписка",
-		"Follow": "Подписка (follow)",
+		"Follow": "Подписка",
 		"Raid": "Рейд"
 	},
 	"general": "Общее",
@@ -254,7 +259,7 @@
 		"goal_progress_bar": "Прогресс-бар цели",
 		"progress_bar_layout": "Расположение прогресс-бара",
 		"remaining_time": "Оставшееся время",
-		"goal_amount_limits": "Ограничения суммы цели",
+		"goal_amount_limits": "Лимиты суммы цели",
 		"widget_background": "Фон виджета",
 		"background_color": "Цвет фона",
 		"OnTop": "Сверху",
@@ -262,14 +267,14 @@
 		"Below": "Снизу",
 		"DoNotDisplay": "Не отображать",
 		"title": "Заголовок",
-		"limits": "ограничения",
+		"limits": "лимиты",
 		"raised": "Собрано",
-		"days_left": "Дней осталось",
+		"days_left": "Осталось дней",
 		"finish_goal": "Завершить цель",
 		"sure_finish": "Вы уверены, что хотите завершить эту цель?",
 		"Donation": "Донат",
-		"TwitchSubscription": "Подписка Twitch",
-		"TwitchFollow": "Подписка Twitch (follow)",
+		"TwitchSubscription": "Twitch Подписка",
+		"TwitchFollow": "Twitch Подписка",
 		"goal_not_finished": "У вас есть незавершённая цель этого типа."
 	},
 	"save": "Сохранить",
@@ -278,7 +283,7 @@
 		"copy": "Копировать",
 		"launch": "Запустить",
 		"url": "URL виджета",
-		"obs_dock_url": "URL для OBS Dock"
+		"obs_dock_url": "OBS Dock URL"
 	},
 	"view": {
 		"top": "Изображение сверху, текст снизу",
@@ -303,7 +308,7 @@
 		"horizontal_alignment": "Горизонтальное выравнивание",
 		"vertical_alignment": "Вертикальное выравнивание",
 		"text_preview": "Это предпросмотр!",
-		"name": "Название"
+		"name": "Имя"
 	},
 	"audio": {
 		"play": "Воспроизвести",
@@ -335,48 +340,61 @@
 		"widgets:settings.read": "Читать настройки виджета",
 		"widgets:alerts.read": "Читать алерты",
 		"widgets:media:settings.read": "Читать настройки медиа",
-		"widgets:auc-fighter:match-playing.send": "Отправлять состояние матча (играет)",
+		"widgets:auc-fighter:match-playing.send": "Отправлять статус матча (играет)",
 		"widgets:auc-fighter:match-winner.send": "Отправлять победителя матча",
-		"widgets:auc-fighter:match-paused.send": "Отправлять паузу матча",
+		"widgets:auc-fighter:match-paused.send": "Отправлять статус паузы матча",
 		"widgets:auc-fighter:match-id.send": "Отправлять ID матча",
-		"widgets:alert:played.send": "Отправлять «алерт воспроизведён»",
-		"widgets:alert:playing.send": "Отправлять «алерт воспроизводится»",
-		"widgets:media:played.send": "Отправлять «медиа воспроизведено»",
+		"widgets:alert:played.send": "Отправлять алерт (воспроизведён)",
+		"widgets:alert:playing.send": "Отправлять алерт (воспроизводится)",
+		"widgets:media:played.send": "Отправлять медиа (воспроизведено)",
 		"widgets:media:end.send": "Отправлять окончание медиа",
-		"widgets:media:playing.send": "Отправлять «медиа воспроизводится»",
-		"widgets:media:paused.send": "Отправлять паузу медиа",
+		"widgets:media:playing.send": "Отправлять медиа (воспроизводится)",
+		"widgets:media:paused.send": "Отправлять медиа (на паузе)",
 		"widgets:media:error.send": "Отправлять ошибку медиа",
 		"widgets:media:replay.send": "Отправлять повтор медиа",
 		"widgets:alert:replay.send": "Отправлять повтор алерта",
-		"widgets:alert:skip.send": "Отправлять пропуск алерта",
+		"widgets:alert:skip.send": "Отправлять скип алерта",
 		"widgets:messages.subscription": "Подписка на сообщения",
 		"widgets:goal.subscription": "Подписка на цели",
 		"widgets:settings.subscription": "Подписка на настройки",
-		"widgets:auc-fighter:start-match.subscription": "Подписка на начало матча",
+		"widgets:auc-fighter:start-match.subscription": "Подписка на старт матча",
 		"widgets:auc-fighter:pause-match.subscription": "Подписка на паузу матча",
 		"widgets:auc-fighter:resume-match.subscription": "Подписка на возобновление матча",
 		"widgets:auc-fighter:cancel-match.subscription": "Подписка на отмену матча",
 		"widgets:auc-fighter:update-match.subscription": "Подписка на обновление матча",
 		"widgets:auc-fighter:settings.subscription": "Подписка на настройки auc-fighter",
 		"widgets:alert:replay.subscription": "Подписка на повтор алерта",
-		"widgets:alert:skip.subscription": "Подписка на пропуск алерта",
+		"widgets:alert:skip.subscription": "Подписка на скип алерта",
 		"widgets:alert:test.subscription": "Подписка на тестовый алерт",
-		"widgets:alert:skip-playing.subscription": "Подписка на пропуск воспроизводящегося алерта",
+		"widgets:alert:skip-playing.subscription": "Подписка на скип воспроизводимого алерта",
 		"widgets:alert:alerts.subscription": "Подписка на алерты",
 		"widgets:media:replay.subscription": "Подписка на повтор медиа",
 		"widgets:media:settings.subscription": "Подписка на настройки медиа",
-		"widgets:media:skip.subscription": "Подписка на пропуск медиа",
-		"widgets:media:skip-playing-media.subscription": "Подписка на пропуск воспроизводящегося медиа",
+		"widgets:media:skip.subscription": "Подписка на скип медиа",
+		"widgets:media:skip-playing-media.subscription": "Подписка на скип воспроизводимого медиа",
 		"widgets:media:end.subscription": "Подписка на окончание медиа",
 		"widgets:media:error.subscription": "Подписка на ошибку медиа",
 		"widgets:media:pause.subscription": "Подписка на паузу медиа",
-		"widgets:media:play.subscription": "Подписка на воспроизведение медиа",
+		"widgets:media:play.subscription": "Подписка на запуск медиа",
 		"widgets:alert:played.subscription": "Подписка на воспроизведённый алерт",
-		"widgets:view:storage.read": "Читать хранилище вида виджета",
-		"widgets:control:storage.read": "Читать хранилище управления виджетом",
-		"widgets:view:storage.write": "Записывать в хранилище вида виджета",
-		"widgets:control:storage.write": "Записывать в хранилище управления виджетом",
-		"widgets:view:storage.subscription": "Подписка на хранилище вида виджета",
-		"widgets:control:storage.subscription": "Подписка на хранилище управления виджетом"
+		"widgets:view:storage.read": "Читать хранилище view",
+		"widgets:control:storage.read": "Читать хранилище control",
+		"widgets:view:storage.write": "Записывать в хранилище view",
+		"widgets:control:storage.write": "Записывать в хранилище control",
+		"widgets:view:storage.subscription": "Подписка на хранилище view",
+		"widgets:control:storage.subscription": "Подписка на хранилище control"
+	},
+	"nsfw": {
+		"title": "NSFW",
+		"nsfw_window": "NSFW окно",
+		"settings": "Настройки",
+		"window": "Окно",
+		"blur_timeout_duration": "Длительность размытия",
+		"confidence_threshold": "Порог уверенности",
+		"anus": "Анус",
+		"make_love": "Секс",
+		"nipple": "Сосок",
+		"penis": "Пенис",
+		"vagina": "Вагина"
 	}
 }

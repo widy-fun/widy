@@ -11,7 +11,7 @@ import {
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink, useLocation } from "react-router";
-import { MENU_WIDTH, MENU_WIDTH_MD } from "../../constants";
+import { MENU_WIDTH, MENU_WIDTH_MD, SCROLLBAR_STYLES } from "../../constants";
 import { dashboardRouts } from "../../routes/dashboardRouts";
 import type { AppTheme } from "../../theme/default";
 
@@ -28,6 +28,7 @@ const SideBar = styled("div")(({ theme }: { theme?: AppTheme }) => ({
 	[theme?.breakpoints.down("md") as string]: {
 		width: MENU_WIDTH_MD,
 	},
+	...SCROLLBAR_STYLES,
 }));
 const DashboardSidebar = () => {
 	const location = useLocation();

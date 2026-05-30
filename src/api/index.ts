@@ -35,6 +35,7 @@ export const api = createApi({
 		"Media-Settings",
 		"Messages",
 		"Widgets",
+		"Nsfw-Settings",
 	],
 	endpoints: (builder) => ({
 		init: builder.mutation<void, void>({

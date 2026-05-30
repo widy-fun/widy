@@ -4,6 +4,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import MapIcon from "@mui/icons-material/Map";
 import MessageIcon from "@mui/icons-material/Message";
 import MovieIcon from "@mui/icons-material/Movie";
+import NoAdultContentIcon from "@mui/icons-material/NoAdultContent";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SportsMartialArtsIcon from "@mui/icons-material/SportsMartialArts";
 import WidgetsIcon from "@mui/icons-material/Widgets";
@@ -17,6 +18,7 @@ import Info from "../components/dashboard/components/info/Info";
 import Maption from "../components/dashboard/components/maption/Maption";
 import Media from "../components/dashboard/components/media/Media";
 import Messages from "../components/dashboard/components/messages/Messages";
+import Nsfw from "../components/dashboard/components/nsfw/Nsfw";
 import Services from "../components/dashboard/components/services/Services";
 import Settings from "../components/dashboard/components/settings/Settings";
 import Widgets from "../components/dashboard/components/widgets/Widgets";
@@ -81,6 +83,12 @@ export const dashboardRouts = [
 		element: <Widgets />,
 		icon: <WidgetsIcon />,
 		name: "widgets",
+	},
+	{
+		path: "nsfw",
+		element: <Nsfw />,
+		icon: <NoAdultContentIcon />,
+		name: "nsfw",
 	},
 	{
 		path: "info",

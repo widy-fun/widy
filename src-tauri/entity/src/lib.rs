@@ -7,6 +7,7 @@ pub mod goal;
 pub mod maption_settings;
 pub mod media_settings;
 pub mod message;
+pub mod nsfw_settings;
 pub mod raid;
 pub mod service;
 pub mod settings;

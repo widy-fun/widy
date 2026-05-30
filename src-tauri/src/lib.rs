@@ -109,6 +109,11 @@ pub fn run() {
             delete_widget,
             install_widget,
             update_widget,
+            get_windows,
+            start_nsfw,
+            stop_nsfw,
+            get_nsfw_settings,
+            update_nsfw_settings,
             init
         ])
         .run(tauri::generate_context!())

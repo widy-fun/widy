@@ -38,6 +38,8 @@ pub enum AppEvent {
     CreateDonationAccount,
     WidgetViewStorage,
     WidgetControlStorage,
+    NsfwDetection,
+    NsfwSettings,
 }
 impl AppEvent {
     pub fn as_str(e: AppEvent) -> &'static str {
@@ -78,6 +80,8 @@ impl AppEvent {
             AppEvent::CreateDonationAccount => "CreateDonationAccount",
             AppEvent::WidgetViewStorage => "WidgetViewStorage",
             AppEvent::WidgetControlStorage => "WidgetControlStorage",
+            AppEvent::NsfwDetection => "NsfwDetection",
+            AppEvent::NsfwSettings => "NsfwSettings",
         }
     }
 }

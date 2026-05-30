@@ -2,7 +2,7 @@ use crate::constants::HTTP_WIDGET_PORT;
 use crate::enums::AppEvent;
 use crate::repositories::{
     AlertsRepository, AucFighterSettingsRepository, GoalsRepository, MediaSettingsRepository,
-    MessagesRepository, SettingsRepository, WidgetsRepository,
+    MessagesRepository, NsfwRepository, SettingsRepository, WidgetsRepository,
 };
 use crate::services::{ConfigService, DatabaseService, EventMessage, WebSocketBroadcaster};
 use axum::extract::ws::{Message, WebSocket};
@@ -437,6 +437,18 @@ impl AxumService {
             let json = serde_json::to_string(&EventMessage {
                 event: AppEvent::AucFighterSettings,
                 data: auc_fighter_settings,
+            })
+            .map_err(|e| e.to_string())?;
+
+            tx.send(Message::Text(json.into()))
+                .map_err(|e| e.to_string())?;
+        }
+
+        let nsfw_settings = database_service.get_nsfw_settings().await?;
+        if let Some(nsfw_settings) = nsfw_settings {
+            let json = serde_json::to_string(&EventMessage {
+                event: AppEvent::NsfwSettings,
+                data: nsfw_settings,
             })
             .map_err(|e| e.to_string())?;
 

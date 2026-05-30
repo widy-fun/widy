@@ -26,10 +26,10 @@ const Info = () => {
 						<Box sx={{ mt: 2 }}>
 							<Button
 								variant="outlined"
-								onClick={() => openUrl("https://widy.fun")}
+								onClick={() => openUrl("https://docs.widy.fun/")}
 								sx={{ mr: 1 }}
 							>
-								Visit Widy.fun
+								{t("documentation")}
 							</Button>
 						</Box>
 					</CardContent>

@@ -18,6 +18,7 @@ pub struct ConfigService {
     pub widy_sol_program_id: String,
     pub tmp_path: PathBuf,
     pub audio_path: PathBuf,
+    pub nsfw_model_path: PathBuf,
 }
 
 impl ConfigService {
@@ -53,10 +54,15 @@ impl ConfigService {
             .path()
             .resolve("dist-widget", BaseDirectory::Resource)
             .map_err(|e| format!("Failed to resolve widget path: {}", e))?;
+        let nsfw_model_path = app
+            .path()
+            .resolve("nsfw/erax_nsfw_yolo11m.onnx", BaseDirectory::Resource)
+            .map_err(|e| format!("Failed to resolve widget path: {}", e))?;
         let widgets_path = app
             .path()
             .resolve("widgets", BaseDirectory::AppLocalData)
             .map_err(|e| format!("Failed to resolve widgets path: {}", e))?;
+
         let auc_fighter_path = app
             .path()
             .resolve("auc-fighter", BaseDirectory::Resource)
@@ -90,6 +96,7 @@ impl ConfigService {
             widgets_path,
             tmp_path,
             audio_path,
+            nsfw_model_path,
         })
     }
 }

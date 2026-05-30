@@ -1,7 +1,8 @@
 use crate::services::{
     AxumService, ConfigService, DatabaseService, DeepLinkDispatcherService, DonationAlertsService,
-    ExchangeRatesService, MediaService, StreamElementsService, StreamLabsService, TelegramService,
-    TtsService, TwitchService, WebSocketBroadcaster, WidySolService, WidyTonService,
+    ExchangeRatesService, MediaService, NsfwService, StreamElementsService, StreamLabsService,
+    TelegramService, TtsService, TwitchService, WebSocketBroadcaster, WidySolService,
+    WidyTonService,
 };
 use crate::utils::copy_assets_to_static;
 use grammers_client::types::{LoginToken, PasswordToken};
@@ -124,5 +125,8 @@ pub async fn init(app: AppHandle, flag: State<'_, ExecutionFlag>) -> Result<(), 
     deep_link_dispatcher_service.register(widy_ton_service);
     app.manage(deep_link_dispatcher_service);
 
+    //nsfw
+    let nsfw_service = NsfwService::new()?;
+    app.manage(nsfw_service);
     Ok(())
 }

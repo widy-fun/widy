@@ -8,6 +8,13 @@
 	"sound_volume": "Sound volume",
 	"skip_media": "Shortcut skip media",
 	"skip_alert": "Shortcut skip alert",
+	"none": "None",
+	"start": "Start",
+	"stop": "Stop",
+	"delay": "Delay",
+	"milliseconds": "ms",
+	"disconnected": "Disconnected",
+	"documentation": "Documentation",
 	"authorization": {
 		"title": "Authorization",
 		"code": "Request code",
@@ -73,7 +80,8 @@
 		"maption": "Maption",
 		"fighter": "Fighter",
 		"widgets": "Widgets",
-		"info": "Info"
+		"info": "Info",
+		"nsfw": "NSFW"
 	},
 	"messages": {
 		"title": "Last messages"
@@ -378,5 +386,18 @@
 		"widgets:control:storage.write": "Write to widget control storage",
 		"widgets:view:storage.subscription": "Subscribe widget view storage",
 		"widgets:control:storage.subscription": "Subscribe widget control storage"
+	},
+	"nsfw": {
+		"title": "NSFW",
+		"nsfw_window": "NSFW window",
+		"settings": "Settings",
+		"window": "Window",
+		"blur_timeout_duration": "Blur timeout duration",
+		"confidence_threshold": "Confidence threshold",
+		"anus": "Anus",
+		"make_love": "Make love",
+		"nipple": "Nipple",
+		"penis": "Penis",
+		"vagina": "Vagina"
 	}
 }

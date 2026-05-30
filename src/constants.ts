@@ -21,3 +21,23 @@ export const TEXT_STYLE: ITextStyle = {
 	letter_spacing: 0,
 	word_spacing: 0,
 };
+
+export const SCROLLBAR_STYLES = {
+	overflowY: "auto",
+	overflowX: "hidden",
+	"&::-webkit-scrollbar": {
+		width: 6,
+	},
+	"&::-webkit-scrollbar-track": {
+		background: "transparent",
+	},
+	"&::-webkit-scrollbar-thumb": {
+		background: "#9e9e9e",
+	},
+	"&::-webkit-scrollbar-thumb:hover": {
+		background: "#bdbdbd",
+	},
+	"&::-webkit-scrollbar-button": {
+		display: "none",
+	},
+} as unknown as TemplateStringsArray;

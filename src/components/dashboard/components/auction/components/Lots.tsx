@@ -25,14 +25,21 @@ import LotSearch from "./LotSearch";
 import NewLotForm from "./NewLotForm";
 import Timer from "./Timer";
 import "react-virtualized/styles.css";
+import { styled } from "@mui/material";
 import { AlertSeverity } from "@widy/sdk";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { showSnackBar } from "../../../../../../shared/slices/snackBarSlice";
 import { auctionTimerSlice } from "../../../../../../shared/slices/timerSlice.ts";
 import { useGetAuctionSettingsQuery } from "../../../../../api/auctionApi.ts";
+import { SCROLLBAR_STYLES } from "../../../../../constants.ts";
 import Integrations from "./Integrations";
 import LotsOptionsMenu from "./LotsOptionsMenu";
 import LotsTotal from "./LotsTotal.tsx";
+
+const StyledList = styled(List)(() => ({
+	paddingRight: 5,
+	...SCROLLBAR_STYLES,
+}));
 
 const Lots = () => {
 	const { lots, searchPattern } = useSelector(
@@ -135,8 +142,7 @@ const Lots = () => {
 						>
 							<AutoSizer>
 								{({ height, width }) => (
-									<List
-										style={{ paddingRight: "10px" }}
+									<StyledList
 										width={width}
 										height={height}
 										rowCount={filteredLots.length}
