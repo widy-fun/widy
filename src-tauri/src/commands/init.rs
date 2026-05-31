@@ -1,8 +1,8 @@
 use crate::services::{
-    AxumService, ConfigService, DatabaseService, DeepLinkDispatcherService, DonationAlertsService,
-    ExchangeRatesService, MediaService, NsfwService, StreamElementsService, StreamLabsService,
-    TelegramService, TtsService, TwitchService, WebSocketBroadcaster, WidySolService,
-    WidyTonService,
+    AxumService, ConfigService, DatabaseService, DeepLinkDispatcherService, DonatePayService,
+    DonationAlertsService, ExchangeRatesService, MediaService, NsfwService, StreamElementsService,
+    StreamLabsService, TelegramService, TtsService, TwitchService, WebSocketBroadcaster,
+    WidySolService, WidyTonService,
 };
 use crate::utils::copy_assets_to_static;
 use grammers_client::types::{LoginToken, PasswordToken};
@@ -118,6 +118,11 @@ pub async fn init(app: AppHandle, flag: State<'_, ExecutionFlag>) -> Result<(), 
     let stream_labs_service = StreamLabsService::new();
     let _ = stream_labs_service.connect(&app).await;
     app.manage(stream_labs_service);
+
+    //donate pay
+    let donate_pay_service = DonatePayService::new();
+    let _ = donate_pay_service.connect(&app).await;
+    app.manage(donate_pay_service);
 
     //deep link
     let mut deep_link_dispatcher_service = DeepLinkDispatcherService::new();

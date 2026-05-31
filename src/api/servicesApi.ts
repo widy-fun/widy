@@ -1,4 +1,5 @@
 import type {
+	IDonatePayAuth,
 	IDonationAlertsAuth,
 	IService,
 	IStreamElementsAuth,
@@ -43,6 +44,7 @@ export const servicesApi = api.injectEndpoints({
 					| IStreamElementsAuth
 					| IDonationAlertsAuth
 					| IStreamLabsAuth
+					| IDonatePayAuth
 					| undefined;
 				id: ServiceType;
 				authorized: boolean;

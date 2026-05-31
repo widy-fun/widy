@@ -12,6 +12,7 @@ import { AppSnackBar } from "./components/AppSnackBar";
 import WidgetControl from "./components/dashboard/components/widgets/components/WidgetControl";
 import Dashboard from "./components/dashboard/Dashboard";
 import Donatello from "./components/donatello/Donatello";
+import DonatePay from "./components/donatepay/DonatePay";
 import Donatik from "./components/donatik/Donatik";
 import DonationAlerts from "./components/donationalerts/DonationAlerts";
 import ServicesSettings from "./components/services/ServicesSettings";
@@ -106,6 +107,7 @@ function App() {
 					<Route path="/twitch/*" element={<Twitch />} />
 					<Route path="/widy/*" element={<Widy />} />
 					<Route path="/donationalerts/*" element={<DonationAlerts />} />
+					<Route path="/donatepay/*" element={<DonatePay />} />
 					<Route path="/donatello/*" element={<Donatello />} />
 					<Route path="/donatik/*" element={<Donatik />} />
 					<Route path="/dashboard/*" element={<Dashboard />} />

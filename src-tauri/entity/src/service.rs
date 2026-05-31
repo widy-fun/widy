@@ -50,6 +50,8 @@ pub enum ServiceType {
     Donatello,
     #[sea_orm(string_value = "Donatik")]
     Donatik,
+    #[sea_orm(string_value = "DonatePay")]
+    DonatePay,
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
 #[serde(untagged)]
@@ -67,6 +69,7 @@ pub enum ServiceAuth {
     Widy(WidyAuth),
     DonationAlerts(DonationAlertsAuth),
     StreamLabs(StreamLabsAuth),
+    DonatePay(DonatePayAuth),
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -84,6 +87,10 @@ pub struct WidyAuth {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct DonationAlertsAuth {
     pub token: String,
+}
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct DonatePayAuth {
+    pub access_token: String,
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct StreamLabsAuth {

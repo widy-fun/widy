@@ -79,6 +79,12 @@ export const api = createApi({
 			}),
 			invalidatesTags: ["Services"],
 		}),
+		donatePaySignOut: builder.mutation<void, void>({
+			query: () => ({
+				command: "donate_pay_sign_out",
+			}),
+			invalidatesTags: ["Services"],
+		}),
 	}),
 });
 
@@ -90,4 +96,5 @@ export const {
 	useWidyTonSignOutMutation,
 	useDonationAlertsSignOutMutation,
 	useStreamLabsSignOutMutation,
+	useDonatePaySignOutMutation,
 } = api;

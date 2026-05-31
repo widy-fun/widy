@@ -1,5 +1,6 @@
 import { ServiceType } from "@widy/sdk";
 import {
+	useDonatePaySignOutMutation,
 	useDonationAlertsSignOutMutation,
 	useStreamLabsSignOutMutation,
 	useTributeBotSignOutMutation,
@@ -16,6 +17,7 @@ const useSignOut = (id: ServiceType) => {
 	const [widyTonSignOut] = useWidyTonSignOutMutation();
 	const [donationAlertsSignOut] = useDonationAlertsSignOutMutation();
 	const [streamLabsSignOut] = useStreamLabsSignOutMutation();
+	const [donatePaySignOut] = useDonatePaySignOutMutation();
 	const streamElementsSocketService = useStreamElementsSocketService();
 
 	switch (id) {
@@ -35,6 +37,8 @@ const useSignOut = (id: ServiceType) => {
 			return donationAlertsSignOut;
 		case ServiceType.StreamLabs:
 			return streamLabsSignOut;
+		case ServiceType.DonatePay:
+			return donatePaySignOut;
 		default:
 			return () => null;
 	}

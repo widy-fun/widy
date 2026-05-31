@@ -69,6 +69,12 @@ const initialState: ServicesState = {
 			authPath: `/donatik/token`,
 			settingsPath: "",
 		},
+		[ServiceType.DonatePay]: {
+			active: false,
+			color: "#44ab4f",
+			authPath: `/donatepay/token`,
+			settingsPath: "",
+		},
 	},
 };
 

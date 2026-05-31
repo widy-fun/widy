@@ -11853,7 +11853,7 @@ Check the render method of \`` + e + "`." : "";
     function wC(e, n) {
       return e & n;
     }
-    function Bte(e) {
+    function Ane(e) {
       return e;
     }
     function PP(e, n) {
@@ -14132,7 +14132,7 @@ Check the render method of \`` + e + "`." : "";
         };
       }
     }
-    function Hte(e) {
+    function Nne(e) {
       return e;
     }
     function nL(e) {
@@ -16363,9 +16363,9 @@ Incoming: %s`, ye, "[" + n.join(", ") + "]", "[" + e.join(", ") + "]");
       }
       return [C, h];
     }
-    function Wte(e, n, o) {
+    function Pne(e, n, o) {
     }
-    function qte(e, n, o) {
+    function $ne(e, n, o) {
     }
     function db(e, n, o) {
       var l = Wt, d = Xa(), h, b = Zn();
@@ -31950,7 +31950,7 @@ const W4 = (t, r) => {
   throw new Promise((D) => {
     r.lng ? ND(u, r.lng, p, () => D()) : s_(u, p, () => D());
   });
-}, Y4 = "An", G4 = "Aus", K4 = "Auswählen", Q4 = "Erfolg", J4 = "OK", X4 = "Abbrechen", Z4 = "Lautstärke", eY = "Medien überspringen (Shortcut)", tY = "Alert überspringen (Shortcut)", nY = { title: "Autorisierung", code: "Code anfordern", sign_in: "Anmelden", phone: "Telefonnummer", telegram_code: "Code aus Telegram", your_code: "Dein Code", "2fa_password": "2FA-Passwort", password: "Passwort", streamelements: "Du musst zuerst StreamElements JWT verbinden", you_can_find_by_url: "Du findest es unter folgender URL", set_id_and_jwt: "Du musst die StreamElements Account ID und JWT für {{service}} festlegen" }, rY = { wrong_lots_format: "Falsches Lots-Format", not_connected: "Nicht verbunden", request_error: "Anfragefehler" }, aY = { title: "Update", description: "Eine neue Version der App ist verfügbar. Möchtest du aktualisieren?", update: "Aktualisieren", later: "Später", downloading: "Wird heruntergeladen..." }, iY = { title: "Medien", youtube: "YouTube", twitch: "Twitch", tiktok: "TikTok" }, oY = { tribute: "Tribute-Nachrichten anzeigen" }, sY = { lots: "Lose", wheel: "Rad", settings: "Einstellungen" }, lY = { set_point: "Punkt setzen", meter_price: "Preis pro 1 Meter", amount: "Betrag", finish: "Abschließen", lat_error: "Breitengrad muss zwischen -90 und 90 liegen", lng_error: "Längengrad muss zwischen -180 und 180 liegen", rules: "Damit sich der Zeiger automatisch in der Nachricht bewegt, darf nur ein Wort aus folgender Liste vorkommen:" }, uY = { enabled: "Aktiviert", min_amount: "Mindestbetrag", video_volume: "Videolautstärke", min_views: "Mindestaufrufe" }, cY = { messages: "Nachrichten", settings: "Einstellungen", services: "Dienste", alerts: "Alerts", media: "Medien", goals: "Ziele", auction: "Auktion", maption: "Maption", fighter: "Fighter", widgets: "Widgets", info: "Info" }, dY = { title: "Letzte Nachrichten" }, fY = { skip: "Überspringen", replay: "Wiederholen", donated: "{{user_name}} hat {{amount}}{{currency}} gespendet", followed: "{{user_name}} folgt jetzt", subscribed: "{{user_name}} hat abonniert", gifted_subscriptions: "{{user_name}} hat {{total}} Abonnements verschenkt", raided_with: "{{user_name}} raidet mit {{viewers}} Zuschauern" }, pY = { title: "Nachrichten filtern", exclude_donations: "Spenden ausschließen", exclude_follows: "Follows ausschließen", exclude_subscriptions: "Abonnements ausschließen", exclude_raids: "Raids ausschließen" }, hY = { title: "Einstellungen", pause: "Alert-Nachrichten pausieren", moderation_duration: "Moderationsdauer", black_list: "Sperrliste", remove_links: "Links entfernen", language: "Sprache", sec: "Sek", currency: "Währung", tts_type: "TTS-Typ" }, mY = { normal: "Normal", dropout: "Dropout", spin: "Drehen", speed: "Radgeschwindigkeit" }, gY = { continue: "Fortsetzen", pause: "Pausieren", reset: "Zurücksetzen", add_time: "Zeit hinzufügen", reduce_time: "Zeit reduzieren", add_timex2: "Zeit ×2 hinzufügen" }, vY = { title: "Fighter", match: "Match", final: "Finale", game: "Spiel", cancel: "Spiel abbrechen", winner: "Gewinner", settings: "Einstellungen", create_game: "Spiel aus Losen erstellen", start: "Starten", pause: "Pausieren", rematch: "Rematch", resume: "Fortsetzen" }, yY = { name: "Name", delete: "Löschen", add: "Betrag hinzufügen" }, bY = { delete: "Löschen", to_lot: "Zum Los", new: "Neu", add_to_random_slot: "Zum zufälligen Los hinzufügen" }, wY = { add: "Hinzufügen", new_lot_name: "Neuer Los-Name", search: "Los suchen", total: "Gesamt" }, SY = { leader_change: "Führungswechsel", new_lot: "Neues Los", new_donation: "Neue Spende", show_odds: "Quoten anzeigen", show_total_sum: "Gesamtsumme anzeigen", greater_timer_adding_time: "Zeit hinzufügen bei höherem Gebot", not_add_time_if: "Keine Zeit hinzufügen, wenn", adding_time: "Zeit" }, _Y = { import_lots: "Lose importieren", clear_lots: "Lose löschen" }, EY = { round_duration: "Rundendauer", add_players: "Spieler hinzufügen" }, CY = { title: "Alerts", group: "Gruppe" }, xY = { title: "Dienste", tribute: "Tribute", streamelements: "StreamElements", connect: "Verbinden", integrations: "Integrationen", sign_out: "Abmelden", confirm_sign_out: "Möchtest du dich wirklich von diesem Dienst abmelden?" }, TY = { device_code_expired: "Gerätecode ist abgelaufen. Bitte versuche es erneut.", user_code: "Benutzercode", authorize_with_code: "Mit Code autorisieren", waiting_authorization: "Warte auf Autorisierung..." }, RY = { donation_account_name: "Name des Spendenkontos", donation_url: "Spenden-URL", create_donation_account: "Widy-Spendenkonto erstellen", connect_to_existing_account: "Mit bestehendem Konto verbinden", create_donation_account_pending: "Spendenkonto wird erstellt..." }, kY = { title: "Twitch-Einstellungen", points_currency_ratio: "Punkte-zu-Währung-Verhältnis", rewards_name: "Belohnungsname", rewards_list: "Belohnungsliste", add_reward: "Belohnung hinzufügen", cost: "Kosten", color: "Farbe" }, DY = { image: "Bild", audio: "Audio", view: "Ansicht", title: "Titel", message: "Nachricht", test_name: "Test", test_text: "Dies ist ein Test-Alert!", configure: "Konfigurieren", test: "Testen", add_new_variant: "Neue Variante hinzufügen", new_variant: "Neue Variante", variant_title: "Varianten-Titel", variant_group: "Varianten-Gruppe", status: "Status", variation_condition: "Variationsbedingung", group: "Gruppe", Random: "Zufällig", AmountIsGreater: "Betrag ist größer", AmountIsEqual: "Betrag ist gleich", delete: "Löschen", sure_delete: "Möchtest du diese Variation wirklich löschen?", type: "Typ", Donation: "Spende", Subscription: "Abonnement", Follow: "Follow", Raid: "Raid" }, MY = "Allgemein", OY = { title: "Ziele", create: "Neues Ziel erstellen" }, AY = { new: "Neues Ziel", goal: "Ziel", type: "Typ", elements: "Elemente", progress: "Fortschritt", goal_title: "Ziel-Titel", amount_raise: "Zielbetrag", start_raising: "Startbetrag", end_date: "Ziel-Enddatum", bar_height: "Balkenhöhe", rounding_radius: "Abrundungsradius", bar_stroke_thickness: "Balkenstrichstärke", background_bar_color: "Hintergrundfarbe des Balkens", progress_bar_color: "Fortschrittsbalken-Farbe", goal_progress_bar: "Ziel-Fortschrittsbalken", progress_bar_layout: "Layout des Fortschrittsbalkens", remaining_time: "Verbleibende Zeit", goal_amount_limits: "Zielbetrags-Limits", widget_background: "Widget-Hintergrund", background_color: "Hintergrundfarbe", OnTop: "Oben", Inside: "Innen", Below: "Unten", DoNotDisplay: "Nicht anzeigen", title: "Titel", limits: "Limits", raised: "Erreicht", days_left: "Tage übrig", finish_goal: "Ziel abschließen", sure_finish: "Möchtest du dieses Ziel wirklich abschließen?", Donation: "Spende", TwitchSubscription: "Twitch-Abonnement", TwitchFollow: "Twitch-Follow", goal_not_finished: "Du hast bereits ein unvollendetes Ziel dieses Typs." }, NY = "Speichern", PY = "Zurück", $Y = { copy: "Kopieren", launch: "Starten", url: "Widget-URL", obs_dock_url: "OBS Dock URL" }, jY = { top: "Bild oben, Text unten", bottom: "Bild unten, Text oben", left: "Bild links, Text rechts", right: "Bild rechts, Text links", overlay: "Text über dem Bild" }, LY = { show: "Bild anzeigen" }, IY = { font: "Schriftart", font_size: "Schriftgröße", text_color: "Textfarbe", bold: "Fett", italics: "Kursiv", underline: "Unterstrichen", transformation: "Transformation", letter_spacing: "Buchstabenabstand", word_spacing: "Wortabstand", horizontal_alignment: "Horizontale Ausrichtung", vertical_alignment: "Vertikale Ausrichtung", text_preview: "Dies ist eine Vorschau!", name: "Name" }, FY = { play: "Abspielen", stop: "Stoppen" }, zY = "Version", UY = { title: "Widgets", add: "Widget hinzufügen", install: "Installieren", delete: "Löschen", installed: "Installiert", update: "Aktualisieren", all: "Alle", settings: "Einstellungen", control: "Steuerung", delete_confirm: "Möchtest du dieses Widget wirklich löschen?", invalid_manifest: "Ungültiges Widget-Manifest", add_confirm: "Das Hinzufügen erlaubt {{widget_name}} folgendes:", installing: "Wird installiert...", updating: "Wird aktualisiert...", view_url: "Ansichts-URL", widget_connection: "Widget sendet oder empfängt Anfragen an:" }, VY = { "widgets:messages.read": "Nachrichten lesen", "widgets:goals.read": "Ziele lesen", "widgets:auc-fighter:settings.read": "Auc-Fighter-Einstellungen lesen", "widgets:settings.read": "Widget-Einstellungen lesen", "widgets:alerts.read": "Alerts lesen", "widgets:media:settings.read": "Medien-Einstellungen lesen", "widgets:auc-fighter:match-playing.send": "Match-Spielstatus senden", "widgets:auc-fighter:match-winner.send": "Match-Gewinner senden", "widgets:auc-fighter:match-paused.send": "Match-Pause senden", "widgets:auc-fighter:match-id.send": "Match-ID senden", "widgets:alert:played.send": "Alert abgespielt senden", "widgets:alert:playing.send": "Alert wird abgespielt senden", "widgets:media:played.send": "Medium abgespielt senden", "widgets:media:end.send": "Medium Ende senden", "widgets:media:playing.send": "Medium wird abgespielt senden", "widgets:media:paused.send": "Medium pausiert senden", "widgets:media:error.send": "Medium-Fehler senden", "widgets:media:replay.send": "Medium-Wiederholung senden", "widgets:alert:replay.send": "Alert-Wiederholung senden", "widgets:alert:skip.send": "Alert überspringen senden", "widgets:messages.subscription": "Nachrichten abonnieren", "widgets:goal.subscription": "Ziel abonnieren", "widgets:settings.subscription": "Einstellungen abonnieren", "widgets:auc-fighter:start-match.subscription": "Match-Start abonnieren", "widgets:auc-fighter:pause-match.subscription": "Match-Pause abonnieren", "widgets:auc-fighter:resume-match.subscription": "Match-Fortsetzung abonnieren", "widgets:auc-fighter:cancel-match.subscription": "Match-Abbruch abonnieren", "widgets:auc-fighter:update-match.subscription": "Match-Update abonnieren", "widgets:auc-fighter:settings.subscription": "Auc-Fighter-Einstellungen abonnieren", "widgets:alert:replay.subscription": "Alert-Wiederholung abonnieren", "widgets:alert:skip.subscription": "Alert-Überspringen abonnieren", "widgets:alert:test.subscription": "Alert-Test abonnieren", "widgets:alert:skip-playing.subscription": "Alert während Wiedergabe überspringen abonnieren", "widgets:alert:alerts.subscription": "Alerts abonnieren", "widgets:media:replay.subscription": "Medium-Wiederholung abonnieren", "widgets:media:settings.subscription": "Medien-Einstellungen abonnieren", "widgets:media:skip.subscription": "Medium überspringen abonnieren", "widgets:media:skip-playing-media.subscription": "Medium während Wiedergabe überspringen abonnieren", "widgets:media:end.subscription": "Medium-Ende abonnieren", "widgets:media:error.subscription": "Medium-Fehler abonnieren", "widgets:media:pause.subscription": "Medium-Pause abonnieren", "widgets:media:play.subscription": "Medium abspielen abonnieren", "widgets:alert:played.subscription": "Alert abgespielt abonnieren", "widgets:view:storage.read": "Widget-View-Speicher lesen", "widgets:control:storage.read": "Widget-Control-Speicher lesen", "widgets:view:storage.write": "In Widget-View-Speicher schreiben", "widgets:control:storage.write": "In Widget-Control-Speicher schreiben", "widgets:view:storage.subscription": "Widget-View-Speicher abonnieren", "widgets:control:storage.subscription": "Widget-Control-Speicher abonnieren" }, BY = {
+}, Y4 = "An", G4 = "Aus", K4 = "Auswählen", Q4 = "Erfolg", J4 = "OK", X4 = "Abbrechen", Z4 = "Lautstärke", eY = "Medien überspringen", tY = "Alert überspringen", nY = "Keine", rY = "Starten", aY = "Stoppen", iY = "Getrennt", oY = { title: "Autorisierung", code: "Code anfordern", sign_in: "Anmelden", phone: "Telefonnummer", telegram_code: "Code aus Telegram", your_code: "Dein Code", "2fa_password": "2FA-Passwort", password: "Passwort", streamelements: "Du musst zuerst StreamElements JWT verbinden", you_can_find_by_url: "Du findest es unter dieser URL", set_id_and_jwt: "Du musst StreamElements Account ID und JWT für {{service}} setzen" }, sY = { wrong_lots_format: "Falsches Lots-Format", not_connected: "Nicht verbunden", request_error: "Anfragefehler" }, lY = { title: "Update", description: "Eine neue Version der App ist verfügbar. Möchtest du aktualisieren?", update: "Aktualisieren", later: "Später", downloading: "Wird heruntergeladen..." }, uY = { title: "Medien", youtube: "YouTube", twitch: "Twitch", tiktok: "TikTok" }, cY = { tribute: "Tribute-Nachrichten anzeigen" }, dY = { lots: "Lots", wheel: "Rad", settings: "Einstellungen" }, fY = { set_point: "Punkt setzen", meter_price: "Preis pro Meter", amount: "Betrag", finish: "Beenden", lat_error: "Breitengrad muss zwischen -90 und 90 liegen", lng_error: "Längengrad muss zwischen -180 und 180 liegen", rules: "Damit sich der Zeiger automatisch in der Nachricht bewegt, darf nur ein Wort aus folgender Liste vorkommen:" }, pY = { enabled: "Aktiviert", min_amount: "Mindestbetrag", video_volume: "Videolautstärke", min_views: "Mindestaufrufe" }, hY = { messages: "Nachrichten", settings: "Einstellungen", services: "Dienste", alerts: "Alerts", media: "Medien", goals: "Ziele", auction: "Auktion", maption: "Maption", fighter: "Fighter", widgets: "Widgets", info: "Info", nsfw: "NSFW" }, mY = { title: "Letzte Nachrichten" }, gY = { skip: "Überspringen", replay: "Wiederholen", donated: "{{user_name}} hat {{amount}}{{currency}} gespendet", followed: "{{user_name}} folgt jetzt", subscribed: "{{user_name}} hat abonniert", gifted_subscriptions: "{{user_name}} hat {{total}} Abonnements verschenkt", raided_with: "{{user_name}} raidet mit {{viewers}} Zuschauern" }, vY = { title: "Nachrichten filtern", exclude_donations: "Spenden ausschließen", exclude_follows: "Follows ausschließen", exclude_subscriptions: "Abonnements ausschließen", exclude_raids: "Raids ausschließen" }, yY = { title: "Einstellungen", pause: "Alert-Nachrichten pausieren", moderation_duration: "Moderationsdauer", black_list: "Sperrliste", remove_links: "Links entfernen", language: "Sprache", sec: "Sek", currency: "Währung", tts_type: "TTS-Typ" }, bY = { normal: "Normal", dropout: "Dropout", spin: "Drehen", speed: "Rad-Geschwindigkeit" }, wY = { continue: "Fortsetzen", pause: "Pausieren", reset: "Zurücksetzen", add_time: "Zeit hinzufügen", reduce_time: "Zeit reduzieren", add_timex2: "Zeit x2 hinzufügen" }, SY = { title: "Fighter", match: "Match", final: "Finale", game: "Spiel", cancel: "Spiel abbrechen", winner: "Gewinner", settings: "Einstellungen", create_game: "Spiel aus Lots erstellen", start: "Starten", pause: "Pausieren", rematch: "Rematch", resume: "Fortsetzen" }, _Y = { name: "Name", delete: "Löschen", add: "Betrag hinzufügen" }, EY = { delete: "Löschen", to_lot: "Zum Lot", new: "Neu", add_to_random_slot: "Zu zufälligem Lot hinzufügen" }, CY = { add: "Hinzufügen", new_lot_name: "Neuer Lot-Name", search: "Lot suchen", total: "Gesamt" }, xY = { leader_change: "Führungswechsel", new_lot: "Neues Lot", new_donation: "Neue Spende", show_odds: "Quoten anzeigen", show_total_sum: "Gesamtsumme anzeigen", greater_timer_adding_time: "Mehr Zeit bei höherem Timer", not_add_time_if: "Keine Zeit hinzufügen wenn", adding_time: "Zeit" }, TY = { import_lots: "Lots importieren", clear_lots: "Lots löschen" }, RY = { round_duration: "Rundendauer", add_players: "Spieler hinzufügen" }, kY = { title: "Alerts", group: "Gruppe" }, DY = { title: "Dienste", tribute: "Tribute", streamelements: "StreamElements", connect: "Verbinden", integrations: "Integrationen", sign_out: "Abmelden", confirm_sign_out: "Möchtest du dich wirklich von diesem Dienst abmelden?" }, MY = { device_code_expired: "Gerätecode ist abgelaufen. Bitte versuche es erneut.", user_code: "Benutzercode", authorize_with_code: "Mit Code autorisieren", waiting_authorization: "Warte auf Autorisierung..." }, OY = { donation_account_name: "Name des Spendenkontos", donation_url: "Spenden-URL", create_donation_account: "Widy-Spendenkonto erstellen", connect_to_existing_account: "Mit bestehendem Konto verbinden", create_donation_account_pending: "Spendenkonto wird erstellt..." }, AY = { title: "Twitch-Einstellungen", points_currency_ratio: "Points-zu-Währung-Verhältnis", rewards_name: "Belohnungsname", rewards_list: "Belohnungsliste", add_reward: "Belohnung hinzufügen", cost: "Kosten", color: "Farbe" }, NY = { image: "Bild", audio: "Audio", view: "Ansicht", title: "Titel", message: "Nachricht", test_name: "Test", test_text: "Dies ist ein Test-Alert!", configure: "Konfigurieren", test: "Testen", add_new_variant: "Neue Variante hinzufügen", new_variant: "Neue Variante", variant_title: "Varianten-Titel", variant_group: "Varianten-Gruppe", status: "Status", variation_condition: "Variationsbedingung", group: "Gruppe", Random: "Zufällig", AmountIsGreater: "Betrag ist größer", AmountIsEqual: "Betrag ist gleich", delete: "Löschen", sure_delete: "Möchtest du diese Variation wirklich löschen?", type: "Typ", Donation: "Spende", Subscription: "Abonnement", Follow: "Follow", Raid: "Raid" }, PY = "Allgemein", $Y = { title: "Ziele", create: "Neues Ziel erstellen" }, jY = { new: "Neues Ziel", goal: "Ziel", type: "Typ", elements: "Elemente", progress: "Fortschritt", goal_title: "Ziel-Titel", amount_raise: "Zielbetrag", start_raising: "Startbetrag", end_date: "Ziel-Enddatum", bar_height: "Balkenhöhe", rounding_radius: "Abrundungsradius", bar_stroke_thickness: "Balkenstrichstärke", background_bar_color: "Hintergrundfarbe des Balkens", progress_bar_color: "Fortschrittsbalken-Farbe", goal_progress_bar: "Ziel-Fortschrittsbalken", progress_bar_layout: "Fortschrittsbalken-Layout", remaining_time: "Verbleibende Zeit", goal_amount_limits: "Zielbetragslimits", widget_background: "Widget-Hintergrund", background_color: "Hintergrundfarbe", OnTop: "Oben", Inside: "Innen", Below: "Unten", DoNotDisplay: "Nicht anzeigen", title: "Titel", limits: "Limits", raised: "Erreicht", days_left: "Tage übrig", finish_goal: "Ziel beenden", sure_finish: "Möchtest du dieses Ziel wirklich beenden?", Donation: "Spende", TwitchSubscription: "Twitch-Abonnement", TwitchFollow: "Twitch-Follow", goal_not_finished: "Du hast bereits ein unvollendetes Ziel dieses Typs." }, LY = "Speichern", IY = "Zurück", FY = { copy: "Kopieren", launch: "Starten", url: "Widget-URL", obs_dock_url: "OBS Dock URL" }, zY = { top: "Bild oben, Text unten", bottom: "Bild unten, Text oben", left: "Bild links, Text rechts", right: "Bild rechts, Text links", overlay: "Text über Bild" }, UY = { show: "Bild anzeigen" }, VY = { font: "Schriftart", font_size: "Schriftgröße", text_color: "Textfarbe", bold: "Fett", italics: "Kursiv", underline: "Unterstrichen", transformation: "Transformation", letter_spacing: "Buchstabenabstand", word_spacing: "Wortabstand", horizontal_alignment: "Horizontale Ausrichtung", vertical_alignment: "Vertikale Ausrichtung", text_preview: "Dies ist eine Vorschau!", name: "Name" }, BY = { play: "Abspielen", stop: "Stoppen" }, HY = "Version", WY = { title: "Widgets", add: "Widget hinzufügen", install: "Installieren", delete: "Löschen", installed: "Installiert", update: "Aktualisieren", all: "Alle", settings: "Einstellungen", control: "Steuerung", delete_confirm: "Möchtest du dieses Widget wirklich löschen?", invalid_manifest: "Ungültiges Widget-Manifest", add_confirm: "Das Hinzufügen erlaubt {{widget_name}} folgendes:", installing: "Wird installiert...", updating: "Wird aktualisiert...", view_url: "Ansichts-URL", widget_connection: "Widget sendet/empfängt Anfragen an:" }, qY = { "widgets:messages.read": "Nachrichten lesen", "widgets:goals.read": "Ziele lesen", "widgets:auc-fighter:settings.read": "Auc-Fighter-Einstellungen lesen", "widgets:settings.read": "Widget-Einstellungen lesen", "widgets:alerts.read": "Alerts lesen", "widgets:media:settings.read": "Medien-Einstellungen lesen", "widgets:auc-fighter:match-playing.send": "Match playing senden", "widgets:auc-fighter:match-winner.send": "Match-Gewinner senden", "widgets:auc-fighter:match-paused.send": "Match pausiert senden", "widgets:auc-fighter:match-id.send": "Match-ID senden", "widgets:alert:played.send": "Alert abgespielt senden", "widgets:alert:playing.send": "Alert wird abgespielt senden", "widgets:media:played.send": "Medium abgespielt senden", "widgets:media:end.send": "Medium Ende senden", "widgets:media:playing.send": "Medium wird abgespielt senden", "widgets:media:paused.send": "Medium pausiert senden", "widgets:media:error.send": "Medium-Fehler senden", "widgets:media:replay.send": "Medium wiederholen senden", "widgets:alert:replay.send": "Alert wiederholen senden", "widgets:alert:skip.send": "Alert überspringen senden", "widgets:messages.subscription": "Nachrichten abonnieren", "widgets:goal.subscription": "Ziel abonnieren", "widgets:settings.subscription": "Einstellungen abonnieren", "widgets:auc-fighter:start-match.subscription": "Match-Start abonnieren", "widgets:auc-fighter:pause-match.subscription": "Match-Pause abonnieren", "widgets:auc-fighter:resume-match.subscription": "Match-Fortsetzen abonnieren", "widgets:auc-fighter:cancel-match.subscription": "Match-Abbruch abonnieren", "widgets:auc-fighter:update-match.subscription": "Match-Update abonnieren", "widgets:auc-fighter:settings.subscription": "Auc-Fighter-Einstellungen abonnieren", "widgets:alert:replay.subscription": "Alert-Wiederholung abonnieren", "widgets:alert:skip.subscription": "Alert-Überspringen abonnieren", "widgets:alert:test.subscription": "Alert-Test abonnieren", "widgets:alert:skip-playing.subscription": "Alert-Überspringen während Wiedergabe abonnieren", "widgets:alert:alerts.subscription": "Alerts abonnieren", "widgets:media:replay.subscription": "Medium-Wiederholung abonnieren", "widgets:media:settings.subscription": "Medien-Einstellungen abonnieren", "widgets:media:skip.subscription": "Medium überspringen abonnieren", "widgets:media:skip-playing-media.subscription": "Medium-Überspringen während Wiedergabe abonnieren", "widgets:media:end.subscription": "Medium-Ende abonnieren", "widgets:media:error.subscription": "Medium-Fehler abonnieren", "widgets:media:pause.subscription": "Medium-Pause abonnieren", "widgets:media:play.subscription": "Medium-Play abonnieren", "widgets:alert:played.subscription": "Alert abgespielt abonnieren", "widgets:view:storage.read": "Widget-View-Speicher lesen", "widgets:control:storage.read": "Widget-Control-Speicher lesen", "widgets:view:storage.write": "In Widget-View-Speicher schreiben", "widgets:control:storage.write": "In Widget-Control-Speicher schreiben", "widgets:view:storage.subscription": "Widget-View-Speicher abonnieren", "widgets:control:storage.subscription": "Widget-Control-Speicher abonnieren" }, YY = { title: "NSFW", nsfw_window: "NSFW-Fenster", settings: "Einstellungen", window: "Fenster", blur_timeout_duration: "Blur-Timeout-Dauer", confidence_threshold: "Konfidenzschwelle", anus: "Anus", make_love: "Liebe machen", nipple: "Brustwarze", penis: "Penis", vagina: "Vagina" }, GY = {
   on: Y4,
   off: G4,
   select: K4,
@@ -31960,489 +31960,532 @@ const W4 = (t, r) => {
   sound_volume: Z4,
   skip_media: eY,
   skip_alert: tY,
-  authorization: nY,
-  error: rY,
-  updater: aY,
-  media: iY,
-  integration: oY,
-  auction: sY,
-  maption: lY,
-  media_settings: uY,
-  dashboard: cY,
-  messages: dY,
-  message: fY,
-  filter: pY,
-  settings: hY,
-  wheel: mY,
-  timer: gY,
-  fighter: vY,
-  lot: yY,
-  bid: bY,
-  lots: wY,
-  auction_settings: SY,
-  lots_options: _Y,
-  auc_fighter_settings: EY,
-  alerts: CY,
-  services: xY,
-  twitch: TY,
-  widy: RY,
-  twitch_service_settings: kY,
-  alert: DY,
-  general: MY,
-  goals: OY,
-  goal: AY,
-  save: NY,
-  back: PY,
-  widget: $Y,
-  view: jY,
-  image: LY,
-  text: IY,
-  audio: FY,
-  version: zY,
-  widgets: UY,
-  scopes: VY
-}, HY = "On", WY = "Off", qY = "Select", YY = "Success", GY = "Ok", KY = "Cancel", QY = "Sound volume", JY = "Shortcut skip media", XY = "Shortcut skip alert", ZY = "None", e8 = "Start", t8 = "Stop", n8 = "Disconnected", r8 = { title: "Authorization", code: "Request code", sign_in: "Sign in", phone: "Phone number", telegram_code: "Code from telegram", your_code: "Your code", "2fa_password": "2fa Password", password: "Password", streamelements: "You need connect with StreamElements JWT first", you_can_find_by_url: "You can find it by this url", set_id_and_jwt: "You need set StreamElements Account ID and JWT for {{service}}" }, a8 = { wrong_lots_format: "Wrong lots format", not_connected: "Not connected", request_error: "Request error" }, i8 = { title: "Update", description: "A new version of the app is available. Do you want to update?", update: "Update", later: "Later", downloading: "Downloading..." }, o8 = { title: "Media", youtube: "Youtube", twitch: "Twitch", tiktok: "Tiktok" }, s8 = { tribute: "Show tribute messages" }, l8 = { lots: "Lots", wheel: "Wheel", settings: "Settings" }, u8 = { set_point: "Set point", meter_price: "Price for 1 meter", amount: "Amount", finish: "Finish", lat_error: "Latitude must be between -90 and 90", lng_error: "Longitude must be between -180 and 180", rules: "For the pointer to automatically change position in the message there should be only one word from:" }, c8 = { enabled: "Enabled", min_amount: "Min amount", video_volume: "Video volume", min_views: "Min views" }, d8 = { messages: "Messages", settings: "Settings", services: "Services", alerts: "Alerts", media: "Media", goals: "Goals", auction: "Auction", maption: "Maption", fighter: "Fighter", widgets: "Widgets", info: "Info", nsfw: "NSFW" }, f8 = { title: "Last messages" }, p8 = { skip: "Skip", replay: "Replay", donated: "{{user_name}} donated {{amount}}{{currency}}", followed: "{{user_name}} followed", subscribed: "{{user_name}} subscribed", gifted_subscriptions: "{{user_name}} gift {{total}} subscriptions", raided_with: "{{user_name}} raided with {{viewers}} viewers" }, h8 = { title: "Filter messages", exclude_donations: "Exclude donations", exclude_follows: "Exclude follows", exclude_subscriptions: "Exclude subscriptions", exclude_raids: "Exclude raids" }, m8 = { title: "Settings", pause: "Pause alert messages", moderation_duration: "Moderation duration", black_list: "Black list", remove_links: "Remove links", language: "Language", sec: "Sec", currency: "Currency", tts_type: "TTS type" }, g8 = { normal: "Normal", dropout: "Dropout", spin: "Spin", speed: "Wheel speed" }, v8 = { continue: "Continue", pause: "Pause", reset: "Reset", add_time: "Add time", reduce_time: "Reduce time", add_timex2: "Add time x2" }, y8 = { title: "Fighter", match: "Match", final: "Final", game: "Game", cancel: "Cancel game", winner: "Winner", settings: "Settings", create_game: "Create game from lots", start: "Start", pause: "Pause", rematch: "Rematch", resume: "Resume" }, b8 = { name: "Name", delete: "Delete", add: "Add amount" }, w8 = { delete: "Delete", to_lot: "To lot", new: "New", add_to_random_slot: "Add to random lot" }, S8 = { add: "Add", new_lot_name: "New lot name", search: "Search lot", total: "Total" }, _8 = { leader_change: "Leader change", new_lot: "New lot", new_donation: "New donation", show_odds: "Show odds", show_total_sum: "Show total sum", greater_timer_adding_time: "Greater timer adding time", not_add_time_if: "Not add time if", adding_time: "Time" }, E8 = { import_lots: "Import lots", clear_lots: "Clear lots" }, C8 = { round_duration: "Round duration", add_players: "Add players" }, x8 = { title: "Alerts", group: "Group" }, T8 = { title: "Services", tribute: "Tribute", streamelements: "Streamelements", connect: "Connect", integrations: "Integrations", sign_out: "Sign out", confirm_sign_out: "Are you sure you want to sign out from this service?" }, R8 = { device_code_expired: "Device code expired. Please try again.", user_code: "User code", authorize_with_code: "Authorize with code", waiting_authorization: "Waiting for authorization..." }, k8 = { donation_account_name: "Name of donation account", donation_url: "Donation url", create_donation_account: "Create Widy donation account", connect_to_existing_account: "Connect to existing account", create_donation_account_pending: "Creating donation account..." }, D8 = { title: "Twitch settings", points_currency_ratio: "Points currency ratio", rewards_name: "Rewards name", rewards_list: "Rewards list", add_reward: "Add reward", cost: "Cost", color: "Color" }, M8 = { image: "Image", audio: "Audio", view: "View", title: "Title", message: "Message", test_name: "Test", test_text: "This is a test alert!", configure: "Configure", test: "Test", add_new_variant: "Add new variant", new_variant: "New variant", variant_title: "Variant title", variant_group: "Variant group", status: "Status", variation_condition: "Variation condition", group: "Group", Random: "Random", AmountIsGreater: "Amount is greater", AmountIsEqual: "Amount is equal", delete: "Delete", sure_delete: "Are you sure you want to delete this variation?", type: "Type", Donation: "Donation", Subscription: "Subscription", Follow: "Follow", Raid: "Raid" }, O8 = "General", A8 = { title: "Goals", create: "Crate new goal" }, N8 = { new: "New goal", goal: "View", type: "Type", elements: "Elements", progress: "Progress", goal_title: "Goal title", amount_raise: "Amount to raise", start_raising: "Start raising from", end_date: "End goal date", bar_height: "Bar height", rounding_radius: "Rounding radius", bar_stroke_thickness: "Bar stroke thickness", background_bar_color: "Background bar color", progress_bar_color: "Progress bar color", goal_progress_bar: "Goal progress bar", progress_bar_layout: "Progress bar layout", remaining_time: "Remaining time", goal_amount_limits: "Goal amount limits", widget_background: "Widget background", background_color: "Background color", OnTop: "On top", Inside: "Inside", Below: "Below", DoNotDisplay: "Do not display", title: "Title", limits: "limits", raised: "Raised", days_left: "Days left", finish_goal: "Finish goal", sure_finish: "Are you sure you want to finish this goal?", Donation: "Donation", TwitchSubscription: "Twitch Subscription", TwitchFollow: "Twitch Follow", goal_not_finished: "You have an unfinished goal of this type." }, P8 = "Save", $8 = "Back", j8 = { copy: "Copy", launch: "Launch", url: "Widget url", obs_dock_url: "Obs dock url" }, L8 = { top: "Image top, text bottom", bottom: "Image bottom, text top", left: "Image left, text right", right: "Image right, text left", overlay: "Text overlay image" }, I8 = { show: "Show image" }, F8 = { font: "Font", font_size: "Font size", text_color: "Text color", bold: "Bold", italics: "Italics", underline: "Underline", transformation: "Transformation", letter_spacing: "Letter spacing", word_spacing: "Word spacing", horizontal_alignment: "Horizontal alignment", vertical_alignment: "Vertical alignment", text_preview: "This is a preview!", name: "Name" }, z8 = { play: "Play", stop: "Stop" }, U8 = "Version", V8 = { title: "Widgets", add: "Add widget", install: "Install", delete: "Delete", installed: "Installed", update: "Update", all: "All", settings: "Settings", control: "Control", delete_confirm: "Are you sure you want to delete this widget?", invalid_manifest: "Invalid widget manifest", add_confirm: "Adding will allow {{widget_name}} to:", installing: "Installing...", updating: "Updating...", view_url: "View url", widget_connection: "Widget get or send requests to:" }, B8 = { "widgets:messages.read": "Read messages", "widgets:goals.read": "Read goals", "widgets:auc-fighter:settings.read": "Read auc-fighter settings", "widgets:settings.read": "Read widget settings", "widgets:alerts.read": "Read alerts", "widgets:media:settings.read": "Read media settings", "widgets:auc-fighter:match-playing.send": "Send match playing", "widgets:auc-fighter:match-winner.send": "Send match winner", "widgets:auc-fighter:match-paused.send": "Send match paused", "widgets:auc-fighter:match-id.send": "Send match ID", "widgets:alert:played.send": "Send alert played", "widgets:alert:playing.send": "Send alert playing", "widgets:media:played.send": "Send media played", "widgets:media:end.send": "Send media end", "widgets:media:playing.send": "Send media playing", "widgets:media:paused.send": "Send media paused", "widgets:media:error.send": "Send media error", "widgets:media:replay.send": "Send media replay", "widgets:alert:replay.send": "Send alert replay", "widgets:alert:skip.send": "Send alert skip", "widgets:messages.subscription": "Subscribe messages", "widgets:goal.subscription": "Subscribe goal", "widgets:settings.subscription": "Subscribe settings", "widgets:auc-fighter:start-match.subscription": "Subscribe start match", "widgets:auc-fighter:pause-match.subscription": "Subscribe pause match", "widgets:auc-fighter:resume-match.subscription": "Subscribe resume match", "widgets:auc-fighter:cancel-match.subscription": "Subscribe cancel match", "widgets:auc-fighter:update-match.subscription": "Subscribe update match", "widgets:auc-fighter:settings.subscription": "Subscribe auc-fighter settings", "widgets:alert:replay.subscription": "Subscribe alert replay", "widgets:alert:skip.subscription": "Subscribe alert skip", "widgets:alert:test.subscription": "Subscribe alert test", "widgets:alert:skip-playing.subscription": "Subscribe alert skip playing", "widgets:alert:alerts.subscription": "Subscribe alerts", "widgets:media:replay.subscription": "Subscribe media replay", "widgets:media:settings.subscription": "Subscribe media settings", "widgets:media:skip.subscription": "Subscribe media skip", "widgets:media:skip-playing-media.subscription": "Subscribe media skip playing", "widgets:media:end.subscription": "Subscribe media end", "widgets:media:error.subscription": "Subscribe media error", "widgets:media:pause.subscription": "Subscribe media pause", "widgets:media:play.subscription": "Subscribe media play", "widgets:alert:played.subscription": "Subscribe alert played", "widgets:view:storage.read": "Read widget view storage", "widgets:control:storage.read": "Read widget control storage", "widgets:view:storage.write": "Write to widget view storage", "widgets:control:storage.write": "Write to widget control storage", "widgets:view:storage.subscription": "Subscribe widget view storage", "widgets:control:storage.subscription": "Subscribe widget control storage" }, H8 = { title: "NSFW", nsfw_window: "NSFW window", settings: "Settings", window: "Window", blur_timeout_duration: "Blur timeout duration", confidence_threshold: "Confidence threshold", anus: "Anus", make_love: "Make love", nipple: "Nipple", penis: "Penis", vagina: "Vagina" }, W8 = {
-  on: HY,
-  off: WY,
-  select: qY,
-  success: YY,
-  ok: GY,
-  cancel: KY,
-  sound_volume: QY,
-  skip_media: JY,
-  skip_alert: XY,
-  none: ZY,
-  start: e8,
-  stop: t8,
-  disconnected: n8,
-  authorization: r8,
-  error: a8,
-  updater: i8,
-  media: o8,
-  integration: s8,
-  auction: l8,
-  maption: u8,
-  media_settings: c8,
-  dashboard: d8,
-  messages: f8,
-  message: p8,
-  filter: h8,
-  settings: m8,
-  wheel: g8,
-  timer: v8,
-  fighter: y8,
-  lot: b8,
-  bid: w8,
-  lots: S8,
-  auction_settings: _8,
-  lots_options: E8,
-  auc_fighter_settings: C8,
-  alerts: x8,
-  services: T8,
-  twitch: R8,
-  widy: k8,
-  twitch_service_settings: D8,
-  alert: M8,
-  general: O8,
-  goals: A8,
-  goal: N8,
-  save: P8,
-  back: $8,
-  widget: j8,
-  view: L8,
-  image: I8,
-  text: F8,
-  audio: z8,
-  version: U8,
-  widgets: V8,
-  scopes: B8,
-  nsfw: H8
-}, q8 = "Encendido", Y8 = "Apagado", G8 = "Seleccionar", K8 = "Éxito", Q8 = "Aceptar", J8 = "Cancelar", X8 = "Volumen del sonido", Z8 = "Atajo para saltar media", eG = "Atajo para saltar alerta", tG = { title: "Autorización", code: "Solicitar código", sign_in: "Iniciar sesión", phone: "Número de teléfono", telegram_code: "Código de Telegram", your_code: "Tu código", "2fa_password": "Contraseña 2FA", password: "Contraseña", streamelements: "Necesitas conectar primero con StreamElements JWT", you_can_find_by_url: "Puedes encontrarlo en esta URL", set_id_and_jwt: "Necesitas configurar el ID de cuenta de StreamElements y el JWT para {{service}}" }, nG = { wrong_lots_format: "Formato de lotes incorrecto", not_connected: "No conectado", request_error: "Error en la solicitud" }, rG = { title: "Actualización", description: "Hay una nueva versión de la aplicación disponible. ¿Quieres actualizar?", update: "Actualizar", later: "Más tarde", downloading: "Descargando..." }, aG = { title: "Medios", youtube: "YouTube", twitch: "Twitch", tiktok: "TikTok" }, iG = { tribute: "Mostrar mensajes de tributo" }, oG = { lots: "Lotes", wheel: "Ruleta", settings: "Ajustes" }, sG = { set_point: "Establecer punto", meter_price: "Precio por 1 metro", amount: "Cantidad", finish: "Finalizar", lat_error: "La latitud debe estar entre -90 y 90", lng_error: "La longitud debe estar entre -180 y 180", rules: "Para que el puntero cambie automáticamente de posición en el mensaje, debe haber solo una palabra de:" }, lG = { enabled: "Activado", min_amount: "Cantidad mínima", video_volume: "Volumen del video", min_views: "Vistas mínimas" }, uG = { messages: "Mensajes", settings: "Ajustes", services: "Servicios", alerts: "Alertas", media: "Medios", goals: "Metas", auction: "Subasta", maption: "Maption", fighter: "Luchador", widgets: "Widgets", info: "Información" }, cG = { title: "Últimos mensajes" }, dG = { skip: "Saltar", replay: "Repetir", donated: "{{user_name}} donó {{amount}}{{currency}}", followed: "{{user_name}} te siguió", subscribed: "{{user_name}} se suscribió", gifted_subscriptions: "{{user_name}} regaló {{total}} suscripciones", raided_with: "{{user_name}} hizo raid con {{viewers}} espectadores" }, fG = { title: "Filtrar mensajes", exclude_donations: "Excluir donaciones", exclude_follows: "Excluir follows", exclude_subscriptions: "Excluir suscripciones", exclude_raids: "Excluir raids" }, pG = { title: "Ajustes", pause: "Pausar mensajes de alerta", moderation_duration: "Duración de moderación", black_list: "Lista negra", remove_links: "Eliminar enlaces", language: "Idioma", sec: "Seg", currency: "Moneda", tts_type: "Tipo de TTS" }, hG = { normal: "Normal", dropout: "Eliminación", spin: "Girar", speed: "Velocidad de la ruleta" }, mG = { continue: "Continuar", pause: "Pausar", reset: "Reiniciar", add_time: "Añadir tiempo", reduce_time: "Reducir tiempo", add_timex2: "Añadir tiempo x2" }, gG = { title: "Luchador", match: "Combate", final: "Final", game: "Juego", cancel: "Cancelar juego", winner: "Ganador", settings: "Ajustes", create_game: "Crear juego desde lotes", start: "Iniciar", pause: "Pausar", rematch: "Revancha", resume: "Reanudar" }, vG = { name: "Nombre", delete: "Eliminar", add: "Añadir cantidad" }, yG = { delete: "Eliminar", to_lot: "Al lote", new: "Nuevo", add_to_random_slot: "Añadir a lote aleatorio" }, bG = { add: "Añadir", new_lot_name: "Nombre del nuevo lote", search: "Buscar lote", total: "Total" }, wG = { leader_change: "Cambio de líder", new_lot: "Nuevo lote", new_donation: "Nueva donación", show_odds: "Mostrar probabilidades", show_total_sum: "Mostrar suma total", greater_timer_adding_time: "Añadir tiempo si es mayor", not_add_time_if: "No añadir tiempo si", adding_time: "Tiempo" }, SG = { import_lots: "Importar lotes", clear_lots: "Limpiar lotes" }, _G = { round_duration: "Duración de la ronda", add_players: "Añadir jugadores" }, EG = { title: "Alertas", group: "Grupo" }, CG = { title: "Servicios", tribute: "Tributo", streamelements: "StreamElements", connect: "Conectar", integrations: "Integraciones", sign_out: "Cerrar sesión", confirm_sign_out: "¿Estás seguro de que quieres cerrar sesión de este servicio?" }, xG = { device_code_expired: "El código de dispositivo ha expirado. Por favor, inténtalo de nuevo.", user_code: "Código de usuario", authorize_with_code: "Autorizar con código", waiting_authorization: "Esperando autorización..." }, TG = { donation_account_name: "Nombre de la cuenta de donaciones", donation_url: "URL de donación", create_donation_account: "Crear cuenta de donaciones Widy", connect_to_existing_account: "Conectar a una cuenta existente", create_donation_account_pending: "Creando cuenta de donaciones..." }, RG = { title: "Ajustes de Twitch", points_currency_ratio: "Ratio de puntos a moneda", rewards_name: "Nombre de recompensas", rewards_list: "Lista de recompensas", add_reward: "Añadir recompensa", cost: "Costo", color: "Color" }, kG = { image: "Imagen", audio: "Audio", view: "Vista", title: "Título", message: "Mensaje", test_name: "Prueba", test_text: "¡Esta es una alerta de prueba!", configure: "Configurar", test: "Probar", add_new_variant: "Añadir nueva variante", new_variant: "Nueva variante", variant_title: "Título de la variante", variant_group: "Grupo de variante", status: "Estado", variation_condition: "Condición de variación", group: "Grupo", Random: "Aleatorio", AmountIsGreater: "La cantidad es mayor", AmountIsEqual: "La cantidad es igual", delete: "Eliminar", sure_delete: "¿Estás seguro de que quieres eliminar esta variación?", type: "Tipo", Donation: "Donación", Subscription: "Suscripción", Follow: "Follow", Raid: "Raid" }, DG = "General", MG = { title: "Metas", create: "Crear nueva meta" }, OG = { new: "Nueva meta", goal: "Ver", type: "Tipo", elements: "Elementos", progress: "Progreso", goal_title: "Título de la meta", amount_raise: "Cantidad a recaudar", start_raising: "Comenzar recaudación desde", end_date: "Fecha de finalización de la meta", bar_height: "Altura de la barra", rounding_radius: "Radio de redondeo", bar_stroke_thickness: "Grosor del borde de la barra", background_bar_color: "Color de barra de fondo", progress_bar_color: "Color de barra de progreso", goal_progress_bar: "Barra de progreso de la meta", progress_bar_layout: "Diseño de barra de progreso", remaining_time: "Tiempo restante", goal_amount_limits: "Límites de cantidad de la meta", widget_background: "Fondo del widget", background_color: "Color de fondo", OnTop: "Arriba", Inside: "Dentro", Below: "Debajo", DoNotDisplay: "No mostrar", title: "Título", limits: "límites", raised: "Recaudado", days_left: "Días restantes", finish_goal: "Finalizar meta", sure_finish: "¿Estás seguro de que quieres finalizar esta meta?", Donation: "Donación", TwitchSubscription: "Suscripción de Twitch", TwitchFollow: "Follow de Twitch", goal_not_finished: "Tienes una meta sin finalizar de este tipo." }, AG = "Guardar", NG = "Atrás", PG = { copy: "Copiar", launch: "Lanzar", url: "URL del widget", obs_dock_url: "URL de OBS Dock" }, $G = { top: "Imagen arriba, texto abajo", bottom: "Imagen abajo, texto arriba", left: "Imagen izquierda, texto derecha", right: "Imagen derecha, texto izquierda", overlay: "Texto superpuesto sobre la imagen" }, jG = { show: "Mostrar imagen" }, LG = { font: "Fuente", font_size: "Tamaño de fuente", text_color: "Color del texto", bold: "Negrita", italics: "Cursiva", underline: "Subrayado", transformation: "Transformación", letter_spacing: "Espaciado entre letras", word_spacing: "Espaciado entre palabras", horizontal_alignment: "Alineación horizontal", vertical_alignment: "Alineación vertical", text_preview: "¡Esto es una vista previa!", name: "Nombre" }, IG = { play: "Reproducir", stop: "Detener" }, FG = "Versión", zG = { title: "Widgets", add: "Añadir widget", install: "Instalar", delete: "Eliminar", installed: "Instalado", update: "Actualizar", all: "Todos", settings: "Ajustes", control: "Control", delete_confirm: "¿Estás seguro de que quieres eliminar este widget?", invalid_manifest: "Manifiesto de widget inválido", add_confirm: "Añadir permitirá que {{widget_name}}:", installing: "Instalando...", updating: "Actualizando...", view_url: "Ver URL", widget_connection: "El widget obtiene o envía solicitudes a:" }, UG = { "widgets:messages.read": "Leer mensajes", "widgets:goals.read": "Leer metas", "widgets:auc-fighter:settings.read": "Leer ajustes de auc-fighter", "widgets:settings.read": "Leer ajustes del widget", "widgets:alerts.read": "Leer alertas", "widgets:media:settings.read": "Leer ajustes de medios", "widgets:auc-fighter:match-playing.send": "Enviar combate en curso", "widgets:auc-fighter:match-winner.send": "Enviar ganador del combate", "widgets:auc-fighter:match-paused.send": "Enviar combate pausado", "widgets:auc-fighter:match-id.send": "Enviar ID del combate", "widgets:alert:played.send": "Enviar alerta reproducida", "widgets:alert:playing.send": "Enviar alerta en reproducción", "widgets:media:played.send": "Enviar medio reproducido", "widgets:media:end.send": "Enviar fin de medio", "widgets:media:playing.send": "Enviar medio en reproducción", "widgets:media:paused.send": "Enviar medio pausado", "widgets:media:error.send": "Enviar error de medio", "widgets:media:replay.send": "Enviar repetición de medio", "widgets:alert:replay.send": "Enviar repetición de alerta", "widgets:alert:skip.send": "Enviar salto de alerta", "widgets:messages.subscription": "Suscribirse a mensajes", "widgets:goal.subscription": "Suscribirse a meta", "widgets:settings.subscription": "Suscribirse a ajustes", "widgets:auc-fighter:start-match.subscription": "Suscribirse al inicio de combate", "widgets:auc-fighter:pause-match.subscription": "Suscribirse a pausa de combate", "widgets:auc-fighter:resume-match.subscription": "Suscribirse a reanudación de combate", "widgets:auc-fighter:cancel-match.subscription": "Suscribirse a cancelación de combate", "widgets:auc-fighter:update-match.subscription": "Suscribirse a actualización de combate", "widgets:auc-fighter:settings.subscription": "Suscribirse a ajustes de auc-fighter", "widgets:alert:replay.subscription": "Suscribirse a repetición de alerta", "widgets:alert:skip.subscription": "Suscribirse a salto de alerta", "widgets:alert:test.subscription": "Suscribirse a prueba de alerta", "widgets:alert:skip-playing.subscription": "Suscribirse a salto de alerta en reproducción", "widgets:alert:alerts.subscription": "Suscribirse a alertas", "widgets:media:replay.subscription": "Suscribirse a repetición de medio", "widgets:media:settings.subscription": "Suscribirse a ajustes de medios", "widgets:media:skip.subscription": "Suscribirse a salto de medio", "widgets:media:skip-playing-media.subscription": "Suscribirse a salto de medio en reproducción", "widgets:media:end.subscription": "Suscribirse a fin de medio", "widgets:media:error.subscription": "Suscribirse a error de medio", "widgets:media:pause.subscription": "Suscribirse a pausa de medio", "widgets:media:play.subscription": "Suscribirse a reproducción de medio", "widgets:alert:played.subscription": "Suscribirse a alerta reproducida", "widgets:view:storage.read": "Leer almacenamiento de vista del widget", "widgets:control:storage.read": "Leer almacenamiento de control del widget", "widgets:view:storage.write": "Escribir en almacenamiento de vista del widget", "widgets:control:storage.write": "Escribir en almacenamiento de control del widget", "widgets:view:storage.subscription": "Suscribirse al almacenamiento de vista del widget", "widgets:control:storage.subscription": "Suscribirse al almacenamiento de control del widget" }, VG = {
-  on: q8,
-  off: Y8,
-  select: G8,
-  success: K8,
-  ok: Q8,
-  cancel: J8,
-  sound_volume: X8,
-  skip_media: Z8,
-  skip_alert: eG,
-  authorization: tG,
-  error: nG,
-  updater: rG,
-  media: aG,
-  integration: iG,
-  auction: oG,
-  maption: sG,
-  media_settings: lG,
-  dashboard: uG,
-  messages: cG,
-  message: dG,
-  filter: fG,
-  settings: pG,
-  wheel: hG,
-  timer: mG,
-  fighter: gG,
-  lot: vG,
-  bid: yG,
-  lots: bG,
-  auction_settings: wG,
-  lots_options: SG,
-  auc_fighter_settings: _G,
-  alerts: EG,
-  services: CG,
-  twitch: xG,
-  widy: TG,
-  twitch_service_settings: RG,
-  alert: kG,
-  general: DG,
-  goals: MG,
-  goal: OG,
-  save: AG,
-  back: NG,
-  widget: PG,
-  view: $G,
-  image: jG,
-  text: LG,
-  audio: IG,
-  version: FG,
-  widgets: zG,
-  scopes: UG
-}, BG = "Activé", HG = "Désactivé", WG = "Sélectionner", qG = "Succès", YG = "OK", GG = "Annuler", KG = "Volume du son", QG = "Raccourci passer le média", JG = "Raccourci passer l'alerte", XG = { title: "Autorisation", code: "Demander le code", sign_in: "Se connecter", phone: "Numéro de téléphone", telegram_code: "Code de Telegram", your_code: "Votre code", "2fa_password": "Mot de passe 2FA", password: "Mot de passe", streamelements: "Vous devez d'abord connecter StreamElements avec un JWT", you_can_find_by_url: "Vous pouvez le trouver à cette URL", set_id_and_jwt: "Vous devez définir l'ID de compte StreamElements et le JWT pour {{service}}" }, ZG = { wrong_lots_format: "Format des lots incorrect", not_connected: "Non connecté", request_error: "Erreur de requête" }, e7 = { title: "Mise à jour", description: "Une nouvelle version de l'application est disponible. Voulez-vous mettre à jour ?", update: "Mettre à jour", later: "Plus tard", downloading: "Téléchargement en cours..." }, t7 = { title: "Média", youtube: "YouTube", twitch: "Twitch", tiktok: "TikTok" }, n7 = { tribute: "Afficher les messages de tribute" }, r7 = { lots: "Lots", wheel: "Roue", settings: "Paramètres" }, a7 = { set_point: "Définir le point", meter_price: "Prix par mètre", amount: "Montant", finish: "Terminer", lat_error: "La latitude doit être comprise entre -90 et 90", lng_error: "La longitude doit être comprise entre -180 et 180", rules: "Pour que le pointeur change automatiquement de position dans le message, il ne doit y avoir qu'un seul mot parmi :" }, i7 = { enabled: "Activé", min_amount: "Montant minimum", video_volume: "Volume de la vidéo", min_views: "Vues minimum" }, o7 = { messages: "Messages", settings: "Paramètres", services: "Services", alerts: "Alertes", media: "Média", goals: "Objectifs", auction: "Enchères", maption: "Maption", fighter: "Combattant", widgets: "Widgets", info: "Info" }, s7 = { title: "Derniers messages" }, l7 = { skip: "Passer", replay: "Rejouer", donated: "{{user_name}} a donné {{amount}}{{currency}}", followed: "{{user_name}} s'est abonné", subscribed: "{{user_name}} s'est abonné", gifted_subscriptions: "{{user_name}} a offert {{total}} abonnements", raided_with: "{{user_name}} a fait un raid avec {{viewers}} viewers" }, u7 = { title: "Filtrer les messages", exclude_donations: "Exclure les dons", exclude_follows: "Exclure les follows", exclude_subscriptions: "Exclure les abonnements", exclude_raids: "Exclure les raids" }, c7 = { title: "Paramètres", pause: "Mettre en pause les messages d'alerte", moderation_duration: "Durée de modération", black_list: "Liste noire", remove_links: "Supprimer les liens", language: "Langue", sec: "Sec", currency: "Devise", tts_type: "Type de TTS" }, d7 = { normal: "Normal", dropout: "Élimination", spin: "Tourner", speed: "Vitesse de la roue" }, f7 = { continue: "Continuer", pause: "Pause", reset: "Réinitialiser", add_time: "Ajouter du temps", reduce_time: "Réduire le temps", add_timex2: "Ajouter du temps x2" }, p7 = { title: "Combattant", match: "Match", final: "Finale", game: "Partie", cancel: "Annuler la partie", winner: "Vainqueur", settings: "Paramètres", create_game: "Créer une partie à partir des lots", start: "Démarrer", pause: "Pause", rematch: "Revanche", resume: "Reprendre" }, h7 = { name: "Nom", delete: "Supprimer", add: "Ajouter un montant" }, m7 = { delete: "Supprimer", to_lot: "Vers le lot", new: "Nouveau", add_to_random_slot: "Ajouter à un lot aléatoire" }, g7 = { add: "Ajouter", new_lot_name: "Nom du nouveau lot", search: "Rechercher un lot", total: "Total" }, v7 = { leader_change: "Changement de leader", new_lot: "Nouveau lot", new_donation: "Nouveau don", show_odds: "Afficher les cotes", show_total_sum: "Afficher la somme totale", greater_timer_adding_time: "Temps d'ajout pour timer supérieur", not_add_time_if: "Ne pas ajouter de temps si", adding_time: "Temps" }, y7 = { import_lots: "Importer des lots", clear_lots: "Effacer les lots" }, b7 = { round_duration: "Durée du round", add_players: "Ajouter des joueurs" }, w7 = { title: "Alertes", group: "Groupe" }, S7 = { title: "Services", tribute: "Tribute", streamelements: "StreamElements", connect: "Connecter", integrations: "Intégrations", sign_out: "Se déconnecter", confirm_sign_out: "Êtes-vous sûr de vouloir vous déconnecter de ce service ?" }, _7 = { device_code_expired: "Le code de l'appareil a expiré. Veuillez réessayer.", user_code: "Code utilisateur", authorize_with_code: "Autoriser avec le code", waiting_authorization: "En attente d'autorisation..." }, E7 = { donation_account_name: "Nom du compte de dons", donation_url: "URL de don", create_donation_account: "Créer un compte de dons Widy", connect_to_existing_account: "Se connecter à un compte existant", create_donation_account_pending: "Création du compte de dons..." }, C7 = { title: "Paramètres Twitch", points_currency_ratio: "Ratio points / devise", rewards_name: "Nom des récompenses", rewards_list: "Liste des récompenses", add_reward: "Ajouter une récompense", cost: "Coût", color: "Couleur" }, x7 = { image: "Image", audio: "Audio", view: "Affichage", title: "Titre", message: "Message", test_name: "Test", test_text: "Ceci est une alerte de test !", configure: "Configurer", test: "Tester", add_new_variant: "Ajouter une nouvelle variante", new_variant: "Nouvelle variante", variant_title: "Titre de la variante", variant_group: "Groupe de la variante", status: "Statut", variation_condition: "Condition de la variation", group: "Groupe", Random: "Aléatoire", AmountIsGreater: "Le montant est supérieur à", AmountIsEqual: "Le montant est égal à", delete: "Supprimer", sure_delete: "Êtes-vous sûr de vouloir supprimer cette variation ?", type: "Type", Donation: "Don", Subscription: "Abonnement", Follow: "Follow", Raid: "Raid" }, T7 = "Général", R7 = { title: "Objectifs", create: "Créer un nouvel objectif" }, k7 = { new: "Nouvel objectif", goal: "Objectif", type: "Type", elements: "Éléments", progress: "Progression", goal_title: "Titre de l'objectif", amount_raise: "Montant à collecter", start_raising: "Commencer la collecte à partir de", end_date: "Date de fin de l'objectif", bar_height: "Hauteur de la barre", rounding_radius: "Rayon d'arrondi", bar_stroke_thickness: "Épaisseur du contour de la barre", background_bar_color: "Couleur de la barre d'arrière-plan", progress_bar_color: "Couleur de la barre de progression", goal_progress_bar: "Barre de progression de l'objectif", progress_bar_layout: "Disposition de la barre de progression", remaining_time: "Temps restant", goal_amount_limits: "Limites de montant de l'objectif", widget_background: "Arrière-plan du widget", background_color: "Couleur d'arrière-plan", OnTop: "Au-dessus", Inside: "À l'intérieur", Below: "En dessous", DoNotDisplay: "Ne pas afficher", title: "Titre", limits: "limites", raised: "Collecté", days_left: "Jours restants", finish_goal: "Terminer l'objectif", sure_finish: "Êtes-vous sûr de vouloir terminer cet objectif ?", Donation: "Don", TwitchSubscription: "Abonnement Twitch", TwitchFollow: "Follow Twitch", goal_not_finished: "Vous avez un objectif non terminé de ce type." }, D7 = "Enregistrer", M7 = "Retour", O7 = { copy: "Copier", launch: "Lancer", url: "URL du widget", obs_dock_url: "URL du dock OBS" }, A7 = { top: "Image en haut, texte en bas", bottom: "Image en bas, texte en haut", left: "Image à gauche, texte à droite", right: "Image à droite, texte à gauche", overlay: "Texte superposé sur l'image" }, N7 = { show: "Afficher l'image" }, P7 = { font: "Police", font_size: "Taille de police", text_color: "Couleur du texte", bold: "Gras", italics: "Italique", underline: "Souligné", transformation: "Transformation", letter_spacing: "Espacement des lettres", word_spacing: "Espacement des mots", horizontal_alignment: "Alignement horizontal", vertical_alignment: "Alignement vertical", text_preview: "Ceci est un aperçu !", name: "Nom" }, $7 = { play: "Lire", stop: "Arrêter" }, j7 = "Version", L7 = { title: "Widgets", add: "Ajouter un widget", install: "Installer", delete: "Supprimer", installed: "Installé", update: "Mettre à jour", all: "Tous", settings: "Paramètres", control: "Contrôle", delete_confirm: "Êtes-vous sûr de vouloir supprimer ce widget ?", invalid_manifest: "Manifeste du widget invalide", add_confirm: "L'ajout permettra à {{widget_name}} de :", installing: "Installation en cours...", updating: "Mise à jour en cours...", view_url: "URL d'affichage", widget_connection: "Le widget peut envoyer ou recevoir des requêtes vers :" }, I7 = { "widgets:messages.read": "Lire les messages", "widgets:goals.read": "Lire les objectifs", "widgets:auc-fighter:settings.read": "Lire les paramètres auc-fighter", "widgets:settings.read": "Lire les paramètres du widget", "widgets:alerts.read": "Lire les alertes", "widgets:media:settings.read": "Lire les paramètres média", "widgets:auc-fighter:match-playing.send": "Envoyer le match en cours", "widgets:auc-fighter:match-winner.send": "Envoyer le vainqueur du match", "widgets:auc-fighter:match-paused.send": "Envoyer le match en pause", "widgets:auc-fighter:match-id.send": "Envoyer l'ID du match", "widgets:alert:played.send": "Envoyer l'alerte jouée", "widgets:alert:playing.send": "Envoyer l'alerte en cours", "widgets:media:played.send": "Envoyer le média joué", "widgets:media:end.send": "Envoyer la fin du média", "widgets:media:playing.send": "Envoyer le média en cours", "widgets:media:paused.send": "Envoyer le média en pause", "widgets:media:error.send": "Envoyer l'erreur média", "widgets:media:replay.send": "Envoyer la relecture du média", "widgets:alert:replay.send": "Envoyer la relecture de l'alerte", "widgets:alert:skip.send": "Envoyer le skip de l'alerte", "widgets:messages.subscription": "S'abonner aux messages", "widgets:goal.subscription": "S'abonner aux objectifs", "widgets:settings.subscription": "S'abonner aux paramètres", "widgets:auc-fighter:start-match.subscription": "S'abonner au démarrage du match", "widgets:auc-fighter:pause-match.subscription": "S'abonner à la pause du match", "widgets:auc-fighter:resume-match.subscription": "S'abonner à la reprise du match", "widgets:auc-fighter:cancel-match.subscription": "S'abonner à l'annulation du match", "widgets:auc-fighter:update-match.subscription": "S'abonner à la mise à jour du match", "widgets:auc-fighter:settings.subscription": "S'abonner aux paramètres auc-fighter", "widgets:alert:replay.subscription": "S'abonner à la relecture d'alerte", "widgets:alert:skip.subscription": "S'abonner au skip d'alerte", "widgets:alert:test.subscription": "S'abonner au test d'alerte", "widgets:alert:skip-playing.subscription": "S'abonner au skip d'alerte en cours", "widgets:alert:alerts.subscription": "S'abonner aux alertes", "widgets:media:replay.subscription": "S'abonner à la relecture du média", "widgets:media:settings.subscription": "S'abonner aux paramètres média", "widgets:media:skip.subscription": "S'abonner au skip du média", "widgets:media:skip-playing-media.subscription": "S'abonner au skip du média en cours", "widgets:media:end.subscription": "S'abonner à la fin du média", "widgets:media:error.subscription": "S'abonner à l'erreur média", "widgets:media:pause.subscription": "S'abonner à la pause du média", "widgets:media:play.subscription": "S'abonner à la lecture du média", "widgets:alert:played.subscription": "S'abonner à l'alerte jouée", "widgets:view:storage.read": "Lire le stockage de la vue du widget", "widgets:control:storage.read": "Lire le stockage du contrôle du widget", "widgets:view:storage.write": "Écrire dans le stockage de la vue du widget", "widgets:control:storage.write": "Écrire dans le stockage du contrôle du widget", "widgets:view:storage.subscription": "S'abonner au stockage de la vue du widget", "widgets:control:storage.subscription": "S'abonner au stockage du contrôle du widget" }, F7 = {
-  on: BG,
-  off: HG,
-  select: WG,
-  success: qG,
-  ok: YG,
-  cancel: GG,
-  sound_volume: KG,
-  skip_media: QG,
-  skip_alert: JG,
-  authorization: XG,
-  error: ZG,
-  updater: e7,
-  media: t7,
-  integration: n7,
-  auction: r7,
-  maption: a7,
-  media_settings: i7,
-  dashboard: o7,
-  messages: s7,
-  message: l7,
-  filter: u7,
-  settings: c7,
-  wheel: d7,
-  timer: f7,
-  fighter: p7,
-  lot: h7,
-  bid: m7,
-  lots: g7,
-  auction_settings: v7,
-  lots_options: y7,
-  auc_fighter_settings: b7,
-  alerts: w7,
-  services: S7,
-  twitch: _7,
-  widy: E7,
-  twitch_service_settings: C7,
-  alert: x7,
-  general: T7,
-  goals: R7,
-  goal: k7,
-  save: D7,
-  back: M7,
-  widget: O7,
-  view: A7,
-  image: N7,
-  text: P7,
-  audio: $7,
-  version: j7,
-  widgets: L7,
-  scopes: I7
-}, z7 = "चालू", U7 = "बंद", V7 = "चुनें", B7 = "सफलता", H7 = "ठीक है", W7 = "रद्द करें", q7 = "ध्वनि की मात्रा", Y7 = "मीडिया स्किप शॉर्टकट", G7 = "अलर्ट स्किप शॉर्टकट", K7 = { title: "प्राधिकरण", code: "कोड का अनुरोध करें", sign_in: "साइन इन करें", phone: "फ़ोन नंबर", telegram_code: "टेलीग्राम से कोड", your_code: "आपका कोड", "2fa_password": "2FA पासवर्ड", password: "पासवर्ड", streamelements: "सबसे पहले आपको StreamElements JWT से कनेक्ट करना होगा", you_can_find_by_url: "आप इसे इस URL से ढूंढ सकते हैं", set_id_and_jwt: "{{service}} के लिए आपको StreamElements अकाउंट ID और JWT सेट करना होगा" }, Q7 = { wrong_lots_format: "लॉट्स का फॉर्मेट गलत है", not_connected: "कनेक्टेड नहीं है", request_error: "अनुरोध में त्रुटि" }, J7 = { title: "अपडेट", description: "ऐप का नया संस्करण उपलब्ध है। क्या आप अपडेट करना चाहते हैं?", update: "अपडेट करें", later: "बाद में", downloading: "डाउनलोड हो रहा है..." }, X7 = { title: "मीडिया", youtube: "यूट्यूब", twitch: "ट्विच", tiktok: "टिकटॉक" }, Z7 = { tribute: "ट्रिब्यूट संदेश दिखाएं" }, e9 = { lots: "लॉट्स", wheel: "व्हील", settings: "सेटिंग्स" }, t9 = { set_point: "पॉइंट सेट करें", meter_price: "1 मीटर का मूल्य", amount: "राशि", finish: "समाप्त करें", lat_error: "अक्षांश -90 से 90 के बीच होना चाहिए", lng_error: "देशांतर -180 से 180 के बीच होना चाहिए", rules: "पॉइंटर को मैसेज में अपने आप पोजीशन बदलने के लिए केवल एक शब्द होना चाहिए:" }, n9 = { enabled: "सक्षम", min_amount: "न्यूनतम राशि", video_volume: "वीडियो वॉल्यूम", min_views: "न्यूनतम व्यूज" }, r9 = { messages: "संदेश", settings: "सेटिंग्स", services: "सेवाएं", alerts: "अलर्ट्स", media: "मीडिया", goals: "गोल्स", auction: "नीलामी", maption: "मैप्शन", fighter: "फाइटर", widgets: "विजेट्स", info: "जानकारी" }, a9 = { title: "अंतिम संदेश" }, i9 = { skip: "स्किप करें", replay: "रीप्ले", donated: "{{user_name}} ने {{amount}}{{currency}} दान किया", followed: "{{user_name}} ने फॉलो किया", subscribed: "{{user_name}} ने सब्सक्राइब किया", gifted_subscriptions: "{{user_name}} ने {{total}} सब्सक्रिप्शन गिफ्ट किए", raided_with: "{{user_name}} ने {{viewers}} व्यूअर्स के साथ रेड किया" }, o9 = { title: "संदेश फिल्टर करें", exclude_donations: "दान को बाहर करें", exclude_follows: "फॉलो को बाहर करें", exclude_subscriptions: "सब्सक्रिप्शन को बाहर करें", exclude_raids: "रेड्स को बाहर करें" }, s9 = { title: "सेटिंग्स", pause: "अलर्ट संदेश रोकें", moderation_duration: "मॉडरेशन अवधि", black_list: "ब्लैक लिस्ट", remove_links: "लिंक्स हटाएं", language: "भाषा", sec: "सेकंड", currency: "मुद्रा", tts_type: "TTS प्रकार" }, l9 = { normal: "नॉर्मल", dropout: "ड्रॉपआउट", spin: "स्पिन", speed: "व्हील की स्पीड" }, u9 = { continue: "जारी रखें", pause: "रोकें", reset: "रीसेट करें", add_time: "समय जोड़ें", reduce_time: "समय कम करें", add_timex2: "समय x2 जोड़ें" }, c9 = { title: "फाइटर", match: "मैच", final: "फाइनल", game: "गेम", cancel: "गेम रद्द करें", winner: "विजेता", settings: "सेटिंग्स", create_game: "लॉट्स से गेम बनाएं", start: "शुरू करें", pause: "रोकें", rematch: "रीमैच", resume: "फिर से शुरू करें" }, d9 = { name: "नाम", delete: "हटाएं", add: "राशि जोड़ें" }, f9 = { delete: "हटाएं", to_lot: "लॉट में", new: "नया", add_to_random_slot: "रैंडम लॉट में जोड़ें" }, p9 = { add: "जोड़ें", new_lot_name: "नया लॉट नाम", search: "लॉट खोजें", total: "कुल" }, h9 = { leader_change: "लीडर बदलाव", new_lot: "नया लॉट", new_donation: "नया दान", show_odds: "ऑड्स दिखाएं", show_total_sum: "कुल राशि दिखाएं", greater_timer_adding_time: "बड़ी टाइमर पर समय जोड़ना", not_add_time_if: "समय तब न जोड़ें अगर", adding_time: "समय" }, m9 = { import_lots: "लॉट्स आयात करें", clear_lots: "लॉट्स साफ करें" }, g9 = { round_duration: "राउंड की अवधि", add_players: "खिलाड़ी जोड़ें" }, v9 = { title: "अलर्ट्स", group: "समूह" }, y9 = { title: "सेवाएं", tribute: "ट्रिब्यूट", streamelements: "स्ट्रीमएलीमेंट्स", connect: "कनेक्ट करें", integrations: "इंटीग्रेशन्स", sign_out: "साइन आउट", confirm_sign_out: "क्या आप वाकई इस सेवा से साइन आउट करना चाहते हैं?" }, b9 = { device_code_expired: "डिवाइस कोड समाप्त हो गया। कृपया फिर से प्रयास करें।", user_code: "यूजर कोड", authorize_with_code: "कोड से अधिकृत करें", waiting_authorization: "अधिकारण की प्रतीक्षा कर रहे हैं..." }, w9 = { donation_account_name: "दान अकाउंट का नाम", donation_url: "दान URL", create_donation_account: "Widy दान अकाउंट बनाएं", connect_to_existing_account: "मौजूदा अकाउंट से कनेक्ट करें", create_donation_account_pending: "दान अकाउंट बनाया जा रहा है..." }, S9 = { title: "Twitch सेटिंग्स", points_currency_ratio: "पॉइंट्स करेंसी रेशियो", rewards_name: "रिवॉर्ड्स का नाम", rewards_list: "रिवॉर्ड्स सूची", add_reward: "रिवॉर्ड जोड़ें", cost: "लागत", color: "रंग" }, _9 = { image: "छवि", audio: "ऑडियो", view: "व्यू", title: "शीर्षक", message: "संदेश", test_name: "टेस्ट", test_text: "यह एक टेस्ट अलर्ट है!", configure: "कॉन्फ़िगर करें", test: "टेस्ट", add_new_variant: "नया वैरिएंट जोड़ें", new_variant: "नया वैरिएंट", variant_title: "वैरिएंट शीर्षक", variant_group: "वैरिएंट समूह", status: "स्थिति", variation_condition: "वैरिएशन शर्त", group: "समूह", Random: "रैंडम", AmountIsGreater: "राशि इससे अधिक है", AmountIsEqual: "राशि बराबर है", delete: "हटाएं", sure_delete: "क्या आप वाकई इस वैरिएशन को हटाना चाहते हैं?", type: "प्रकार", Donation: "दान", Subscription: "सब्सक्रिप्शन", Follow: "फॉलो", Raid: "रेड" }, E9 = "सामान्य", C9 = { title: "गोल्स", create: "नया गोल बनाएं" }, x9 = { new: "नया गोल", goal: "व्यू", type: "प्रकार", elements: "तत्व", progress: "प्रगति", goal_title: "गोल शीर्षक", amount_raise: "जुटाने की राशि", start_raising: "इस राशि से शुरू करें", end_date: "गोल समाप्ति तिथि", bar_height: "बार की ऊंचाई", rounding_radius: "गोलाई की त्रिज्या", bar_stroke_thickness: "बार स्ट्रोक मोटाई", background_bar_color: "बैकग्राउंड बार का रंग", progress_bar_color: "प्रोग्रेस बार का रंग", goal_progress_bar: "गोल प्रोग्रेस बार", progress_bar_layout: "प्रोग्रेस बार लेआउट", remaining_time: "बचा हुआ समय", goal_amount_limits: "गोल राशि सीमाएं", widget_background: "विजेट बैकग्राउंड", background_color: "बैकग्राउंड रंग", OnTop: "ऊपर", Inside: "अंदर", Below: "नीचे", DoNotDisplay: "न दिखाएं", title: "शीर्षक", limits: "सीमाएं", raised: "जुटाई गई", days_left: "बचे दिन", finish_goal: "गोल समाप्त करें", sure_finish: "क्या आप वाकई इस गोल को समाप्त करना चाहते हैं?", Donation: "दान", TwitchSubscription: "Twitch सब्सक्रिप्शन", TwitchFollow: "Twitch फॉलो", goal_not_finished: "इस प्रकार का एक अधूरा गोल पहले से मौजूद है।" }, T9 = "सेव करें", R9 = "पीछे", k9 = { copy: "कॉपी करें", launch: "लॉन्च करें", url: "विजेट URL", obs_dock_url: "OBS डॉक URL" }, D9 = { top: "छवि ऊपर, टेक्स्ट नीचे", bottom: "छवि नीचे, टेक्स्ट ऊपर", left: "छवि बाईं ओर, टेक्स्ट दाईं ओर", right: "छवि दाईं ओर, टेक्स्ट बाईं ओर", overlay: "टेक्स्ट छवि पर ओवरले" }, M9 = { show: "छवि दिखाएं" }, O9 = { font: "फॉन्ट", font_size: "फॉन्ट साइज", text_color: "टेक्स्ट रंग", bold: "बोल्ड", italics: "इटैलिक", underline: "अंडरलाइन", transformation: "ट्रांसफॉर्मेशन", letter_spacing: "अक्षर स्पेसिंग", word_spacing: "शब्द स्पेसिंग", horizontal_alignment: "क्षैतिज संरेखण", vertical_alignment: "ऊर्ध्वाधर संरेखण", text_preview: "यह एक प्रीव्यू है!", name: "नाम" }, A9 = { play: "चलाएं", stop: "रोकें" }, N9 = "संस्करण", P9 = { title: "विजेट्स", add: "विजेट जोड़ें", install: "इंस्टॉल करें", delete: "हटाएं", installed: "इंस्टॉल किया गया", update: "अपडेट करें", all: "सभी", settings: "सेटिंग्स", control: "कंट्रोल", delete_confirm: "क्या आप वाकई इस विजेट को हटाना चाहते हैं?", invalid_manifest: "अमान्य विजेट मेनिफेस्ट", add_confirm: "जोड़ने से {{widget_name}} को निम्नलिखित की अनुमति मिलेगी:", installing: "इंस्टॉल हो रहा है...", updating: "अपडेट हो रहा है...", view_url: "व्यू URL", widget_connection: "विजेट को अनुरोध भेजने या प्राप्त करने की अनुमति:" }, $9 = { "widgets:messages.read": "संदेश पढ़ें", "widgets:goals.read": "गोल्स पढ़ें", "widgets:auc-fighter:settings.read": "auc-fighter सेटिंग्स पढ़ें", "widgets:settings.read": "विजेट सेटिंग्स पढ़ें", "widgets:alerts.read": "अलर्ट्स पढ़ें", "widgets:media:settings.read": "मीडिया सेटिंग्स पढ़ें", "widgets:auc-fighter:match-playing.send": "मैच खेला जा रहा है भेजें", "widgets:auc-fighter:match-winner.send": "मैच विजेता भेजें", "widgets:auc-fighter:match-paused.send": "मैच रोक दिया गया भेजें", "widgets:auc-fighter:match-id.send": "मैच ID भेजें", "widgets:alert:played.send": "अलर्ट प्ले किया गया भेजें", "widgets:alert:playing.send": "अलर्ट चल रहा है भेजें", "widgets:media:played.send": "मीडिया प्ले किया गया भेजें", "widgets:media:end.send": "मीडिया समाप्त भेजें", "widgets:media:playing.send": "मीडिया चल रहा है भेजें", "widgets:media:paused.send": "मीडिया रोका गया भेजें", "widgets:media:error.send": "मीडिया त्रुटि भेजें", "widgets:media:replay.send": "मीडिया रिप्ले भेजें", "widgets:alert:replay.send": "अलर्ट रिप्ले भेजें", "widgets:alert:skip.send": "अलर्ट स्किप भेजें", "widgets:messages.subscription": "संदेशों की सदस्यता लें", "widgets:goal.subscription": "गोल की सदस्यता लें", "widgets:settings.subscription": "सेटिंग्स की सदस्यता लें", "widgets:auc-fighter:start-match.subscription": "मैच शुरू होने की सदस्यता लें", "widgets:auc-fighter:pause-match.subscription": "मैच रोकने की सदस्यता लें", "widgets:auc-fighter:resume-match.subscription": "मैच फिर शुरू करने की सदस्यता लें", "widgets:auc-fighter:cancel-match.subscription": "मैच रद्द करने की सदस्यता लें", "widgets:auc-fighter:update-match.subscription": "मैच अपडेट की सदस्यता लें", "widgets:auc-fighter:settings.subscription": "auc-fighter सेटिंग्स की सदस्यता लें", "widgets:alert:replay.subscription": "अलर्ट रिप्ले की सदस्यता लें", "widgets:alert:skip.subscription": "अलर्ट स्किप की सदस्यता लें", "widgets:alert:test.subscription": "अलर्ट टेस्ट की सदस्यता लें", "widgets:alert:skip-playing.subscription": "चल रहे अलर्ट स्किप की सदस्यता लें", "widgets:alert:alerts.subscription": "अलर्ट्स की सदस्यता लें", "widgets:media:replay.subscription": "मीडिया रिप्ले की सदस्यता लें", "widgets:media:settings.subscription": "मीडिया सेटिंग्स की सदस्यता लें", "widgets:media:skip.subscription": "मीडिया स्किप की सदस्यता लें", "widgets:media:skip-playing-media.subscription": "चल रहे मीडिया स्किप की सदस्यता लें", "widgets:media:end.subscription": "मीडिया समाप्ति की सदस्यता लें", "widgets:media:error.subscription": "मीडिया त्रुटि की सदस्यता लें", "widgets:media:pause.subscription": "मीडिया रोकने की सदस्यता लें", "widgets:media:play.subscription": "मीडिया चलाने की सदस्यता लें", "widgets:alert:played.subscription": "अलर्ट प्ले होने की सदस्यता लें", "widgets:view:storage.read": "विजेट व्यू स्टोरेज पढ़ें", "widgets:control:storage.read": "विजेट कंट्रोल स्टोरेज पढ़ें", "widgets:view:storage.write": "विजेट व्यू स्टोरेज में लिखें", "widgets:control:storage.write": "विजेट कंट्रोल स्टोरेज में लिखें", "widgets:view:storage.subscription": "विजेट व्यू स्टोरेज की सदस्यता लें", "widgets:control:storage.subscription": "विजेट कंट्रोल स्टोरेज की सदस्यता लें" }, j9 = {
-  on: z7,
-  off: U7,
-  select: V7,
-  success: B7,
-  ok: H7,
-  cancel: W7,
-  sound_volume: q7,
-  skip_media: Y7,
-  skip_alert: G7,
-  authorization: K7,
-  error: Q7,
-  updater: J7,
-  media: X7,
-  integration: Z7,
-  auction: e9,
-  maption: t9,
-  media_settings: n9,
-  dashboard: r9,
-  messages: a9,
-  message: i9,
-  filter: o9,
-  settings: s9,
-  wheel: l9,
-  timer: u9,
-  fighter: c9,
-  lot: d9,
-  bid: f9,
-  lots: p9,
-  auction_settings: h9,
-  lots_options: m9,
-  auc_fighter_settings: g9,
-  alerts: v9,
-  services: y9,
-  twitch: b9,
-  widy: w9,
-  twitch_service_settings: S9,
-  alert: _9,
-  general: E9,
-  goals: C9,
-  goal: x9,
-  save: T9,
-  back: R9,
-  widget: k9,
-  view: D9,
-  image: M9,
-  text: O9,
-  audio: A9,
-  version: N9,
-  widgets: P9,
-  scopes: $9
-}, L9 = "Ligado", I9 = "Desligado", F9 = "Selecionar", z9 = "Sucesso", U9 = "Ok", V9 = "Cancelar", B9 = "Volume do som", H9 = "Atalho pular mídia", W9 = "Atalho pular alerta", q9 = { title: "Autorização", code: "Solicitar código", sign_in: "Entrar", phone: "Número de telefone", telegram_code: "Código do Telegram", your_code: "Seu código", "2fa_password": "Senha 2FA", password: "Senha", streamelements: "Você precisa conectar com o JWT do StreamElements primeiro", you_can_find_by_url: "Você pode encontrar em esta URL", set_id_and_jwt: "Você precisa definir o Account ID e JWT do StreamElements para {{service}}" }, Y9 = { wrong_lots_format: "Formato de lotes inválido", not_connected: "Não conectado", request_error: "Erro na requisição" }, G9 = { title: "Atualização", description: "Uma nova versão do aplicativo está disponível. Deseja atualizar?", update: "Atualizar", later: "Mais tarde", downloading: "Baixando..." }, K9 = { title: "Mídia", youtube: "YouTube", twitch: "Twitch", tiktok: "TikTok" }, Q9 = { tribute: "Mostrar mensagens de tributo" }, J9 = { lots: "Lotes", wheel: "Roda", settings: "Configurações" }, X9 = { set_point: "Definir ponto", meter_price: "Preço por 1 metro", amount: "Quantia", finish: "Finalizar", lat_error: "A latitude deve estar entre -90 e 90", lng_error: "A longitude deve estar entre -180 e 180", rules: "Para o ponteiro mudar automaticamente a posição na mensagem, deve haver apenas uma palavra de:" }, Z9 = { enabled: "Ativado", min_amount: "Valor mínimo", video_volume: "Volume do vídeo", min_views: "Visualizações mínimas" }, eK = { messages: "Mensagens", settings: "Configurações", services: "Serviços", alerts: "Alertas", media: "Mídia", goals: "Metas", auction: "Leilão", maption: "Maption", fighter: "Lutador", widgets: "Widgets", info: "Informações" }, tK = { title: "Últimas mensagens" }, nK = { skip: "Pular", replay: "Reproduzir novamente", donated: "{{user_name}} doou {{amount}}{{currency}}", followed: "{{user_name}} seguiu", subscribed: "{{user_name}} assinou", gifted_subscriptions: "{{user_name}} presenteou {{total}} assinaturas", raided_with: "{{user_name}} raidou com {{viewers}} espectadores" }, rK = { title: "Filtrar mensagens", exclude_donations: "Excluir doações", exclude_follows: "Excluir follows", exclude_subscriptions: "Excluir assinaturas", exclude_raids: "Excluir raids" }, aK = { title: "Configurações", pause: "Pausar mensagens de alerta", moderation_duration: "Duração da moderação", black_list: "Lista negra", remove_links: "Remover links", language: "Idioma", sec: "Seg", currency: "Moeda", tts_type: "Tipo de TTS" }, iK = { normal: "Normal", dropout: "Eliminação", spin: "Girar", speed: "Velocidade da roda" }, oK = { continue: "Continuar", pause: "Pausar", reset: "Reiniciar", add_time: "Adicionar tempo", reduce_time: "Reduzir tempo", add_timex2: "Adicionar tempo x2" }, sK = { title: "Lutador", match: "Partida", final: "Final", game: "Jogo", cancel: "Cancelar jogo", winner: "Vencedor", settings: "Configurações", create_game: "Criar jogo a partir dos lotes", start: "Iniciar", pause: "Pausar", rematch: "Revanche", resume: "Retomar" }, lK = { name: "Nome", delete: "Excluir", add: "Adicionar quantidade" }, uK = { delete: "Excluir", to_lot: "Para o lote", new: "Novo", add_to_random_slot: "Adicionar a um lote aleatório" }, cK = { add: "Adicionar", new_lot_name: "Nome do novo lote", search: "Buscar lote", total: "Total" }, dK = { leader_change: "Mudança de líder", new_lot: "Novo lote", new_donation: "Nova doação", show_odds: "Mostrar probabilidades", show_total_sum: "Mostrar soma total", greater_timer_adding_time: "Maior tempo de adição do timer", not_add_time_if: "Não adicionar tempo se", adding_time: "Tempo" }, fK = { import_lots: "Importar lotes", clear_lots: "Limpar lotes" }, pK = { round_duration: "Duração do round", add_players: "Adicionar jogadores" }, hK = { title: "Alertas", group: "Grupo" }, mK = { title: "Serviços", tribute: "Tributo", streamelements: "StreamElements", connect: "Conectar", integrations: "Integrações", sign_out: "Sair", confirm_sign_out: "Tem certeza que deseja sair deste serviço?" }, gK = { device_code_expired: "Código do dispositivo expirado. Por favor, tente novamente.", user_code: "Código do usuário", authorize_with_code: "Autorizar com o código", waiting_authorization: "Aguardando autorização..." }, vK = { donation_account_name: "Nome da conta de doações", donation_url: "URL de doação", create_donation_account: "Criar conta de doação Widy", connect_to_existing_account: "Conectar a uma conta existente", create_donation_account_pending: "Criando conta de doação..." }, yK = { title: "Configurações do Twitch", points_currency_ratio: "Taxa de conversão de pontos", rewards_name: "Nome das recompensas", rewards_list: "Lista de recompensas", add_reward: "Adicionar recompensa", cost: "Custo", color: "Cor" }, bK = { image: "Imagem", audio: "Áudio", view: "Visualização", title: "Título", message: "Mensagem", test_name: "Teste", test_text: "Este é um alerta de teste!", configure: "Configurar", test: "Testar", add_new_variant: "Adicionar nova variante", new_variant: "Nova variante", variant_title: "Título da variante", variant_group: "Grupo da variante", status: "Status", variation_condition: "Condição da variação", group: "Grupo", Random: "Aleatório", AmountIsGreater: "Valor é maior", AmountIsEqual: "Valor é igual", delete: "Excluir", sure_delete: "Tem certeza que deseja excluir esta variação?", type: "Tipo", Donation: "Doação", Subscription: "Assinatura", Follow: "Follow", Raid: "Raid" }, wK = "Geral", SK = { title: "Metas", create: "Criar nova meta" }, _K = { new: "Nova meta", goal: "Meta", type: "Tipo", elements: "Elementos", progress: "Progresso", goal_title: "Título da meta", amount_raise: "Valor a arrecadar", start_raising: "Começar a arrecadar a partir de", end_date: "Data final da meta", bar_height: "Altura da barra", rounding_radius: "Raio de arredondamento", bar_stroke_thickness: "Espessura do traço da barra", background_bar_color: "Cor da barra de fundo", progress_bar_color: "Cor da barra de progresso", goal_progress_bar: "Barra de progresso da meta", progress_bar_layout: "Layout da barra de progresso", remaining_time: "Tempo restante", goal_amount_limits: "Limites de valor da meta", widget_background: "Fundo do widget", background_color: "Cor de fundo", OnTop: "Acima", Inside: "Dentro", Below: "Abaixo", DoNotDisplay: "Não exibir", title: "Título", limits: "limites", raised: "Arrecadado", days_left: "Dias restantes", finish_goal: "Finalizar meta", sure_finish: "Tem certeza que deseja finalizar esta meta?", Donation: "Doação", TwitchSubscription: "Assinatura Twitch", TwitchFollow: "Follow Twitch", goal_not_finished: "Você tem uma meta não finalizada deste tipo." }, EK = "Salvar", CK = "Voltar", xK = { copy: "Copiar", launch: "Lançar", url: "URL do widget", obs_dock_url: "URL do dock OBS" }, TK = { top: "Imagem acima, texto abaixo", bottom: "Imagem abaixo, texto acima", left: "Imagem à esquerda, texto à direita", right: "Imagem à direita, texto à esquerda", overlay: "Texto sobreposto na imagem" }, RK = { show: "Mostrar imagem" }, kK = { font: "Fonte", font_size: "Tamanho da fonte", text_color: "Cor do texto", bold: "Negrito", italics: "Itálico", underline: "Sublinhado", transformation: "Transformação", letter_spacing: "Espaçamento entre letras", word_spacing: "Espaçamento entre palavras", horizontal_alignment: "Alinhamento horizontal", vertical_alignment: "Alinhamento vertical", text_preview: "Esta é uma prévia!", name: "Nome" }, DK = { play: "Reproduzir", stop: "Parar" }, MK = "Versão", OK = { title: "Widgets", add: "Adicionar widget", install: "Instalar", delete: "Excluir", installed: "Instalado", update: "Atualizar", all: "Todos", settings: "Configurações", control: "Controle", delete_confirm: "Tem certeza que deseja excluir este widget?", invalid_manifest: "Manifest do widget inválido", add_confirm: "Adicionar permitirá que {{widget_name}}:", installing: "Instalando...", updating: "Atualizando...", view_url: "URL de visualização", widget_connection: "O widget pode receber ou enviar requisições para:" }, AK = { "widgets:messages.read": "Ler mensagens", "widgets:goals.read": "Ler metas", "widgets:auc-fighter:settings.read": "Ler configurações do auc-fighter", "widgets:settings.read": "Ler configurações do widget", "widgets:alerts.read": "Ler alertas", "widgets:media:settings.read": "Ler configurações de mídia", "widgets:auc-fighter:match-playing.send": "Enviar partida em andamento", "widgets:auc-fighter:match-winner.send": "Enviar vencedor da partida", "widgets:auc-fighter:match-paused.send": "Enviar partida pausada", "widgets:auc-fighter:match-id.send": "Enviar ID da partida", "widgets:alert:played.send": "Enviar alerta reproduzido", "widgets:alert:playing.send": "Enviar alerta em reprodução", "widgets:media:played.send": "Enviar mídia reproduzida", "widgets:media:end.send": "Enviar fim da mídia", "widgets:media:playing.send": "Enviar mídia em reprodução", "widgets:media:paused.send": "Enviar mídia pausada", "widgets:media:error.send": "Enviar erro na mídia", "widgets:media:replay.send": "Enviar replay da mídia", "widgets:alert:replay.send": "Enviar replay do alerta", "widgets:alert:skip.send": "Enviar pular alerta", "widgets:messages.subscription": "Inscrever em mensagens", "widgets:goal.subscription": "Inscrever em meta", "widgets:settings.subscription": "Inscrever em configurações", "widgets:auc-fighter:start-match.subscription": "Inscrever em iniciar partida", "widgets:auc-fighter:pause-match.subscription": "Inscrever em pausar partida", "widgets:auc-fighter:resume-match.subscription": "Inscrever em retomar partida", "widgets:auc-fighter:cancel-match.subscription": "Inscrever em cancelar partida", "widgets:auc-fighter:update-match.subscription": "Inscrever em atualizar partida", "widgets:auc-fighter:settings.subscription": "Inscrever em configurações do auc-fighter", "widgets:alert:replay.subscription": "Inscrever em replay do alerta", "widgets:alert:skip.subscription": "Inscrever em pular alerta", "widgets:alert:test.subscription": "Inscrever em teste de alerta", "widgets:alert:skip-playing.subscription": "Inscrever em pular alerta em reprodução", "widgets:alert:alerts.subscription": "Inscrever em alertas", "widgets:media:replay.subscription": "Inscrever em replay de mídia", "widgets:media:settings.subscription": "Inscrever em configurações de mídia", "widgets:media:skip.subscription": "Inscrever em pular mídia", "widgets:media:skip-playing-media.subscription": "Inscrever em pular mídia em reprodução", "widgets:media:end.subscription": "Inscrever em fim da mídia", "widgets:media:error.subscription": "Inscrever em erro na mídia", "widgets:media:pause.subscription": "Inscrever em pausar mídia", "widgets:media:play.subscription": "Inscrever em reproduzir mídia", "widgets:alert:played.subscription": "Inscrever em alerta reproduzido", "widgets:view:storage.read": "Ler armazenamento da visualização do widget", "widgets:control:storage.read": "Ler armazenamento de controle do widget", "widgets:view:storage.write": "Escrever no armazenamento da visualização do widget", "widgets:control:storage.write": "Escrever no armazenamento de controle do widget", "widgets:view:storage.subscription": "Inscrever em armazenamento da visualização do widget", "widgets:control:storage.subscription": "Inscrever em armazenamento de controle do widget" }, NK = {
-  on: L9,
-  off: I9,
-  select: F9,
-  success: z9,
-  ok: U9,
-  cancel: V9,
-  sound_volume: B9,
-  skip_media: H9,
-  skip_alert: W9,
-  authorization: q9,
-  error: Y9,
-  updater: G9,
-  media: K9,
-  integration: Q9,
-  auction: J9,
-  maption: X9,
-  media_settings: Z9,
-  dashboard: eK,
-  messages: tK,
-  message: nK,
-  filter: rK,
-  settings: aK,
-  wheel: iK,
-  timer: oK,
-  fighter: sK,
-  lot: lK,
-  bid: uK,
-  lots: cK,
-  auction_settings: dK,
-  lots_options: fK,
-  auc_fighter_settings: pK,
-  alerts: hK,
-  services: mK,
-  twitch: gK,
-  widy: vK,
-  twitch_service_settings: yK,
-  alert: bK,
-  general: wK,
-  goals: SK,
-  goal: _K,
-  save: EK,
-  back: CK,
-  widget: xK,
-  view: TK,
-  image: RK,
-  text: kK,
-  audio: DK,
-  version: MK,
-  widgets: OK,
-  scopes: AK
-}, PK = "Вкл", $K = "Выкл", jK = "Выбрать", LK = "Успешно", IK = "Ок", FK = "Отмена", zK = "Громкость звука", UK = "Быстрый пропуск медиа", VK = "Быстрый пропуск алерта", BK = { title: "Авторизация", code: "Запросить код", sign_in: "Войти", phone: "Номер телефона", telegram_code: "Код из Telegram", your_code: "Ваш код", "2fa_password": "Пароль 2FA", password: "Пароль", streamelements: "Сначала нужно подключить StreamElements JWT", you_can_find_by_url: "Вы можете найти его по этой ссылке", set_id_and_jwt: "Нужно указать StreamElements Account ID и JWT для {{service}}" }, HK = { wrong_lots_format: "Неверный формат лотов", not_connected: "Не подключено", request_error: "Ошибка запроса" }, WK = { title: "Обновление", description: "Доступна новая версия приложения. Хотите обновить?", update: "Обновить", later: "Позже", downloading: "Загрузка..." }, qK = { title: "Медиа", youtube: "YouTube", twitch: "Twitch", tiktok: "TikTok" }, YK = { tribute: "Показывать tribute-сообщения" }, GK = { lots: "Лоты", wheel: "Колесо", settings: "Настройки" }, KK = { set_point: "Установить точку", meter_price: "Цена за 1 метр", amount: "Сумма", finish: "Завершить", lat_error: "Широта должна быть от -90 до 90", lng_error: "Долгота должна быть от -180 до 180", rules: "Для автоматического изменения позиции указателя в сообщении должно быть только одно слово из:" }, QK = { enabled: "Включено", min_amount: "Минимальная сумма", video_volume: "Громкость видео", min_views: "Минимальное количество просмотров" }, JK = { messages: "Сообщения", settings: "Настройки", services: "Сервисы", alerts: "Алерты", media: "Медиа", goals: "Цели", auction: "Аукцион", maption: "Maption", fighter: "Файтер", widgets: "Виджеты", info: "Информация" }, XK = { title: "Последние сообщения" }, ZK = { skip: "Пропустить", replay: "Повторить", donated: "{{user_name}} задонатил {{amount}}{{currency}}", followed: "{{user_name}} подписался", subscribed: "{{user_name}} оформил подписку", gifted_subscriptions: "{{user_name}} подарил {{total}} подписок", raided_with: "{{user_name}} зарейдил с {{viewers}} зрителями" }, eQ = { title: "Фильтр сообщений", exclude_donations: "Исключить донаты", exclude_follows: "Исключить подписки (follow)", exclude_subscriptions: "Исключить подписки", exclude_raids: "Исключить рейды" }, tQ = { title: "Настройки", pause: "Приостановить алерты", moderation_duration: "Длительность модерации", black_list: "Чёрный список", remove_links: "Удалять ссылки", language: "Язык", sec: "сек", currency: "Валюта", tts_type: "Тип TTS" }, nQ = { normal: "Обычное", dropout: "Выпадение", spin: "Крутить", speed: "Скорость колеса" }, rQ = { continue: "Продолжить", pause: "Пауза", reset: "Сбросить", add_time: "Добавить время", reduce_time: "Уменьшить время", add_timex2: "Добавить время ×2" }, aQ = { title: "Файтер", match: "Матч", final: "Финал", game: "Игра", cancel: "Отменить игру", winner: "Победитель", settings: "Настройки", create_game: "Создать игру из лотов", start: "Начать", pause: "Пауза", rematch: "Реванш", resume: "Возобновить" }, iQ = { name: "Название", delete: "Удалить", add: "Добавить сумму" }, oQ = { delete: "Удалить", to_lot: "К лоту", new: "Новый", add_to_random_slot: "Добавить в случайный лот" }, sQ = { add: "Добавить", new_lot_name: "Название нового лота", search: "Поиск лота", total: "Всего" }, lQ = { leader_change: "Смена лидера", new_lot: "Новый лот", new_donation: "Новый донат", show_odds: "Показывать шансы", show_total_sum: "Показывать общую сумму", greater_timer_adding_time: "Добавление времени при большем таймере", not_add_time_if: "Не добавлять время, если", adding_time: "Время" }, uQ = { import_lots: "Импортировать лоты", clear_lots: "Очистить лоты" }, cQ = { round_duration: "Длительность раунда", add_players: "Добавить игроков" }, dQ = { title: "Алерты", group: "Группа" }, fQ = { title: "Сервисы", tribute: "Tribute", streamelements: "StreamElements", connect: "Подключить", integrations: "Интеграции", sign_out: "Выйти", confirm_sign_out: "Вы уверены, что хотите выйти из этого сервиса?" }, pQ = { device_code_expired: "Срок действия кода устройства истёк. Попробуйте ещё раз.", user_code: "Код пользователя", authorize_with_code: "Авторизоваться по коду", waiting_authorization: "Ожидание авторизации..." }, hQ = { donation_account_name: "Название донат-аккаунта", donation_url: "URL доната", create_donation_account: "Создать донат-аккаунт Widy", connect_to_existing_account: "Подключиться к существующему аккаунту", create_donation_account_pending: "Создание донат-аккаунта..." }, mQ = { title: "Настройки Twitch", points_currency_ratio: "Соотношение баллов к валюте", rewards_name: "Название наград", rewards_list: "Список наград", add_reward: "Добавить награду", cost: "Стоимость", color: "Цвет" }, gQ = { image: "Изображение", audio: "Аудио", view: "Отображение", title: "Заголовок", message: "Сообщение", test_name: "Тест", test_text: "Это тестовый алерт!", configure: "Настроить", test: "Протестировать", add_new_variant: "Добавить новый вариант", new_variant: "Новый вариант", variant_title: "Название варианта", variant_group: "Группа варианта", status: "Статус", variation_condition: "Условие вариации", group: "Группа", Random: "Случайный", AmountIsGreater: "Сумма больше", AmountIsEqual: "Сумма равна", delete: "Удалить", sure_delete: "Вы уверены, что хотите удалить эту вариацию?", type: "Тип", Donation: "Донат", Subscription: "Подписка", Follow: "Подписка (follow)", Raid: "Рейд" }, vQ = "Общее", yQ = { title: "Цели", create: "Создать новую цель" }, bQ = { new: "Новая цель", goal: "Цель", type: "Тип", elements: "Элементы", progress: "Прогресс", goal_title: "Название цели", amount_raise: "Сумма для сбора", start_raising: "Начинать сбор с", end_date: "Дата окончания цели", bar_height: "Высота бара", rounding_radius: "Радиус скругления", bar_stroke_thickness: "Толщина обводки бара", background_bar_color: "Цвет фона бара", progress_bar_color: "Цвет прогресс-бара", goal_progress_bar: "Прогресс-бар цели", progress_bar_layout: "Расположение прогресс-бара", remaining_time: "Оставшееся время", goal_amount_limits: "Ограничения суммы цели", widget_background: "Фон виджета", background_color: "Цвет фона", OnTop: "Сверху", Inside: "Внутри", Below: "Снизу", DoNotDisplay: "Не отображать", title: "Заголовок", limits: "ограничения", raised: "Собрано", days_left: "Дней осталось", finish_goal: "Завершить цель", sure_finish: "Вы уверены, что хотите завершить эту цель?", Donation: "Донат", TwitchSubscription: "Подписка Twitch", TwitchFollow: "Подписка Twitch (follow)", goal_not_finished: "У вас есть незавершённая цель этого типа." }, wQ = "Сохранить", SQ = "Назад", _Q = { copy: "Копировать", launch: "Запустить", url: "URL виджета", obs_dock_url: "URL для OBS Dock" }, EQ = { top: "Изображение сверху, текст снизу", bottom: "Изображение снизу, текст сверху", left: "Изображение слева, текст справа", right: "Изображение справа, текст слева", overlay: "Текст поверх изображения" }, CQ = { show: "Показывать изображение" }, xQ = { font: "Шрифт", font_size: "Размер шрифта", text_color: "Цвет текста", bold: "Жирный", italics: "Курсив", underline: "Подчёркнутый", transformation: "Трансформация", letter_spacing: "Межбуквенный интервал", word_spacing: "Межсловный интервал", horizontal_alignment: "Горизонтальное выравнивание", vertical_alignment: "Вертикальное выравнивание", text_preview: "Это предпросмотр!", name: "Название" }, TQ = { play: "Воспроизвести", stop: "Остановить" }, RQ = "Версия", kQ = { title: "Виджеты", add: "Добавить виджет", install: "Установить", delete: "Удалить", installed: "Установлено", update: "Обновить", all: "Все", settings: "Настройки", control: "Управление", delete_confirm: "Вы уверены, что хотите удалить этот виджет?", invalid_manifest: "Неверный манифест виджета", add_confirm: "Добавление позволит {{widget_name}}:", installing: "Установка...", updating: "Обновление...", view_url: "URL просмотра", widget_connection: "Виджет получает или отправляет запросы на:" }, DQ = { "widgets:messages.read": "Читать сообщения", "widgets:goals.read": "Читать цели", "widgets:auc-fighter:settings.read": "Читать настройки auc-fighter", "widgets:settings.read": "Читать настройки виджета", "widgets:alerts.read": "Читать алерты", "widgets:media:settings.read": "Читать настройки медиа", "widgets:auc-fighter:match-playing.send": "Отправлять состояние матча (играет)", "widgets:auc-fighter:match-winner.send": "Отправлять победителя матча", "widgets:auc-fighter:match-paused.send": "Отправлять паузу матча", "widgets:auc-fighter:match-id.send": "Отправлять ID матча", "widgets:alert:played.send": "Отправлять «алерт воспроизведён»", "widgets:alert:playing.send": "Отправлять «алерт воспроизводится»", "widgets:media:played.send": "Отправлять «медиа воспроизведено»", "widgets:media:end.send": "Отправлять окончание медиа", "widgets:media:playing.send": "Отправлять «медиа воспроизводится»", "widgets:media:paused.send": "Отправлять паузу медиа", "widgets:media:error.send": "Отправлять ошибку медиа", "widgets:media:replay.send": "Отправлять повтор медиа", "widgets:alert:replay.send": "Отправлять повтор алерта", "widgets:alert:skip.send": "Отправлять пропуск алерта", "widgets:messages.subscription": "Подписка на сообщения", "widgets:goal.subscription": "Подписка на цели", "widgets:settings.subscription": "Подписка на настройки", "widgets:auc-fighter:start-match.subscription": "Подписка на начало матча", "widgets:auc-fighter:pause-match.subscription": "Подписка на паузу матча", "widgets:auc-fighter:resume-match.subscription": "Подписка на возобновление матча", "widgets:auc-fighter:cancel-match.subscription": "Подписка на отмену матча", "widgets:auc-fighter:update-match.subscription": "Подписка на обновление матча", "widgets:auc-fighter:settings.subscription": "Подписка на настройки auc-fighter", "widgets:alert:replay.subscription": "Подписка на повтор алерта", "widgets:alert:skip.subscription": "Подписка на пропуск алерта", "widgets:alert:test.subscription": "Подписка на тестовый алерт", "widgets:alert:skip-playing.subscription": "Подписка на пропуск воспроизводящегося алерта", "widgets:alert:alerts.subscription": "Подписка на алерты", "widgets:media:replay.subscription": "Подписка на повтор медиа", "widgets:media:settings.subscription": "Подписка на настройки медиа", "widgets:media:skip.subscription": "Подписка на пропуск медиа", "widgets:media:skip-playing-media.subscription": "Подписка на пропуск воспроизводящегося медиа", "widgets:media:end.subscription": "Подписка на окончание медиа", "widgets:media:error.subscription": "Подписка на ошибку медиа", "widgets:media:pause.subscription": "Подписка на паузу медиа", "widgets:media:play.subscription": "Подписка на воспроизведение медиа", "widgets:alert:played.subscription": "Подписка на воспроизведённый алерт", "widgets:view:storage.read": "Читать хранилище вида виджета", "widgets:control:storage.read": "Читать хранилище управления виджетом", "widgets:view:storage.write": "Записывать в хранилище вида виджета", "widgets:control:storage.write": "Записывать в хранилище управления виджетом", "widgets:view:storage.subscription": "Подписка на хранилище вида виджета", "widgets:control:storage.subscription": "Подписка на хранилище управления виджетом" }, MQ = {
-  on: PK,
-  off: $K,
-  select: jK,
-  success: LK,
-  ok: IK,
-  cancel: FK,
-  sound_volume: zK,
-  skip_media: UK,
-  skip_alert: VK,
-  authorization: BK,
-  error: HK,
-  updater: WK,
-  media: qK,
-  integration: YK,
-  auction: GK,
-  maption: KK,
-  media_settings: QK,
-  dashboard: JK,
-  messages: XK,
-  message: ZK,
-  filter: eQ,
-  settings: tQ,
-  wheel: nQ,
-  timer: rQ,
-  fighter: aQ,
-  lot: iQ,
-  bid: oQ,
-  lots: sQ,
-  auction_settings: lQ,
-  lots_options: uQ,
-  auc_fighter_settings: cQ,
-  alerts: dQ,
-  services: fQ,
-  twitch: pQ,
-  widy: hQ,
-  twitch_service_settings: mQ,
-  alert: gQ,
-  general: vQ,
-  goals: yQ,
-  goal: bQ,
-  save: wQ,
-  back: SQ,
-  widget: _Q,
-  view: EQ,
-  image: CQ,
-  text: xQ,
-  audio: TQ,
-  version: RQ,
-  widgets: kQ,
-  scopes: DQ
-}, OQ = "Увімкнено", AQ = "Вимкнено", NQ = "Вибрати", PQ = "Успішно", $Q = "Ок", jQ = "Скасувати", LQ = "Гучність звуку", IQ = "Скорочення пропустити медіа", FQ = "Скорочення пропустити сповіщення", zQ = { title: "Авторизація", code: "Запитати код", sign_in: "Увійти", phone: "Номер телефону", telegram_code: "Код з Telegram", your_code: "Ваш код", "2fa_password": "Пароль 2FA", password: "Пароль", streamelements: "Спочатку потрібно підключити StreamElements JWT", you_can_find_by_url: "Ви можете знайти його за цим посиланням", set_id_and_jwt: "Потрібно встановити StreamElements Account ID та JWT для {{service}}" }, UQ = { wrong_lots_format: "Неправильний формат лотів", not_connected: "Не підключено", request_error: "Помилка запиту" }, VQ = { title: "Оновлення", description: "Доступна нова версія додатка. Бажаєте оновити?", update: "Оновити", later: "Пізніше", downloading: "Завантаження..." }, BQ = { title: "Медіа", youtube: "YouTube", twitch: "Twitch", tiktok: "TikTok" }, HQ = { tribute: "Показувати повідомлення подяки" }, WQ = { lots: "Лоти", wheel: "Колесо", settings: "Налаштування" }, qQ = { set_point: "Встановити точку", meter_price: "Ціна за 1 метр", amount: "Сума", finish: "Завершити", lat_error: "Широта повинна бути від -90 до 90", lng_error: "Довгота повинна бути від -180 до 180", rules: "Для того, щоб вказівник автоматично змінював позицію в повідомленні, має бути лише одне слово з:" }, YQ = { enabled: "Увімкнено", min_amount: "Мінімальна сума", video_volume: "Гучність відео", min_views: "Мінімальна кількість переглядів" }, GQ = { messages: "Повідомлення", settings: "Налаштування", services: "Сервіси", alerts: "Сповіщення", media: "Медіа", goals: "Цілі", auction: "Аукціон", maption: "Маптіон", fighter: "Боєць", widgets: "Віджети", info: "Інформація" }, KQ = { title: "Останні повідомлення" }, QQ = { skip: "Пропустити", replay: "Повторити", donated: "{{user_name}} задонатив {{amount}}{{currency}}", followed: "{{user_name}} підписався", subscribed: "{{user_name}} оформив підписку", gifted_subscriptions: "{{user_name}} подарував {{total}} підписок", raided_with: "{{user_name}} здійснив рейд з {{viewers}} глядачами" }, JQ = { title: "Фільтр повідомлень", exclude_donations: "Виключити донати", exclude_follows: "Виключити підписки", exclude_subscriptions: "Виключити підписки", exclude_raids: "Виключити рейди" }, XQ = { title: "Налаштування", pause: "Призупинити сповіщення", moderation_duration: "Тривалість модерації", black_list: "Чорний список", remove_links: "Видаляти посилання", language: "Мова", sec: "Сек", currency: "Валюта", tts_type: "Тип TTS" }, ZQ = { normal: "Звичайне", dropout: "Вибування", spin: "Обертання", speed: "Швидкість колеса" }, eJ = { continue: "Продовжити", pause: "Призупинити", reset: "Скинути", add_time: "Додати час", reduce_time: "Зменшити час", add_timex2: "Додати час ×2" }, tJ = { title: "Боєць", match: "Матч", final: "Фінал", game: "Гра", cancel: "Скасувати гру", winner: "Переможець", settings: "Налаштування", create_game: "Створити гру з лотів", start: "Почати", pause: "Призупинити", rematch: "Реванш", resume: "Відновити" }, nJ = { name: "Назва", delete: "Видалити", add: "Додати суму" }, rJ = { delete: "Видалити", to_lot: "До лоту", new: "Новий", add_to_random_slot: "Додати до випадкового лоту" }, aJ = { add: "Додати", new_lot_name: "Назва нового лоту", search: "Пошук лоту", total: "Всього" }, iJ = { leader_change: "Зміна лідера", new_lot: "Новий лот", new_donation: "Новий донат", show_odds: "Показувати коефіцієнти", show_total_sum: "Показувати загальну суму", greater_timer_adding_time: "Додавання часу при більшій ставці", not_add_time_if: "Не додавати час якщо", adding_time: "Час" }, oJ = { import_lots: "Імпортувати лоти", clear_lots: "Очистити лоти" }, sJ = { round_duration: "Тривалість раунду", add_players: "Додати гравців" }, lJ = { title: "Сповіщення", group: "Група" }, uJ = { title: "Сервіси", tribute: "Подяка", streamelements: "StreamElements", connect: "Підключити", integrations: "Інтеграції", sign_out: "Вийти", confirm_sign_out: "Ви впевнені, що хочете вийти з цього сервісу?" }, cJ = { device_code_expired: "Код пристрою застарів. Будь ласка, спробуйте ще раз.", user_code: "Код користувача", authorize_with_code: "Авторизуватися за кодом", waiting_authorization: "Очікування авторизації..." }, dJ = { donation_account_name: "Назва акаунту для донатів", donation_url: "URL донатів", create_donation_account: "Створити акаунт Widy для донатів", connect_to_existing_account: "Підключитися до існуючого акаунту", create_donation_account_pending: "Створення акаунту для донатів..." }, fJ = { title: "Налаштування Twitch", points_currency_ratio: "Співвідношення балів до валюти", rewards_name: "Назва нагород", rewards_list: "Список нагород", add_reward: "Додати нагороду", cost: "Вартість", color: "Колір" }, pJ = { image: "Зображення", audio: "Аудіо", view: "Вигляд", title: "Заголовок", message: "Повідомлення", test_name: "Тест", test_text: "Це тестове сповіщення!", configure: "Налаштувати", test: "Тестувати", add_new_variant: "Додати новий варіант", new_variant: "Новий варіант", variant_title: "Назва варіанту", variant_group: "Група варіанту", status: "Статус", variation_condition: "Умова варіації", group: "Група", Random: "Випадковий", AmountIsGreater: "Сума більша", AmountIsEqual: "Сума дорівнює", delete: "Видалити", sure_delete: "Ви впевнені, що хочете видалити цей варіант?", type: "Тип", Donation: "Донат", Subscription: "Підписка", Follow: "Підписка", Raid: "Рейд" }, hJ = "Загальне", mJ = { title: "Цілі", create: "Створити нову ціль" }, gJ = { new: "Нова ціль", goal: "Ціль", type: "Тип", elements: "Елементи", progress: "Прогрес", goal_title: "Назва цілі", amount_raise: "Сума для збору", start_raising: "Почати збір з", end_date: "Дата завершення цілі", bar_height: "Висота бару", rounding_radius: "Радіус округлення", bar_stroke_thickness: "Товщина обводки бару", background_bar_color: "Колір фонового бару", progress_bar_color: "Колір бару прогресу", goal_progress_bar: "Бар прогресу цілі", progress_bar_layout: "Розташування бару прогресу", remaining_time: "Залишок часу", goal_amount_limits: "Ліміти суми цілі", widget_background: "Фон віджета", background_color: "Колір фону", OnTop: "Зверху", Inside: "Всередині", Below: "Знизу", DoNotDisplay: "Не відображати", title: "Заголовок", limits: "ліміти", raised: "Зібрано", days_left: "Залишилось днів", finish_goal: "Завершити ціль", sure_finish: "Ви впевнені, що хочете завершити цю ціль?", Donation: "Донат", TwitchSubscription: "Підписка Twitch", TwitchFollow: "Підписка Twitch", goal_not_finished: "У вас є незавершена ціль цього типу." }, vJ = "Зберегти", yJ = "Назад", bJ = { copy: "Копіювати", launch: "Запустити", url: "URL віджета", obs_dock_url: "URL для OBS Dock" }, wJ = { top: "Зображення зверху, текст знизу", bottom: "Зображення знизу, текст зверху", left: "Зображення ліворуч, текст праворуч", right: "Зображення праворуч, текст ліворуч", overlay: "Текст поверх зображення" }, SJ = { show: "Показувати зображення" }, _J = { font: "Шрифт", font_size: "Розмір шрифту", text_color: "Колір тексту", bold: "Жирний", italics: "Курсив", underline: "Підкреслений", transformation: "Трансформація", letter_spacing: "Відстань між літерами", word_spacing: "Відстань між словами", horizontal_alignment: "Горизонтальне вирівнювання", vertical_alignment: "Вертикальне вирівнювання", text_preview: "Це попередній перегляд!", name: "Назва" }, EJ = { play: "Відтворити", stop: "Зупинити" }, CJ = "Версія", xJ = { title: "Віджети", add: "Додати віджет", install: "Встановити", delete: "Видалити", installed: "Встановлено", update: "Оновити", all: "Всі", settings: "Налаштування", control: "Керування", delete_confirm: "Ви впевнені, що хочете видалити цей віджет?", invalid_manifest: "Невірний маніфест віджета", add_confirm: "Додавання дозволить {{widget_name}}:", installing: "Встановлення...", updating: "Оновлення...", view_url: "URL перегляду", widget_connection: "Віджет отримує або надсилає запити до:" }, TJ = { "widgets:messages.read": "Читати повідомлення", "widgets:goals.read": "Читати цілі", "widgets:auc-fighter:settings.read": "Читати налаштування auc-fighter", "widgets:settings.read": "Читати налаштування віджета", "widgets:alerts.read": "Читати сповіщення", "widgets:media:settings.read": "Читати налаштування медіа", "widgets:auc-fighter:match-playing.send": "Надсилати стан матчу (грає)", "widgets:auc-fighter:match-winner.send": "Надсилати переможця матчу", "widgets:auc-fighter:match-paused.send": "Надсилати стан матчу (призупинено)", "widgets:auc-fighter:match-id.send": "Надсилати ID матчу", "widgets:alert:played.send": "Надсилати сповіщення відтворено", "widgets:alert:playing.send": "Надсилати сповіщення відтворюється", "widgets:media:played.send": "Надсилати медіа відтворено", "widgets:media:end.send": "Надсилати завершення медіа", "widgets:media:playing.send": "Надсилати медіа відтворюється", "widgets:media:paused.send": "Надсилати медіа призупинено", "widgets:media:error.send": "Надсилати помилку медіа", "widgets:media:replay.send": "Надсилати повтор медіа", "widgets:alert:replay.send": "Надсилати повтор сповіщення", "widgets:alert:skip.send": "Надсилати пропуск сповіщення", "widgets:messages.subscription": "Підписка на повідомлення", "widgets:goal.subscription": "Підписка на цілі", "widgets:settings.subscription": "Підписка на налаштування", "widgets:auc-fighter:start-match.subscription": "Підписка на початок матчу", "widgets:auc-fighter:pause-match.subscription": "Підписка на паузу матчу", "widgets:auc-fighter:resume-match.subscription": "Підписка на відновлення матчу", "widgets:auc-fighter:cancel-match.subscription": "Підписка на скасування матчу", "widgets:auc-fighter:update-match.subscription": "Підписка на оновлення матчу", "widgets:auc-fighter:settings.subscription": "Підписка на налаштування auc-fighter", "widgets:alert:replay.subscription": "Підписка на повтор сповіщення", "widgets:alert:skip.subscription": "Підписка на пропуск сповіщення", "widgets:alert:test.subscription": "Підписка на тест сповіщення", "widgets:alert:skip-playing.subscription": "Підписка на пропуск під час відтворення", "widgets:alert:alerts.subscription": "Підписка на сповіщення", "widgets:media:replay.subscription": "Підписка на повтор медіа", "widgets:media:settings.subscription": "Підписка на налаштування медіа", "widgets:media:skip.subscription": "Підписка на пропуск медіа", "widgets:media:skip-playing-media.subscription": "Підписка на пропуск під час відтворення медіа", "widgets:media:end.subscription": "Підписка на завершення медіа", "widgets:media:error.subscription": "Підписка на помилку медіа", "widgets:media:pause.subscription": "Підписка на паузу медіа", "widgets:media:play.subscription": "Підписка на відтворення медіа", "widgets:alert:played.subscription": "Підписка на відтворене сповіщення", "widgets:view:storage.read": "Читати сховище вигляду віджета", "widgets:control:storage.read": "Читати сховище керування віджетом", "widgets:view:storage.write": "Записувати у сховище вигляду віджета", "widgets:control:storage.write": "Записувати у сховище керування віджетом", "widgets:view:storage.subscription": "Підписка на сховище вигляду віджета", "widgets:control:storage.subscription": "Підписка на сховище керування віджетом" }, RJ = {
-  on: OQ,
-  off: AQ,
-  select: NQ,
-  success: PQ,
-  ok: $Q,
-  cancel: jQ,
-  sound_volume: LQ,
-  skip_media: IQ,
-  skip_alert: FQ,
-  authorization: zQ,
-  error: UQ,
-  updater: VQ,
-  media: BQ,
-  integration: HQ,
-  auction: WQ,
-  maption: qQ,
-  media_settings: YQ,
-  dashboard: GQ,
-  messages: KQ,
-  message: QQ,
-  filter: JQ,
-  settings: XQ,
-  wheel: ZQ,
-  timer: eJ,
-  fighter: tJ,
-  lot: nJ,
-  bid: rJ,
-  lots: aJ,
-  auction_settings: iJ,
-  lots_options: oJ,
-  auc_fighter_settings: sJ,
-  alerts: lJ,
-  services: uJ,
-  twitch: cJ,
-  widy: dJ,
-  twitch_service_settings: fJ,
-  alert: pJ,
-  general: hJ,
-  goals: mJ,
-  goal: gJ,
-  save: vJ,
-  back: yJ,
-  widget: bJ,
-  view: wJ,
-  image: SJ,
-  text: _J,
-  audio: EJ,
-  version: CJ,
-  widgets: xJ,
-  scopes: TJ
-}, kJ = "开启", DJ = "关闭", MJ = "选择", OJ = "成功", AJ = "确定", NJ = "取消", PJ = "声音音量", $J = "快捷键跳过媒体", jJ = "快捷键跳过提醒", LJ = { title: "授权", code: "请求验证码", sign_in: "登录", phone: "手机号码", telegram_code: "Telegram 收到的验证码", your_code: "您的验证码", "2fa_password": "两步验证密码", password: "密码", streamelements: "需要先连接 StreamElements JWT", you_can_find_by_url: "您可以通过以下链接找到", set_id_and_jwt: "您需要为 {{service}} 设置 StreamElements 账号 ID 和 JWT" }, IJ = { wrong_lots_format: "奖品格式错误", not_connected: "未连接", request_error: "请求错误" }, FJ = { title: "更新", description: "有新版本可用，是否现在更新？", update: "更新", later: "稍后", downloading: "正在下载..." }, zJ = { title: "媒体", youtube: "YouTube", twitch: "Twitch", tiktok: "TikTok" }, UJ = { tribute: "显示致敬消息" }, VJ = { lots: "奖品", wheel: "转盘", settings: "设置" }, BJ = { set_point: "设置点位", meter_price: "每米价格", amount: "金额", finish: "完成", lat_error: "纬度必须在 -90 到 90 之间", lng_error: "经度必须在 -180 到 180 之间", rules: "指针要在消息中自动改变位置，消息内只能包含以下其中一个词：" }, HJ = { enabled: "已启用", min_amount: "最低金额", video_volume: "视频音量", min_views: "最小观看次数" }, WJ = { messages: "消息", settings: "设置", services: "服务", alerts: "提醒", media: "媒体", goals: "目标", auction: "拍卖", maption: "地图", fighter: "对战", widgets: "小部件", info: "信息" }, qJ = { title: "最新消息" }, YJ = { skip: "跳过", replay: "重播", donated: "{{user_name}} 捐赠了 {{amount}}{{currency}}", followed: "{{user_name}} 关注了", subscribed: "{{user_name}} 订阅了", gifted_subscriptions: "{{user_name}} 赠送了 {{total}} 个订阅", raided_with: "{{user_name}} 带 {{viewers}} 名观众突袭" }, GJ = { title: "过滤消息", exclude_donations: "排除捐赠", exclude_follows: "排除关注", exclude_subscriptions: "排除订阅", exclude_raids: "排除突袭" }, KJ = { title: "设置", pause: "暂停提醒消息", moderation_duration: "消息停留时长", black_list: "黑名单", remove_links: "移除链接", language: "语言", sec: "秒", currency: "货币", tts_type: "TTS 类型" }, QJ = { normal: "普通", dropout: "淘汰", spin: "旋转", speed: "转盘速度" }, JJ = { continue: "继续", pause: "暂停", reset: "重置", add_time: "增加时间", reduce_time: "减少时间", add_timex2: "增加时间 x2" }, XJ = { title: "对战", match: "比赛", final: "决赛", game: "游戏", cancel: "取消比赛", winner: "获胜者", settings: "设置", create_game: "从奖品创建比赛", start: "开始", pause: "暂停", rematch: "重赛", resume: "继续" }, ZJ = { name: "名称", delete: "删除", add: "增加金额" }, eX = { delete: "删除", to_lot: "添加到奖品", new: "新建", add_to_random_slot: "添加到随机奖品" }, tX = { add: "添加", new_lot_name: "新奖品名称", search: "搜索奖品", total: "总计" }, nX = { leader_change: "领先者变更", new_lot: "新奖品", new_donation: "新捐赠", show_odds: "显示赔率", show_total_sum: "显示总金额", greater_timer_adding_time: "领先时增加时间", not_add_time_if: "不增加时间的情况", adding_time: "增加时间" }, rX = { import_lots: "导入奖品", clear_lots: "清空奖品" }, aX = { round_duration: "回合时长", add_players: "添加选手" }, iX = { title: "提醒", group: "分组" }, oX = { title: "服务", tribute: "致敬", streamelements: "StreamElements", connect: "连接", integrations: "集成", sign_out: "退出登录", confirm_sign_out: "确定要退出此服务吗？" }, sX = { device_code_expired: "设备验证码已过期，请重试。", user_code: "用户验证码", authorize_with_code: "使用验证码授权", waiting_authorization: "等待授权中..." }, lX = { donation_account_name: "捐赠账号名称", donation_url: "捐赠链接", create_donation_account: "创建 Widy 捐赠账号", connect_to_existing_account: "连接到已有账号", create_donation_account_pending: "正在创建捐赠账号..." }, uX = { title: "Twitch 设置", points_currency_ratio: "积分货币比例", rewards_name: "奖励名称", rewards_list: "奖励列表", add_reward: "添加奖励", cost: "价格", color: "颜色" }, cX = { image: "图片", audio: "音频", view: "视图", title: "标题", message: "消息", test_name: "测试", test_text: "这是一个测试提醒！", configure: "配置", test: "测试", add_new_variant: "添加新变体", new_variant: "新变体", variant_title: "变体标题", variant_group: "变体分组", status: "状态", variation_condition: "变体条件", group: "分组", Random: "随机", AmountIsGreater: "金额大于", AmountIsEqual: "金额等于", delete: "删除", sure_delete: "确定要删除此变体吗？", type: "类型", Donation: "捐赠", Subscription: "订阅", Follow: "关注", Raid: "突袭" }, dX = "常规", fX = { title: "目标", create: "创建新目标" }, pX = { new: "新目标", goal: "目标", type: "类型", elements: "元素", progress: "进度", goal_title: "目标标题", amount_raise: "目标金额", start_raising: "起始金额", end_date: "结束日期", bar_height: "进度条高度", rounding_radius: "圆角半径", bar_stroke_thickness: "进度条边框粗细", background_bar_color: "背景条颜色", progress_bar_color: "进度条颜色", goal_progress_bar: "目标进度条", progress_bar_layout: "进度条布局", remaining_time: "剩余时间", goal_amount_limits: "目标金额限制", widget_background: "小部件背景", background_color: "背景颜色", OnTop: "上方", Inside: "内部", Below: "下方", DoNotDisplay: "不显示", title: "标题", limits: "限制", raised: "已筹集", days_left: "剩余天数", finish_goal: "完成目标", sure_finish: "确定要完成此目标吗？", Donation: "捐赠", TwitchSubscription: "Twitch 订阅", TwitchFollow: "Twitch 关注", goal_not_finished: "您有同类型的未完成目标。" }, hX = "保存", mX = "返回", gX = { copy: "复制", launch: "启动", url: "小部件链接", obs_dock_url: "OBS 停靠链接" }, vX = { top: "图片在上，文字在下", bottom: "图片在下，文字在上", left: "图片在左，文字在右", right: "图片在右，文字在左", overlay: "文字覆盖在图片上" }, yX = { show: "显示图片" }, bX = { font: "字体", font_size: "字体大小", text_color: "文字颜色", bold: "加粗", italics: "斜体", underline: "下划线", transformation: "文字转换", letter_spacing: "字母间距", word_spacing: "单词间距", horizontal_alignment: "水平对齐", vertical_alignment: "垂直对齐", text_preview: "这是一段预览文字！", name: "名称" }, wX = { play: "播放", stop: "停止" }, SX = "版本", _X = { title: "小部件", add: "添加小部件", install: "安装", delete: "删除", installed: "已安装", update: "更新", all: "全部", settings: "设置", control: "控制", delete_confirm: "确定要删除此小部件吗？", invalid_manifest: "无效的小部件清单", add_confirm: "添加后将允许 {{widget_name}}：", installing: "正在安装...", updating: "正在更新...", view_url: "查看链接", widget_connection: "小部件将获取或发送请求至：" }, EX = { "widgets:messages.read": "读取消息", "widgets:goals.read": "读取目标", "widgets:auc-fighter:settings.read": "读取竞拍对战设置", "widgets:settings.read": "读取小部件设置", "widgets:alerts.read": "读取提醒", "widgets:media:settings.read": "读取媒体设置", "widgets:auc-fighter:match-playing.send": "发送比赛进行中", "widgets:auc-fighter:match-winner.send": "发送比赛获胜者", "widgets:auc-fighter:match-paused.send": "发送比赛暂停", "widgets:auc-fighter:match-id.send": "发送比赛 ID", "widgets:alert:played.send": "发送提醒已播放", "widgets:alert:playing.send": "发送提醒正在播放", "widgets:media:played.send": "发送媒体已播放", "widgets:media:end.send": "发送媒体结束", "widgets:media:playing.send": "发送媒体正在播放", "widgets:media:paused.send": "发送媒体暂停", "widgets:media:error.send": "发送媒体错误", "widgets:media:replay.send": "发送媒体重播", "widgets:alert:replay.send": "发送提醒重播", "widgets:alert:skip.send": "发送提醒跳过", "widgets:messages.subscription": "订阅消息", "widgets:goal.subscription": "订阅目标", "widgets:settings.subscription": "订阅设置", "widgets:auc-fighter:start-match.subscription": "订阅开始比赛", "widgets:auc-fighter:pause-match.subscription": "订阅暂停比赛", "widgets:auc-fighter:resume-match.subscription": "订阅继续比赛", "widgets:auc-fighter:cancel-match.subscription": "订阅取消比赛", "widgets:auc-fighter:update-match.subscription": "订阅更新比赛", "widgets:auc-fighter:settings.subscription": "订阅竞拍对战设置", "widgets:alert:replay.subscription": "订阅提醒重播", "widgets:alert:skip.subscription": "订阅提醒跳过", "widgets:alert:test.subscription": "订阅提醒测试", "widgets:alert:skip-playing.subscription": "订阅跳过正在播放的提醒", "widgets:alert:alerts.subscription": "订阅提醒", "widgets:media:replay.subscription": "订阅媒体重播", "widgets:media:settings.subscription": "订阅媒体设置", "widgets:media:skip.subscription": "订阅媒体跳过", "widgets:media:skip-playing-media.subscription": "订阅跳过正在播放的媒体", "widgets:media:end.subscription": "订阅媒体结束", "widgets:media:error.subscription": "订阅媒体错误", "widgets:media:pause.subscription": "订阅媒体暂停", "widgets:media:play.subscription": "订阅媒体播放", "widgets:alert:played.subscription": "订阅提醒已播放", "widgets:view:storage.read": "读取小部件视图存储", "widgets:control:storage.read": "读取小部件控制存储", "widgets:view:storage.write": "写入小部件视图存储", "widgets:control:storage.write": "写入小部件控制存储", "widgets:view:storage.subscription": "订阅小部件视图存储", "widgets:control:storage.subscription": "订阅小部件控制存储" }, CX = {
-  on: kJ,
-  off: DJ,
-  select: MJ,
-  success: OJ,
-  ok: AJ,
-  cancel: NJ,
-  sound_volume: PJ,
-  skip_media: $J,
-  skip_alert: jJ,
-  authorization: LJ,
-  error: IJ,
-  updater: FJ,
-  media: zJ,
-  integration: UJ,
-  auction: VJ,
-  maption: BJ,
-  media_settings: HJ,
-  dashboard: WJ,
-  messages: qJ,
-  message: YJ,
-  filter: GJ,
-  settings: KJ,
-  wheel: QJ,
-  timer: JJ,
-  fighter: XJ,
-  lot: ZJ,
-  bid: eX,
-  lots: tX,
-  auction_settings: nX,
-  lots_options: rX,
-  auc_fighter_settings: aX,
-  alerts: iX,
-  services: oX,
-  twitch: sX,
-  widy: lX,
-  twitch_service_settings: uX,
-  alert: cX,
-  general: dX,
-  goals: fX,
-  goal: pX,
-  save: hX,
-  back: mX,
-  widget: gX,
-  view: vX,
-  image: yX,
-  text: bX,
-  audio: wX,
-  version: SX,
-  widgets: _X,
-  scopes: EX
+  none: nY,
+  start: rY,
+  stop: aY,
+  disconnected: iY,
+  authorization: oY,
+  error: sY,
+  updater: lY,
+  media: uY,
+  integration: cY,
+  auction: dY,
+  maption: fY,
+  media_settings: pY,
+  dashboard: hY,
+  messages: mY,
+  message: gY,
+  filter: vY,
+  settings: yY,
+  wheel: bY,
+  timer: wY,
+  fighter: SY,
+  lot: _Y,
+  bid: EY,
+  lots: CY,
+  auction_settings: xY,
+  lots_options: TY,
+  auc_fighter_settings: RY,
+  alerts: kY,
+  services: DY,
+  twitch: MY,
+  widy: OY,
+  twitch_service_settings: AY,
+  alert: NY,
+  general: PY,
+  goals: $Y,
+  goal: jY,
+  save: LY,
+  back: IY,
+  widget: FY,
+  view: zY,
+  image: UY,
+  text: VY,
+  audio: BY,
+  version: HY,
+  widgets: WY,
+  scopes: qY,
+  nsfw: YY
+}, KY = "On", QY = "Off", JY = "Select", XY = "Success", ZY = "Ok", e8 = "Cancel", t8 = "Sound volume", n8 = "Shortcut skip media", r8 = "Shortcut skip alert", a8 = "None", i8 = "Start", o8 = "Stop", s8 = "Delay", l8 = "ms", u8 = "Disconnected", c8 = "Documentation", d8 = { title: "Authorization", code: "Request code", sign_in: "Sign in", phone: "Phone number", telegram_code: "Code from telegram", your_code: "Your code", "2fa_password": "2fa Password", password: "Password", streamelements: "You need connect with StreamElements JWT first", you_can_find_by_url: "You can find it by this url", set_id_and_jwt: "You need set StreamElements Account ID and JWT for {{service}}" }, f8 = { wrong_lots_format: "Wrong lots format", not_connected: "Not connected", request_error: "Request error" }, p8 = { title: "Update", description: "A new version of the app is available. Do you want to update?", update: "Update", later: "Later", downloading: "Downloading..." }, h8 = { title: "Media", youtube: "Youtube", twitch: "Twitch", tiktok: "Tiktok" }, m8 = { tribute: "Show tribute messages" }, g8 = { lots: "Lots", wheel: "Wheel", settings: "Settings" }, v8 = { set_point: "Set point", meter_price: "Price for 1 meter", amount: "Amount", finish: "Finish", lat_error: "Latitude must be between -90 and 90", lng_error: "Longitude must be between -180 and 180", rules: "For the pointer to automatically change position in the message there should be only one word from:" }, y8 = { enabled: "Enabled", min_amount: "Min amount", video_volume: "Video volume", min_views: "Min views" }, b8 = { messages: "Messages", settings: "Settings", services: "Services", alerts: "Alerts", media: "Media", goals: "Goals", auction: "Auction", maption: "Maption", fighter: "Fighter", widgets: "Widgets", info: "Info", nsfw: "NSFW" }, w8 = { title: "Last messages" }, S8 = { skip: "Skip", replay: "Replay", donated: "{{user_name}} donated {{amount}}{{currency}}", followed: "{{user_name}} followed", subscribed: "{{user_name}} subscribed", gifted_subscriptions: "{{user_name}} gift {{total}} subscriptions", raided_with: "{{user_name}} raided with {{viewers}} viewers" }, _8 = { title: "Filter messages", exclude_donations: "Exclude donations", exclude_follows: "Exclude follows", exclude_subscriptions: "Exclude subscriptions", exclude_raids: "Exclude raids" }, E8 = { title: "Settings", pause: "Pause alert messages", moderation_duration: "Moderation duration", black_list: "Black list", remove_links: "Remove links", language: "Language", sec: "Sec", currency: "Currency", tts_type: "TTS type" }, C8 = { normal: "Normal", dropout: "Dropout", spin: "Spin", speed: "Wheel speed" }, x8 = { continue: "Continue", pause: "Pause", reset: "Reset", add_time: "Add time", reduce_time: "Reduce time", add_timex2: "Add time x2" }, T8 = { title: "Fighter", match: "Match", final: "Final", game: "Game", cancel: "Cancel game", winner: "Winner", settings: "Settings", create_game: "Create game from lots", start: "Start", pause: "Pause", rematch: "Rematch", resume: "Resume" }, R8 = { name: "Name", delete: "Delete", add: "Add amount" }, k8 = { delete: "Delete", to_lot: "To lot", new: "New", add_to_random_slot: "Add to random lot" }, D8 = { add: "Add", new_lot_name: "New lot name", search: "Search lot", total: "Total" }, M8 = { leader_change: "Leader change", new_lot: "New lot", new_donation: "New donation", show_odds: "Show odds", show_total_sum: "Show total sum", greater_timer_adding_time: "Greater timer adding time", not_add_time_if: "Not add time if", adding_time: "Time" }, O8 = { import_lots: "Import lots", clear_lots: "Clear lots" }, A8 = { round_duration: "Round duration", add_players: "Add players" }, N8 = { title: "Alerts", group: "Group" }, P8 = { title: "Services", tribute: "Tribute", streamelements: "Streamelements", connect: "Connect", integrations: "Integrations", sign_out: "Sign out", confirm_sign_out: "Are you sure you want to sign out from this service?" }, $8 = { device_code_expired: "Device code expired. Please try again.", user_code: "User code", authorize_with_code: "Authorize with code", waiting_authorization: "Waiting for authorization..." }, j8 = { donation_account_name: "Name of donation account", donation_url: "Donation url", create_donation_account: "Create Widy donation account", connect_to_existing_account: "Connect to existing account", create_donation_account_pending: "Creating donation account..." }, L8 = { title: "Twitch settings", points_currency_ratio: "Points currency ratio", rewards_name: "Rewards name", rewards_list: "Rewards list", add_reward: "Add reward", cost: "Cost", color: "Color" }, I8 = { image: "Image", audio: "Audio", view: "View", title: "Title", message: "Message", test_name: "Test", test_text: "This is a test alert!", configure: "Configure", test: "Test", add_new_variant: "Add new variant", new_variant: "New variant", variant_title: "Variant title", variant_group: "Variant group", status: "Status", variation_condition: "Variation condition", group: "Group", Random: "Random", AmountIsGreater: "Amount is greater", AmountIsEqual: "Amount is equal", delete: "Delete", sure_delete: "Are you sure you want to delete this variation?", type: "Type", Donation: "Donation", Subscription: "Subscription", Follow: "Follow", Raid: "Raid" }, F8 = "General", z8 = { title: "Goals", create: "Crate new goal" }, U8 = { new: "New goal", goal: "View", type: "Type", elements: "Elements", progress: "Progress", goal_title: "Goal title", amount_raise: "Amount to raise", start_raising: "Start raising from", end_date: "End goal date", bar_height: "Bar height", rounding_radius: "Rounding radius", bar_stroke_thickness: "Bar stroke thickness", background_bar_color: "Background bar color", progress_bar_color: "Progress bar color", goal_progress_bar: "Goal progress bar", progress_bar_layout: "Progress bar layout", remaining_time: "Remaining time", goal_amount_limits: "Goal amount limits", widget_background: "Widget background", background_color: "Background color", OnTop: "On top", Inside: "Inside", Below: "Below", DoNotDisplay: "Do not display", title: "Title", limits: "limits", raised: "Raised", days_left: "Days left", finish_goal: "Finish goal", sure_finish: "Are you sure you want to finish this goal?", Donation: "Donation", TwitchSubscription: "Twitch Subscription", TwitchFollow: "Twitch Follow", goal_not_finished: "You have an unfinished goal of this type." }, V8 = "Save", B8 = "Back", H8 = { copy: "Copy", launch: "Launch", url: "Widget url", obs_dock_url: "Obs dock url" }, W8 = { top: "Image top, text bottom", bottom: "Image bottom, text top", left: "Image left, text right", right: "Image right, text left", overlay: "Text overlay image" }, q8 = { show: "Show image" }, Y8 = { font: "Font", font_size: "Font size", text_color: "Text color", bold: "Bold", italics: "Italics", underline: "Underline", transformation: "Transformation", letter_spacing: "Letter spacing", word_spacing: "Word spacing", horizontal_alignment: "Horizontal alignment", vertical_alignment: "Vertical alignment", text_preview: "This is a preview!", name: "Name" }, G8 = { play: "Play", stop: "Stop" }, K8 = "Version", Q8 = { title: "Widgets", add: "Add widget", install: "Install", delete: "Delete", installed: "Installed", update: "Update", all: "All", settings: "Settings", control: "Control", delete_confirm: "Are you sure you want to delete this widget?", invalid_manifest: "Invalid widget manifest", add_confirm: "Adding will allow {{widget_name}} to:", installing: "Installing...", updating: "Updating...", view_url: "View url", widget_connection: "Widget get or send requests to:" }, J8 = { "widgets:messages.read": "Read messages", "widgets:goals.read": "Read goals", "widgets:auc-fighter:settings.read": "Read auc-fighter settings", "widgets:settings.read": "Read widget settings", "widgets:alerts.read": "Read alerts", "widgets:media:settings.read": "Read media settings", "widgets:auc-fighter:match-playing.send": "Send match playing", "widgets:auc-fighter:match-winner.send": "Send match winner", "widgets:auc-fighter:match-paused.send": "Send match paused", "widgets:auc-fighter:match-id.send": "Send match ID", "widgets:alert:played.send": "Send alert played", "widgets:alert:playing.send": "Send alert playing", "widgets:media:played.send": "Send media played", "widgets:media:end.send": "Send media end", "widgets:media:playing.send": "Send media playing", "widgets:media:paused.send": "Send media paused", "widgets:media:error.send": "Send media error", "widgets:media:replay.send": "Send media replay", "widgets:alert:replay.send": "Send alert replay", "widgets:alert:skip.send": "Send alert skip", "widgets:messages.subscription": "Subscribe messages", "widgets:goal.subscription": "Subscribe goal", "widgets:settings.subscription": "Subscribe settings", "widgets:auc-fighter:start-match.subscription": "Subscribe start match", "widgets:auc-fighter:pause-match.subscription": "Subscribe pause match", "widgets:auc-fighter:resume-match.subscription": "Subscribe resume match", "widgets:auc-fighter:cancel-match.subscription": "Subscribe cancel match", "widgets:auc-fighter:update-match.subscription": "Subscribe update match", "widgets:auc-fighter:settings.subscription": "Subscribe auc-fighter settings", "widgets:alert:replay.subscription": "Subscribe alert replay", "widgets:alert:skip.subscription": "Subscribe alert skip", "widgets:alert:test.subscription": "Subscribe alert test", "widgets:alert:skip-playing.subscription": "Subscribe alert skip playing", "widgets:alert:alerts.subscription": "Subscribe alerts", "widgets:media:replay.subscription": "Subscribe media replay", "widgets:media:settings.subscription": "Subscribe media settings", "widgets:media:skip.subscription": "Subscribe media skip", "widgets:media:skip-playing-media.subscription": "Subscribe media skip playing", "widgets:media:end.subscription": "Subscribe media end", "widgets:media:error.subscription": "Subscribe media error", "widgets:media:pause.subscription": "Subscribe media pause", "widgets:media:play.subscription": "Subscribe media play", "widgets:alert:played.subscription": "Subscribe alert played", "widgets:view:storage.read": "Read widget view storage", "widgets:control:storage.read": "Read widget control storage", "widgets:view:storage.write": "Write to widget view storage", "widgets:control:storage.write": "Write to widget control storage", "widgets:view:storage.subscription": "Subscribe widget view storage", "widgets:control:storage.subscription": "Subscribe widget control storage" }, X8 = { title: "NSFW", nsfw_window: "NSFW window", settings: "Settings", window: "Window", blur_timeout_duration: "Blur timeout duration", confidence_threshold: "Confidence threshold", anus: "Anus", make_love: "Make love", nipple: "Nipple", penis: "Penis", vagina: "Vagina" }, Z8 = {
+  on: KY,
+  off: QY,
+  select: JY,
+  success: XY,
+  ok: ZY,
+  cancel: e8,
+  sound_volume: t8,
+  skip_media: n8,
+  skip_alert: r8,
+  none: a8,
+  start: i8,
+  stop: o8,
+  delay: s8,
+  milliseconds: l8,
+  disconnected: u8,
+  documentation: c8,
+  authorization: d8,
+  error: f8,
+  updater: p8,
+  media: h8,
+  integration: m8,
+  auction: g8,
+  maption: v8,
+  media_settings: y8,
+  dashboard: b8,
+  messages: w8,
+  message: S8,
+  filter: _8,
+  settings: E8,
+  wheel: C8,
+  timer: x8,
+  fighter: T8,
+  lot: R8,
+  bid: k8,
+  lots: D8,
+  auction_settings: M8,
+  lots_options: O8,
+  auc_fighter_settings: A8,
+  alerts: N8,
+  services: P8,
+  twitch: $8,
+  widy: j8,
+  twitch_service_settings: L8,
+  alert: I8,
+  general: F8,
+  goals: z8,
+  goal: U8,
+  save: V8,
+  back: B8,
+  widget: H8,
+  view: W8,
+  image: q8,
+  text: Y8,
+  audio: G8,
+  version: K8,
+  widgets: Q8,
+  scopes: J8,
+  nsfw: X8
+}, eG = "Encendido", tG = "Apagado", nG = "Seleccionar", rG = "Éxito", aG = "Aceptar", iG = "Cancelar", oG = "Volumen de sonido", sG = "Atajo saltar media", lG = "Atajo saltar alerta", uG = "Ninguno", cG = "Iniciar", dG = "Detener", fG = "Desconectado", pG = { title: "Autorización", code: "Solicitar código", sign_in: "Iniciar sesión", phone: "Número de teléfono", telegram_code: "Código de Telegram", your_code: "Tu código", "2fa_password": "Contraseña 2FA", password: "Contraseña", streamelements: "Necesitas conectar primero con StreamElements JWT", you_can_find_by_url: "Puedes encontrarlo en esta URL", set_id_and_jwt: "Necesitas configurar el ID de cuenta y JWT de StreamElements para {{service}}" }, hG = { wrong_lots_format: "Formato de lotes incorrecto", not_connected: "No conectado", request_error: "Error en la solicitud" }, mG = { title: "Actualización", description: "Hay una nueva versión de la aplicación disponible. ¿Quieres actualizar?", update: "Actualizar", later: "Más tarde", downloading: "Descargando..." }, gG = { title: "Media", youtube: "YouTube", twitch: "Twitch", tiktok: "TikTok" }, vG = { tribute: "Mostrar mensajes de tributo" }, yG = { lots: "Lotes", wheel: "Ruleta", settings: "Ajustes" }, bG = { set_point: "Establecer punto", meter_price: "Precio por 1 metro", amount: "Cantidad", finish: "Finalizar", lat_error: "La latitud debe estar entre -90 y 90", lng_error: "La longitud debe estar entre -180 y 180", rules: "Para que el puntero cambie automáticamente de posición en el mensaje, solo debe haber una palabra de:" }, wG = { enabled: "Activado", min_amount: "Cantidad mínima", video_volume: "Volumen del video", min_views: "Vistas mínimas" }, SG = { messages: "Mensajes", settings: "Ajustes", services: "Servicios", alerts: "Alertas", media: "Media", goals: "Metas", auction: "Subasta", maption: "Maption", fighter: "Luchador", widgets: "Widgets", info: "Información", nsfw: "NSFW" }, _G = { title: "Últimos mensajes" }, EG = { skip: "Saltar", replay: "Repetir", donated: "{{user_name}} donó {{amount}}{{currency}}", followed: "{{user_name}} te siguió", subscribed: "{{user_name}} se suscribió", gifted_subscriptions: "{{user_name}} regaló {{total}} suscripciones", raided_with: "{{user_name}} hizo raid con {{viewers}} viewers" }, CG = { title: "Filtrar mensajes", exclude_donations: "Excluir donaciones", exclude_follows: "Excluir follows", exclude_subscriptions: "Excluir suscripciones", exclude_raids: "Excluir raids" }, xG = { title: "Ajustes", pause: "Pausar mensajes de alerta", moderation_duration: "Duración de moderación", black_list: "Lista negra", remove_links: "Eliminar enlaces", language: "Idioma", sec: "Seg", currency: "Moneda", tts_type: "Tipo de TTS" }, TG = { normal: "Normal", dropout: "Eliminación", spin: "Girar", speed: "Velocidad de la ruleta" }, RG = { continue: "Continuar", pause: "Pausar", reset: "Reiniciar", add_time: "Añadir tiempo", reduce_time: "Reducir tiempo", add_timex2: "Añadir tiempo x2" }, kG = { title: "Luchador", match: "Combate", final: "Final", game: "Partida", cancel: "Cancelar partida", winner: "Ganador", settings: "Ajustes", create_game: "Crear partida desde lotes", start: "Iniciar", pause: "Pausar", rematch: "Revancha", resume: "Reanudar" }, DG = { name: "Nombre", delete: "Eliminar", add: "Añadir cantidad" }, MG = { delete: "Eliminar", to_lot: "Al lote", new: "Nuevo", add_to_random_slot: "Añadir a lote aleatorio" }, OG = { add: "Añadir", new_lot_name: "Nombre del nuevo lote", search: "Buscar lote", total: "Total" }, AG = { leader_change: "Cambio de líder", new_lot: "Nuevo lote", new_donation: "Nueva donación", show_odds: "Mostrar probabilidades", show_total_sum: "Mostrar suma total", greater_timer_adding_time: "Añadir tiempo al temporizador mayor", not_add_time_if: "No añadir tiempo si", adding_time: "Tiempo" }, NG = { import_lots: "Importar lotes", clear_lots: "Borrar lotes" }, PG = { round_duration: "Duración del round", add_players: "Añadir jugadores" }, $G = { title: "Alertas", group: "Grupo" }, jG = { title: "Servicios", tribute: "Tributo", streamelements: "StreamElements", connect: "Conectar", integrations: "Integraciones", sign_out: "Cerrar sesión", confirm_sign_out: "¿Estás seguro de que quieres cerrar sesión de este servicio?" }, LG = { device_code_expired: "Código de dispositivo expirado. Por favor, inténtalo de nuevo.", user_code: "Código de usuario", authorize_with_code: "Autorizar con código", waiting_authorization: "Esperando autorización..." }, IG = { donation_account_name: "Nombre de la cuenta de donaciones", donation_url: "URL de donación", create_donation_account: "Crear cuenta de donaciones Widy", connect_to_existing_account: "Conectar a cuenta existente", create_donation_account_pending: "Creando cuenta de donaciones..." }, FG = { title: "Ajustes de Twitch", points_currency_ratio: "Ratio puntos-moneda", rewards_name: "Nombre de recompensas", rewards_list: "Lista de recompensas", add_reward: "Añadir recompensa", cost: "Costo", color: "Color" }, zG = { image: "Imagen", audio: "Audio", view: "Vista", title: "Título", message: "Mensaje", test_name: "Prueba", test_text: "¡Esta es una alerta de prueba!", configure: "Configurar", test: "Probar", add_new_variant: "Añadir nueva variante", new_variant: "Nueva variante", variant_title: "Título de variante", variant_group: "Grupo de variante", status: "Estado", variation_condition: "Condición de variación", group: "Grupo", Random: "Aleatorio", AmountIsGreater: "La cantidad es mayor", AmountIsEqual: "La cantidad es igual", delete: "Eliminar", sure_delete: "¿Estás seguro de que quieres eliminar esta variación?", type: "Tipo", Donation: "Donación", Subscription: "Suscripción", Follow: "Follow", Raid: "Raid" }, UG = "General", VG = { title: "Metas", create: "Crear nueva meta" }, BG = { new: "Nueva meta", goal: "Meta", type: "Tipo", elements: "Elementos", progress: "Progreso", goal_title: "Título de la meta", amount_raise: "Cantidad a recaudar", start_raising: "Empezar recaudación desde", end_date: "Fecha de finalización", bar_height: "Altura de la barra", rounding_radius: "Radio de redondeo", bar_stroke_thickness: "Grosor del borde de la barra", background_bar_color: "Color de barra de fondo", progress_bar_color: "Color de barra de progreso", goal_progress_bar: "Barra de progreso de meta", progress_bar_layout: "Disposición de la barra de progreso", remaining_time: "Tiempo restante", goal_amount_limits: "Límites de cantidad de meta", widget_background: "Fondo del widget", background_color: "Color de fondo", OnTop: "Encima", Inside: "Dentro", Below: "Debajo", DoNotDisplay: "No mostrar", title: "Título", limits: "límites", raised: "Recaudado", days_left: "Días restantes", finish_goal: "Finalizar meta", sure_finish: "¿Estás seguro de que quieres finalizar esta meta?", Donation: "Donación", TwitchSubscription: "Suscripción de Twitch", TwitchFollow: "Follow de Twitch", goal_not_finished: "Tienes una meta sin finalizar de este tipo." }, HG = "Guardar", WG = "Atrás", qG = { copy: "Copiar", launch: "Lanzar", url: "URL del widget", obs_dock_url: "URL del dock de OBS" }, YG = { top: "Imagen arriba, texto abajo", bottom: "Imagen abajo, texto arriba", left: "Imagen izquierda, texto derecha", right: "Imagen derecha, texto izquierda", overlay: "Texto sobre la imagen" }, GG = { show: "Mostrar imagen" }, KG = { font: "Fuente", font_size: "Tamaño de fuente", text_color: "Color del texto", bold: "Negrita", italics: "Cursiva", underline: "Subrayado", transformation: "Transformación", letter_spacing: "Espaciado de letras", word_spacing: "Espaciado de palabras", horizontal_alignment: "Alineación horizontal", vertical_alignment: "Alineación vertical", text_preview: "¡Esto es una vista previa!", name: "Nombre" }, QG = { play: "Reproducir", stop: "Detener" }, JG = "Versión", XG = { title: "Widgets", add: "Añadir widget", install: "Instalar", delete: "Eliminar", installed: "Instalado", update: "Actualizar", all: "Todos", settings: "Ajustes", control: "Control", delete_confirm: "¿Estás seguro de que quieres eliminar este widget?", invalid_manifest: "Manifiesto de widget inválido", add_confirm: "Añadir permitirá a {{widget_name}}:", installing: "Instalando...", updating: "Actualizando...", view_url: "Ver URL", widget_connection: "El widget obtiene o envía solicitudes a:" }, ZG = { "widgets:messages.read": "Leer mensajes", "widgets:goals.read": "Leer metas", "widgets:auc-fighter:settings.read": "Leer ajustes de auc-fighter", "widgets:settings.read": "Leer ajustes del widget", "widgets:alerts.read": "Leer alertas", "widgets:media:settings.read": "Leer ajustes de media", "widgets:auc-fighter:match-playing.send": "Enviar combate en curso", "widgets:auc-fighter:match-winner.send": "Enviar ganador del combate", "widgets:auc-fighter:match-paused.send": "Enviar combate pausado", "widgets:auc-fighter:match-id.send": "Enviar ID del combate", "widgets:alert:played.send": "Enviar alerta reproducida", "widgets:alert:playing.send": "Enviar alerta reproduciéndose", "widgets:media:played.send": "Enviar media reproducida", "widgets:media:end.send": "Enviar fin de media", "widgets:media:playing.send": "Enviar media reproduciéndose", "widgets:media:paused.send": "Enviar media pausada", "widgets:media:error.send": "Enviar error de media", "widgets:media:replay.send": "Enviar repetición de media", "widgets:alert:replay.send": "Enviar repetición de alerta", "widgets:alert:skip.send": "Enviar salto de alerta", "widgets:messages.subscription": "Suscribirse a mensajes", "widgets:goal.subscription": "Suscribirse a meta", "widgets:settings.subscription": "Suscribirse a ajustes", "widgets:auc-fighter:start-match.subscription": "Suscribirse a inicio de combate", "widgets:auc-fighter:pause-match.subscription": "Suscribirse a pausa de combate", "widgets:auc-fighter:resume-match.subscription": "Suscribirse a reanudación de combate", "widgets:auc-fighter:cancel-match.subscription": "Suscribirse a cancelación de combate", "widgets:auc-fighter:update-match.subscription": "Suscribirse a actualización de combate", "widgets:auc-fighter:settings.subscription": "Suscribirse a ajustes de auc-fighter", "widgets:alert:replay.subscription": "Suscribirse a repetición de alerta", "widgets:alert:skip.subscription": "Suscribirse a salto de alerta", "widgets:alert:test.subscription": "Suscribirse a prueba de alerta", "widgets:alert:skip-playing.subscription": "Suscribirse a salto de alerta en reproducción", "widgets:alert:alerts.subscription": "Suscribirse a alertas", "widgets:media:replay.subscription": "Suscribirse a repetición de media", "widgets:media:settings.subscription": "Suscribirse a ajustes de media", "widgets:media:skip.subscription": "Suscribirse a salto de media", "widgets:media:skip-playing-media.subscription": "Suscribirse a salto de media en reproducción", "widgets:media:end.subscription": "Suscribirse a fin de media", "widgets:media:error.subscription": "Suscribirse a error de media", "widgets:media:pause.subscription": "Suscribirse a pausa de media", "widgets:media:play.subscription": "Suscribirse a reproducción de media", "widgets:alert:played.subscription": "Suscribirse a alerta reproducida", "widgets:view:storage.read": "Leer almacenamiento de vista del widget", "widgets:control:storage.read": "Leer almacenamiento de control del widget", "widgets:view:storage.write": "Escribir en almacenamiento de vista del widget", "widgets:control:storage.write": "Escribir en almacenamiento de control del widget", "widgets:view:storage.subscription": "Suscribirse al almacenamiento de vista del widget", "widgets:control:storage.subscription": "Suscribirse al almacenamiento de control del widget" }, e7 = { title: "NSFW", nsfw_window: "Ventana NSFW", settings: "Ajustes", window: "Ventana", blur_timeout_duration: "Duración del desenfoque", confidence_threshold: "Umbral de confianza", anus: "Ano", make_love: "Hacer el amor", nipple: "Pezón", penis: "Pene", vagina: "Vagina" }, t7 = {
+  on: eG,
+  off: tG,
+  select: nG,
+  success: rG,
+  ok: aG,
+  cancel: iG,
+  sound_volume: oG,
+  skip_media: sG,
+  skip_alert: lG,
+  none: uG,
+  start: cG,
+  stop: dG,
+  disconnected: fG,
+  authorization: pG,
+  error: hG,
+  updater: mG,
+  media: gG,
+  integration: vG,
+  auction: yG,
+  maption: bG,
+  media_settings: wG,
+  dashboard: SG,
+  messages: _G,
+  message: EG,
+  filter: CG,
+  settings: xG,
+  wheel: TG,
+  timer: RG,
+  fighter: kG,
+  lot: DG,
+  bid: MG,
+  lots: OG,
+  auction_settings: AG,
+  lots_options: NG,
+  auc_fighter_settings: PG,
+  alerts: $G,
+  services: jG,
+  twitch: LG,
+  widy: IG,
+  twitch_service_settings: FG,
+  alert: zG,
+  general: UG,
+  goals: VG,
+  goal: BG,
+  save: HG,
+  back: WG,
+  widget: qG,
+  view: YG,
+  image: GG,
+  text: KG,
+  audio: QG,
+  version: JG,
+  widgets: XG,
+  scopes: ZG,
+  nsfw: e7
+}, n7 = "Activé", r7 = "Désactivé", a7 = "Sélectionner", i7 = "Succès", o7 = "OK", s7 = "Annuler", l7 = "Volume du son", u7 = "Raccourci passer média", c7 = "Raccourci passer alerte", d7 = "Aucun", f7 = "Démarrer", p7 = "Arrêter", h7 = "Déconnecté", m7 = { title: "Autorisation", code: "Demander le code", sign_in: "Se connecter", phone: "Numéro de téléphone", telegram_code: "Code de Telegram", your_code: "Votre code", "2fa_password": "Mot de passe 2FA", password: "Mot de passe", streamelements: "Vous devez d'abord vous connecter avec StreamElements JWT", you_can_find_by_url: "Vous pouvez le trouver via cette URL", set_id_and_jwt: "Vous devez définir l'ID de compte StreamElements et le JWT pour {{service}}" }, g7 = { wrong_lots_format: "Format des lots incorrect", not_connected: "Non connecté", request_error: "Erreur de requête" }, v7 = { title: "Mise à jour", description: "Une nouvelle version de l'application est disponible. Voulez-vous la mettre à jour ?", update: "Mettre à jour", later: "Plus tard", downloading: "Téléchargement en cours..." }, y7 = { title: "Média", youtube: "YouTube", twitch: "Twitch", tiktok: "TikTok" }, b7 = { tribute: "Afficher les messages de tribut" }, w7 = { lots: "Lots", wheel: "Roulette", settings: "Paramètres" }, S7 = { set_point: "Définir le point", meter_price: "Prix par mètre", amount: "Montant", finish: "Terminer", lat_error: "La latitude doit être comprise entre -90 et 90", lng_error: "La longitude doit être comprise entre -180 et 180", rules: "Pour que le pointeur change automatiquement de position dans le message, il ne doit y avoir qu'un seul mot parmi :" }, _7 = { enabled: "Activé", min_amount: "Montant minimum", video_volume: "Volume vidéo", min_views: "Vues minimum" }, E7 = { messages: "Messages", settings: "Paramètres", services: "Services", alerts: "Alertes", media: "Média", goals: "Objectifs", auction: "Enchères", maption: "Maption", fighter: "Combattant", widgets: "Widgets", info: "Info", nsfw: "NSFW" }, C7 = { title: "Derniers messages" }, x7 = { skip: "Passer", replay: "Rejouer", donated: "{{user_name}} a donné {{amount}}{{currency}}", followed: "{{user_name}} a suivi", subscribed: "{{user_name}} s'est abonné", gifted_subscriptions: "{{user_name}} a offert {{total}} abonnements", raided_with: "{{user_name}} a raidé avec {{viewers}} viewers" }, T7 = { title: "Filtrer les messages", exclude_donations: "Exclure les dons", exclude_follows: "Exclure les follows", exclude_subscriptions: "Exclure les abonnements", exclude_raids: "Exclure les raids" }, R7 = { title: "Paramètres", pause: "Mettre en pause les alertes", moderation_duration: "Durée de modération", black_list: "Liste noire", remove_links: "Supprimer les liens", language: "Langue", sec: "Sec", currency: "Devise", tts_type: "Type de TTS" }, k7 = { normal: "Normal", dropout: "Élimination", spin: "Tourner", speed: "Vitesse de la roue" }, D7 = { continue: "Continuer", pause: "Pause", reset: "Réinitialiser", add_time: "Ajouter du temps", reduce_time: "Réduire le temps", add_timex2: "Ajouter temps x2" }, M7 = { title: "Combattant", match: "Match", final: "Finale", game: "Partie", cancel: "Annuler la partie", winner: "Vainqueur", settings: "Paramètres", create_game: "Créer une partie depuis les lots", start: "Démarrer", pause: "Pause", rematch: "Revanche", resume: "Reprendre" }, O7 = { name: "Nom", delete: "Supprimer", add: "Ajouter montant" }, A7 = { delete: "Supprimer", to_lot: "Vers le lot", new: "Nouveau", add_to_random_slot: "Ajouter à un lot aléatoire" }, N7 = { add: "Ajouter", new_lot_name: "Nom du nouveau lot", search: "Rechercher un lot", total: "Total" }, P7 = { leader_change: "Changement de leader", new_lot: "Nouveau lot", new_donation: "Nouveau don", show_odds: "Afficher les cotes", show_total_sum: "Afficher la somme totale", greater_timer_adding_time: "Temps ajouté pour timer supérieur", not_add_time_if: "Ne pas ajouter de temps si", adding_time: "Temps" }, $7 = { import_lots: "Importer les lots", clear_lots: "Vider les lots" }, j7 = { round_duration: "Durée du round", add_players: "Ajouter des joueurs" }, L7 = { title: "Alertes", group: "Groupe" }, I7 = { title: "Services", tribute: "Tribute", streamelements: "StreamElements", connect: "Connecter", integrations: "Intégrations", sign_out: "Se déconnecter", confirm_sign_out: "Êtes-vous sûr de vouloir vous déconnecter de ce service ?" }, F7 = { device_code_expired: "Le code de l'appareil a expiré. Veuillez réessayer.", user_code: "Code utilisateur", authorize_with_code: "Autoriser avec le code", waiting_authorization: "En attente d'autorisation..." }, z7 = { donation_account_name: "Nom du compte de dons", donation_url: "URL de donation", create_donation_account: "Créer un compte de dons Widy", connect_to_existing_account: "Se connecter à un compte existant", create_donation_account_pending: "Création du compte de dons..." }, U7 = { title: "Paramètres Twitch", points_currency_ratio: "Ratio points / devise", rewards_name: "Nom des récompenses", rewards_list: "Liste des récompenses", add_reward: "Ajouter une récompense", cost: "Coût", color: "Couleur" }, V7 = { image: "Image", audio: "Audio", view: "Vue", title: "Titre", message: "Message", test_name: "Test", test_text: "Ceci est une alerte de test !", configure: "Configurer", test: "Tester", add_new_variant: "Ajouter une nouvelle variante", new_variant: "Nouvelle variante", variant_title: "Titre de la variante", variant_group: "Groupe de variante", status: "Statut", variation_condition: "Condition de variation", group: "Groupe", Random: "Aléatoire", AmountIsGreater: "Le montant est supérieur à", AmountIsEqual: "Le montant est égal à", delete: "Supprimer", sure_delete: "Êtes-vous sûr de vouloir supprimer cette variation ?", type: "Type", Donation: "Don", Subscription: "Abonnement", Follow: "Follow", Raid: "Raid" }, B7 = "Général", H7 = { title: "Objectifs", create: "Créer un nouvel objectif" }, W7 = { new: "Nouvel objectif", goal: "Objectif", type: "Type", elements: "Éléments", progress: "Progression", goal_title: "Titre de l'objectif", amount_raise: "Montant à atteindre", start_raising: "Commencer à partir de", end_date: "Date de fin de l'objectif", bar_height: "Hauteur de la barre", rounding_radius: "Rayon d'arrondi", bar_stroke_thickness: "Épaisseur du contour", background_bar_color: "Couleur de la barre de fond", progress_bar_color: "Couleur de la barre de progression", goal_progress_bar: "Barre de progression de l'objectif", progress_bar_layout: "Disposition de la barre", remaining_time: "Temps restant", goal_amount_limits: "Limites de montant", widget_background: "Fond du widget", background_color: "Couleur de fond", OnTop: "Au-dessus", Inside: "À l'intérieur", Below: "En dessous", DoNotDisplay: "Ne pas afficher", title: "Titre", limits: "limites", raised: "Collecté", days_left: "Jours restants", finish_goal: "Terminer l'objectif", sure_finish: "Êtes-vous sûr de vouloir terminer cet objectif ?", Donation: "Don", TwitchSubscription: "Abonnement Twitch", TwitchFollow: "Follow Twitch", goal_not_finished: "Vous avez un objectif non terminé de ce type." }, q7 = "Enregistrer", Y7 = "Retour", G7 = { copy: "Copier", launch: "Lancer", url: "URL du widget", obs_dock_url: "URL OBS Dock" }, K7 = { top: "Image en haut, texte en bas", bottom: "Image en bas, texte en haut", left: "Image à gauche, texte à droite", right: "Image à droite, texte à gauche", overlay: "Texte en superposition sur l'image" }, Q7 = { show: "Afficher l'image" }, J7 = { font: "Police", font_size: "Taille de police", text_color: "Couleur du texte", bold: "Gras", italics: "Italique", underline: "Souligné", transformation: "Transformation", letter_spacing: "Espacement des lettres", word_spacing: "Espacement des mots", horizontal_alignment: "Alignement horizontal", vertical_alignment: "Alignement vertical", text_preview: "Ceci est un aperçu !", name: "Nom" }, X7 = { play: "Jouer", stop: "Arrêter" }, Z7 = "Version", e9 = { title: "Widgets", add: "Ajouter un widget", install: "Installer", delete: "Supprimer", installed: "Installé", update: "Mettre à jour", all: "Tous", settings: "Paramètres", control: "Contrôle", delete_confirm: "Êtes-vous sûr de vouloir supprimer ce widget ?", invalid_manifest: "Manifeste du widget invalide", add_confirm: "L'ajout permettra à {{widget_name}} de :", installing: "Installation en cours...", updating: "Mise à jour en cours...", view_url: "URL de vue", widget_connection: "Le widget peut envoyer/recevoir des requêtes vers :" }, t9 = { "widgets:messages.read": "Lire les messages", "widgets:goals.read": "Lire les objectifs", "widgets:auc-fighter:settings.read": "Lire les paramètres auc-fighter", "widgets:settings.read": "Lire les paramètres du widget", "widgets:alerts.read": "Lire les alertes", "widgets:media:settings.read": "Lire les paramètres média", "widgets:auc-fighter:match-playing.send": "Envoyer match en cours", "widgets:auc-fighter:match-winner.send": "Envoyer vainqueur du match", "widgets:auc-fighter:match-paused.send": "Envoyer match en pause", "widgets:auc-fighter:match-id.send": "Envoyer ID du match", "widgets:alert:played.send": "Envoyer alerte jouée", "widgets:alert:playing.send": "Envoyer alerte en cours", "widgets:media:played.send": "Envoyer média joué", "widgets:media:end.send": "Envoyer fin de média", "widgets:media:playing.send": "Envoyer média en cours", "widgets:media:paused.send": "Envoyer média en pause", "widgets:media:error.send": "Envoyer erreur média", "widgets:media:replay.send": "Envoyer relecture média", "widgets:alert:replay.send": "Envoyer relecture alerte", "widgets:alert:skip.send": "Envoyer passer alerte", "widgets:messages.subscription": "S'abonner aux messages", "widgets:goal.subscription": "S'abonner aux objectifs", "widgets:settings.subscription": "S'abonner aux paramètres", "widgets:auc-fighter:start-match.subscription": "S'abonner au démarrage du match", "widgets:auc-fighter:pause-match.subscription": "S'abonner à la pause du match", "widgets:auc-fighter:resume-match.subscription": "S'abonner à la reprise du match", "widgets:auc-fighter:cancel-match.subscription": "S'abonner à l'annulation du match", "widgets:auc-fighter:update-match.subscription": "S'abonner à la mise à jour du match", "widgets:auc-fighter:settings.subscription": "S'abonner aux paramètres auc-fighter", "widgets:alert:replay.subscription": "S'abonner à la relecture d'alerte", "widgets:alert:skip.subscription": "S'abonner au passage d'alerte", "widgets:alert:test.subscription": "S'abonner au test d'alerte", "widgets:alert:skip-playing.subscription": "S'abonner au passage d'alerte en cours", "widgets:alert:alerts.subscription": "S'abonner aux alertes", "widgets:media:replay.subscription": "S'abonner à la relecture média", "widgets:media:settings.subscription": "S'abonner aux paramètres média", "widgets:media:skip.subscription": "S'abonner au passage média", "widgets:media:skip-playing-media.subscription": "S'abonner au passage du média en cours", "widgets:media:end.subscription": "S'abonner à la fin du média", "widgets:media:error.subscription": "S'abonner aux erreurs média", "widgets:media:pause.subscription": "S'abonner à la pause média", "widgets:media:play.subscription": "S'abonner à la lecture média", "widgets:alert:played.subscription": "S'abonner à l'alerte jouée", "widgets:view:storage.read": "Lire le stockage vue du widget", "widgets:control:storage.read": "Lire le stockage contrôle du widget", "widgets:view:storage.write": "Écrire dans le stockage vue du widget", "widgets:control:storage.write": "Écrire dans le stockage contrôle du widget", "widgets:view:storage.subscription": "S'abonner au stockage vue du widget", "widgets:control:storage.subscription": "S'abonner au stockage contrôle du widget" }, n9 = { title: "NSFW", nsfw_window: "Fenêtre NSFW", settings: "Paramètres", window: "Fenêtre", blur_timeout_duration: "Durée du flou", confidence_threshold: "Seuil de confiance", anus: "Anus", make_love: "Rapport sexuel", nipple: "Mamelon", penis: "Pénis", vagina: "Vagin" }, r9 = {
+  on: n7,
+  off: r7,
+  select: a7,
+  success: i7,
+  ok: o7,
+  cancel: s7,
+  sound_volume: l7,
+  skip_media: u7,
+  skip_alert: c7,
+  none: d7,
+  start: f7,
+  stop: p7,
+  disconnected: h7,
+  authorization: m7,
+  error: g7,
+  updater: v7,
+  media: y7,
+  integration: b7,
+  auction: w7,
+  maption: S7,
+  media_settings: _7,
+  dashboard: E7,
+  messages: C7,
+  message: x7,
+  filter: T7,
+  settings: R7,
+  wheel: k7,
+  timer: D7,
+  fighter: M7,
+  lot: O7,
+  bid: A7,
+  lots: N7,
+  auction_settings: P7,
+  lots_options: $7,
+  auc_fighter_settings: j7,
+  alerts: L7,
+  services: I7,
+  twitch: F7,
+  widy: z7,
+  twitch_service_settings: U7,
+  alert: V7,
+  general: B7,
+  goals: H7,
+  goal: W7,
+  save: q7,
+  back: Y7,
+  widget: G7,
+  view: K7,
+  image: Q7,
+  text: J7,
+  audio: X7,
+  version: Z7,
+  widgets: e9,
+  scopes: t9,
+  nsfw: n9
+}, a9 = "चालू", i9 = "बंद", o9 = "चुनें", s9 = "सफल", l9 = "ठीक है", u9 = "रद्द करें", c9 = "ध्वनि वॉल्यूम", d9 = "मीडिया स्किप शॉर्टकट", f9 = "अलर्ट स्किप शॉर्टकट", p9 = "कोई नहीं", h9 = "शुरू करें", m9 = "रोकें", g9 = "डिस्कनेक्टेड", v9 = { title: "अधिकारिकरण", code: "कोड का अनुरोध करें", sign_in: "साइन इन करें", phone: "फ़ोन नंबर", telegram_code: "टेलीग्राम से कोड", your_code: "आपका कोड", "2fa_password": "2FA पासवर्ड", password: "पासवर्ड", streamelements: "आपको पहले StreamElements JWT से कनेक्ट करना होगा", you_can_find_by_url: "आप इसे इस URL से ढूंढ सकते हैं", set_id_and_jwt: "{{service}} के लिए StreamElements Account ID और JWT सेट करना आवश्यक है" }, y9 = { wrong_lots_format: "गलत लॉट फॉर्मेट", not_connected: "कनेक्ट नहीं है", request_error: "अनुरोध त्रुटि" }, b9 = { title: "अपडेट", description: "ऐप का नया वर्जन उपलब्ध है। क्या आप अपडेट करना चाहते हैं?", update: "अपडेट करें", later: "बाद में", downloading: "डाउनलोड हो रहा है..." }, w9 = { title: "मीडिया", youtube: "YouTube", twitch: "Twitch", tiktok: "TikTok" }, S9 = { tribute: "ट्रिब्यूट संदेश दिखाएं" }, _9 = { lots: "लॉट्स", wheel: "व्हील", settings: "सेटिंग्स" }, E9 = { set_point: "पॉइंट सेट करें", meter_price: "1 मीटर का मूल्य", amount: "राशि", finish: "समाप्त करें", lat_error: "अक्षांश -90 और 90 के बीच होना चाहिए", lng_error: "देशांतर -180 और 180 के बीच होना चाहिए", rules: "पॉइंटर को संदेश में स्वचालित रूप से पोजीशन बदलने के लिए इसमें केवल एक शब्द होना चाहिए:" }, C9 = { enabled: "सक्षम", min_amount: "न्यूनतम राशि", video_volume: "वीडियो वॉल्यूम", min_views: "न्यूनतम व्यूज" }, x9 = { messages: "संदेश", settings: "सेटिंग्स", services: "सेवाएं", alerts: "अलर्ट्स", media: "मीडिया", goals: "लक्ष्य", auction: "नीलामी", maption: "मैप्शन", fighter: "फाइटर", widgets: "विजेट्स", info: "जानकारी", nsfw: "NSFW" }, T9 = { title: "अंतिम संदेश" }, R9 = { skip: "स्किप करें", replay: "रीप्ले", donated: "{{user_name}} ने {{amount}}{{currency}} दान किया", followed: "{{user_name}} ने फॉलो किया", subscribed: "{{user_name}} ने सब्सक्राइब किया", gifted_subscriptions: "{{user_name}} ने {{total}} सब्सक्रिप्शन्स गिफ्ट किए", raided_with: "{{user_name}} ने {{viewers}} व्यूअर्स के साथ रेड किया" }, k9 = { title: "संदेश फिल्टर करें", exclude_donations: "दान को बाहर करें", exclude_follows: "फॉलो को बाहर करें", exclude_subscriptions: "सब्सक्रिप्शन को बाहर करें", exclude_raids: "रेड्स को बाहर करें" }, D9 = { title: "सेटिंग्स", pause: "अलर्ट संदेश रोकें", moderation_duration: "मॉडरेशन अवधि", black_list: "ब्लैक लिस्ट", remove_links: "लिंक्स हटाएं", language: "भाषा", sec: "सेकंड", currency: "मुद्रा", tts_type: "TTS प्रकार" }, M9 = { normal: "नॉर्मल", dropout: "ड्रॉपआउट", spin: "स्पिन", speed: "व्हील स्पीड" }, O9 = { continue: "जारी रखें", pause: "पॉज करें", reset: "रीसेट करें", add_time: "समय जोड़ें", reduce_time: "समय घटाएं", add_timex2: "समय x2 जोड़ें" }, A9 = { title: "फाइटर", match: "मैच", final: "फाइनल", game: "गेम", cancel: "गेम रद्द करें", winner: "विजेता", settings: "सेटिंग्स", create_game: "लॉट्स से गेम बनाएं", start: "शुरू करें", pause: "पॉज करें", rematch: "रीमैच", resume: "जारी रखें" }, N9 = { name: "नाम", delete: "हटाएं", add: "राशि जोड़ें" }, P9 = { delete: "हटाएं", to_lot: "लॉट में", new: "नया", add_to_random_slot: "रैंडम लॉट में जोड़ें" }, $9 = { add: "जोड़ें", new_lot_name: "नया लॉट नाम", search: "लॉट खोजें", total: "कुल" }, j9 = { leader_change: "लीडर बदलाव", new_lot: "नया लॉट", new_donation: "नया दान", show_odds: "ऑड्स दिखाएं", show_total_sum: "कुल राशि दिखाएं", greater_timer_adding_time: "बड़ा टाइमर समय जोड़ना", not_add_time_if: "यदि न जोड़ें", adding_time: "समय" }, L9 = { import_lots: "लॉट्स आयात करें", clear_lots: "लॉट्स साफ करें" }, I9 = { round_duration: "राउंड अवधि", add_players: "खिलाड़ी जोड़ें" }, F9 = { title: "अलर्ट्स", group: "समूह" }, z9 = { title: "सेवाएं", tribute: "ट्रिब्यूट", streamelements: "StreamElements", connect: "कनेक्ट करें", integrations: "इंटीग्रेशन्स", sign_out: "साइन आउट", confirm_sign_out: "क्या आप वाकई इस सेवा से साइन आउट करना चाहते हैं?" }, U9 = { device_code_expired: "डिवाइस कोड समाप्त हो गया। कृपया पुनः प्रयास करें।", user_code: "यूजर कोड", authorize_with_code: "कोड से अधिकृत करें", waiting_authorization: "अधिकारिकरण की प्रतीक्षा कर रहा है..." }, V9 = { donation_account_name: "दान खाते का नाम", donation_url: "दान URL", create_donation_account: "Widy दान खाता बनाएं", connect_to_existing_account: "मौजूदा खाते से कनेक्ट करें", create_donation_account_pending: "दान खाता बना रहा है..." }, B9 = { title: "Twitch सेटिंग्स", points_currency_ratio: "पॉइंट्स मुद्रा अनुपात", rewards_name: "रिवॉर्ड्स नाम", rewards_list: "रिवॉर्ड्स सूची", add_reward: "रिवॉर्ड जोड़ें", cost: "लागत", color: "रंग" }, H9 = { image: "इमेज", audio: "ऑडियो", view: "व्यू", title: "शीर्षक", message: "संदेश", test_name: "टेस्ट", test_text: "यह एक टेस्ट अलर्ट है!", configure: "कॉन्फ़िगर करें", test: "टेस्ट", add_new_variant: "नया वेरिएंट जोड़ें", new_variant: "नया वेरिएंट", variant_title: "वेरिएंट शीर्षक", variant_group: "वेरिएंट समूह", status: "स्थिति", variation_condition: "वेरिएशन शर्त", group: "समूह", Random: "रैंडम", AmountIsGreater: "राशि इससे अधिक है", AmountIsEqual: "राशि बराबर है", delete: "हटाएं", sure_delete: "क्या आप वाकई इस वेरिएशन को हटाना चाहते हैं?", type: "प्रकार", Donation: "दान", Subscription: "सब्सक्रिप्शन", Follow: "फॉलो", Raid: "रेड" }, W9 = "सामान्य", q9 = { title: "लक्ष्य", create: "नया लक्ष्य बनाएं" }, Y9 = { new: "नया लक्ष्य", goal: "व्यू", type: "प्रकार", elements: "तत्व", progress: "प्रगति", goal_title: "लक्ष्य शीर्षक", amount_raise: "एकत्र करने की राशि", start_raising: "से एकत्र करना शुरू करें", end_date: "लक्ष्य समाप्ति तिथि", bar_height: "बार ऊंचाई", rounding_radius: "गोलाई त्रिज्या", bar_stroke_thickness: "बार स्ट्रोक मोटाई", background_bar_color: "बैकग्राउंड बार रंग", progress_bar_color: "प्रगति बार रंग", goal_progress_bar: "लक्ष्य प्रगति बार", progress_bar_layout: "प्रगति बार लेआउट", remaining_time: "शेष समय", goal_amount_limits: "लक्ष्य राशि सीमा", widget_background: "विजेट बैकग्राउंड", background_color: "बैकग्राउंड रंग", OnTop: "ऊपर", Inside: "अंदर", Below: "नीचे", DoNotDisplay: "न दिखाएं", title: "शीर्षक", limits: "सीमाएं", raised: "एकत्र", days_left: "शेष दिन", finish_goal: "लक्ष्य समाप्त करें", sure_finish: "क्या आप वाकई यह लक्ष्य समाप्त करना चाहते हैं?", Donation: "दान", TwitchSubscription: "Twitch सब्सक्रिप्शन", TwitchFollow: "Twitch फॉलो", goal_not_finished: "इस प्रकार का एक अधूरा लक्ष्य आपके पास है।" }, G9 = "सेव करें", K9 = "वापस", Q9 = { copy: "कॉपी करें", launch: "लॉन्च करें", url: "विजेट URL", obs_dock_url: "OBS डॉक URL" }, J9 = { top: "इमेज ऊपर, टेक्स्ट नीचे", bottom: "इमेज नीचे, टेक्स्ट ऊपर", left: "इमेज बाएं, टेक्स्ट दाएं", right: "इमेज दाएं, टेक्स्ट बाएं", overlay: "टेक्स्ट इमेज पर ओवरले" }, X9 = { show: "इमेज दिखाएं" }, Z9 = { font: "फॉन्ट", font_size: "फॉन्ट साइज", text_color: "टेक्स्ट रंग", bold: "बोल्ड", italics: "इटैलिक", underline: "अंडरलाइन", transformation: "ट्रांसफॉर्मेशन", letter_spacing: "अक्षर स्पेसिंग", word_spacing: "शब्द स्पेसिंग", horizontal_alignment: "क्षैतिज संरेखण", vertical_alignment: "ऊर्ध्वाधर संरेखण", text_preview: "यह एक पूर्वावलोकन है!", name: "नाम" }, eK = { play: "चलाएं", stop: "रोकें" }, tK = "वर्जन", nK = { title: "विजेट्स", add: "विजेट जोड़ें", install: "इंस्टॉल करें", delete: "हटाएं", installed: "इंस्टॉल किया गया", update: "अपडेट करें", all: "सभी", settings: "सेटिंग्स", control: "कंट्रोल", delete_confirm: "क्या आप वाकई यह विजेट हटाना चाहते हैं?", invalid_manifest: "अमान्य विजेट मेनिफेस्ट", add_confirm: "जोड़ने से {{widget_name}} को निम्नलिखित की अनुमति मिलेगी:", installing: "इंस्टॉल हो रहा है...", updating: "अपडेट हो रहा है...", view_url: "व्यू URL", widget_connection: "विजेट को अनुरोध भेजने/प्राप्त करने की अनुमति:" }, rK = { "widgets:messages.read": "संदेश पढ़ें", "widgets:goals.read": "लक्ष्य पढ़ें", "widgets:auc-fighter:settings.read": "auc-fighter सेटिंग्स पढ़ें", "widgets:settings.read": "विजेट सेटिंग्स पढ़ें", "widgets:alerts.read": "अलर्ट्स पढ़ें", "widgets:media:settings.read": "मीडिया सेटिंग्स पढ़ें", "widgets:auc-fighter:match-playing.send": "मैच चल रहा है भेजें", "widgets:auc-fighter:match-winner.send": "मैच विजेता भेजें", "widgets:auc-fighter:match-paused.send": "मैच पॉज भेजें", "widgets:auc-fighter:match-id.send": "मैच ID भेजें", "widgets:alert:played.send": "अलर्ट प्ले किया गया भेजें", "widgets:alert:playing.send": "अलर्ट चल रहा है भेजें", "widgets:media:played.send": "मीडिया प्ले किया गया भेजें", "widgets:media:end.send": "मीडिया समाप्त भेजें", "widgets:media:playing.send": "मीडिया चल रहा है भेजें", "widgets:media:paused.send": "मीडिया पॉज भेजें", "widgets:media:error.send": "मीडिया त्रुटि भेजें", "widgets:media:replay.send": "मीडिया रीप्ले भेजें", "widgets:alert:replay.send": "अलर्ट रीप्ले भेजें", "widgets:alert:skip.send": "अलर्ट स्किप भेजें", "widgets:messages.subscription": "संदेश सब्सक्राइब करें", "widgets:goal.subscription": "लक्ष्य सब्सक्राइब करें", "widgets:settings.subscription": "सेटिंग्स सब्सक्राइब करें", "widgets:auc-fighter:start-match.subscription": "मैच शुरू सब्सक्राइब करें", "widgets:auc-fighter:pause-match.subscription": "मैच पॉज सब्सक्राइब करें", "widgets:auc-fighter:resume-match.subscription": "मैच जारी सब्सक्राइब करें", "widgets:auc-fighter:cancel-match.subscription": "मैच रद्द सब्सक्राइब करें", "widgets:auc-fighter:update-match.subscription": "मैच अपडेट सब्सक्राइब करें", "widgets:auc-fighter:settings.subscription": "auc-fighter सेटिंग्स सब्सक्राइब करें", "widgets:alert:replay.subscription": "अलर्ट रीप्ले सब्सक्राइब करें", "widgets:alert:skip.subscription": "अलर्ट स्किप सब्सक्राइब करें", "widgets:alert:test.subscription": "अलर्ट टेस्ट सब्सक्राइब करें", "widgets:alert:skip-playing.subscription": "अलर्ट स्किप चल रहा सब्सक्राइब करें", "widgets:alert:alerts.subscription": "अलर्ट्स सब्सक्राइब करें", "widgets:media:replay.subscription": "मीडिया रीप्ले सब्सक्राइब करें", "widgets:media:settings.subscription": "मीडिया सेटिंग्स सब्सक्राइब करें", "widgets:media:skip.subscription": "मीडिया स्किप सब्सक्राइब करें", "widgets:media:skip-playing-media.subscription": "मीडिया स्किप चल रहा सब्सक्राइब करें", "widgets:media:end.subscription": "मीडिया समाप्त सब्सक्राइब करें", "widgets:media:error.subscription": "मीडिया त्रुटि सब्सक्राइब करें", "widgets:media:pause.subscription": "मीडिया पॉज सब्सक्राइब करें", "widgets:media:play.subscription": "मीडिया प्ले सब्सक्राइब करें", "widgets:alert:played.subscription": "अलर्ट प्ले किया गया सब्सक्राइब करें", "widgets:view:storage.read": "विजेट व्यू स्टोरेज पढ़ें", "widgets:control:storage.read": "विजेट कंट्रोल स्टोरेज पढ़ें", "widgets:view:storage.write": "विजेट व्यू स्टोरेज में लिखें", "widgets:control:storage.write": "विजेट कंट्रोल स्टोरेज में लिखें", "widgets:view:storage.subscription": "विजेट व्यू स्टोरेज सब्सक्राइब करें", "widgets:control:storage.subscription": "विजेट कंट्रोल स्टोरेज सब्सक्राइब करें" }, aK = { title: "NSFW", nsfw_window: "NSFW विंडो", settings: "सेटिंग्स", window: "विंडो", blur_timeout_duration: "ब्लर टाइमआउट अवधि", confidence_threshold: "कॉन्फिडेंस थ्रेशोल्ड", anus: "गुदा", make_love: "संभोग", nipple: "स्तनाग्र", penis: "लिंग", vagina: "योनि" }, iK = {
+  on: a9,
+  off: i9,
+  select: o9,
+  success: s9,
+  ok: l9,
+  cancel: u9,
+  sound_volume: c9,
+  skip_media: d9,
+  skip_alert: f9,
+  none: p9,
+  start: h9,
+  stop: m9,
+  disconnected: g9,
+  authorization: v9,
+  error: y9,
+  updater: b9,
+  media: w9,
+  integration: S9,
+  auction: _9,
+  maption: E9,
+  media_settings: C9,
+  dashboard: x9,
+  messages: T9,
+  message: R9,
+  filter: k9,
+  settings: D9,
+  wheel: M9,
+  timer: O9,
+  fighter: A9,
+  lot: N9,
+  bid: P9,
+  lots: $9,
+  auction_settings: j9,
+  lots_options: L9,
+  auc_fighter_settings: I9,
+  alerts: F9,
+  services: z9,
+  twitch: U9,
+  widy: V9,
+  twitch_service_settings: B9,
+  alert: H9,
+  general: W9,
+  goals: q9,
+  goal: Y9,
+  save: G9,
+  back: K9,
+  widget: Q9,
+  view: J9,
+  image: X9,
+  text: Z9,
+  audio: eK,
+  version: tK,
+  widgets: nK,
+  scopes: rK,
+  nsfw: aK
+}, oK = "Ligado", sK = "Desligado", lK = "Selecionar", uK = "Sucesso", cK = "Ok", dK = "Cancelar", fK = "Volume do som", pK = "Atalho pular mídia", hK = "Atalho pular alerta", mK = "Nenhum", gK = "Iniciar", vK = "Parar", yK = "Desconectado", bK = { title: "Autorização", code: "Solicitar código", sign_in: "Entrar", phone: "Número de telefone", telegram_code: "Código do Telegram", your_code: "Seu código", "2fa_password": "Senha 2FA", password: "Senha", streamelements: "Você precisa conectar com o StreamElements JWT primeiro", you_can_find_by_url: "Você pode encontrar aqui", set_id_and_jwt: "Você precisa definir o Account ID e JWT do StreamElements para {{service}}" }, wK = { wrong_lots_format: "Formato de lotes inválido", not_connected: "Não conectado", request_error: "Erro na requisição" }, SK = { title: "Atualização", description: "Uma nova versão do aplicativo está disponível. Deseja atualizar?", update: "Atualizar", later: "Depois", downloading: "Baixando..." }, _K = { title: "Mídia", youtube: "Youtube", twitch: "Twitch", tiktok: "Tiktok" }, EK = { tribute: "Mostrar mensagens de tributo" }, CK = { lots: "Lotes", wheel: "Roda", settings: "Configurações" }, xK = { set_point: "Definir ponto", meter_price: "Preço por 1 metro", amount: "Quantidade", finish: "Finalizar", lat_error: "A latitude deve estar entre -90 e 90", lng_error: "A longitude deve estar entre -180 e 180", rules: "Para o ponteiro mudar automaticamente de posição na mensagem, deve haver apenas uma palavra de:" }, TK = { enabled: "Ativado", min_amount: "Valor mínimo", video_volume: "Volume do vídeo", min_views: "Mínimo de visualizações" }, RK = { messages: "Mensagens", settings: "Configurações", services: "Serviços", alerts: "Alertas", media: "Mídia", goals: "Metas", auction: "Leilão", maption: "Maption", fighter: "Fighter", widgets: "Widgets", info: "Informações", nsfw: "NSFW" }, kK = { title: "Últimas mensagens" }, DK = { skip: "Pular", replay: "Reproduzir novamente", donated: "{{user_name}} doou {{amount}}{{currency}}", followed: "{{user_name}} seguiu", subscribed: "{{user_name}} assinou", gifted_subscriptions: "{{user_name}} presenteou {{total}} assinaturas", raided_with: "{{user_name}} raidou com {{viewers}} espectadores" }, MK = { title: "Filtrar mensagens", exclude_donations: "Excluir doações", exclude_follows: "Excluir follows", exclude_subscriptions: "Excluir assinaturas", exclude_raids: "Excluir raids" }, OK = { title: "Configurações", pause: "Pausar mensagens de alerta", moderation_duration: "Duração da moderação", black_list: "Lista negra", remove_links: "Remover links", language: "Idioma", sec: "Seg", currency: "Moeda", tts_type: "Tipo de TTS" }, AK = { normal: "Normal", dropout: "Eliminação", spin: "Girar", speed: "Velocidade da roda" }, NK = { continue: "Continuar", pause: "Pausar", reset: "Reiniciar", add_time: "Adicionar tempo", reduce_time: "Reduzir tempo", add_timex2: "Adicionar tempo x2" }, PK = { title: "Fighter", match: "Partida", final: "Final", game: "Jogo", cancel: "Cancelar jogo", winner: "Vencedor", settings: "Configurações", create_game: "Criar jogo a partir dos lotes", start: "Iniciar", pause: "Pausar", rematch: "Revanche", resume: "Retomar" }, $K = { name: "Nome", delete: "Excluir", add: "Adicionar quantidade" }, jK = { delete: "Excluir", to_lot: "Para o lote", new: "Novo", add_to_random_slot: "Adicionar a um lote aleatório" }, LK = { add: "Adicionar", new_lot_name: "Nome do novo lote", search: "Buscar lote", total: "Total" }, IK = { leader_change: "Mudança de líder", new_lot: "Novo lote", new_donation: "Nova doação", show_odds: "Mostrar probabilidades", show_total_sum: "Mostrar soma total", greater_timer_adding_time: "Adicionar tempo ao timer maior", not_add_time_if: "Não adicionar tempo se", adding_time: "Tempo" }, FK = { import_lots: "Importar lotes", clear_lots: "Limpar lotes" }, zK = { round_duration: "Duração da rodada", add_players: "Adicionar jogadores" }, UK = { title: "Alertas", group: "Grupo" }, VK = { title: "Serviços", tribute: "Tributo", streamelements: "Streamelements", connect: "Conectar", integrations: "Integrações", sign_out: "Sair", confirm_sign_out: "Tem certeza que deseja sair deste serviço?" }, BK = { device_code_expired: "Código do dispositivo expirou. Tente novamente.", user_code: "Código do usuário", authorize_with_code: "Autorizar com código", waiting_authorization: "Aguardando autorização..." }, HK = { donation_account_name: "Nome da conta de doações", donation_url: "URL de doação", create_donation_account: "Criar conta de doação Widy", connect_to_existing_account: "Conectar a uma conta existente", create_donation_account_pending: "Criando conta de doação..." }, WK = { title: "Configurações do Twitch", points_currency_ratio: "Taxa de pontos para moeda", rewards_name: "Nome das recompensas", rewards_list: "Lista de recompensas", add_reward: "Adicionar recompensa", cost: "Custo", color: "Cor" }, qK = { image: "Imagem", audio: "Áudio", view: "Visualização", title: "Título", message: "Mensagem", test_name: "Teste", test_text: "Este é um alerta de teste!", configure: "Configurar", test: "Testar", add_new_variant: "Adicionar nova variante", new_variant: "Nova variante", variant_title: "Título da variante", variant_group: "Grupo da variante", status: "Status", variation_condition: "Condição da variação", group: "Grupo", Random: "Aleatório", AmountIsGreater: "Valor é maior", AmountIsEqual: "Valor é igual", delete: "Excluir", sure_delete: "Tem certeza que deseja excluir esta variação?", type: "Tipo", Donation: "Doação", Subscription: "Assinatura", Follow: "Follow", Raid: "Raid" }, YK = "Geral", GK = { title: "Metas", create: "Criar nova meta" }, KK = { new: "Nova meta", goal: "Meta", type: "Tipo", elements: "Elementos", progress: "Progresso", goal_title: "Título da meta", amount_raise: "Quantidade a arrecadar", start_raising: "Começar arrecadação a partir de", end_date: "Data final da meta", bar_height: "Altura da barra", rounding_radius: "Raio de arredondamento", bar_stroke_thickness: "Espessura do traço da barra", background_bar_color: "Cor da barra de fundo", progress_bar_color: "Cor da barra de progresso", goal_progress_bar: "Barra de progresso da meta", progress_bar_layout: "Layout da barra de progresso", remaining_time: "Tempo restante", goal_amount_limits: "Limites de valor da meta", widget_background: "Fundo do widget", background_color: "Cor de fundo", OnTop: "Em cima", Inside: "Dentro", Below: "Abaixo", DoNotDisplay: "Não exibir", title: "Título", limits: "limites", raised: "Arrecadado", days_left: "Dias restantes", finish_goal: "Finalizar meta", sure_finish: "Tem certeza que deseja finalizar esta meta?", Donation: "Doação", TwitchSubscription: "Assinatura Twitch", TwitchFollow: "Follow Twitch", goal_not_finished: "Você tem uma meta não finalizada deste tipo." }, QK = "Salvar", JK = "Voltar", XK = { copy: "Copiar", launch: "Lançar", url: "URL do Widget", obs_dock_url: "URL do OBS Dock" }, ZK = { top: "Imagem em cima, texto embaixo", bottom: "Imagem embaixo, texto em cima", left: "Imagem à esquerda, texto à direita", right: "Imagem à direita, texto à esquerda", overlay: "Texto sobreposto na imagem" }, eQ = { show: "Mostrar imagem" }, tQ = { font: "Fonte", font_size: "Tamanho da fonte", text_color: "Cor do texto", bold: "Negrito", italics: "Itálico", underline: "Sublinhado", transformation: "Transformação", letter_spacing: "Espaçamento entre letras", word_spacing: "Espaçamento entre palavras", horizontal_alignment: "Alinhamento horizontal", vertical_alignment: "Alinhamento vertical", text_preview: "Isto é uma prévia!", name: "Nome" }, nQ = { play: "Reproduzir", stop: "Parar" }, rQ = "Versão", aQ = { title: "Widgets", add: "Adicionar widget", install: "Instalar", delete: "Excluir", installed: "Instalado", update: "Atualizar", all: "Todos", settings: "Configurações", control: "Controle", delete_confirm: "Tem certeza que deseja excluir este widget?", invalid_manifest: "Manifest do widget inválido", add_confirm: "Adicionar permitirá que {{widget_name}}:", installing: "Instalando...", updating: "Atualizando...", view_url: "URL de visualização", widget_connection: "O widget pode enviar ou receber requisições para:" }, iQ = { "widgets:messages.read": "Ler mensagens", "widgets:goals.read": "Ler metas", "widgets:auc-fighter:settings.read": "Ler configurações do auc-fighter", "widgets:settings.read": "Ler configurações do widget", "widgets:alerts.read": "Ler alertas", "widgets:media:settings.read": "Ler configurações de mídia", "widgets:auc-fighter:match-playing.send": "Enviar partida em andamento", "widgets:auc-fighter:match-winner.send": "Enviar vencedor da partida", "widgets:auc-fighter:match-paused.send": "Enviar partida pausada", "widgets:auc-fighter:match-id.send": "Enviar ID da partida", "widgets:alert:played.send": "Enviar alerta reproduzido", "widgets:alert:playing.send": "Enviar alerta em reprodução", "widgets:media:played.send": "Enviar mídia reproduzida", "widgets:media:end.send": "Enviar fim da mídia", "widgets:media:playing.send": "Enviar mídia em reprodução", "widgets:media:paused.send": "Enviar mídia pausada", "widgets:media:error.send": "Enviar erro na mídia", "widgets:media:replay.send": "Enviar replay da mídia", "widgets:alert:replay.send": "Enviar replay do alerta", "widgets:alert:skip.send": "Enviar pular alerta", "widgets:messages.subscription": "Inscrever em mensagens", "widgets:goal.subscription": "Inscrever em meta", "widgets:settings.subscription": "Inscrever em configurações", "widgets:auc-fighter:start-match.subscription": "Inscrever em iniciar partida", "widgets:auc-fighter:pause-match.subscription": "Inscrever em pausar partida", "widgets:auc-fighter:resume-match.subscription": "Inscrever em retomar partida", "widgets:auc-fighter:cancel-match.subscription": "Inscrever em cancelar partida", "widgets:auc-fighter:update-match.subscription": "Inscrever em atualizar partida", "widgets:auc-fighter:settings.subscription": "Inscrever em configurações do auc-fighter", "widgets:alert:replay.subscription": "Inscrever em replay de alerta", "widgets:alert:skip.subscription": "Inscrever em pular alerta", "widgets:alert:test.subscription": "Inscrever em teste de alerta", "widgets:alert:skip-playing.subscription": "Inscrever em pular alerta em reprodução", "widgets:alert:alerts.subscription": "Inscrever em alertas", "widgets:media:replay.subscription": "Inscrever em replay de mídia", "widgets:media:settings.subscription": "Inscrever em configurações de mídia", "widgets:media:skip.subscription": "Inscrever em pular mídia", "widgets:media:skip-playing-media.subscription": "Inscrever em pular mídia em reprodução", "widgets:media:end.subscription": "Inscrever em fim da mídia", "widgets:media:error.subscription": "Inscrever em erro na mídia", "widgets:media:pause.subscription": "Inscrever em pausar mídia", "widgets:media:play.subscription": "Inscrever em reproduzir mídia", "widgets:alert:played.subscription": "Inscrever em alerta reproduzido", "widgets:view:storage.read": "Ler armazenamento da view", "widgets:control:storage.read": "Ler armazenamento do control", "widgets:view:storage.write": "Escrever no armazenamento da view", "widgets:control:storage.write": "Escrever no armazenamento do control", "widgets:view:storage.subscription": "Inscrever em armazenamento da view", "widgets:control:storage.subscription": "Inscrever em armazenamento do control" }, oQ = { title: "NSFW", nsfw_window: "Janela NSFW", settings: "Configurações", window: "Janela", blur_timeout_duration: "Duração do timeout de desfoque", confidence_threshold: "Limite de confiança", anus: "Ânus", make_love: "Fazer amor", nipple: "Mamilo", penis: "Pênis", vagina: "Vagina" }, sQ = {
+  on: oK,
+  off: sK,
+  select: lK,
+  success: uK,
+  ok: cK,
+  cancel: dK,
+  sound_volume: fK,
+  skip_media: pK,
+  skip_alert: hK,
+  none: mK,
+  start: gK,
+  stop: vK,
+  disconnected: yK,
+  authorization: bK,
+  error: wK,
+  updater: SK,
+  media: _K,
+  integration: EK,
+  auction: CK,
+  maption: xK,
+  media_settings: TK,
+  dashboard: RK,
+  messages: kK,
+  message: DK,
+  filter: MK,
+  settings: OK,
+  wheel: AK,
+  timer: NK,
+  fighter: PK,
+  lot: $K,
+  bid: jK,
+  lots: LK,
+  auction_settings: IK,
+  lots_options: FK,
+  auc_fighter_settings: zK,
+  alerts: UK,
+  services: VK,
+  twitch: BK,
+  widy: HK,
+  twitch_service_settings: WK,
+  alert: qK,
+  general: YK,
+  goals: GK,
+  goal: KK,
+  save: QK,
+  back: JK,
+  widget: XK,
+  view: ZK,
+  image: eQ,
+  text: tQ,
+  audio: nQ,
+  version: rQ,
+  widgets: aQ,
+  scopes: iQ,
+  nsfw: oQ
+}, lQ = "Вкл", uQ = "Выкл", cQ = "Выбрать", dQ = "Успешно", fQ = "Ок", pQ = "Отмена", hQ = "Громкость звука", mQ = "Скип медиа", gQ = "Скип алерта", vQ = "Нет", yQ = "Запуск", bQ = "Стоп", wQ = "Отключено", SQ = { title: "Авторизация", code: "Запросить код", sign_in: "Войти", phone: "Номер телефона", telegram_code: "Код из Telegram", your_code: "Ваш код", "2fa_password": "Пароль 2FA", password: "Пароль", streamelements: "Сначала нужно подключить StreamElements JWT", you_can_find_by_url: "Вы можете найти его по этой ссылке", set_id_and_jwt: "Нужно указать StreamElements Account ID и JWT для {{service}}" }, _Q = { wrong_lots_format: "Неверный формат лотов", not_connected: "Не подключено", request_error: "Ошибка запроса" }, EQ = { title: "Обновление", description: "Доступна новая версия приложения. Хотите обновить?", update: "Обновить", later: "Позже", downloading: "Загрузка..." }, CQ = { title: "Медиа", youtube: "YouTube", twitch: "Twitch", tiktok: "TikTok" }, xQ = { tribute: "Показывать tribute-сообщения" }, TQ = { lots: "Лоты", wheel: "Колесо", settings: "Настройки" }, RQ = { set_point: "Установить точку", meter_price: "Цена за 1 метр", amount: "Сумма", finish: "Завершить", lat_error: "Широта должна быть от -90 до 90", lng_error: "Долгота должна быть от -180 до 180", rules: "Для автоматического изменения позиции указателя в сообщении должно быть только одно слово из:" }, kQ = { enabled: "Включено", min_amount: "Мин. сумма", video_volume: "Громкость видео", min_views: "Мин. просмотров" }, DQ = { messages: "Сообщения", settings: "Настройки", services: "Сервисы", alerts: "Алёрты", media: "Медиа", goals: "Цели", auction: "Аукцион", maption: "Maption", fighter: "Fighter", widgets: "Виджеты", info: "Инфо", nsfw: "NSFW" }, MQ = { title: "Последние сообщения" }, OQ = { skip: "Пропустить", replay: "Повторить", donated: "{{user_name}} донатнул {{amount}}{{currency}}", followed: "{{user_name}} подписался", subscribed: "{{user_name}} оформил подписку", gifted_subscriptions: "{{user_name}} подарил {{total}} подписок", raided_with: "{{user_name}} зарейдил с {{viewers}} зрителями" }, AQ = { title: "Фильтр сообщений", exclude_donations: "Исключить донаты", exclude_follows: "Исключить подписки", exclude_subscriptions: "Исключить подписки", exclude_raids: "Исключить рейды" }, NQ = { title: "Настройки", pause: "Приостановить алерты", moderation_duration: "Длительность модерации", black_list: "Чёрный список", remove_links: "Удалять ссылки", language: "Язык", sec: "Сек", currency: "Валюта", tts_type: "Тип TTS" }, PQ = { normal: "Обычное", dropout: "Выбывание", spin: "Крутить", speed: "Скорость колеса" }, $Q = { continue: "Продолжить", pause: "Пауза", reset: "Сброс", add_time: "Добавить время", reduce_time: "Уменьшить время", add_timex2: "Добавить время ×2" }, jQ = { title: "Fighter", match: "Матч", final: "Финал", game: "Игра", cancel: "Отменить игру", winner: "Победитель", settings: "Настройки", create_game: "Создать игру из лотов", start: "Начать", pause: "Пауза", rematch: "Реванш", resume: "Возобновить" }, LQ = { name: "Название", delete: "Удалить", add: "Добавить сумму" }, IQ = { delete: "Удалить", to_lot: "К лоту", new: "Новый", add_to_random_slot: "Добавить в случайный лот" }, FQ = { add: "Добавить", new_lot_name: "Название нового лота", search: "Поиск лота", total: "Всего" }, zQ = { leader_change: "Смена лидера", new_lot: "Новый лот", new_donation: "Новый донат", show_odds: "Показывать шансы", show_total_sum: "Показывать общую сумму", greater_timer_adding_time: "Добавление времени при большей ставке", not_add_time_if: "Не добавлять время если", adding_time: "Время" }, UQ = { import_lots: "Импорт лотов", clear_lots: "Очистить лоты" }, VQ = { round_duration: "Длительность раунда", add_players: "Добавить игроков" }, BQ = { title: "Алёрты", group: "Группа" }, HQ = { title: "Сервисы", tribute: "Tribute", streamelements: "StreamElements", connect: "Подключить", integrations: "Интеграции", sign_out: "Выйти", confirm_sign_out: "Вы уверены, что хотите выйти из этого сервиса?" }, WQ = { device_code_expired: "Код устройства устарел. Попробуйте снова.", user_code: "Код пользователя", authorize_with_code: "Авторизоваться по коду", waiting_authorization: "Ожидание авторизации..." }, qQ = { donation_account_name: "Название аккаунта донатов", donation_url: "Ссылка на донаты", create_donation_account: "Создать Widy аккаунт донатов", connect_to_existing_account: "Подключить существующий аккаунт", create_donation_account_pending: "Создание аккаунта донатов..." }, YQ = { title: "Настройки Twitch", points_currency_ratio: "Соотношение баллов к валюте", rewards_name: "Название наград", rewards_list: "Список наград", add_reward: "Добавить награду", cost: "Стоимость", color: "Цвет" }, GQ = { image: "Изображение", audio: "Аудио", view: "Вид", title: "Заголовок", message: "Сообщение", test_name: "Тест", test_text: "Это тестовый алерт!", configure: "Настроить", test: "Протестировать", add_new_variant: "Добавить новый вариант", new_variant: "Новый вариант", variant_title: "Название варианта", variant_group: "Группа варианта", status: "Статус", variation_condition: "Условие вариации", group: "Группа", Random: "Случайный", AmountIsGreater: "Сумма больше", AmountIsEqual: "Сумма равна", delete: "Удалить", sure_delete: "Вы уверены, что хотите удалить эту вариацию?", type: "Тип", Donation: "Донат", Subscription: "Подписка", Follow: "Подписка", Raid: "Рейд" }, KQ = "Общее", QQ = { title: "Цели", create: "Создать новую цель" }, JQ = { new: "Новая цель", goal: "Цель", type: "Тип", elements: "Элементы", progress: "Прогресс", goal_title: "Название цели", amount_raise: "Сумма для сбора", start_raising: "Начинать сбор с", end_date: "Дата окончания цели", bar_height: "Высота бара", rounding_radius: "Радиус скругления", bar_stroke_thickness: "Толщина обводки бара", background_bar_color: "Цвет фона бара", progress_bar_color: "Цвет прогресс-бара", goal_progress_bar: "Прогресс-бар цели", progress_bar_layout: "Расположение прогресс-бара", remaining_time: "Оставшееся время", goal_amount_limits: "Лимиты суммы цели", widget_background: "Фон виджета", background_color: "Цвет фона", OnTop: "Сверху", Inside: "Внутри", Below: "Снизу", DoNotDisplay: "Не отображать", title: "Заголовок", limits: "лимиты", raised: "Собрано", days_left: "Осталось дней", finish_goal: "Завершить цель", sure_finish: "Вы уверены, что хотите завершить эту цель?", Donation: "Донат", TwitchSubscription: "Twitch Подписка", TwitchFollow: "Twitch Подписка", goal_not_finished: "У вас есть незавершённая цель этого типа." }, XQ = "Сохранить", ZQ = "Назад", eJ = { copy: "Копировать", launch: "Запустить", url: "URL виджета", obs_dock_url: "OBS Dock URL" }, tJ = { top: "Изображение сверху, текст снизу", bottom: "Изображение снизу, текст сверху", left: "Изображение слева, текст справа", right: "Изображение справа, текст слева", overlay: "Текст поверх изображения" }, nJ = { show: "Показывать изображение" }, rJ = { font: "Шрифт", font_size: "Размер шрифта", text_color: "Цвет текста", bold: "Жирный", italics: "Курсив", underline: "Подчёркнутый", transformation: "Трансформация", letter_spacing: "Межбуквенный интервал", word_spacing: "Межсловный интервал", horizontal_alignment: "Горизонтальное выравнивание", vertical_alignment: "Вертикальное выравнивание", text_preview: "Это предпросмотр!", name: "Имя" }, aJ = { play: "Воспроизвести", stop: "Остановить" }, iJ = "Версия", oJ = { title: "Виджеты", add: "Добавить виджет", install: "Установить", delete: "Удалить", installed: "Установлено", update: "Обновить", all: "Все", settings: "Настройки", control: "Управление", delete_confirm: "Вы уверены, что хотите удалить этот виджет?", invalid_manifest: "Неверный манифест виджета", add_confirm: "Добавление позволит {{widget_name}}:", installing: "Установка...", updating: "Обновление...", view_url: "URL просмотра", widget_connection: "Виджет получает или отправляет запросы на:" }, sJ = { "widgets:messages.read": "Читать сообщения", "widgets:goals.read": "Читать цели", "widgets:auc-fighter:settings.read": "Читать настройки auc-fighter", "widgets:settings.read": "Читать настройки виджета", "widgets:alerts.read": "Читать алерты", "widgets:media:settings.read": "Читать настройки медиа", "widgets:auc-fighter:match-playing.send": "Отправлять статус матча (играет)", "widgets:auc-fighter:match-winner.send": "Отправлять победителя матча", "widgets:auc-fighter:match-paused.send": "Отправлять статус паузы матча", "widgets:auc-fighter:match-id.send": "Отправлять ID матча", "widgets:alert:played.send": "Отправлять алерт (воспроизведён)", "widgets:alert:playing.send": "Отправлять алерт (воспроизводится)", "widgets:media:played.send": "Отправлять медиа (воспроизведено)", "widgets:media:end.send": "Отправлять окончание медиа", "widgets:media:playing.send": "Отправлять медиа (воспроизводится)", "widgets:media:paused.send": "Отправлять медиа (на паузе)", "widgets:media:error.send": "Отправлять ошибку медиа", "widgets:media:replay.send": "Отправлять повтор медиа", "widgets:alert:replay.send": "Отправлять повтор алерта", "widgets:alert:skip.send": "Отправлять скип алерта", "widgets:messages.subscription": "Подписка на сообщения", "widgets:goal.subscription": "Подписка на цели", "widgets:settings.subscription": "Подписка на настройки", "widgets:auc-fighter:start-match.subscription": "Подписка на старт матча", "widgets:auc-fighter:pause-match.subscription": "Подписка на паузу матча", "widgets:auc-fighter:resume-match.subscription": "Подписка на возобновление матча", "widgets:auc-fighter:cancel-match.subscription": "Подписка на отмену матча", "widgets:auc-fighter:update-match.subscription": "Подписка на обновление матча", "widgets:auc-fighter:settings.subscription": "Подписка на настройки auc-fighter", "widgets:alert:replay.subscription": "Подписка на повтор алерта", "widgets:alert:skip.subscription": "Подписка на скип алерта", "widgets:alert:test.subscription": "Подписка на тестовый алерт", "widgets:alert:skip-playing.subscription": "Подписка на скип воспроизводимого алерта", "widgets:alert:alerts.subscription": "Подписка на алерты", "widgets:media:replay.subscription": "Подписка на повтор медиа", "widgets:media:settings.subscription": "Подписка на настройки медиа", "widgets:media:skip.subscription": "Подписка на скип медиа", "widgets:media:skip-playing-media.subscription": "Подписка на скип воспроизводимого медиа", "widgets:media:end.subscription": "Подписка на окончание медиа", "widgets:media:error.subscription": "Подписка на ошибку медиа", "widgets:media:pause.subscription": "Подписка на паузу медиа", "widgets:media:play.subscription": "Подписка на запуск медиа", "widgets:alert:played.subscription": "Подписка на воспроизведённый алерт", "widgets:view:storage.read": "Читать хранилище view", "widgets:control:storage.read": "Читать хранилище control", "widgets:view:storage.write": "Записывать в хранилище view", "widgets:control:storage.write": "Записывать в хранилище control", "widgets:view:storage.subscription": "Подписка на хранилище view", "widgets:control:storage.subscription": "Подписка на хранилище control" }, lJ = { title: "NSFW", nsfw_window: "NSFW окно", settings: "Настройки", window: "Окно", blur_timeout_duration: "Длительность размытия", confidence_threshold: "Порог уверенности", anus: "Анус", make_love: "Секс", nipple: "Сосок", penis: "Пенис", vagina: "Вагина" }, uJ = {
+  on: lQ,
+  off: uQ,
+  select: cQ,
+  success: dQ,
+  ok: fQ,
+  cancel: pQ,
+  sound_volume: hQ,
+  skip_media: mQ,
+  skip_alert: gQ,
+  none: vQ,
+  start: yQ,
+  stop: bQ,
+  disconnected: wQ,
+  authorization: SQ,
+  error: _Q,
+  updater: EQ,
+  media: CQ,
+  integration: xQ,
+  auction: TQ,
+  maption: RQ,
+  media_settings: kQ,
+  dashboard: DQ,
+  messages: MQ,
+  message: OQ,
+  filter: AQ,
+  settings: NQ,
+  wheel: PQ,
+  timer: $Q,
+  fighter: jQ,
+  lot: LQ,
+  bid: IQ,
+  lots: FQ,
+  auction_settings: zQ,
+  lots_options: UQ,
+  auc_fighter_settings: VQ,
+  alerts: BQ,
+  services: HQ,
+  twitch: WQ,
+  widy: qQ,
+  twitch_service_settings: YQ,
+  alert: GQ,
+  general: KQ,
+  goals: QQ,
+  goal: JQ,
+  save: XQ,
+  back: ZQ,
+  widget: eJ,
+  view: tJ,
+  image: nJ,
+  text: rJ,
+  audio: aJ,
+  version: iJ,
+  widgets: oJ,
+  scopes: sJ,
+  nsfw: lJ
+}, cJ = "Увімкнено", dJ = "Вимкнено", fJ = "Вибрати", pJ = "Успіх", hJ = "Ок", mJ = "Скасувати", gJ = "Гучність звуку", vJ = "Скорочення пропуску медіа", yJ = "Скорочення пропуску сповіщення", bJ = "Немає", wJ = "Запустити", SJ = "Зупинити", _J = "Відключено", EJ = { title: "Авторизація", code: "Запит коду", sign_in: "Увійти", phone: "Номер телефону", telegram_code: "Код з Telegram", your_code: "Ваш код", "2fa_password": "Пароль 2FA", password: "Пароль", streamelements: "Спочатку потрібно підключити StreamElements JWT", you_can_find_by_url: "Ви можете знайти його за цим посиланням", set_id_and_jwt: "Потрібно вказати Account ID та JWT StreamElements для {{service}}" }, CJ = { wrong_lots_format: "Неправильний формат лотів", not_connected: "Не підключено", request_error: "Помилка запиту" }, xJ = { title: "Оновлення", description: "Доступна нова версія додатка. Бажаєте оновити?", update: "Оновити", later: "Пізніше", downloading: "Завантаження..." }, TJ = { title: "Медіа", youtube: "YouTube", twitch: "Twitch", tiktok: "TikTok" }, RJ = { tribute: "Показувати повідомлення подяки" }, kJ = { lots: "Лоти", wheel: "Колесо", settings: "Налаштування" }, DJ = { set_point: "Встановити точку", meter_price: "Ціна за 1 метр", amount: "Сума", finish: "Завершити", lat_error: "Широта має бути від -90 до 90", lng_error: "Довгота має бути від -180 до 180", rules: "Для автоматичної зміни позиції вказівника в повідомленні має бути лише одне слово з:" }, MJ = { enabled: "Увімкнено", min_amount: "Мінімальна сума", video_volume: "Гучність відео", min_views: "Мінімум переглядів" }, OJ = { messages: "Повідомлення", settings: "Налаштування", services: "Сервіси", alerts: "Сповіщення", media: "Медіа", goals: "Цілі", auction: "Аукціон", maption: "Maption", fighter: "Бій", widgets: "Віджети", info: "Інформація", nsfw: "NSFW" }, AJ = { title: "Останні повідомлення" }, NJ = { skip: "Пропустити", replay: "Повторити", donated: "{{user_name}} задонатив {{amount}}{{currency}}", followed: "{{user_name}} підписався", subscribed: "{{user_name}} оформив підписку", gifted_subscriptions: "{{user_name}} подарував {{total}} підписок", raided_with: "{{user_name}} здійснив рейд з {{viewers}} глядачами" }, PJ = { title: "Фільтр повідомлень", exclude_donations: "Виключити донати", exclude_follows: "Виключити підписки", exclude_subscriptions: "Виключити передплати", exclude_raids: "Виключити рейди" }, $J = { title: "Налаштування", pause: "Призупинити сповіщення", moderation_duration: "Тривалість модерації", black_list: "Чорний список", remove_links: "Видаляти посилання", language: "Мова", sec: "Сек", currency: "Валюта", tts_type: "Тип TTS" }, jJ = { normal: "Звичайне", dropout: "Вибування", spin: "Обертання", speed: "Швидкість колеса" }, LJ = { continue: "Продовжити", pause: "Призупинити", reset: "Скинути", add_time: "Додати час", reduce_time: "Зменшити час", add_timex2: "Додати час ×2" }, IJ = { title: "Бій", match: "Матч", final: "Фінал", game: "Гра", cancel: "Скасувати гру", winner: "Переможець", settings: "Налаштування", create_game: "Створити гру з лотів", start: "Почати", pause: "Призупинити", rematch: "Реванш", resume: "Продовжити" }, FJ = { name: "Назва", delete: "Видалити", add: "Додати суму" }, zJ = { delete: "Видалити", to_lot: "До лоту", new: "Новий", add_to_random_slot: "Додати до випадкового лоту" }, UJ = { add: "Додати", new_lot_name: "Назва нового лоту", search: "Пошук лоту", total: "Всього" }, VJ = { leader_change: "Зміна лідера", new_lot: "Новий лот", new_donation: "Новий донат", show_odds: "Показувати шанси", show_total_sum: "Показувати загальну суму", greater_timer_adding_time: "Додавання часу при більшій ставці", not_add_time_if: "Не додавати час якщо", adding_time: "Час" }, BJ = { import_lots: "Імпортувати лоти", clear_lots: "Очистити лоти" }, HJ = { round_duration: "Тривалість раунду", add_players: "Додати гравців" }, WJ = { title: "Сповіщення", group: "Група" }, qJ = { title: "Сервіси", tribute: "Подяка", streamelements: "StreamElements", connect: "Підключити", integrations: "Інтеграції", sign_out: "Вийти", confirm_sign_out: "Ви впевнені, що хочете вийти з цього сервісу?" }, YJ = { device_code_expired: "Термін дії коду пристрою закінчився. Спробуйте ще раз.", user_code: "Код користувача", authorize_with_code: "Авторизуватися за кодом", waiting_authorization: "Очікування авторизації..." }, GJ = { donation_account_name: "Назва акаунту для донатів", donation_url: "Посилання на донати", create_donation_account: "Створити акаунт Widy для донатів", connect_to_existing_account: "Підключитися до існуючого акаунту", create_donation_account_pending: "Створення акаунту донатів..." }, KJ = { title: "Налаштування Twitch", points_currency_ratio: "Співвідношення балів до валюти", rewards_name: "Назва винагород", rewards_list: "Список винагород", add_reward: "Додати винагороду", cost: "Вартість", color: "Колір" }, QJ = { image: "Зображення", audio: "Аудіо", view: "Вигляд", title: "Заголовок", message: "Повідомлення", test_name: "Тест", test_text: "Це тестове сповіщення!", configure: "Налаштувати", test: "Тестувати", add_new_variant: "Додати новий варіант", new_variant: "Новий варіант", variant_title: "Назва варіанту", variant_group: "Група варіанту", status: "Статус", variation_condition: "Умова варіації", group: "Група", Random: "Випадковий", AmountIsGreater: "Сума більша за", AmountIsEqual: "Сума дорівнює", delete: "Видалити", sure_delete: "Ви впевнені, що хочете видалити цей варіант?", type: "Тип", Donation: "Донат", Subscription: "Підписка", Follow: "Підписка", Raid: "Рейд" }, JJ = "Загальне", XJ = { title: "Цілі", create: "Створити нову ціль" }, ZJ = { new: "Нова ціль", goal: "Ціль", type: "Тип", elements: "Елементи", progress: "Прогрес", goal_title: "Назва цілі", amount_raise: "Сума для збору", start_raising: "Почати збір з", end_date: "Дата завершення цілі", bar_height: "Висота бару", rounding_radius: "Радіус закруглення", bar_stroke_thickness: "Товщина обводки бару", background_bar_color: "Колір фонового бару", progress_bar_color: "Колір прогрес-бару", goal_progress_bar: "Прогрес-бар цілі", progress_bar_layout: "Розташування прогрес-бару", remaining_time: "Залишок часу", goal_amount_limits: "Ліміти суми цілі", widget_background: "Фон віджета", background_color: "Колір фону", OnTop: "Зверху", Inside: "Всередині", Below: "Знизу", DoNotDisplay: "Не показувати", title: "Заголовок", limits: "Ліміти", raised: "Зібрано", days_left: "Днів залишилось", finish_goal: "Завершити ціль", sure_finish: "Ви впевнені, що хочете завершити цю ціль?", Donation: "Донат", TwitchSubscription: "Підписка Twitch", TwitchFollow: "Підписка Twitch", goal_not_finished: "У вас є незавершена ціль цього типу." }, eX = "Зберегти", tX = "Назад", nX = { copy: "Копіювати", launch: "Запустити", url: "URL віджета", obs_dock_url: "OBS dock URL" }, rX = { top: "Зображення зверху, текст знизу", bottom: "Зображення знизу, текст зверху", left: "Зображення ліворуч, текст праворуч", right: "Зображення праворуч, текст ліворуч", overlay: "Текст поверх зображення" }, aX = { show: "Показувати зображення" }, iX = { font: "Шрифт", font_size: "Розмір шрифту", text_color: "Колір тексту", bold: "Жирний", italics: "Курсив", underline: "Підкреслення", transformation: "Трансформація", letter_spacing: "Відстань між літерами", word_spacing: "Відстань між словами", horizontal_alignment: "Горизонтальне вирівнювання", vertical_alignment: "Вертикальне вирівнювання", text_preview: "Це попередній перегляд!", name: "Назва" }, oX = { play: "Відтворити", stop: "Зупинити" }, sX = "Версія", lX = { title: "Віджети", add: "Додати віджет", install: "Встановити", delete: "Видалити", installed: "Встановлено", update: "Оновити", all: "Всі", settings: "Налаштування", control: "Керування", delete_confirm: "Ви впевнені, що хочете видалити цей віджет?", invalid_manifest: "Невірний маніфест віджета", add_confirm: "Додавання дозволить {{widget_name}}:", installing: "Встановлення...", updating: "Оновлення...", view_url: "URL перегляду", widget_connection: "Віджет отримує або надсилає запити до:" }, uX = { "widgets:messages.read": "Читати повідомлення", "widgets:goals.read": "Читати цілі", "widgets:auc-fighter:settings.read": "Читати налаштування auc-fighter", "widgets:settings.read": "Читати налаштування віджета", "widgets:alerts.read": "Читати сповіщення", "widgets:media:settings.read": "Читати налаштування медіа", "widgets:auc-fighter:match-playing.send": "Надсилати стан матчу (грає)", "widgets:auc-fighter:match-winner.send": "Надсилати переможця матчу", "widgets:auc-fighter:match-paused.send": "Надсилати паузу матчу", "widgets:auc-fighter:match-id.send": "Надсилати ID матчу", "widgets:alert:played.send": "Надсилати сповіщення відтворено", "widgets:alert:playing.send": "Надсилати сповіщення відтворюється", "widgets:media:played.send": "Надсилати медіа відтворено", "widgets:media:end.send": "Надсилати завершення медіа", "widgets:media:playing.send": "Надсилати медіа відтворюється", "widgets:media:paused.send": "Надсилати паузу медіа", "widgets:media:error.send": "Надсилати помилку медіа", "widgets:media:replay.send": "Надсилати повтор медіа", "widgets:alert:replay.send": "Надсилати повтор сповіщення", "widgets:alert:skip.send": "Надсилати пропуск сповіщення", "widgets:messages.subscription": "Підписка на повідомлення", "widgets:goal.subscription": "Підписка на цілі", "widgets:settings.subscription": "Підписка на налаштування", "widgets:auc-fighter:start-match.subscription": "Підписка на початок матчу", "widgets:auc-fighter:pause-match.subscription": "Підписка на паузу матчу", "widgets:auc-fighter:resume-match.subscription": "Підписка на продовження матчу", "widgets:auc-fighter:cancel-match.subscription": "Підписка на скасування матчу", "widgets:auc-fighter:update-match.subscription": "Підписка на оновлення матчу", "widgets:auc-fighter:settings.subscription": "Підписка на налаштування auc-fighter", "widgets:alert:replay.subscription": "Підписка на повтор сповіщення", "widgets:alert:skip.subscription": "Підписка на пропуск сповіщення", "widgets:alert:test.subscription": "Підписка на тест сповіщення", "widgets:alert:skip-playing.subscription": "Підписка на пропуск відтворюваного сповіщення", "widgets:alert:alerts.subscription": "Підписка на сповіщення", "widgets:media:replay.subscription": "Підписка на повтор медіа", "widgets:media:settings.subscription": "Підписка на налаштування медіа", "widgets:media:skip.subscription": "Підписка на пропуск медіа", "widgets:media:skip-playing-media.subscription": "Підписка на пропуск відтворюваного медіа", "widgets:media:end.subscription": "Підписка на завершення медіа", "widgets:media:error.subscription": "Підписка на помилку медіа", "widgets:media:pause.subscription": "Підписка на паузу медіа", "widgets:media:play.subscription": "Підписка на відтворення медіа", "widgets:alert:played.subscription": "Підписка на відтворене сповіщення", "widgets:view:storage.read": "Читати сховище віджета (view)", "widgets:control:storage.read": "Читати сховище віджета (control)", "widgets:view:storage.write": "Записувати в сховище віджета (view)", "widgets:control:storage.write": "Записувати в сховище віджета (control)", "widgets:view:storage.subscription": "Підписка на сховище віджета (view)", "widgets:control:storage.subscription": "Підписка на сховище віджета (control)" }, cX = { title: "NSFW", nsfw_window: "NSFW вікно", settings: "Налаштування", window: "Вікно", blur_timeout_duration: "Тривалість розмиття", confidence_threshold: "Поріг впевненості", anus: "Анус", make_love: "Статевий акт", nipple: "Сосок", penis: "Пеніс", vagina: "Піхва" }, dX = {
+  on: cJ,
+  off: dJ,
+  select: fJ,
+  success: pJ,
+  ok: hJ,
+  cancel: mJ,
+  sound_volume: gJ,
+  skip_media: vJ,
+  skip_alert: yJ,
+  none: bJ,
+  start: wJ,
+  stop: SJ,
+  disconnected: _J,
+  authorization: EJ,
+  error: CJ,
+  updater: xJ,
+  media: TJ,
+  integration: RJ,
+  auction: kJ,
+  maption: DJ,
+  media_settings: MJ,
+  dashboard: OJ,
+  messages: AJ,
+  message: NJ,
+  filter: PJ,
+  settings: $J,
+  wheel: jJ,
+  timer: LJ,
+  fighter: IJ,
+  lot: FJ,
+  bid: zJ,
+  lots: UJ,
+  auction_settings: VJ,
+  lots_options: BJ,
+  auc_fighter_settings: HJ,
+  alerts: WJ,
+  services: qJ,
+  twitch: YJ,
+  widy: GJ,
+  twitch_service_settings: KJ,
+  alert: QJ,
+  general: JJ,
+  goals: XJ,
+  goal: ZJ,
+  save: eX,
+  back: tX,
+  widget: nX,
+  view: rX,
+  image: aX,
+  text: iX,
+  audio: oX,
+  version: sX,
+  widgets: lX,
+  scopes: uX,
+  nsfw: cX
+}, fX = "开启", pX = "关闭", hX = "选择", mX = "成功", gX = "确定", vX = "取消", yX = "声音音量", bX = "快捷跳过媒体", wX = "快捷跳过提醒", SX = "无", _X = "开始", EX = "停止", CX = "已断开连接", xX = { title: "授权", code: "请求代码", sign_in: "登录", phone: "手机号", telegram_code: "Telegram 验证码", your_code: "您的验证码", "2fa_password": "两步验证密码", password: "密码", streamelements: "需要先连接 StreamElements JWT", you_can_find_by_url: "您可以通过以下链接找到", set_id_and_jwt: "需要为 {{service}} 设置 StreamElements 账号 ID 和 JWT" }, TX = { wrong_lots_format: "Lot 格式错误", not_connected: "未连接", request_error: "请求错误" }, RX = { title: "更新", description: "发现新版本，是否立即更新？", update: "更新", later: "稍后", downloading: "正在下载..." }, kX = { title: "媒体", youtube: "YouTube", twitch: "Twitch", tiktok: "TikTok" }, DX = { tribute: "显示致谢消息" }, MX = { lots: "拍品", wheel: "转盘", settings: "设置" }, OX = { set_point: "设置点位", meter_price: "每米价格", amount: "金额", finish: "完成", lat_error: "纬度必须在 -90 到 90 之间", lng_error: "经度必须在 -180 到 180 之间", rules: "指针要在消息中自动改变位置时，只能包含以下其中一个词：" }, AX = { enabled: "已启用", min_amount: "最低金额", video_volume: "视频音量", min_views: "最低观看次数" }, NX = { messages: "消息", settings: "设置", services: "服务", alerts: "提醒", media: "媒体", goals: "目标", auction: "拍卖", maption: "地图", fighter: "对战", widgets: "小部件", info: "信息", nsfw: "NSFW" }, PX = { title: "最新消息" }, $X = { skip: "跳过", replay: "重播", donated: "{{user_name}} 捐赠了 {{amount}}{{currency}}", followed: "{{user_name}} 关注了", subscribed: "{{user_name}} 订阅了", gifted_subscriptions: "{{user_name}} 赠送了 {{total}} 个订阅", raided_with: "{{user_name}} 带 {{viewers}} 名观众突袭" }, jX = { title: "过滤消息", exclude_donations: "排除捐赠", exclude_follows: "排除关注", exclude_subscriptions: "排除订阅", exclude_raids: "排除突袭" }, LX = { title: "设置", pause: "暂停提醒消息", moderation_duration: "审核时长", black_list: "黑名单", remove_links: "移除链接", language: "语言", sec: "秒", currency: "货币", tts_type: "TTS 类型" }, IX = { normal: "普通", dropout: "淘汰", spin: "旋转", speed: "转盘速度" }, FX = { continue: "继续", pause: "暂停", reset: "重置", add_time: "增加时间", reduce_time: "减少时间", add_timex2: "增加时间 x2" }, zX = { title: "对战", match: "对战", final: "决赛", game: "游戏", cancel: "取消对战", winner: "获胜者", settings: "设置", create_game: "从拍品创建对战", start: "开始", pause: "暂停", rematch: "重赛", resume: "继续" }, UX = { name: "名称", delete: "删除", add: "增加金额" }, VX = { delete: "删除", to_lot: "添加到拍品", new: "新建", add_to_random_slot: "添加到随机拍品" }, BX = { add: "添加", new_lot_name: "新拍品名称", search: "搜索拍品", total: "总计" }, HX = { leader_change: "领先者变更", new_lot: "新拍品", new_donation: "新捐赠", show_odds: "显示赔率", show_total_sum: "显示总金额", greater_timer_adding_time: "领先时增加时间", not_add_time_if: "不增加时间如果", adding_time: "增加时间" }, WX = { import_lots: "导入拍品", clear_lots: "清空拍品" }, qX = { round_duration: "回合时长", add_players: "添加选手" }, YX = { title: "提醒", group: "分组" }, GX = { title: "服务", tribute: "致谢", streamelements: "StreamElements", connect: "连接", integrations: "集成", sign_out: "退出", confirm_sign_out: "确定要退出该服务吗？" }, KX = { device_code_expired: "设备代码已过期，请重试。", user_code: "用户代码", authorize_with_code: "使用代码授权", waiting_authorization: "等待授权中..." }, QX = { donation_account_name: "捐赠账号名称", donation_url: "捐赠链接", create_donation_account: "创建 Widy 捐赠账号", connect_to_existing_account: "连接到现有账号", create_donation_account_pending: "正在创建捐赠账号..." }, JX = { title: "Twitch 设置", points_currency_ratio: "积分货币比例", rewards_name: "奖励名称", rewards_list: "奖励列表", add_reward: "添加奖励", cost: "价格", color: "颜色" }, XX = { image: "图片", audio: "音频", view: "视图", title: "标题", message: "消息", test_name: "测试", test_text: "这是一个测试提醒！", configure: "配置", test: "测试", add_new_variant: "添加新变体", new_variant: "新变体", variant_title: "变体标题", variant_group: "变体分组", status: "状态", variation_condition: "变体条件", group: "分组", Random: "随机", AmountIsGreater: "金额大于", AmountIsEqual: "金额等于", delete: "删除", sure_delete: "确定要删除此变体吗？", type: "类型", Donation: "捐赠", Subscription: "订阅", Follow: "关注", Raid: "突袭" }, ZX = "常规", eZ = { title: "目标", create: "创建新目标" }, tZ = { new: "新目标", goal: "目标", type: "类型", elements: "元素", progress: "进度", goal_title: "目标标题", amount_raise: "目标金额", start_raising: "起始金额", end_date: "结束日期", bar_height: "进度条高度", rounding_radius: "圆角半径", bar_stroke_thickness: "进度条边框粗细", background_bar_color: "背景条颜色", progress_bar_color: "进度条颜色", goal_progress_bar: "目标进度条", progress_bar_layout: "进度条布局", remaining_time: "剩余时间", goal_amount_limits: "目标金额限制", widget_background: "组件背景", background_color: "背景颜色", OnTop: "顶部", Inside: "内部", Below: "下方", DoNotDisplay: "不显示", title: "标题", limits: "限制", raised: "已筹", days_left: "剩余天数", finish_goal: "完成目标", sure_finish: "确定要完成此目标吗？", Donation: "捐赠", TwitchSubscription: "Twitch 订阅", TwitchFollow: "Twitch 关注", goal_not_finished: "您还有未完成的目标" }, nZ = "保存", rZ = "返回", aZ = { copy: "复制", launch: "启动", url: "小部件链接", obs_dock_url: "OBS Dock 链接" }, iZ = { top: "图片在上，文字在下", bottom: "图片在下，文字在上", left: "图片在左，文字在右", right: "图片在右，文字在左", overlay: "文字叠加在图片上" }, oZ = { show: "显示图片" }, sZ = { font: "字体", font_size: "字体大小", text_color: "文字颜色", bold: "加粗", italics: "斜体", underline: "下划线", transformation: "转换", letter_spacing: "字间距", word_spacing: "词间距", horizontal_alignment: "水平对齐", vertical_alignment: "垂直对齐", text_preview: "这是预览文本！", name: "名称" }, lZ = { play: "播放", stop: "停止" }, uZ = "版本", cZ = { title: "小部件", add: "添加小部件", install: "安装", delete: "删除", installed: "已安装", update: "更新", all: "全部", settings: "设置", control: "控制", delete_confirm: "确定要删除此小部件吗？", invalid_manifest: "无效的 widget manifest", add_confirm: "添加后将允许 {{widget_name}}：", installing: "正在安装...", updating: "正在更新...", view_url: "查看链接", widget_connection: "小部件可获取或发送请求到：" }, dZ = { "widgets:messages.read": "读取消息", "widgets:goals.read": "读取目标", "widgets:auc-fighter:settings.read": "读取对战设置", "widgets:settings.read": "读取小部件设置", "widgets:alerts.read": "读取提醒", "widgets:media:settings.read": "读取媒体设置", "widgets:auc-fighter:match-playing.send": "发送对战进行中", "widgets:auc-fighter:match-winner.send": "发送获胜者", "widgets:auc-fighter:match-paused.send": "发送对战暂停", "widgets:auc-fighter:match-id.send": "发送对战 ID", "widgets:alert:played.send": "发送提醒已播放", "widgets:alert:playing.send": "发送提醒播放中", "widgets:media:played.send": "发送媒体已播放", "widgets:media:end.send": "发送媒体结束", "widgets:media:playing.send": "发送媒体播放中", "widgets:media:paused.send": "发送媒体暂停", "widgets:media:error.send": "发送媒体错误", "widgets:media:replay.send": "发送媒体重播", "widgets:alert:replay.send": "发送提醒重播", "widgets:alert:skip.send": "发送提醒跳过", "widgets:messages.subscription": "订阅消息", "widgets:goal.subscription": "订阅目标", "widgets:settings.subscription": "订阅设置", "widgets:auc-fighter:start-match.subscription": "订阅开始对战", "widgets:auc-fighter:pause-match.subscription": "订阅暂停对战", "widgets:auc-fighter:resume-match.subscription": "订阅继续对战", "widgets:auc-fighter:cancel-match.subscription": "订阅取消对战", "widgets:auc-fighter:update-match.subscription": "订阅更新对战", "widgets:auc-fighter:settings.subscription": "订阅对战设置", "widgets:alert:replay.subscription": "订阅提醒重播", "widgets:alert:skip.subscription": "订阅提醒跳过", "widgets:alert:test.subscription": "订阅提醒测试", "widgets:alert:skip-playing.subscription": "订阅跳过正在播放的提醒", "widgets:alert:alerts.subscription": "订阅提醒", "widgets:media:replay.subscription": "订阅媒体重播", "widgets:media:settings.subscription": "订阅媒体设置", "widgets:media:skip.subscription": "订阅跳过媒体", "widgets:media:skip-playing-media.subscription": "订阅跳过正在播放的媒体", "widgets:media:end.subscription": "订阅媒体结束", "widgets:media:error.subscription": "订阅媒体错误", "widgets:media:pause.subscription": "订阅媒体暂停", "widgets:media:play.subscription": "订阅媒体播放", "widgets:alert:played.subscription": "订阅提醒已播放", "widgets:view:storage.read": "读取视图存储", "widgets:control:storage.read": "读取控制存储", "widgets:view:storage.write": "写入视图存储", "widgets:control:storage.write": "写入控制存储", "widgets:view:storage.subscription": "订阅视图存储", "widgets:control:storage.subscription": "订阅控制存储" }, fZ = { title: "NSFW", nsfw_window: "NSFW 窗口", settings: "设置", window: "窗口", blur_timeout_duration: "模糊超时时间", confidence_threshold: "置信度阈值", anus: "肛门", make_love: "做爱", nipple: "乳头", penis: "阴茎", vagina: "阴道" }, pZ = {
+  on: fX,
+  off: pX,
+  select: hX,
+  success: mX,
+  ok: gX,
+  cancel: vX,
+  sound_volume: yX,
+  skip_media: bX,
+  skip_alert: wX,
+  none: SX,
+  start: _X,
+  stop: EX,
+  disconnected: CX,
+  authorization: xX,
+  error: TX,
+  updater: RX,
+  media: kX,
+  integration: DX,
+  auction: MX,
+  maption: OX,
+  media_settings: AX,
+  dashboard: NX,
+  messages: PX,
+  message: $X,
+  filter: jX,
+  settings: LX,
+  wheel: IX,
+  timer: FX,
+  fighter: zX,
+  lot: UX,
+  bid: VX,
+  lots: BX,
+  auction_settings: HX,
+  lots_options: WX,
+  auc_fighter_settings: qX,
+  alerts: YX,
+  services: GX,
+  twitch: KX,
+  widy: QX,
+  twitch_service_settings: JX,
+  alert: XX,
+  general: ZX,
+  goals: eZ,
+  goal: tZ,
+  save: nZ,
+  back: rZ,
+  widget: aZ,
+  view: iZ,
+  image: oZ,
+  text: sZ,
+  audio: lZ,
+  version: uZ,
+  widgets: cZ,
+  scopes: dZ,
+  nsfw: fZ
 };
 br.use(V4).init({
   resources: {
     en: {
-      translation: W8
+      translation: Z8
     },
     ua: {
-      translation: RJ
+      translation: dX
     },
     ru: {
-      translation: MQ
+      translation: uJ
     },
     de: {
-      translation: BY
+      translation: GY
     },
     es: {
-      translation: VG
+      translation: t7
     },
     fr: {
-      translation: F7
+      translation: r9
     },
     hi: {
-      translation: j9
+      translation: iK
     },
     pt: {
-      translation: NK
+      translation: sQ
     },
     zh: {
-      translation: CX
+      translation: pZ
     }
   },
   lng: "en",
@@ -32526,7 +32569,7 @@ var zD;
   t.anus = "anus", t.make_love = "make_love", t.nipple = "nipple", t.penis = "penis", t.vagina = "vagina";
 })(zD || (zD = {}));
 var ES = { exports: {} }, CS = {}, UD;
-function xX() {
+function hZ() {
   if (UD) return CS;
   UD = 1;
   return (function() {
@@ -32580,14 +32623,14 @@ function xX() {
   })(), CS;
 }
 var VD;
-function TX() {
-  return VD || (VD = 1, ES.exports = xX()), ES.exports;
+function mZ() {
+  return VD || (VD = 1, ES.exports = hZ()), ES.exports;
 }
-var RX = TX();
+var gZ = mZ();
 function H1(t) {
   t();
 }
-function kX() {
+function vZ() {
   let t = null, r = null;
   return {
     clear() {
@@ -32625,7 +32668,7 @@ var BD = {
   },
   get: () => []
 };
-function DX(t, r) {
+function yZ(t, r) {
   let a, i = BD, s = 0, u = !1;
   function c(x) {
     y();
@@ -32645,7 +32688,7 @@ function DX(t, r) {
     return u;
   }
   function y() {
-    s++, a || (a = t.subscribe(m), i = kX());
+    s++, a || (a = t.subscribe(m), i = vZ());
   }
   function v() {
     s--, a && s === 0 && (a(), a = void 0, i.clear(), i = BD);
@@ -32667,7 +32710,7 @@ function DX(t, r) {
   };
   return _;
 }
-var MX = () => typeof window < "u" && typeof window.document < "u" && typeof window.document.createElement < "u", OX = /* @__PURE__ */ MX(), AX = () => typeof navigator < "u" && navigator.product === "ReactNative", NX = /* @__PURE__ */ AX(), PX = () => OX || NX ? R.useLayoutEffect : R.useEffect, $X = /* @__PURE__ */ PX();
+var bZ = () => typeof window < "u" && typeof window.document < "u" && typeof window.document.createElement < "u", wZ = /* @__PURE__ */ bZ(), SZ = () => typeof navigator < "u" && navigator.product === "ReactNative", _Z = /* @__PURE__ */ SZ(), EZ = () => wZ || _Z ? R.useLayoutEffect : R.useEffect, CZ = /* @__PURE__ */ EZ();
 function HD(t, r) {
   return t === r ? t !== 0 || r !== 0 || 1 / t === 1 / r : t !== t && r !== r;
 }
@@ -32682,22 +32725,22 @@ function Vd(t, r) {
       return !1;
   return !0;
 }
-var jX = /* @__PURE__ */ Symbol.for("react-redux-context"), LX = typeof globalThis < "u" ? globalThis : (
+var xZ = /* @__PURE__ */ Symbol.for("react-redux-context"), TZ = typeof globalThis < "u" ? globalThis : (
   /* fall back to a per-module scope (pre-8.1 behaviour) if `globalThis` is not available */
   {}
 );
-function IX() {
+function RZ() {
   if (!R.createContext) return {};
-  const t = LX[jX] ??= /* @__PURE__ */ new Map();
+  const t = TZ[xZ] ??= /* @__PURE__ */ new Map();
   let r = t.get(R.createContext);
   return r || (r = R.createContext(
     null
   ), r.displayName = "ReactRedux", t.set(R.createContext, r)), r;
 }
-var Ko = /* @__PURE__ */ IX();
-function FX(t) {
+var Ko = /* @__PURE__ */ RZ();
+function kZ(t) {
   const { children: r, context: a, serverState: i, store: s } = t, u = R.useMemo(() => {
-    const m = DX(s), p = {
+    const m = yZ(s), p = {
       store: s,
       subscription: m,
       getServerState: i ? () => i : void 0
@@ -32710,7 +32753,7 @@ function FX(t) {
       });
     }
   }, [s, i]), c = R.useMemo(() => s.getState(), [s]);
-  $X(() => {
+  CZ(() => {
     const { subscription: m } = u;
     return m.onStateChange = m.notifyNestedSubs, m.trySubscribe(), c !== s.getState() && m.notifyNestedSubs(), () => {
       m.tryUnsubscribe(), m.onStateChange = void 0;
@@ -32719,7 +32762,7 @@ function FX(t) {
   const f = a || Ko;
   return /* @__PURE__ */ R.createElement(f.Provider, { value: u }, r);
 }
-var zX = FX;
+var DZ = kZ;
 function fE(t = Ko) {
   return function() {
     const a = R.useContext(t);
@@ -32744,16 +32787,16 @@ function q1(t = Ko) {
   }), a;
 }
 var Y1 = /* @__PURE__ */ q1();
-function UX(t = Ko) {
+function MZ(t = Ko) {
   const r = t === Ko ? Y1 : q1(t), a = () => r().dispatch;
   return Object.assign(a, {
     withTypes: () => a
   }), a;
 }
-var Rg = /* @__PURE__ */ UX(), VX = (t, r) => t === r;
-function BX(t = Ko) {
+var Rg = /* @__PURE__ */ MZ(), OZ = (t, r) => t === r;
+function AZ(t = Ko) {
   const r = t === Ko ? W1 : fE(t), a = (i, s = {}) => {
-    const { equalityFn: u = VX } = typeof s == "function" ? { equalityFn: s } : s;
+    const { equalityFn: u = OZ } = typeof s == "function" ? { equalityFn: s } : s;
     {
       if (!i)
         throw new Error("You must pass a selector to useSelector");
@@ -32817,7 +32860,7 @@ Selectors that return the entire state are almost certainly a mistake, as they w
         }
       }[i.name],
       [i]
-    ), w = RX.useSyncExternalStoreWithSelector(
+    ), w = gZ.useSyncExternalStoreWithSelector(
       m.addNestedSub,
       f.getState,
       p || f.getState,
@@ -32830,8 +32873,8 @@ Selectors that return the entire state are almost certainly a mistake, as they w
     withTypes: () => a
   }), a;
 }
-var fi = /* @__PURE__ */ BX(), HX = H1;
-const G1 = R.createContext(null), WX = ({
+var fi = /* @__PURE__ */ AZ(), NZ = H1;
+const G1 = R.createContext(null), PZ = ({
   children: t,
   context: r,
   eventsService: a
@@ -32840,7 +32883,7 @@ const G1 = R.createContext(null), WX = ({
   lineNumber: 13,
   columnNumber: 9
 }, void 0);
-class qX {
+class $Z {
   subscribers;
   constructor() {
     this.subscribers = [];
@@ -32857,7 +32900,7 @@ class qX {
     };
   }
 }
-class pE extends qX {
+class pE extends $Z {
   constructor(r) {
     super(), this.url = r;
   }
@@ -32920,11 +32963,11 @@ class pE extends qX {
     return this.socket?.readyState === WebSocket.OPEN;
   }
 }
-var YX = typeof Symbol == "function" && Symbol.observable || "@@observable", WD = YX, xS = () => Math.random().toString(36).substring(7).split("").join("."), GX = {
+var jZ = typeof Symbol == "function" && Symbol.observable || "@@observable", WD = jZ, xS = () => Math.random().toString(36).substring(7).split("").join("."), LZ = {
   INIT: `@@redux/INIT${/* @__PURE__ */ xS()}`,
   REPLACE: `@@redux/REPLACE${/* @__PURE__ */ xS()}`,
   PROBE_UNKNOWN_ACTION: () => `@@redux/PROBE_UNKNOWN_ACTION${xS()}`
-}, qs = GX;
+}, qs = LZ;
 function hi(t) {
   if (typeof t != "object" || t === null)
     return !1;
@@ -32933,7 +32976,7 @@ function hi(t) {
     r = Object.getPrototypeOf(r);
   return Object.getPrototypeOf(t) === r || Object.getPrototypeOf(t) === null;
 }
-function KX(t) {
+function IZ(t) {
   if (t === void 0)
     return "undefined";
   if (t === null)
@@ -32949,11 +32992,11 @@ function KX(t) {
   }
   if (Array.isArray(t))
     return "array";
-  if (XX(t))
+  if (UZ(t))
     return "date";
-  if (JX(t))
+  if (zZ(t))
     return "error";
-  const a = QX(t);
+  const a = FZ(t);
   switch (a) {
     case "Symbol":
     case "Promise":
@@ -32965,18 +33008,18 @@ function KX(t) {
   }
   return Object.prototype.toString.call(t).slice(8, -1).toLowerCase().replace(/\s/g, "");
 }
-function QX(t) {
+function FZ(t) {
   return typeof t.constructor == "function" ? t.constructor.name : null;
 }
-function JX(t) {
+function zZ(t) {
   return t instanceof Error || typeof t.message == "string" && t.constructor && typeof t.constructor.stackTraceLimit == "number";
 }
-function XX(t) {
+function UZ(t) {
   return t instanceof Date ? !0 : typeof t.toDateString == "function" && typeof t.getDate == "function" && typeof t.setDate == "function";
 }
 function Vo(t) {
   let r = typeof t;
-  return r = KX(t), r;
+  return r = IZ(t), r;
 }
 function K1(t, r, a) {
   if (typeof t != "function")
@@ -33084,7 +33127,7 @@ function qD(t) {
   } catch {
   }
 }
-function ZX(t, r, a, i) {
+function VZ(t, r, a, i) {
   const s = Object.keys(r), u = a && a.type === qs.INIT ? "preloadedState argument passed to createStore" : "previous state received by the reducer";
   if (s.length === 0)
     return "Store does not have a valid reducer. Make sure the argument passed to combineReducers is an object whose values are reducers.";
@@ -33096,7 +33139,7 @@ function ZX(t, r, a, i) {
   }), !(a && a.type === qs.REPLACE) && c.length > 0)
     return `Unexpected ${c.length > 1 ? "keys" : "key"} "${c.join('", "')}" found in ${u}. Expected to find one of the known reducer keys instead: "${s.join('", "')}". Unexpected keys will be ignored.`;
 }
-function eZ(t) {
+function BZ(t) {
   Object.keys(t).forEach((r) => {
     const a = t[r];
     if (typeof a(void 0, {
@@ -33120,7 +33163,7 @@ function hE(t) {
   s = {};
   let u;
   try {
-    eZ(a);
+    BZ(a);
   } catch (c) {
     u = c;
   }
@@ -33128,7 +33171,7 @@ function hE(t) {
     if (u)
       throw u;
     {
-      const v = ZX(f, a, m, s);
+      const v = VZ(f, a, m, s);
       v && qD(v);
     }
     let p = !1;
@@ -33147,7 +33190,7 @@ function hE(t) {
 function Km(...t) {
   return t.length === 0 ? (r) => r : t.length === 1 ? t[0] : t.reduce((r, a) => (...i) => r(a(...i)));
 }
-function tZ(...t) {
+function HZ(...t) {
   return (r) => (a, i) => {
     const s = r(a, i);
     let u = () => {
@@ -33207,7 +33250,7 @@ var ra = Object, Js = ra.getPrototypeOf, tf = "constructor", _f = "prototype", c
 function sa(t) {
   return t ? J1(t) || Cf(t) || !!t[Bd] || !!t[tf]?.[Bd] || xf(t) || Tf(t) : !1;
 }
-var nZ = ra[_f][tf].toString(), YD = /* @__PURE__ */ new WeakMap();
+var WZ = ra[_f][tf].toString(), YD = /* @__PURE__ */ new WeakMap();
 function J1(t) {
   if (!t || !bu(t))
     return !1;
@@ -33220,9 +33263,9 @@ function J1(t) {
   if (!Ho(a))
     return !1;
   let i = YD.get(a);
-  return i === void 0 && (i = Function.toString.call(a), YD.set(a, i)), i === nZ;
+  return i === void 0 && (i = Function.toString.call(a), YD.set(a, i)), i === WZ;
 }
-function rZ(t) {
+function qZ(t) {
   return oa(t) || Vn(15, t), t[Qn].base_;
 }
 function Ef(t, r, a = !0) {
@@ -33240,15 +33283,15 @@ var Hd = (t, r, a = Xs(t)) => a === 2 ? t.has(r) : ra[_f].hasOwnProperty.call(t,
 ), Jm = (t, r, a, i = Xs(t)) => {
   i === 2 ? t.set(r, a) : i === 3 ? t.add(a) : t[r] = a;
 };
-function aZ(t, r) {
+function YZ(t, r) {
   return t === r ? t !== 0 || 1 / t === 1 / r : t !== t && r !== r;
 }
 var Cf = Array.isArray, xf = (t) => t instanceof Map, Tf = (t) => t instanceof Set, bu = (t) => typeof t == "object", Ho = (t) => typeof t == "function", TS = (t) => typeof t == "boolean";
-function iZ(t) {
+function GZ(t) {
   const r = +t;
   return Number.isInteger(r) && String(r) === t;
 }
-var oZ = (t) => bu(t) ? t?.[Qn] : null, eo = (t) => t.copy_ || t.base_, vE = (t) => t.modified_ ? t.copy_ : t.base_;
+var KZ = (t) => bu(t) ? t?.[Qn] : null, eo = (t) => t.copy_ || t.base_, vE = (t) => t.modified_ ? t.copy_ : t.base_;
 function d_(t, r) {
   if (xf(t))
     return new Map(t);
@@ -33294,11 +33337,11 @@ function yE(t, r = !1) {
     !1
   )), t;
 }
-function sZ() {
+function QZ() {
   Vn(2);
 }
 var Jh = {
-  [nf]: sZ
+  [nf]: QZ
 };
 function kg(t) {
   return t === null || !bu(t) ? !0 : ra.isFrozen(t);
@@ -33309,10 +33352,10 @@ function Zs(t) {
   return r || Vn(0, t), r;
 }
 var KD = (t) => !!eg[t];
-function lZ(t, r) {
+function JZ(t, r) {
   eg[t] || (eg[t] = r);
 }
-var rf, X1 = () => rf, uZ = (t, r) => ({
+var rf, X1 = () => rf, XZ = (t, r) => ({
   drafts_: [],
   parent_: t,
   immer_: r,
@@ -33329,13 +33372,13 @@ function QD(t, r) {
   r && (t.patchPlugin_ = Zs(Zm), t.patches_ = [], t.inversePatches_ = [], t.patchListener_ = r);
 }
 function f_(t) {
-  p_(t), t.drafts_.forEach(cZ), t.drafts_ = null;
+  p_(t), t.drafts_.forEach(ZZ), t.drafts_ = null;
 }
 function p_(t) {
   t === rf && (rf = t.parent_);
 }
-var JD = (t) => rf = uZ(rf, t);
-function cZ(t) {
+var JD = (t) => rf = XZ(rf, t);
+function ZZ(t) {
   const r = t[Qn];
   r.type_ === 0 || r.type_ === 1 ? r.revoke_() : r.revoked_ = !0;
 }
@@ -33352,7 +33395,7 @@ function XD(t, r) {
     );
   } else
     t = ZD(r, a);
-  return dZ(r, t, !0), f_(r), r.patches_ && r.patchListener_(r.patches_, r.inversePatches_), t !== gE ? t : void 0;
+  return e2(r, t, !0), f_(r), r.patches_ && r.patchListener_(r.patches_, r.inversePatches_), t !== gE ? t : void 0;
 }
 function ZD(t, r) {
   if (kg(r))
@@ -33373,13 +33416,13 @@ function ZD(t, r) {
   }
   return a.copy_;
 }
-function dZ(t, r, a = !1) {
+function e2(t, r, a = !1) {
   !t.parent_ && t.immer_.autoFreeze_ && t.canAutoFreeze_ && yE(r, a);
 }
 function Z1(t) {
   t.finalized_ = !0, t.scope_.unfinalizedDrafts_--;
 }
-var Dg = (t, r) => t.scope_ === r, fZ = [];
+var Dg = (t, r) => t.scope_ === r, t2 = [];
 function eA(t, r, a, i) {
   const s = eo(t), u = t.type_;
   if (i !== void 0 && Zi(s, i, u) === r) {
@@ -33395,11 +33438,11 @@ function eA(t, r, a, i) {
       }
     });
   }
-  const c = t.draftLocations_.get(r) ?? fZ;
+  const c = t.draftLocations_.get(r) ?? t2;
   for (const f of c)
     Jm(s, f, a, u);
 }
-function pZ(t, r, a) {
+function n2(t, r, a) {
   t.callbacks_.push(function(s) {
     const u = r;
     if (!u || !Dg(u, s))
@@ -33419,7 +33462,7 @@ function tA(t, r) {
     Z1(t);
   }
 }
-function hZ(t, r, a) {
+function r2(t, r, a) {
   const { scope_: i } = t;
   if (oa(a)) {
     const s = a[Qn];
@@ -33448,7 +33491,7 @@ function tg(t, r, a) {
     } else sa(s) && tg(s, r, a);
   })), t;
 }
-function mZ(t, r) {
+function a2(t, r) {
   const a = Cf(t), i = {
     type_: a ? 1 : 0,
     // Track which produce call this is associated with.
@@ -33490,11 +33533,11 @@ var ng = {
       return a.createMethodInterceptor(t, r);
     const s = eo(t);
     if (!Hd(s, r, t.type_))
-      return gZ(t, s, r);
+      return i2(t, s, r);
     const u = s[r];
     if (t.finalized_ || !sa(u) || i && t.operationMethod && a?.isMutatingArrayMethod(
       t.operationMethod
-    ) && iZ(r))
+    ) && GZ(r))
       return u;
     if (u === RS(t.base_, r)) {
       Cm(t);
@@ -33517,13 +33560,13 @@ var ng = {
       const s = RS(eo(t), r), u = s?.[Qn];
       if (u && u.base_ === a)
         return t.copy_[r] = a, t.assigned_.set(r, !1), !0;
-      if (aZ(a, s) && (a !== void 0 || Hd(t.base_, r, t.type_)))
+      if (YZ(a, s) && (a !== void 0 || Hd(t.base_, r, t.type_)))
         return !0;
       Cm(t), h_(t);
     }
     return t.copy_[r] === a && // special case: handle new props with value 'undefined'
     (a !== void 0 || r in t.copy_) || // special case: NaN
-    Number.isNaN(a) && Number.isNaN(t.copy_[r]) || (t.copy_[r] = a, t.assigned_.set(r, !0), hZ(t, r, a)), !0;
+    Number.isNaN(a) && Number.isNaN(t.copy_[r]) || (t.copy_[r] = a, t.assigned_.set(r, !0), r2(t, r, a)), !0;
   },
   deleteProperty(t, r) {
     return Cm(t), RS(t.base_, r) !== void 0 || r in t.base_ ? (t.assigned_.set(r, !1), h_(t)) : t.assigned_.delete(r), t.copy_ && delete t.copy_[r], !0;
@@ -33566,7 +33609,7 @@ function RS(t, r) {
   const a = t[Qn];
   return (a ? eo(a) : t)[r];
 }
-function gZ(t, r, a) {
+function i2(t, r, a) {
   const i = nA(r, a);
   return i ? nf in i ? i[nf] : (
     // This is a very special case, if the prop is a getter defined by the
@@ -33594,7 +33637,7 @@ function Cm(t) {
     t.scope_.immer_.useStrictShallowCopy_
   ));
 }
-var vZ = class {
+var o2 = class {
   constructor(t) {
     this.autoFreeze_ = !0, this.useStrictShallowCopy_ = !1, this.useStrictIteration_ = !1, this.produce = (r, a, i) => {
       if (Ho(r) && !Ho(a)) {
@@ -33693,8 +33736,8 @@ var vZ = class {
   }
 };
 function m_(t, r, a, i) {
-  const [s, u] = xf(r) ? Zs(Xm).proxyMap_(r, a) : Tf(r) ? Zs(Xm).proxySet_(r, a) : mZ(r, a);
-  return (a?.scope_ ?? X1()).drafts_.push(s), u.callbacks_ = a?.callbacks_ ?? [], u.key_ = i, a && i !== void 0 ? pZ(a, u, i) : u.callbacks_.push(function(m) {
+  const [s, u] = xf(r) ? Zs(Xm).proxyMap_(r, a) : Tf(r) ? Zs(Xm).proxySet_(r, a) : a2(r, a);
+  return (a?.scope_ ?? X1()).drafts_.push(s), u.callbacks_ = a?.callbacks_ ?? [], u.key_ = i, a && i !== void 0 ? n2(a, u, i) : u.callbacks_.push(function(m) {
     m.mapSetPlugin_?.fixSetContents(u);
     const { patchPlugin_: p } = m;
     u.modified_ && p && p.generatePatches_(u, [], m);
@@ -33722,7 +33765,7 @@ function aA(t) {
     i
   ), r && (r.finalized_ = !1), a;
 }
-function yZ() {
+function s2() {
   Q1.push(
     'Sets cannot have "replace" patches.',
     function(_) {
@@ -33735,7 +33778,7 @@ function yZ() {
   );
   function r(_, x = []) {
     if (_.key_ !== void 0) {
-      const k = _.parent_.copy_ ?? _.parent_.base_, N = oZ(Zi(k, _.key_)), L = Zi(k, _.key_);
+      const k = _.parent_.copy_ ?? _.parent_.base_, N = KZ(Zi(k, _.key_)), L = Zi(k, _.key_);
       if (L === void 0 || L !== _.draft_ && L !== _.base_ && L !== _.copy_ || N != null && N.base_ !== _.base_)
         return null;
       const T = _.parent_.type_ === 3;
@@ -33965,16 +34008,16 @@ function yZ() {
   function E(_) {
     return oa(_) ? w(_) : _;
   }
-  lZ(Zm, {
+  JZ(Zm, {
     applyPatches_: v,
     generatePatches_: c,
     generateReplacementPatches_: y,
     getPath: r
   });
 }
-var of = new vZ(), Rf = of.produce, iA = /* @__PURE__ */ of.produceWithPatches.bind(
+var of = new o2(), Rf = of.produce, iA = /* @__PURE__ */ of.produceWithPatches.bind(
   of
-), eM = /* @__PURE__ */ of.applyPatches.bind(of), bZ = (t, r, a) => {
+), eM = /* @__PURE__ */ of.applyPatches.bind(of), l2 = (t, r, a) => {
   if (r.length === 1 && r[0] === a) {
     let i = !1;
     try {
@@ -33998,7 +34041,7 @@ Ensure transformation logic is in the result function, and extraction logic is i
       );
     }
   }
-}, wZ = (t, r, a) => {
+}, u2 = (t, r, a) => {
   const { memoize: i, memoizeOptions: s } = r, { inputSelectorResults: u, inputSelectorResultsCopy: c } = t, f = i(() => ({}), ...s);
   if (!(f.apply(null, u) === f.apply(null, c))) {
     let p;
@@ -34020,19 +34063,19 @@ Avoid returning a new reference inside your input selector, e.g.
       }
     );
   }
-}, SZ = {
+}, c2 = {
   inputStabilityCheck: "once",
   identityFunctionCheck: "once"
 };
-function _Z(t, r = `expected a function, instead received ${typeof t}`) {
+function d2(t, r = `expected a function, instead received ${typeof t}`) {
   if (typeof t != "function")
     throw new TypeError(r);
 }
-function EZ(t, r = `expected an object, instead received ${typeof t}`) {
+function f2(t, r = `expected an object, instead received ${typeof t}`) {
   if (typeof t != "object")
     throw new TypeError(r);
 }
-function CZ(t, r = "expected all items to be functions, instead received the following types: ") {
+function p2(t, r = "expected all items to be functions, instead received the following types: ") {
   if (!t.every((a) => typeof a == "function")) {
     const a = t.map(
       (i) => typeof i == "function" ? `function ${i.name || "unnamed"}()` : typeof i
@@ -34041,9 +34084,9 @@ function CZ(t, r = "expected all items to be functions, instead received the fol
   }
 }
 var tM = (t) => Array.isArray(t) ? t : [t];
-function xZ(t) {
+function h2(t) {
   const r = Array.isArray(t[0]) ? t[0] : t;
-  return CZ(
+  return p2(
     r,
     "createSelector expects all input-selectors to be functions, but received the following types: "
   ), r;
@@ -34054,32 +34097,32 @@ function nM(t, r) {
     a.push(t[s].apply(null, r));
   return a;
 }
-var TZ = (t, r) => {
+var m2 = (t, r) => {
   const { identityFunctionCheck: a, inputStabilityCheck: i } = {
-    ...SZ,
+    ...c2,
     ...r
   };
   return {
     identityFunctionCheck: {
       shouldRun: a === "always" || a === "once" && t,
-      run: bZ
+      run: l2
     },
     inputStabilityCheck: {
       shouldRun: i === "always" || i === "once" && t,
-      run: wZ
+      run: u2
     }
   };
-}, RZ = class {
+}, g2 = class {
   constructor(t) {
     this.value = t;
   }
   deref() {
     return this.value;
   }
-}, kZ = typeof WeakRef < "u" ? WeakRef : RZ, DZ = 0, rM = 1;
+}, v2 = typeof WeakRef < "u" ? WeakRef : g2, y2 = 0, rM = 1;
 function Xh() {
   return {
-    s: DZ,
+    s: y2,
     v: void 0,
     o: null,
     p: null
@@ -34112,7 +34155,7 @@ function rg(t, r = {}) {
       y = f.v;
     else if (y = t.apply(null, arguments), u++, i) {
       const v = s?.deref?.() ?? s;
-      v != null && i(v, y) && (y = v, u !== 0 && u--), s = typeof y == "object" && y !== null || typeof y == "function" ? new kZ(y) : y;
+      v != null && i(v, y) && (y = v, u !== 0 && u--), s = typeof y == "object" && y !== null || typeof y == "function" ? new v2(y) : y;
     }
     return p.s = rM, p.v = y, y;
   }
@@ -34122,13 +34165,13 @@ function rg(t, r = {}) {
     u = 0;
   }, c;
 }
-function MZ(t, ...r) {
+function b2(t, ...r) {
   const a = typeof t == "function" ? {
     memoize: t,
     memoizeOptions: r
   } : t, i = (...s) => {
     let u = 0, c = 0, f, m = {}, p = s.pop();
-    typeof p == "object" && (m = p, p = s.pop()), _Z(
+    typeof p == "object" && (m = p, p = s.pop()), d2(
       p,
       `createSelector expects an output function after the inputs, but received: [${typeof p}]`
     );
@@ -34141,7 +34184,7 @@ function MZ(t, ...r) {
       argsMemoize: E = rg,
       argsMemoizeOptions: _ = [],
       devModeChecks: x = {}
-    } = y, k = tM(w), N = tM(_), L = xZ(s), T = v(function() {
+    } = y, k = tM(w), N = tM(_), L = h2(s), T = v(function() {
       return u++, p.apply(
         null,
         arguments
@@ -34156,7 +34199,7 @@ function MZ(t, ...r) {
       );
       f = T.apply(null, j);
       {
-        const { identityFunctionCheck: I, inputStabilityCheck: z } = TZ(D, x);
+        const { identityFunctionCheck: I, inputStabilityCheck: z } = m2(D, x);
         if (I.shouldRun && I.run(
           p,
           j,
@@ -34197,9 +34240,9 @@ function MZ(t, ...r) {
     withTypes: () => i
   }), i;
 }
-var bE = /* @__PURE__ */ MZ(rg), OZ = Object.assign(
+var bE = /* @__PURE__ */ b2(rg), w2 = Object.assign(
   (t, r = bE) => {
-    EZ(
+    f2(
       t,
       `createStructuredSelector expects first argument to be an object where each property is a selector, instead received a ${typeof t}`
     );
@@ -34211,12 +34254,12 @@ var bE = /* @__PURE__ */ MZ(rg), OZ = Object.assign(
       (...u) => u.reduce((c, f, m) => (c[a[m]] = f, c), {})
     );
   },
-  { withTypes: () => OZ }
+  { withTypes: () => w2 }
 );
 function oA(t) {
   return ({ dispatch: a, getState: i }) => (s) => (u) => typeof u == "function" ? u(a, i, t) : s(u);
 }
-var AZ = oA(), NZ = oA, sA = { NODE_ENV: "development" }, PZ = typeof window < "u" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : function() {
+var S2 = oA(), _2 = oA, sA = { NODE_ENV: "development" }, E2 = typeof window < "u" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : function() {
   if (arguments.length !== 0)
     return typeof arguments[0] == "object" ? Km : Km.apply(null, arguments);
 }, lA = (t) => t && typeof t.match == "function";
@@ -34244,20 +34287,20 @@ function Ua(t, r) {
   }
   return a.toString = () => `${t}`, a.type = t, a.match = (i) => mE(i) && i.type === t, a;
 }
-function $Z(t) {
+function C2(t) {
   return typeof t == "function" && "type" in t && // hasMatchFunction only wants Matchers but I don't see the point in rewriting it
   lA(t);
 }
-function jZ(t) {
+function x2(t) {
   const r = t ? `${t}`.split("/") : [], a = r[r.length - 1] || "actionCreator";
   return `Detected an action creator with type "${t || "unknown"}" being dispatched. 
 Make sure you're calling the action creator before dispatching, i.e. \`dispatch(${a}())\` instead of \`dispatch(${a})\`. This is necessary even if the action has no payload.`;
 }
-function LZ(t = {}) {
+function T2(t = {}) {
   const {
-    isActionCreator: r = $Z
+    isActionCreator: r = C2
   } = t;
-  return () => (a) => (i) => (r(i) && console.warn(jZ(i.type)), a(i));
+  return () => (a) => (i) => (r(i) && console.warn(x2(i.type)), a(i));
 }
 function uA(t, r) {
   let a = 0;
@@ -34299,10 +34342,10 @@ function aM(t) {
 function Zh(t, r, a) {
   return t.has(r) ? t.get(r) : t.set(r, a(r)).get(r);
 }
-function IZ(t) {
+function R2(t) {
   return typeof t != "object" || t == null || Object.isFrozen(t);
 }
-function FZ(t, r, a) {
+function k2(t, r, a) {
   const i = dA(t, r, a);
   return {
     detectMutations() {
@@ -34353,7 +34396,7 @@ function fA(t, r = [], a, i, s = !1, u = "") {
     wasMutated: !1
   };
 }
-function zZ(t = {}) {
+function D2(t = {}) {
   {
     let r = function(f, m, p, y) {
       return JSON.stringify(f, a(m, y), p);
@@ -34369,11 +34412,11 @@ function zZ(t = {}) {
         return f == null ? w : f.call(this, v, w);
       };
     }, {
-      isImmutable: i = IZ,
+      isImmutable: i = R2,
       ignoredPaths: s,
       warnAfter: u = 32
     } = t;
-    const c = FZ.bind(null, i, s);
+    const c = k2.bind(null, i, s);
     return ({
       getState: f
     }) => {
@@ -34427,7 +34470,7 @@ function hA(t) {
       return !1;
   return !0;
 }
-function UZ(t = {}) {
+function M2(t = {}) {
   {
     const {
       isSerializable: r = pA,
@@ -34474,7 +34517,7 @@ Take a look at the reducer(s) handling this action type: ${E.type}.
 function em(t) {
   return typeof t == "boolean";
 }
-var VZ = () => function(r) {
+var O2 = () => function(r) {
   const {
     thunk: a = !0,
     immutableCheck: i = !0,
@@ -34482,19 +34525,19 @@ var VZ = () => function(r) {
     actionCreatorCheck: u = !0
   } = r ?? {};
   let c = new cA();
-  a && (em(a) ? c.push(AZ) : c.push(NZ(a.extraArgument)));
+  a && (em(a) ? c.push(S2) : c.push(_2(a.extraArgument)));
   {
     if (i) {
       let f = {};
-      em(i) || (f = i), c.unshift(zZ(f));
+      em(i) || (f = i), c.unshift(D2(f));
     }
     if (s) {
       let f = {};
-      em(s) || (f = s), c.push(UZ(f));
+      em(s) || (f = s), c.push(M2(f));
     }
     if (u) {
       let f = {};
-      em(u) || (f = u), c.unshift(LZ(f));
+      em(u) || (f = u), c.unshift(T2(f));
     }
   }
   return c;
@@ -34505,7 +34548,7 @@ var VZ = () => function(r) {
   }
 }), iM = (t) => (r) => {
   setTimeout(r, t);
-}, BZ = (t = {
+}, A2 = (t = {
   type: "raf"
 }) => (r) => (...a) => {
   const i = r(...a);
@@ -34535,15 +34578,15 @@ var VZ = () => function(r) {
       }
     }
   });
-}, HZ = (t) => function(a) {
+}, N2 = (t) => function(a) {
   const {
     autoBatch: i = !0
   } = a ?? {};
   let s = new cA(t);
-  return i && s.push(BZ(typeof i == "object" ? i : void 0)), s;
+  return i && s.push(A2(typeof i == "object" ? i : void 0)), s;
 };
-function WZ(t) {
-  const r = VZ(), {
+function P2(t) {
+  const r = O2(), {
     reducer: a = void 0,
     middleware: i,
     devTools: s = !0,
@@ -34577,12 +34620,12 @@ function WZ(t) {
     });
   }
   let y = Km;
-  s && (y = PZ({
+  s && (y = E2({
     // Enable capture of stack traces for dispatched Redux actions
     trace: sA.NODE_ENV !== "production",
     ...typeof s == "object" && s
   }));
-  const v = tZ(...p), w = HZ(v);
+  const v = HZ(...p), w = N2(v);
   if (f && typeof f != "function")
     throw new Error("`enhancers` field must be a callback");
   let E = typeof f == "function" ? f(w) : w();
@@ -34636,14 +34679,14 @@ function mA(t) {
   };
   return t(s), [r, a, i];
 }
-function qZ(t) {
+function $2(t) {
   return typeof t == "function";
 }
-function YZ(t, r) {
+function j2(t, r) {
   if (typeof r == "object")
     throw new Error("The object notation for `createReducer` has been removed. Please use the 'builder callback' notation instead: https://redux-toolkit.js.org/api/createReducer");
   let [a, i, s] = mA(r), u;
-  if (qZ(t))
+  if ($2(t))
     u = () => aM(t());
   else {
     const f = aM(t);
@@ -34709,12 +34752,12 @@ function Qo(...t) {
 function v_(...t) {
   return t.length === 0 ? (r) => Og(r, ["pending", "fulfilled", "rejected"]) : kf(t) ? io(...t.flatMap((r) => [r.pending, r.rejected, r.fulfilled])) : v_()(t[0]);
 }
-var GZ = "ModuleSymbhasOwnPr-0123456789ABCDEFGHNRVfgctiUvz_KqYTJkLxpZXIjQW", SE = (t = 21) => {
+var L2 = "ModuleSymbhasOwnPr-0123456789ABCDEFGHNRVfgctiUvz_KqYTJkLxpZXIjQW", SE = (t = 21) => {
   let r = "", a = t;
   for (; a--; )
-    r += GZ[Math.random() * 64 | 0];
+    r += L2[Math.random() * 64 | 0];
   return r;
-}, KZ = ["name", "message", "stack", "code"], kS = class {
+}, I2 = ["name", "message", "stack", "code"], kS = class {
   constructor(t, r) {
     this.payload = t, this.meta = r;
   }
@@ -34732,10 +34775,10 @@ var GZ = "ModuleSymbhasOwnPr-0123456789ABCDEFGHNRVfgctiUvz_KqYTJkLxpZXIjQW", SE 
   does not exist at runtime
   */
   _type;
-}, QZ = (t) => {
+}, F2 = (t) => {
   if (typeof t == "object" && t !== null) {
     const r = {};
-    for (const a of KZ)
+    for (const a of I2)
       typeof t[a] == "string" && (r[a] = t[a]);
     return r;
   }
@@ -34762,7 +34805,7 @@ var GZ = "ModuleSymbhasOwnPr-0123456789ABCDEFGHNRVfgctiUvz_KqYTJkLxpZXIjQW", SE 
       }
     })), c = Ua(r + "/rejected", (m, p, y, v, w) => ({
       payload: v,
-      error: (i && i.serializeError || QZ)(m || "Rejected"),
+      error: (i && i.serializeError || F2)(m || "Rejected"),
       meta: {
         ...w || {},
         arg: y,
@@ -34792,7 +34835,7 @@ var GZ = "ModuleSymbhasOwnPr-0123456789ABCDEFGHNRVfgctiUvz_KqYTJkLxpZXIjQW", SE 
               getState: v,
               extra: w
             });
-            if (XZ(O) && (O = await O), O === !1 || _.signal.aborted)
+            if (U2(O) && (O = await O), O === !1 || _.signal.aborted)
               throw {
                 name: "ConditionError",
                 message: "Aborted due to condition callback returning false."
@@ -34839,7 +34882,7 @@ var GZ = "ModuleSymbhasOwnPr-0123456789ABCDEFGHNRVfgctiUvz_KqYTJkLxpZXIjQW", SE 
           requestId: E,
           arg: m,
           unwrap() {
-            return L.then(JZ);
+            return L.then(z2);
           }
         });
       };
@@ -34854,24 +34897,24 @@ var GZ = "ModuleSymbhasOwnPr-0123456789ABCDEFGHNRVfgctiUvz_KqYTJkLxpZXIjQW", SE 
   }
   return t.withTypes = () => t, t;
 })();
-function JZ(t) {
+function z2(t) {
   if (t.meta && t.meta.rejectedWithValue)
     throw t.payload;
   if (t.error)
     throw t.error;
   return t.payload;
 }
-function XZ(t) {
+function U2(t) {
   return t !== null && typeof t == "object" && typeof t.then == "function";
 }
-var ZZ = /* @__PURE__ */ Symbol.for("rtk-slice-createasyncthunk");
-function e2(t, r) {
+var V2 = /* @__PURE__ */ Symbol.for("rtk-slice-createasyncthunk");
+function B2(t, r) {
   return `${t}/${r}`;
 }
-function t2({
+function H2({
   creators: t
 } = {}) {
-  const r = t?.asyncThunk?.[ZZ];
+  const r = t?.asyncThunk?.[V2];
   return function(i) {
     const {
       name: s,
@@ -34880,7 +34923,7 @@ function t2({
     if (!s)
       throw new Error("`name` is a required option for createSlice");
     typeof process < "u" && sA.NODE_ENV === "development" && i.initialState === void 0 && console.error("You must provide an `initialState` value that is not `undefined`. You may have misspelled `initialState`");
-    const c = (typeof i.reducers == "function" ? i.reducers(r2()) : i.reducers) || {}, f = Object.keys(c), m = {
+    const c = (typeof i.reducers == "function" ? i.reducers(q2()) : i.reducers) || {}, f = Object.keys(c), m = {
       sliceCaseReducersByName: {},
       sliceCaseReducersByType: {},
       actionCreators: {},
@@ -34910,10 +34953,10 @@ function t2({
     f.forEach((T) => {
       const D = c[T], O = {
         reducerName: T,
-        type: e2(s, T),
+        type: B2(s, T),
         createNotation: typeof i.reducers == "function"
       };
-      i2(D) ? s2(O, D, p, r) : a2(O, D, p);
+      G2(D) ? Q2(O, D, p, r) : Y2(O, D, p);
     });
     function y() {
       if (typeof i.extraReducers == "object")
@@ -34922,7 +34965,7 @@ function t2({
         ...T,
         ...m.sliceCaseReducersByType
       };
-      return YZ(i.initialState, (j) => {
+      return j2(i.initialState, (j) => {
         for (let I in P)
           j.addCase(I, P[I]);
         for (let I of m.sliceMatchers)
@@ -34955,7 +34998,7 @@ function t2({
         return Zh(I, j, () => {
           const z = {};
           for (const [S, $] of Object.entries(i.selectors ?? {}))
-            z[S] = n2($, j, () => Zh(E, j, k), D);
+            z[S] = W2($, j, () => Zh(E, j, k), D);
           return z;
         });
       }
@@ -34992,7 +35035,7 @@ function t2({
     return L;
   };
 }
-function n2(t, r, a, i) {
+function W2(t, r, a, i) {
   function s(u, ...c) {
     let f = r(u);
     if (typeof f > "u")
@@ -35004,8 +35047,8 @@ function n2(t, r, a, i) {
   }
   return s.unwrapped = t, s;
 }
-var Fa = /* @__PURE__ */ t2();
-function r2() {
+var Fa = /* @__PURE__ */ H2();
+function q2() {
   function t(r, a) {
     return {
       _reducerDefinitionType: "asyncThunk",
@@ -35036,27 +35079,27 @@ function r2() {
     asyncThunk: t
   };
 }
-function a2({
+function Y2({
   type: t,
   reducerName: r,
   createNotation: a
 }, i, s) {
   let u, c;
   if ("reducer" in i) {
-    if (a && !o2(i))
+    if (a && !K2(i))
       throw new Error("Please use the `create.preparedReducer` notation for prepared action creators with the `create` notation.");
     u = i.reducer, c = i.prepare;
   } else
     u = i;
   s.addCase(t, u).exposeCaseReducer(r, u).exposeAction(r, c ? Ua(t, c) : Ua(t));
 }
-function i2(t) {
+function G2(t) {
   return t._reducerDefinitionType === "asyncThunk";
 }
-function o2(t) {
+function K2(t) {
   return t._reducerDefinitionType === "reducerWithPrepare";
 }
-function s2({
+function Q2({
   type: t,
   reducerName: r
 }, a, i, s) {
@@ -35079,12 +35122,12 @@ function s2({
 }
 function tm() {
 }
-const l2 = {
+const J2 = {
   alert: null,
   playingAlertId: ""
 }, vA = Fa({
   name: "alerts",
-  initialState: l2,
+  initialState: J2,
   reducers: {
     setAlert: (t, r) => {
       t.alert = r.payload;
@@ -35099,13 +35142,13 @@ const l2 = {
       t.playingAlertId = r.payload;
     }
   }
-}), { setAlert: Yte, setTitleStyle: Gte, setMessageStyle: Kte, setPlayingAlertId: yA } = vA.actions, u2 = {
+}), { setAlert: jne, setTitleStyle: Lne, setMessageStyle: Ine, setPlayingAlertId: yA } = vA.actions, X2 = {
   mediaSettings: null,
   playingMediaId: "",
   pausedMediaId: ""
 }, bA = Fa({
   name: "media",
-  initialState: u2,
+  initialState: X2,
   reducers: {
     setMediaSettings: (t, r) => {
       t.mediaSettings = r.payload;
@@ -35127,14 +35170,14 @@ const l2 = {
     }
   }
 }), {
-  setMediaSettings: Qte,
-  setYoutubeSettings: Jte,
-  setTwitchSettings: Xte,
-  setTikTokSettings: Zte,
+  setMediaSettings: Fne,
+  setYoutubeSettings: zne,
+  setTwitchSettings: Une,
+  setTikTokSettings: Vne,
   setPlayingMediaId: wA,
   setPausedMediaId: _E
 } = bA.actions;
-var c2 = class extends Error {
+var Z2 = class extends Error {
   /**
    * The schema issues.
    */
@@ -35171,10 +35214,10 @@ function EE(t, r) {
 function b_(t, r, a) {
   return t.reduce((i, s, u) => (r(s, u) && i.push(a(s, u)), i), []).flat();
 }
-function d2(t) {
+function eee(t) {
   return new RegExp("(^|:)//").test(t);
 }
-function f2() {
+function tee() {
   return typeof document > "u" ? !0 : document.visibilityState !== "hidden";
 }
 function CE(t) {
@@ -35183,24 +35226,24 @@ function CE(t) {
 function dM(t) {
   return [...t?.values() ?? []].filter(CE);
 }
-function p2() {
+function nee() {
   return typeof navigator > "u" || navigator.onLine === void 0 ? !0 : navigator.onLine;
 }
-var h2 = (t) => t.replace(/\/$/, ""), m2 = (t) => t.replace(/^\//, "");
-function g2(t, r) {
+var ree = (t) => t.replace(/\/$/, ""), aee = (t) => t.replace(/^\//, "");
+function iee(t, r) {
   if (!t)
     return r;
   if (!r)
     return t;
-  if (d2(r))
+  if (eee(r))
     return r;
   const a = t.endsWith("/") || !r.startsWith("?") ? "/" : "";
-  return t = h2(t), r = m2(r), `${t}${a}${r}`;
+  return t = ree(t), r = aee(r), `${t}${a}${r}`;
 }
 function ag(t, r, a) {
   return t.has(r) ? t.get(r) : t.set(r, a(r)).get(r);
 }
-var w_ = () => /* @__PURE__ */ new Map(), v2 = (t) => {
+var w_ = () => /* @__PURE__ */ new Map(), oee = (t) => {
   const r = new AbortController();
   return setTimeout(() => {
     const a = "signal timed out", i = "TimeoutError";
@@ -35211,7 +35254,7 @@ var w_ = () => /* @__PURE__ */ new Map(), v2 = (t) => {
       })
     );
   }, t), r.signal;
-}, y2 = (...t) => {
+}, see = (...t) => {
   for (const a of t) if (a.aborted) return AbortSignal.abort(a.reason);
   const r = new AbortController();
   for (const a of t)
@@ -35220,7 +35263,7 @@ var w_ = () => /* @__PURE__ */ new Map(), v2 = (t) => {
       once: !0
     });
   return r.signal;
-}, fM = (...t) => fetch(...t), b2 = (t) => t.status >= 200 && t.status <= 299, w2 = (t) => (
+}, fM = (...t) => fetch(...t), lee = (t) => t.status >= 200 && t.status <= 299, uee = (t) => (
   /*applicat*/
   /ion\/(vnd\.api\+)?json/.test(t.get("content-type") || "")
 );
@@ -35234,13 +35277,13 @@ function pM(t) {
     i === void 0 && delete r[a];
   return r;
 }
-var S2 = (t) => typeof t == "object" && (hi(t) || Array.isArray(t) || typeof t.toJSON == "function");
-function _2({
+var cee = (t) => typeof t == "object" && (hi(t) || Array.isArray(t) || typeof t.toJSON == "function");
+function dee({
   baseUrl: t,
   prepareHeaders: r = (v) => v,
   fetchFn: a = fM,
   paramsSerializer: i,
-  isJsonContentType: s = w2,
+  isJsonContentType: s = uee,
   jsonContentType: u = "application/json",
   jsonReplacer: c,
   timeout: f,
@@ -35261,14 +35304,14 @@ function _2({
       headers: P = new Headers(y.headers),
       params: j = void 0,
       responseHandler: I = m ?? "json",
-      validateStatus: z = p ?? b2,
+      validateStatus: z = p ?? lee,
       timeout: S = f,
       ...$
     } = typeof w == "string" ? {
       url: w
     } : w, U = {
       ...y,
-      signal: S ? y2(E.signal, v2(S)) : E.signal,
+      signal: S ? see(E.signal, oee(S)) : E.signal,
       ...$
     };
     P = new Headers(pM(P)), U.headers = await r(P, {
@@ -35280,12 +35323,12 @@ function _2({
       type: T,
       extraOptions: _
     }) || P;
-    const V = S2(U.body);
+    const V = cee(U.body);
     if (U.body != null && !V && typeof U.body != "string" && U.headers.delete("content-type"), !U.headers.has("content-type") && V && U.headers.set("content-type", u), V && s(U.headers) && (U.body = JSON.stringify(U.body, c)), U.headers.has("accept") || (I === "json" ? U.headers.set("accept", "application/json") : I === "text" && U.headers.set("accept", "text/plain, text/html, */*")), j) {
       const G = ~O.indexOf("?") ? "&" : "?", ne = i ? i(j) : new URLSearchParams(pM(j));
       O += G + ne;
     }
-    O = g2(t, O);
+    O = iee(t, O);
     const W = new Request(O, U);
     D = {
       request: new Request(O, U)
@@ -35350,11 +35393,11 @@ var hM = class {
   constructor(t, r = void 0) {
     this.value = t, this.meta = r;
   }
-}, Ng = "__rtkq/", E2 = "online", C2 = "offline", _A = "focused", xE = /* @__PURE__ */ Ua(`${Ng}${_A}`), EA = /* @__PURE__ */ Ua(`${Ng}un${_A}`), TE = /* @__PURE__ */ Ua(`${Ng}${E2}`), CA = /* @__PURE__ */ Ua(`${Ng}${C2}`), Df = "query", xA = "mutation", TA = "infinitequery";
+}, Ng = "__rtkq/", fee = "online", pee = "offline", _A = "focused", xE = /* @__PURE__ */ Ua(`${Ng}${_A}`), EA = /* @__PURE__ */ Ua(`${Ng}un${_A}`), TE = /* @__PURE__ */ Ua(`${Ng}${fee}`), CA = /* @__PURE__ */ Ua(`${Ng}${pee}`), Df = "query", xA = "mutation", TA = "infinitequery";
 function Pg(t) {
   return t.type === Df;
 }
-function x2(t) {
+function hee(t) {
   return t.type === xA;
 }
 function Mf(t) {
@@ -35364,10 +35407,10 @@ function ig(t) {
   return Pg(t) || Mf(t);
 }
 function RE(t, r, a, i, s, u) {
-  const c = T2(t) ? t(r, a, i, s) : t;
+  const c = mee(t) ? t(r, a, i, s) : t;
   return c ? b_(c, CE, (f) => u(RA(f))) : [];
 }
-function T2(t) {
+function mee(t) {
   return typeof t == "function";
 }
 function RA(t) {
@@ -35375,11 +35418,11 @@ function RA(t) {
     type: t
   } : t;
 }
-function R2(t, r) {
+function gee(t, r) {
   return t.catch(r);
 }
 var _u = (t, r) => t.endpointDefinitions[r], sf = /* @__PURE__ */ Symbol("forceQueryFn"), S_ = (t) => typeof t[sf] == "function";
-function k2({
+function vee({
   serializeQueryArgs: t,
   queryThunk: r,
   infiniteQueryThunk: a,
@@ -35554,7 +35597,7 @@ You must add the middleware for RTK-Query to function correctly!`);
         requestId: V,
         abort: W,
         unwrap: q
-      } = U, Y = R2(U.unwrap().then((G) => ({
+      } = U, Y = gee(U.unwrap().then((G) => ({
         data: G
       })), (G) => ({
         error: G
@@ -35578,7 +35621,7 @@ You must add the middleware for RTK-Query to function correctly!`);
     };
   }
 }
-var kA = class extends c2 {
+var kA = class extends Z2 {
   constructor(t, r, a, i) {
     super(t), this.value = r, this.schemaName = a, this._bqMeta = i;
   }
@@ -35596,7 +35639,7 @@ var Rd = (t = {}) => ({
   ...t,
   [Mg]: !0
 });
-function D2({
+function yee({
   reducerPath: t,
   baseQuery: r,
   context: {
@@ -35947,7 +35990,7 @@ function vM(t, r, a) {
   i && a(i);
 }
 var rm = {};
-function M2({
+function bee({
   reducerPath: t,
   queryThunk: r,
   mutationThunk: a,
@@ -36002,7 +36045,7 @@ function M2({
         } else
           V.data = $;
       else
-        V.data = s[S.arg.endpointName].structuralSharing ?? !0 ? EE(oa(V.data) ? rZ(V.data) : V.data, $) : $;
+        V.data = s[S.arg.endpointName].structuralSharing ?? !0 ? EE(oa(V.data) ? qZ(V.data) : V.data, $) : $;
       delete V.error, V.fulfilledTimeStamp = S.fulfilledTimeStamp;
     });
   }
@@ -36288,8 +36331,8 @@ function M2({
   }), O = Fa({
     name: `${t}/config`,
     initialState: {
-      online: p2(),
-      focused: f2(),
+      online: nee(),
+      focused: tee(),
       middlewareRegistered: !1,
       ...p
     },
@@ -36338,7 +36381,7 @@ var Ia = /* @__PURE__ */ Symbol.for("RTKQ/skipToken"), OA = {
 }, yM = /* @__PURE__ */ Rf(OA, () => {
 }), bM = /* @__PURE__ */ Rf(OA, () => {
 });
-function O2({
+function wee({
   serializeQueryArgs: t,
   reducerPath: r,
   createSelector: a
@@ -36580,7 +36623,7 @@ function AA(...t) {
 function Xi(t, ...r) {
   return Object.assign(t, ...r);
 }
-var A2 = ({
+var See = ({
   api: t,
   queryThunk: r,
   internalState: a,
@@ -36658,7 +36701,7 @@ var A2 = ({
     }
     return [L, !1];
   };
-}, N2 = 2147483647 / 1e3 - 1, P2 = ({
+}, _ee = 2147483647 / 1e3 - 1, Eee = ({
   reducerPath: t,
   api: r,
   queryThunk: a,
@@ -36722,7 +36765,7 @@ var A2 = ({
     const I = _u(i, D)?.keepUnusedDataFor ?? P.keepUnusedDataFor;
     if (I === 1 / 0)
       return;
-    const z = Math.max(0, Math.min(I, N2));
+    const z = Math.max(0, Math.min(I, _ee));
     if (!E(T)) {
       const S = _[T];
       S && clearTimeout(S), _[T] = setTimeout(() => {
@@ -36737,7 +36780,7 @@ var A2 = ({
     }
   }
   return k;
-}, _M = new Error("Promise never resolved before cacheEntryRemoved."), $2 = ({
+}, _M = new Error("Promise never resolved before cacheEntryRemoved."), Cee = ({
   api: t,
   reducerPath: r,
   context: a,
@@ -36839,7 +36882,7 @@ var A2 = ({
     });
   }
   return L;
-}, j2 = ({
+}, xee = ({
   api: t,
   context: {
     apiUid: r
@@ -36849,7 +36892,7 @@ var A2 = ({
   t.util.resetApiState.match(i) && s.dispatch(t.internalActions.middlewareRegistered(r)), typeof process < "u" && Su.NODE_ENV === "development" && t.internalActions.middlewareRegistered.match(i) && i.payload === r && s.getState()[a]?.config?.middlewareRegistered === "conflict" && console.warn(`There is a mismatch between slice and middleware for the reducerPath "${a}".
 You can only have one api per reducer path, this will lead to crashes in various situations!${a === "api" ? `
 If you have multiple apis, you *have* to specify the reducerPath option when using createApi!` : ""}`);
-}, L2 = ({
+}, Tee = ({
   reducerPath: t,
   context: r,
   context: {
@@ -36892,7 +36935,7 @@ If you have multiple apis, you *have* to specify the reducerPath option when usi
     });
   }
   return _;
-}, I2 = ({
+}, Ree = ({
   reducerPath: t,
   queryThunk: r,
   api: a,
@@ -36975,7 +37018,7 @@ If you have multiple apis, you *have* to specify the reducerPath option when usi
     };
   }
   return p;
-}, F2 = ({
+}, kee = ({
   api: t,
   context: r,
   queryThunk: a,
@@ -37029,7 +37072,7 @@ If you have multiple apis, you *have* to specify the reducerPath option when usi
       }), delete f[v];
     }
   };
-}, z2 = ({
+}, Dee = ({
   reducerPath: t,
   context: r,
   api: a,
@@ -37056,7 +37099,7 @@ If you have multiple apis, you *have* to specify the reducerPath option when usi
   }
   return c;
 };
-function U2(t) {
+function Mee(t) {
   const {
     reducerPath: r,
     queryThunk: a,
@@ -37067,7 +37110,7 @@ function U2(t) {
     apiUid: c
   } = s, f = {
     invalidateTags: Ua(`${r}/invalidateTags`)
-  }, m = (w) => w.type.startsWith(`${r}/`), p = [j2, P2, L2, I2, $2, F2];
+  }, m = (w) => w.type.startsWith(`${r}/`), p = [xee, Eee, Tee, Ree, Cee, kee];
   return {
     middleware: (w) => {
       let E = !1;
@@ -37077,7 +37120,7 @@ function U2(t) {
         refetchQuery: v,
         isThisApiSliceAction: m,
         mwApi: w
-      }, k = p.map((T) => T(x)), N = A2(x), L = z2(x);
+      }, k = p.map((T) => T(x)), N = See(x), L = Dee(x);
       return (T) => (D) => {
         if (!mE(D))
           return T(D);
@@ -37120,7 +37163,7 @@ var EM = /* @__PURE__ */ Symbol(), NA = ({
     catchSchemaFailure: w,
     skipSchemaValidation: E
   }, _) {
-    yZ();
+    s2();
     const x = (we) => (typeof process < "u" && Su.NODE_ENV === "development" && (i.includes(we.type) || console.error(`Tag type '${we.type}' was used, but not specified in \`tagTypes\`!`)), we);
     Object.assign(r, {
       reducerPath: s,
@@ -37133,7 +37176,7 @@ var EM = /* @__PURE__ */ Symbol(), NA = ({
       },
       util: {}
     });
-    const k = O2({
+    const k = wee({
       serializeQueryArgs: u,
       reducerPath: s,
       createSelector: t
@@ -37157,7 +37200,7 @@ var EM = /* @__PURE__ */ Symbol(), NA = ({
       upsertQueryData: $,
       prefetch: U,
       buildMatchThunkActions: V
-    } = D2({
+    } = yee({
       baseQuery: a,
       reducerPath: s,
       context: _,
@@ -37171,7 +37214,7 @@ var EM = /* @__PURE__ */ Symbol(), NA = ({
     }), {
       reducer: W,
       actions: q
-    } = M2({
+    } = bee({
       context: _,
       queryThunk: P,
       mutationThunk: I,
@@ -37208,7 +37251,7 @@ var EM = /* @__PURE__ */ Symbol(), NA = ({
       getRunningMutationsThunk: fe,
       getRunningQueriesThunk: be,
       getRunningQueryThunk: pe
-    } = k2({
+    } = vee({
       queryThunk: P,
       mutationThunk: I,
       infiniteQueryThunk: j,
@@ -37226,7 +37269,7 @@ var EM = /* @__PURE__ */ Symbol(), NA = ({
     const {
       middleware: Se,
       actions: _e
-    } = U2({
+    } = Mee({
       reducerPath: s,
       context: _,
       queryThunk: P,
@@ -37249,7 +37292,7 @@ var EM = /* @__PURE__ */ Symbol(), NA = ({
           name: we,
           select: T(we, Te),
           initiate: Z(we, Te)
-        }, V(P, we)), x2(Te) && Xi(de, {
+        }, V(P, we)), hee(Te) && Xi(de, {
           name: we,
           select: O(),
           initiate: G(we)
@@ -37266,21 +37309,21 @@ NA();
 function am(t) {
   return t.replace(t[0], t[0].toUpperCase());
 }
-function V2(t) {
+function Oee(t) {
   let r = 0;
   for (const a in t)
     r++;
   return r;
 }
-var B2 = "query", H2 = "mutation", W2 = "infinitequery";
-function q2(t) {
-  return t.type === B2;
+var Aee = "query", Nee = "mutation", Pee = "infinitequery";
+function $ee(t) {
+  return t.type === Aee;
 }
-function Y2(t) {
-  return t.type === H2;
+function jee(t) {
+  return t.type === Nee;
 }
 function PA(t) {
-  return t.type === W2;
+  return t.type === Pee;
 }
 function kd(t, ...r) {
   return Object.assign(t, ...r);
@@ -37298,7 +37341,7 @@ function cu(t) {
     Vd(r.current, t) || (r.current = t);
   }, [t]), Vd(r.current, t) ? r.current : t;
 }
-var G2 = () => typeof window < "u" && typeof window.document < "u" && typeof window.document.createElement < "u", K2 = /* @__PURE__ */ G2(), Q2 = () => typeof navigator < "u" && navigator.product === "ReactNative", J2 = /* @__PURE__ */ Q2(), X2 = () => K2 || J2 ? R.useLayoutEffect : R.useEffect, Z2 = /* @__PURE__ */ X2(), CM = (t) => t.isUninitialized ? {
+var Lee = () => typeof window < "u" && typeof window.document < "u" && typeof window.document.createElement < "u", Iee = /* @__PURE__ */ Lee(), Fee = () => typeof navigator < "u" && navigator.product === "ReactNative", zee = /* @__PURE__ */ Fee(), Uee = () => Iee || zee ? R.useLayoutEffect : R.useEffect, Vee = /* @__PURE__ */ Uee(), CM = (t) => t.isUninitialized ? {
   ...t,
   isUninitialized: !1,
   isFetching: !0,
@@ -37314,7 +37357,7 @@ function OS(t, ...r) {
   }), a;
 }
 var AS = ["data", "status", "isLoading", "isSuccess", "isError", "error"];
-function eee({
+function Bee({
   api: t,
   moduleOptions: {
     batch: r,
@@ -37478,7 +37521,7 @@ function eee({
           identityFunctionCheck: "never"
         }
       }) : q, [q, $]), X = i((G) => Y(G, W.current), Vd), Z = s(), J = q(Z.getState(), W.current);
-      return Z2(() => {
+      return Vee(() => {
         W.current = J;
       }, [J]), X;
     };
@@ -37668,8 +37711,8 @@ function eee({
     };
   }
 }
-var tee = /* @__PURE__ */ Symbol(), nee = ({
-  batch: t = HX,
+var Hee = /* @__PURE__ */ Symbol(), Wee = ({
+  batch: t = NZ,
   hooks: r = {
     useDispatch: Rg,
     useSelector: fi,
@@ -37683,12 +37726,12 @@ var tee = /* @__PURE__ */ Symbol(), nee = ({
     const u = ["useDispatch", "useSelector", "useStore"];
     let c = !1;
     for (const f of u)
-      if (V2(s) > 0 && (s[f] && (c || (console.warn("As of RTK 2.0, the hooks now need to be specified as one object, provided under a `hooks` key:\n`reactHooksModule({ hooks: { useDispatch, useSelector, useStore } })`"), c = !0)), r[f] = s[f]), typeof r[f] != "function")
+      if (Oee(s) > 0 && (s[f] && (c || (console.warn("As of RTK 2.0, the hooks now need to be specified as one object, provided under a `hooks` key:\n`reactHooksModule({ hooks: { useDispatch, useSelector, useStore } })`"), c = !0)), r[f] = s[f]), typeof r[f] != "function")
         throw new Error(`When using custom hooks for context, all ${u.length} hooks need to be provided: ${u.join(", ")}.
 Hook ${f} was either not provided or not a function.`);
   }
   return {
-    name: tee,
+    name: Hee,
     init(u, {
       serializeQueryArgs: c
     }, f) {
@@ -37697,7 +37740,7 @@ Hook ${f} was either not provided or not a function.`);
         buildInfiniteQueryHooks: y,
         buildMutationHook: v,
         usePrefetch: w
-      } = eee({
+      } = Bee({
         api: u,
         moduleOptions: {
           batch: t,
@@ -37714,7 +37757,7 @@ Hook ${f} was either not provided or not a function.`);
         batch: t
       }), {
         injectEndpoint(E, _) {
-          if (q2(_)) {
+          if ($ee(_)) {
             const {
               useQuery: x,
               useLazyQuery: k,
@@ -37730,7 +37773,7 @@ Hook ${f} was either not provided or not a function.`);
               useQuerySubscription: T
             }), u[`use${am(E)}Query`] = x, u[`useLazy${am(E)}Query`] = k;
           }
-          if (Y2(_)) {
+          if (jee(_)) {
             const x = v(E);
             kd(m.endpoints[E], {
               useMutation: x
@@ -37751,11 +37794,11 @@ Hook ${f} was either not provided or not a function.`);
       };
     }
   };
-}, ree = /* @__PURE__ */ AA(NA(), nee());
-const so = ree({
+}, qee = /* @__PURE__ */ AA(NA(), Wee());
+const so = qee({
   reducerPath: "widget-api",
   tagTypes: ["Messages", "Widgets"],
-  baseQuery: _2({ baseUrl: "http://localhost:12553/api" }),
+  baseQuery: dee({ baseUrl: "http://localhost:12553/api" }),
   endpoints: () => ({})
 }), Ld = so.injectEndpoints({
   endpoints: (t) => ({
@@ -37783,13 +37826,13 @@ const so = ree({
     })
   })
 }), {
-  useGetWidgetByIdQuery: aee
+  useGetWidgetByIdQuery: Yee
 } = Ld, qr = () => {
   const t = R.useContext(G1);
   if (!t)
     throw new Error("useAppEvents must be used within a EventsProvider");
   return t;
-}, iee = so.injectEndpoints({
+}, Gee = so.injectEndpoints({
   endpoints: (t) => ({
     getAlerts: t.query({
       query: () => ({
@@ -37797,7 +37840,7 @@ const so = ree({
       })
     })
   })
-}), oee = so.injectEndpoints({
+}), Kee = so.injectEndpoints({
   endpoints: (t) => ({
     getAucFighterSettings: t.query({
       query: () => ({
@@ -37814,7 +37857,7 @@ const so = ree({
       })
     })
   })
-}), { useGetNotEndedGoalQuery: see } = $A, kE = so.injectEndpoints({
+}), { useGetNotEndedGoalQuery: Qee } = $A, kE = so.injectEndpoints({
   endpoints: (t) => ({
     getMessages: t.infiniteQuery({
       infiniteQueryOptions: {
@@ -37838,7 +37881,7 @@ const so = ree({
       providesTags: ["Messages"]
     })
   })
-}), { useGetMessagesInfiniteQuery: lee } = kE, uee = so.injectEndpoints({
+}), { useGetMessagesInfiniteQuery: Jee } = kE, Xee = so.injectEndpoints({
   endpoints: (t) => ({
     getSettings: t.query({
       query: () => ({
@@ -37846,7 +37889,7 @@ const so = ree({
       })
     })
   })
-}), cee = (t) => {
+}), Zee = (t) => {
   const r = R.useRef(null), a = qr(), i = Rg(), s = async (u) => {
     const { id: c, scope: f, arg: m } = u.data;
     if (t && c && f && t.manifest.scopes.includes(f))
@@ -37888,7 +37931,7 @@ const so = ree({
           }
           case "widgets:auc-fighter:settings.read": {
             const { data: p, error: y } = await i(
-              oee.endpoints.getAucFighterSettings.initiate(
+              Kee.endpoints.getAucFighterSettings.initiate(
                 void 0,
                 { forceRefetch: !0 }
               )
@@ -38032,7 +38075,7 @@ const so = ree({
             break;
           case "widgets:settings.read": {
             const { data: p, error: y } = await i(
-              uee.endpoints.getSettings.initiate(void 0, {
+              Xee.endpoints.getSettings.initiate(void 0, {
                 forceRefetch: !0
               })
             );
@@ -38044,7 +38087,7 @@ const so = ree({
           }
           case "widgets:alerts.read": {
             const { data: p, error: y } = await i(
-              iee.endpoints.getAlerts.initiate(void 0, {
+              Gee.endpoints.getAlerts.initiate(void 0, {
                 forceRefetch: !0
               })
             );
@@ -38252,8 +38295,8 @@ const so = ree({
   return R.useLayoutEffect(() => (window.addEventListener("message", s), () => {
     window.removeEventListener("message", s);
   }), [s]), r;
-}, dee = ({ type: t }) => {
-  const { id: r } = mq(), [a] = o4(), { data: i } = aee({ id: r }), s = cee(i);
+}, ete = ({ type: t }) => {
+  const { id: r } = mq(), [a] = o4(), { data: i } = Yee({ id: r }), s = Zee(i);
   return /* @__PURE__ */ oe.jsxDEV(oe.Fragment, { children: i && /* @__PURE__ */ oe.jsxDEV(
     "iframe",
     {
@@ -38281,10 +38324,10 @@ const so = ree({
     lineNumber: 12,
     columnNumber: 3
   }, void 0);
-}, { palette: fee } = gf(), pee = {
+}, { palette: tte } = gf(), nte = {
   palette: {
     mode: "dark",
-    primary: fee.augmentColor({
+    primary: tte.augmentColor({
       color: {
         main: "#1976d2",
         contrastText: "#ffffff"
@@ -38316,7 +38359,7 @@ const so = ree({
   percent: t,
   width: r,
   coefficient: a = 1
-}) => `${r / 100 * (t / 100) * a}px`, hee = (t) => {
+}) => `${r / 100 * (t / 100) * a}px`, rte = (t) => {
   switch (t) {
     case vr.Left:
       return "1fr auto";
@@ -38325,7 +38368,7 @@ const so = ree({
     default:
       return;
   }
-}, mee = (t) => {
+}, ate = (t) => {
   switch (t) {
     case vr.Top:
       return "1fr auto";
@@ -38334,7 +38377,7 @@ const so = ree({
     default:
       return;
   }
-}, gee = (t) => {
+}, ite = (t) => {
   switch (t) {
     case vr.Top:
       return `"Image"
@@ -38365,9 +38408,9 @@ const so = ree({
       height: i,
       width: a,
       backgroundColor: s,
-      gridTemplateAreas: gee(t.view_type),
-      gridAutoRows: mee(t.view_type),
-      gridAutoColumns: hee(t.view_type),
+      gridTemplateAreas: ite(t.view_type),
+      gridAutoRows: ate(t.view_type),
+      gridAutoColumns: rte(t.view_type),
       placeItems: "center",
       gap: 5,
       color: "white",
@@ -38501,7 +38544,7 @@ const so = ree({
     columnNumber: 3
   },
   void 0
-), vee = ({
+), ote = ({
   alert: t,
   message: r,
   imageSrc: a,
@@ -38617,7 +38660,7 @@ const so = ree({
         columnNumber: 11
       }, void 0);
   }
-}, yee = ({
+}, ste = ({
   alert: t,
   userName: r,
   text: a,
@@ -38701,7 +38744,7 @@ const so = ree({
   }
   if (u.length)
     return u[Math.floor(Math.random() * u.length)];
-}, bee = () => {
+}, lte = () => {
   const { t } = uo(), r = qr(), a = R.useRef(new Audio()), i = R.useRef(new Audio()), s = R.useRef([]), u = R.useRef(null), c = R.useRef([]), [f, m] = R.useState(), [p, y] = R.useState(), v = R.useCallback(
     ({
       message: T,
@@ -38746,7 +38789,7 @@ const so = ree({
       (I) => I.id === T && I.group_id === O
     );
     if (!P) return;
-    const j = yee({
+    const j = ste({
       alert: P,
       userName: t("alert.test_name"),
       text: t("alert.test_text"),
@@ -38858,10 +38901,10 @@ const so = ree({
     currentAlert: p,
     settings: u.current
   };
-}, wee = () => {
-  const { currentAlert: t, currentMessage: r } = bee();
+}, ute = () => {
+  const { currentAlert: t, currentMessage: r } = lte();
   return r && t && /* @__PURE__ */ oe.jsxDEV(
-    vee,
+    ote,
     {
       alert: t,
       message: r,
@@ -38878,7 +38921,7 @@ const so = ree({
     },
     void 0
   );
-}, See = ({
+}, cte = ({
   layout: t,
   currentAmount: r,
   amountRaise: a,
@@ -38897,7 +38940,7 @@ const so = ree({
     case Vs.CurrentAmountRemainingAmountPercent:
       return `${r}/${a} ${s ?? ""} (${i}%)`;
   }
-}, _ee = ({
+}, dte = ({
   goal: t,
   width: r,
   height: a,
@@ -38907,7 +38950,7 @@ const so = ree({
 }) => {
   const c = Math.floor(
     s / t.amount_raise * 100
-  ), f = See({
+  ), f = cte({
     layout: t.progress_bar_layout,
     currentAmount: s,
     amountRaise: t.amount_raise,
@@ -39175,8 +39218,8 @@ const so = ree({
     },
     void 0
   );
-}, Eee = () => {
-  const t = qr(), [r, a] = R.useState(), s = new URLSearchParams(window.location.search).get("type"), { data: u } = see({ type: s }, { skip: !s }), [c, f] = R.useState();
+}, fte = () => {
+  const t = qr(), [r, a] = R.useState(), s = new URLSearchParams(window.location.search).get("type"), { data: u } = Qee({ type: s }, { skip: !s }), [c, f] = R.useState();
   return R.useEffect(() => {
     u && a(u);
   }, [u]), R.useEffect(() => {
@@ -39199,10 +39242,10 @@ const so = ree({
     goal: r,
     settings: c
   };
-}, Cee = () => {
-  const { goal: t, settings: r } = Eee();
+}, pte = () => {
+  const { goal: t, settings: r } = fte();
   return t && /* @__PURE__ */ oe.jsxDEV(
-    _ee,
+    dte,
     {
       goal: t,
       width: window.innerWidth,
@@ -39219,7 +39262,7 @@ const so = ree({
     },
     void 0
   );
-}, xee = () => {
+}, hte = () => {
   const t = qr(), r = R.useRef(null), a = R.useRef(null), i = R.useRef([]), [s, u] = R.useState(), c = R.useCallback(
     ({ message: w }) => {
       if (!w) return;
@@ -39337,7 +39380,7 @@ const so = ree({
     currentMessage: s,
     mediaSettings: r.current
   };
-}, Tee = ({
+}, mte = ({
   mediaPlatformSettings: t,
   media: r,
   messageId: a
@@ -39434,7 +39477,7 @@ const so = ree({
     },
     void 0
   );
-}, Ree = ({
+}, gte = ({
   mediaPlatformSettings: t,
   media: r,
   messageId: a
@@ -39506,7 +39549,7 @@ const so = ree({
   }, void 0);
 };
 var NS, xM;
-function kee() {
+function vte() {
   return xM || (xM = 1, NS = function t(r, a) {
     if (r === a) return !0;
     if (r && a && typeof r == "object" && typeof a == "object") {
@@ -39533,10 +39576,10 @@ function kee() {
     return r !== r && a !== a;
   }), NS;
 }
-var Dee = kee();
-const Mee = /* @__PURE__ */ Jo(Dee);
+var yte = vte();
+const bte = /* @__PURE__ */ Jo(yte);
 var sm = { exports: {} }, PS, TM;
-function Oee() {
+function wte() {
   if (TM) return PS;
   TM = 1;
   var t;
@@ -39557,7 +39600,7 @@ function Oee() {
   }, PS = t, PS;
 }
 var lm = { exports: {} }, $S, RM;
-function Aee() {
+function Ste() {
   if (RM) return $S;
   RM = 1, $S = function(s, u, c) {
     var f = document.head || document.getElementsByTagName("head")[0], m = document.createElement("script");
@@ -39585,12 +39628,12 @@ function Aee() {
   return $S;
 }
 var kM;
-function Nee() {
+function _te() {
   return kM || (kM = 1, (function(t, r) {
     Object.defineProperty(r, "__esModule", {
       value: !0
     });
-    var a = Aee(), i = s(a);
+    var a = Ste(), i = s(a);
     function s(u) {
       return u && u.__esModule ? u : { default: u };
     }
@@ -39615,7 +39658,7 @@ function Nee() {
   })(lm, lm.exports)), lm.exports;
 }
 var um = { exports: {} }, cm = { exports: {} }, dm = { exports: {} }, jS, DM;
-function Pee() {
+function Ete() {
   if (DM) return jS;
   DM = 1;
   var t = 1e3, r = t * 60, a = r * 60, i = a * 24, s = i * 365.25;
@@ -39691,9 +39734,9 @@ function Pee() {
   return jS;
 }
 var MM;
-function $ee() {
+function Cte() {
   return MM || (MM = 1, (function(t, r) {
-    r = t.exports = s.debug = s.default = s, r.coerce = m, r.disable = c, r.enable = u, r.enabled = f, r.humanize = Pee(), r.names = [], r.skips = [], r.formatters = {};
+    r = t.exports = s.debug = s.default = s, r.coerce = m, r.disable = c, r.enable = u, r.enabled = f, r.humanize = Ete(), r.names = [], r.skips = [], r.formatters = {};
     var a;
     function i(p) {
       var y = 0, v;
@@ -39750,10 +39793,10 @@ function $ee() {
   })(dm, dm.exports)), dm.exports;
 }
 var OM;
-function jee() {
+function xte() {
   return OM || (OM = 1, (function(t, r) {
     var a = {};
-    r = t.exports = $ee(), r.log = u, r.formatArgs = s, r.save = c, r.load = f, r.useColors = i, r.storage = typeof chrome < "u" && typeof chrome.storage < "u" ? chrome.storage.local : m(), r.colors = [
+    r = t.exports = Cte(), r.log = u, r.formatArgs = s, r.save = c, r.load = f, r.useColors = i, r.storage = typeof chrome < "u" && typeof chrome.storage < "u" ? chrome.storage.local : m(), r.colors = [
       "lightseagreen",
       "forestgreen",
       "goldenrod",
@@ -39813,7 +39856,7 @@ function jee() {
   })(cm, cm.exports)), cm.exports;
 }
 var fm = { exports: {} }, AM;
-function Lee() {
+function Tte() {
   return AM || (AM = 1, (function(t, r) {
     Object.defineProperty(r, "__esModule", {
       value: !0
@@ -39821,7 +39864,7 @@ function Lee() {
   })(fm, fm.exports)), fm.exports;
 }
 var pm = { exports: {} }, NM;
-function Iee() {
+function Rte() {
   return NM || (NM = 1, (function(t, r) {
     Object.defineProperty(r, "__esModule", {
       value: !0
@@ -39829,7 +39872,7 @@ function Iee() {
   })(pm, pm.exports)), pm.exports;
 }
 var hm = { exports: {} }, mm = { exports: {} }, PM;
-function Fee() {
+function kte() {
   return PM || (PM = 1, (function(t, r) {
     Object.defineProperty(r, "__esModule", {
       value: !0
@@ -39844,12 +39887,12 @@ function Fee() {
   })(mm, mm.exports)), mm.exports;
 }
 var $M;
-function zee() {
+function Dte() {
   return $M || ($M = 1, (function(t, r) {
     Object.defineProperty(r, "__esModule", {
       value: !0
     });
-    var a = Fee(), i = s(a);
+    var a = kte(), i = s(a);
     function s(u) {
       return u && u.__esModule ? u : { default: u };
     }
@@ -39873,12 +39916,12 @@ function zee() {
   })(hm, hm.exports)), hm.exports;
 }
 var jM;
-function Uee() {
+function Mte() {
   return jM || (jM = 1, (function(t, r) {
     Object.defineProperty(r, "__esModule", {
       value: !0
     });
-    var a = jee(), i = y(a), s = Lee(), u = y(s), c = Iee(), f = y(c), m = zee(), p = y(m);
+    var a = xte(), i = y(a), s = Tte(), u = y(s), c = Rte(), f = y(c), m = Dte(), p = y(m);
     function y(E) {
       return E && E.__esModule ? E : { default: E };
     }
@@ -39954,7 +39997,7 @@ function Uee() {
   })(um, um.exports)), um.exports;
 }
 var LM;
-function Vee() {
+function Ote() {
   return LM || (LM = 1, (function(t, r) {
     Object.defineProperty(r, "__esModule", {
       value: !0
@@ -39963,7 +40006,7 @@ function Vee() {
       return typeof v;
     } : function(v) {
       return v && typeof Symbol == "function" && v.constructor === Symbol && v !== Symbol.prototype ? "symbol" : typeof v;
-    }, i = Oee(), s = p(i), u = Nee(), c = p(u), f = Uee(), m = p(f);
+    }, i = wte(), s = p(i), u = _te(), c = p(u), f = Mte(), m = p(f);
     function p(v) {
       return v && v.__esModule ? v : { default: v };
     }
@@ -39991,16 +40034,16 @@ function Vee() {
     }, t.exports = r.default;
   })(sm, sm.exports)), sm.exports;
 }
-var Bee = Vee();
-const Hee = /* @__PURE__ */ Jo(Bee);
-var Wee = Object.defineProperty, qee = Object.defineProperties, Yee = Object.getOwnPropertyDescriptors, IM = Object.getOwnPropertySymbols, Gee = Object.prototype.hasOwnProperty, Kee = Object.prototype.propertyIsEnumerable, FM = (t, r, a) => r in t ? Wee(t, r, { enumerable: !0, configurable: !0, writable: !0, value: a }) : t[r] = a, E_ = (t, r) => {
+var Ate = Ote();
+const Nte = /* @__PURE__ */ Jo(Ate);
+var Pte = Object.defineProperty, $te = Object.defineProperties, jte = Object.getOwnPropertyDescriptors, IM = Object.getOwnPropertySymbols, Lte = Object.prototype.hasOwnProperty, Ite = Object.prototype.propertyIsEnumerable, FM = (t, r, a) => r in t ? Pte(t, r, { enumerable: !0, configurable: !0, writable: !0, value: a }) : t[r] = a, E_ = (t, r) => {
   for (var a in r || (r = {}))
-    Gee.call(r, a) && FM(t, a, r[a]);
+    Lte.call(r, a) && FM(t, a, r[a]);
   if (IM)
     for (var a of IM(r))
-      Kee.call(r, a) && FM(t, a, r[a]);
+      Ite.call(r, a) && FM(t, a, r[a]);
   return t;
-}, C_ = (t, r) => qee(t, Yee(r)), Qee = (t, r, a) => new Promise((i, s) => {
+}, C_ = (t, r) => $te(t, jte(r)), Fte = (t, r, a) => new Promise((i, s) => {
   var u = (m) => {
     try {
       f(a.next(m));
@@ -40016,7 +40059,7 @@ var Wee = Object.defineProperty, qee = Object.defineProperties, Yee = Object.get
   }, f = (m) => m.done ? i(m.value) : Promise.resolve(m.value).then(u, c);
   f((a = a.apply(t, r)).next());
 });
-function Jee(t, r) {
+function zte(t, r) {
   var a, i;
   if (t.videoId !== r.videoId)
     return !0;
@@ -40034,14 +40077,14 @@ function zM(t = {}) {
     })
   });
 }
-function Xee(t, r) {
-  return t.videoId !== r.videoId || !Mee(zM(t.opts), zM(r.opts));
+function Ute(t, r) {
+  return t.videoId !== r.videoId || !bte(zM(t.opts), zM(r.opts));
 }
-function Zee(t, r) {
+function Vte(t, r) {
   var a, i, s, u;
   return t.id !== r.id || t.className !== r.className || ((a = t.opts) == null ? void 0 : a.width) !== ((i = r.opts) == null ? void 0 : i.width) || ((s = t.opts) == null ? void 0 : s.height) !== ((u = r.opts) == null ? void 0 : u.height) || t.iframeClassName !== r.iframeClassName || t.title !== r.title;
 }
-var ete = {
+var Bte = {
   videoId: "",
   id: "",
   className: "",
@@ -40066,7 +40109,7 @@ var ete = {
   },
   onPlaybackQualityChange: () => {
   }
-}, tte = {
+}, Hte = {
   videoId: g.string,
   id: g.string,
   className: g.string,
@@ -40120,7 +40163,7 @@ var ete = {
       const r = C_(E_({}, this.props.opts), {
         videoId: this.props.videoId
       });
-      this.internalPlayer = Hee(this.container, r), this.internalPlayer.on("ready", this.onPlayerReady), this.internalPlayer.on("error", this.onPlayerError), this.internalPlayer.on("stateChange", this.onPlayerStateChange), this.internalPlayer.on("playbackRateChange", this.onPlayerPlaybackRateChange), this.internalPlayer.on("playbackQualityChange", this.onPlayerPlaybackQualityChange), (this.props.title || this.props.loading) && this.internalPlayer.getIframe().then((a) => {
+      this.internalPlayer = Nte(this.container, r), this.internalPlayer.on("ready", this.onPlayerReady), this.internalPlayer.on("error", this.onPlayerError), this.internalPlayer.on("stateChange", this.onPlayerStateChange), this.internalPlayer.on("playbackRateChange", this.onPlayerPlaybackRateChange), this.internalPlayer.on("playbackQualityChange", this.onPlayerPlaybackQualityChange), (this.props.title || this.props.loading) && this.internalPlayer.getIframe().then((a) => {
         this.props.title && a.setAttribute("title", this.props.title), this.props.loading && a.setAttribute("loading", this.props.loading);
       });
     }, this.resetPlayer = () => this.destroyPlayer().then(this.createPlayer), this.updatePlayer = () => {
@@ -40151,8 +40194,8 @@ var ete = {
     this.createPlayer();
   }
   componentDidUpdate(t) {
-    return Qee(this, null, function* () {
-      Zee(t, this.props) && this.updatePlayer(), Xee(t, this.props) && (yield this.resetPlayer()), Jee(t, this.props) && this.updateVideo();
+    return Fte(this, null, function* () {
+      Vte(t, this.props) && this.updatePlayer(), Ute(t, this.props) && (yield this.resetPlayer()), zte(t, this.props) && this.updateVideo();
     });
   }
   componentWillUnmount() {
@@ -40169,8 +40212,8 @@ var ete = {
     }));
   }
 }, $g = xm;
-$g.propTypes = tte;
-$g.defaultProps = ete;
+$g.propTypes = Hte;
+$g.defaultProps = Bte;
 $g.PlayerState = {
   UNSTARTED: -1,
   ENDED: 0,
@@ -40179,8 +40222,8 @@ $g.PlayerState = {
   BUFFERING: 3,
   CUED: 5
 };
-var nte = $g;
-const rte = ({
+var Wte = $g;
+const qte = ({
   mediaPlatformSettings: t,
   media: r,
   messageId: a
@@ -40236,7 +40279,7 @@ const rte = ({
     );
     return () => w();
   }, [a, s, i]), /* @__PURE__ */ oe.jsxDEV(
-    nte,
+    Wte,
     {
       videoId: r?.temporary_src,
       opts: c,
@@ -40255,7 +40298,7 @@ const rte = ({
     },
     void 0
   );
-}, ate = ({
+}, Yte = ({
   messageId: t,
   mediaSettings: r,
   media: a
@@ -40263,7 +40306,7 @@ const rte = ({
   switch (a.media_type) {
     case qo.Twitch:
       return /* @__PURE__ */ oe.jsxDEV(
-        Ree,
+        gte,
         {
           media: a,
           messageId: t,
@@ -40280,7 +40323,7 @@ const rte = ({
       );
     case qo.Youtube:
       return /* @__PURE__ */ oe.jsxDEV(
-        rte,
+        qte,
         {
           media: a,
           messageId: t,
@@ -40297,7 +40340,7 @@ const rte = ({
       );
     case qo.TikTok:
       return /* @__PURE__ */ oe.jsxDEV(
-        Tee,
+        mte,
         {
           media: a,
           messageId: t,
@@ -40313,9 +40356,9 @@ const rte = ({
         void 0
       );
   }
-}, ite = () => {
-  const { currentMessage: t, mediaSettings: r } = xee();
-  return r && t && t.donation?.media && /* @__PURE__ */ oe.jsxDEV("div", { style: { height: "100dvh", width: "100dvw" }, children: ate({
+}, Gte = () => {
+  const { currentMessage: t, mediaSettings: r } = hte();
+  return r && t && t.donation?.media && /* @__PURE__ */ oe.jsxDEV("div", { style: { height: "100dvh", width: "100dvw" }, children: Yte({
     media: t.donation.media,
     messageId: t.id,
     mediaSettings: r
@@ -40324,7 +40367,7 @@ const rte = ({
     lineNumber: 10,
     columnNumber: 4
   }, void 0);
-}, ote = () => {
+}, Kte = () => {
   const t = qr(), r = R.useRef(void 0), a = R.useRef(null), [i, s] = R.useState();
   return R.useEffect(() => {
     const u = t.subscribe(
@@ -40369,7 +40412,7 @@ const rte = ({
     void 0
   );
 };
-class ste extends R.Component {
+class Qte extends R.Component {
   static propTypes = {
     children: g.node.isRequired,
     element: g.node,
@@ -40528,7 +40571,7 @@ class ste extends R.Component {
     return s && (f ? c ? k.unshift(f) : k.push(f) : this.defaultLoader && (c ? k.unshift(this.defaultLoader) : k.push(this.defaultLoader))), jr.createElement(i, x, k);
   }
 }
-const lte = es(/* @__PURE__ */ Ae.jsx("path", {
+const Jte = es(/* @__PURE__ */ Ae.jsx("path", {
   d: "M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8"
 }), "Replay"), LA = (t) => {
   switch (t) {
@@ -40550,19 +40593,19 @@ const lte = es(/* @__PURE__ */ Ae.jsx("path", {
     case yr.Raid:
       return "#00ffbfff";
   }
-}, ute = es(/* @__PURE__ */ Ae.jsx("path", {
+}, Xte = es(/* @__PURE__ */ Ae.jsx("path", {
   d: "M6 19h4V5H6zm8-14v14h4V5z"
-}), "Pause"), cte = es(/* @__PURE__ */ Ae.jsx("path", {
+}), "Pause"), Zte = es(/* @__PURE__ */ Ae.jsx("path", {
   d: "M8 5v14l11-7z"
-}), "PlayArrow"), dte = es(/* @__PURE__ */ Ae.jsx("path", {
+}), "PlayArrow"), ene = es(/* @__PURE__ */ Ae.jsx("path", {
   d: "m6 18 8.5-6L6 6zM16 6v12h2V6z"
 }), "SkipNext");
-var Tm = { exports: {} }, fte = Tm.exports, UM;
-function pte() {
+var Tm = { exports: {} }, tne = Tm.exports, UM;
+function nne() {
   return UM || (UM = 1, (function(t, r) {
     (function(a, i) {
       t.exports = i();
-    })(fte, (function() {
+    })(tne, (function() {
       var a = 1e3, i = 6e4, s = 36e5, u = "millisecond", c = "second", f = "minute", m = "hour", p = "day", y = "week", v = "month", w = "quarter", E = "year", _ = "date", x = "Invalid Date", k = /^(\d{4})[-/]?(\d{1,2})?[-/]?(\d{0,2})[Tt\s]*(\d{1,2})?:?(\d{1,2})?:?(\d{1,2})?[.:]?(\d+)?$/, N = /\[([^\]]+)]|Y{1,4}|M{1,4}|D{1,2}|d{1,4}|H{1,2}|h{1,2}|a|A|m{1,2}|s{1,2}|Z{1,2}|SSS/g, L = { name: "en", weekdays: "Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"), months: "January_February_March_April_May_June_July_August_September_October_November_December".split("_"), ordinal: function(W) {
         var q = ["th", "st", "nd", "rd"], Y = W % 100;
         return "[" + W + (q[(Y - 20) % 10] || q[Y] || q[0]) + "]";
@@ -40835,14 +40878,14 @@ function pte() {
     }));
   })(Tm)), Tm.exports;
 }
-var hte = pte();
-const IA = /* @__PURE__ */ Jo(hte);
-var Rm = { exports: {} }, mte = Rm.exports, VM;
-function gte() {
+var rne = nne();
+const IA = /* @__PURE__ */ Jo(rne);
+var Rm = { exports: {} }, ane = Rm.exports, VM;
+function ine() {
   return VM || (VM = 1, (function(t, r) {
     (function(a, i) {
       t.exports = i();
-    })(mte, (function() {
+    })(ane, (function() {
       var a, i, s = 1e3, u = 6e4, c = 36e5, f = 864e5, m = /\[([^\]]+)]|Y{1,4}|M{1,4}|D{1,2}|d{1,4}|H{1,2}|h{1,2}|a|A|m{1,2}|s{1,2}|Z{1,2}|SSS/g, p = 31536e6, y = 2628e6, v = /^(-|\+)?P(?:([-+]?[0-9,.]*)Y)?(?:([-+]?[0-9,.]*)M)?(?:([-+]?[0-9,.]*)W)?(?:([-+]?[0-9,.]*)D)?(?:T(?:([-+]?[0-9,.]*)H)?(?:([-+]?[0-9,.]*)M)?(?:([-+]?[0-9,.]*)S)?)?$/, w = { years: p, months: y, days: f, hours: c, minutes: u, seconds: s, milliseconds: 1, weeks: 6048e5 }, E = function(P) {
         return P instanceof D;
       }, _ = function(P, j, I) {
@@ -40969,9 +41012,9 @@ function gte() {
     }));
   })(Rm)), Rm.exports;
 }
-var vte = gte();
-const yte = /* @__PURE__ */ Jo(vte);
-IA.extend(yte);
+var one = ine();
+const sne = /* @__PURE__ */ Jo(one);
+IA.extend(sne);
 const Of = ({ createdAt: t }) => {
   const r = IA(t * 1e3);
   return /* @__PURE__ */ oe.jsxDEV("span", { style: { fontSize: 12 }, children: r.format("YYYY-MM-DD HH:mm:ss") }, void 0, !1, {
@@ -40979,7 +41022,7 @@ const Of = ({ createdAt: t }) => {
     lineNumber: 6,
     columnNumber: 3
   }, void 0);
-}, bte = ({ donation: t }) => {
+}, lne = ({ donation: t }) => {
   const { pausedMediaId: r } = fi((i) => i.mediaState), a = qr();
   return /* @__PURE__ */ oe.jsxDEV(oe.Fragment, { children: t.media && /* @__PURE__ */ oe.jsxDEV(
     "div",
@@ -41051,11 +41094,11 @@ const Of = ({ createdAt: t }) => {
                   data: t.message_id
                 });
               },
-              children: r === t.message_id ? /* @__PURE__ */ oe.jsxDEV(cte, { sx: { height: 50, width: 50 } }, void 0, !1, {
+              children: r === t.message_id ? /* @__PURE__ */ oe.jsxDEV(Zte, { sx: { height: 50, width: 50 } }, void 0, !1, {
                 fileName: "D:/projects/widy/shared/components/MediaTile.tsx",
                 lineNumber: 68,
                 columnNumber: 9
-              }, void 0) : /* @__PURE__ */ oe.jsxDEV(ute, { sx: { height: 50, width: 50 } }, void 0, !1, {
+              }, void 0) : /* @__PURE__ */ oe.jsxDEV(Xte, { sx: { height: 50, width: 50 } }, void 0, !1, {
                 fileName: "D:/projects/widy/shared/components/MediaTile.tsx",
                 lineNumber: 70,
                 columnNumber: 9
@@ -41085,7 +41128,7 @@ const Of = ({ createdAt: t }) => {
                   data: t.message_id
                 });
               },
-              children: /* @__PURE__ */ oe.jsxDEV(dte, {}, void 0, !1, {
+              children: /* @__PURE__ */ oe.jsxDEV(ene, {}, void 0, !1, {
                 fileName: "D:/projects/widy/shared/components/MediaTile.tsx",
                 lineNumber: 88,
                 columnNumber: 8
@@ -41120,7 +41163,7 @@ const Of = ({ createdAt: t }) => {
     lineNumber: 18,
     columnNumber: 3
   }, void 0);
-}, wte = ({
+}, une = ({
   message: t,
   isAlertPlaying: r,
   isMediaPlaying: a
@@ -41141,7 +41184,7 @@ const Of = ({ createdAt: t }) => {
         overflow: "hidden"
       }),
       children: [
-        a && /* @__PURE__ */ oe.jsxDEV(bte, { donation: c }, void 0, !1, {
+        a && /* @__PURE__ */ oe.jsxDEV(lne, { donation: c }, void 0, !1, {
           fileName: "D:/projects/widy/shared/components/DonationMessageCard.tsx",
           lineNumber: 47,
           columnNumber: 25
@@ -41165,7 +41208,7 @@ const Of = ({ createdAt: t }) => {
                     data: t
                   });
                 },
-                children: /* @__PURE__ */ oe.jsxDEV(lte, {}, void 0, !1, {
+                children: /* @__PURE__ */ oe.jsxDEV(Jte, {}, void 0, !1, {
                   fileName: "D:/projects/widy/shared/components/DonationMessageCard.tsx",
                   lineNumber: 68,
                   columnNumber: 9
@@ -41340,7 +41383,7 @@ const Of = ({ createdAt: t }) => {
     lineNumber: 30,
     columnNumber: 3
   }, void 0);
-}, Ste = R.memo(wte), _te = ({
+}, cne = R.memo(une), dne = ({
   message: t,
   isAlertPlaying: r
 }) => {
@@ -41517,7 +41560,7 @@ const Of = ({ createdAt: t }) => {
     lineNumber: 24,
     columnNumber: 3
   }, void 0);
-}, Ete = R.memo(_te), Cte = ({
+}, fne = R.memo(dne), pne = ({
   message: t,
   isAlertPlaying: r
 }) => {
@@ -41697,7 +41740,7 @@ const Of = ({ createdAt: t }) => {
     lineNumber: 24,
     columnNumber: 3
   }, void 0);
-}, xte = R.memo(Cte), Tte = ({
+}, hne = R.memo(pne), mne = ({
   message: t,
   isAlertPlaying: r
 }) => {
@@ -41879,7 +41922,7 @@ const Of = ({ createdAt: t }) => {
     lineNumber: 24,
     columnNumber: 3
   }, void 0);
-}, Rte = R.memo(Tte), kte = ({
+}, gne = R.memo(mne), vne = ({
   message: t,
   isAlertPlaying: r,
   isMediaPlaying: a
@@ -41887,7 +41930,7 @@ const Of = ({ createdAt: t }) => {
   switch (t.type) {
     case yr.Donation:
       return /* @__PURE__ */ oe.jsxDEV(
-        Ste,
+        cne,
         {
           message: t,
           isAlertPlaying: r,
@@ -41903,14 +41946,14 @@ const Of = ({ createdAt: t }) => {
         void 0
       );
     case yr.Follow:
-      return /* @__PURE__ */ oe.jsxDEV(Ete, { message: t, isAlertPlaying: r }, void 0, !1, {
+      return /* @__PURE__ */ oe.jsxDEV(fne, { message: t, isAlertPlaying: r }, void 0, !1, {
         fileName: "D:/projects/widy/src/helpers/getMessageComponentByMessageType.tsx",
         lineNumber: 28,
         columnNumber: 5
       }, void 0);
     case yr.Subscription:
       return /* @__PURE__ */ oe.jsxDEV(
-        Rte,
+        gne,
         {
           message: t,
           isAlertPlaying: r
@@ -41925,7 +41968,7 @@ const Of = ({ createdAt: t }) => {
         void 0
       );
     case yr.Raid:
-      return /* @__PURE__ */ oe.jsxDEV(xte, { message: t, isAlertPlaying: r }, void 0, !1, {
+      return /* @__PURE__ */ oe.jsxDEV(hne, { message: t, isAlertPlaying: r }, void 0, !1, {
         fileName: "D:/projects/widy/src/helpers/getMessageComponentByMessageType.tsx",
         lineNumber: 39,
         columnNumber: 5
@@ -41937,13 +41980,13 @@ const Of = ({ createdAt: t }) => {
         columnNumber: 11
       }, void 0);
   }
-}, Dte = {
+}, yne = {
   isShowSnackBar: !1,
   snackBarMessage: "",
   alertSeverity: Ym.info
-}, Mte = Fa({
+}, bne = Fa({
   name: "snackBar",
-  initialState: Dte,
+  initialState: yne,
   reducers: {
     showSnackBar: (t, r) => {
       t.alertSeverity = r.payload.alertSeverity, t.isShowSnackBar = !0, t.snackBarMessage = r.payload.message;
@@ -41952,9 +41995,9 @@ const Of = ({ createdAt: t }) => {
       t.isShowSnackBar = !1;
     }
   }
-}), { showSnackBar: Ote, hideSnackBar: ene } = Mte.actions, Ate = es(/* @__PURE__ */ Ae.jsx("path", {
+}), { showSnackBar: wne, hideSnackBar: Bne } = bne.actions, Sne = es(/* @__PURE__ */ Ae.jsx("path", {
   d: "M4.25 5.61C6.27 8.2 10 13 10 13v6c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-6s3.72-4.8 5.74-7.39c.51-.66.04-1.61-.79-1.61H5.04c-.83 0-1.3.95-.79 1.61"
-}), "FilterAlt"), Nte = {
+}), "FilterAlt"), _ne = {
   filter: {
     exclude_donations: !1,
     exclude_follows: !1,
@@ -41963,20 +42006,20 @@ const Of = ({ createdAt: t }) => {
   }
 }, FA = Fa({
   name: "messages",
-  initialState: Nte,
+  initialState: _ne,
   reducers: {
     setFilter: (t, r) => {
       t.filter = r.payload;
     }
   }
-}), { setFilter: Pte } = FA.actions, $te = () => {
+}), { setFilter: Ene } = FA.actions, Cne = () => {
   const { filter: t } = fi((m) => m.messagesState), r = Rg(), [a, i] = R.useState(null), s = !!a, u = (m) => {
     i(m.currentTarget);
   }, c = () => {
     i(null);
   }, { t: f } = uo();
   return /* @__PURE__ */ oe.jsxDEV(oe.Fragment, { children: [
-    /* @__PURE__ */ oe.jsxDEV("div", { style: { display: "flex", justifyContent: "flex-end" }, children: /* @__PURE__ */ oe.jsxDEV(Xd, { onClick: u, children: /* @__PURE__ */ oe.jsxDEV(Ate, {}, void 0, !1, {
+    /* @__PURE__ */ oe.jsxDEV("div", { style: { display: "flex", justifyContent: "flex-end" }, children: /* @__PURE__ */ oe.jsxDEV(Xd, { onClick: u, children: /* @__PURE__ */ oe.jsxDEV(Sne, {}, void 0, !1, {
       fileName: "D:/projects/widy/shared/components/MessagesFilter.tsx",
       lineNumber: 28,
       columnNumber: 6
@@ -41993,7 +42036,7 @@ const Of = ({ createdAt: t }) => {
       m1,
       {
         onClick: () => r(
-          Pte({
+          Ene({
             ...t,
             [m]: !t[m]
           })
@@ -42037,7 +42080,7 @@ const Of = ({ createdAt: t }) => {
     lineNumber: 25,
     columnNumber: 3
   }, void 0);
-}, jte = ({
+}, xne = ({
   useGetMessagesInfiniteQuery: t
 }) => {
   const { t: r } = uo(), { playingAlertId: a } = fi(
@@ -42054,19 +42097,19 @@ const Of = ({ createdAt: t }) => {
   ), y = Rg();
   return R.useEffect(() => {
     p && y(
-      Ote({
+      wne({
         message: p.message,
         alertSeverity: Ym.error
       })
     );
   }, [p, y]), /* @__PURE__ */ oe.jsxDEV(oe.Fragment, { children: [
-    /* @__PURE__ */ oe.jsxDEV($te, {}, void 0, !1, {
+    /* @__PURE__ */ oe.jsxDEV(Cne, {}, void 0, !1, {
       fileName: "D:/projects/widy/shared/components/InfiniteMessages.tsx",
       lineNumber: 56,
       columnNumber: 4
     }, void 0),
     u?.pages[0].length ? /* @__PURE__ */ oe.jsxDEV(
-      ste,
+      Qte,
       {
         loadMore: () => c(),
         hasMore: !m && f,
@@ -42079,7 +42122,7 @@ const Of = ({ createdAt: t }) => {
           columnNumber: 14
         }, void 0),
         children: /* @__PURE__ */ oe.jsxDEV("div", { children: u.pages.map(
-          (v) => v.map((w) => /* @__PURE__ */ oe.jsxDEV(R.Fragment, { children: kte({
+          (v) => v.map((w) => /* @__PURE__ */ oe.jsxDEV(R.Fragment, { children: vne({
             message: w,
             isAlertPlaying: w.id === a,
             isMediaPlaying: w.id === s
@@ -42129,7 +42172,7 @@ const Of = ({ createdAt: t }) => {
     lineNumber: 55,
     columnNumber: 3
   }, void 0);
-}, Lte = () => /* @__PURE__ */ oe.jsxDEV(
+}, Tne = () => /* @__PURE__ */ oe.jsxDEV(
   Ba,
   {
     sx: {
@@ -42138,9 +42181,9 @@ const Of = ({ createdAt: t }) => {
       minHeight: "100vh"
     },
     children: /* @__PURE__ */ oe.jsxDEV(
-      jte,
+      xne,
       {
-        useGetMessagesInfiniteQuery: lee
+        useGetMessagesInfiniteQuery: Jee
       },
       void 0,
       !1,
@@ -42160,7 +42203,7 @@ const Of = ({ createdAt: t }) => {
     columnNumber: 3
   },
   void 0
-), Ite = () => {
+), Rne = () => {
   const t = qr(), [r, a] = R.useState(() => t.connected), { t: i } = uo();
   return R.useEffect(() => {
     const s = (u) => {
@@ -42208,7 +42251,7 @@ const Of = ({ createdAt: t }) => {
       void 0
     ),
     /* @__PURE__ */ oe.jsxDEV(Mq, { children: [
-      /* @__PURE__ */ oe.jsxDEV(Us, { path: "/alert", element: /* @__PURE__ */ oe.jsxDEV(wee, {}, void 0, !1, {
+      /* @__PURE__ */ oe.jsxDEV(Us, { path: "/alert", element: /* @__PURE__ */ oe.jsxDEV(ute, {}, void 0, !1, {
         fileName: "D:/projects/widy/src-widget/App.tsx",
         lineNumber: 51,
         columnNumber: 35
@@ -42217,7 +42260,7 @@ const Of = ({ createdAt: t }) => {
         lineNumber: 51,
         columnNumber: 5
       }, void 0),
-      /* @__PURE__ */ oe.jsxDEV(Us, { path: "/media", element: /* @__PURE__ */ oe.jsxDEV(ite, {}, void 0, !1, {
+      /* @__PURE__ */ oe.jsxDEV(Us, { path: "/media", element: /* @__PURE__ */ oe.jsxDEV(Gte, {}, void 0, !1, {
         fileName: "D:/projects/widy/src-widget/App.tsx",
         lineNumber: 52,
         columnNumber: 35
@@ -42226,7 +42269,7 @@ const Of = ({ createdAt: t }) => {
         lineNumber: 52,
         columnNumber: 5
       }, void 0),
-      /* @__PURE__ */ oe.jsxDEV(Us, { path: "/goal", element: /* @__PURE__ */ oe.jsxDEV(Cee, {}, void 0, !1, {
+      /* @__PURE__ */ oe.jsxDEV(Us, { path: "/goal", element: /* @__PURE__ */ oe.jsxDEV(pte, {}, void 0, !1, {
         fileName: "D:/projects/widy/src-widget/App.tsx",
         lineNumber: 53,
         columnNumber: 34
@@ -42235,7 +42278,7 @@ const Of = ({ createdAt: t }) => {
         lineNumber: 53,
         columnNumber: 5
       }, void 0),
-      /* @__PURE__ */ oe.jsxDEV(Us, { path: "/nsfw", element: /* @__PURE__ */ oe.jsxDEV(ote, {}, void 0, !1, {
+      /* @__PURE__ */ oe.jsxDEV(Us, { path: "/nsfw", element: /* @__PURE__ */ oe.jsxDEV(Kte, {}, void 0, !1, {
         fileName: "D:/projects/widy/src-widget/App.tsx",
         lineNumber: 54,
         columnNumber: 34
@@ -42244,7 +42287,7 @@ const Of = ({ createdAt: t }) => {
         lineNumber: 54,
         columnNumber: 5
       }, void 0),
-      /* @__PURE__ */ oe.jsxDEV(Us, { path: "/widget/:id", element: /* @__PURE__ */ oe.jsxDEV(dee, { type: "view" }, void 0, !1, {
+      /* @__PURE__ */ oe.jsxDEV(Us, { path: "/widget/:id", element: /* @__PURE__ */ oe.jsxDEV(ete, { type: "view" }, void 0, !1, {
         fileName: "D:/projects/widy/src-widget/App.tsx",
         lineNumber: 55,
         columnNumber: 40
@@ -42257,7 +42300,7 @@ const Of = ({ createdAt: t }) => {
         Us,
         {
           path: "/obs-dock-messages",
-          element: /* @__PURE__ */ oe.jsxDEV(c3, { theme: gf(pee), children: /* @__PURE__ */ oe.jsxDEV(Lte, {}, void 0, !1, {
+          element: /* @__PURE__ */ oe.jsxDEV(c3, { theme: gf(nte), children: /* @__PURE__ */ oe.jsxDEV(Tne, {}, void 0, !1, {
             fileName: "D:/projects/widy/src-widget/App.tsx",
             lineNumber: 60,
             columnNumber: 8
@@ -42286,7 +42329,7 @@ const Of = ({ createdAt: t }) => {
     lineNumber: 30,
     columnNumber: 3
   }, void 0);
-}, Fte = {
+}, kne = {
   services: {
     [Pr.Streamelements]: {
       active: !1,
@@ -42345,26 +42388,26 @@ const Of = ({ createdAt: t }) => {
   }
 }, zA = Fa({
   name: "services",
-  initialState: Fte,
+  initialState: kne,
   reducers: {
     setServiceActive: (t, r) => {
       t.services[r.payload.service].active = r.payload.active;
     }
   }
-}), { setServiceActive: tne } = zA.actions;
-var zte = { NODE_ENV: "development" };
-const Ute = hE({
+}), { setServiceActive: Hne } = zA.actions;
+var Dne = { NODE_ENV: "development" };
+const Mne = hE({
   mediaState: bA.reducer,
   alertsState: vA.reducer,
   servicesState: zA.reducer,
   messagesState: FA.reducer,
   [so.reducerPath]: so.reducer
-}), Vte = (t) => WZ({
-  reducer: Ute,
+}), One = (t) => P2({
+  reducer: Mne,
   middleware: (r) => r().concat(so.middleware),
   preloadedState: t,
-  devTools: zte.NODE_ENV !== "production"
-}), lo = Vte(), co = new pE("ws://127.0.0.1:12553/ws");
+  devTools: Dne.NODE_ENV !== "production"
+}), lo = One(), co = new pE("ws://127.0.0.1:12553/ws");
 co.connect();
 co.subscribe(ke.Message, (t) => {
   lo.dispatch(kE.util.invalidateTags(["Messages"]));
@@ -42388,13 +42431,13 @@ co.subscribe(ke.Settings, (t) => {
   br.changeLanguage(t.language);
 });
 A6.createRoot(document.getElementById("root")).render(
-  /* @__PURE__ */ oe.jsxDEV(jr.StrictMode, { children: /* @__PURE__ */ oe.jsxDEV(WX, { context: G1, eventsService: co, children: /* @__PURE__ */ oe.jsxDEV(zX, { store: lo, children: /* @__PURE__ */ oe.jsxDEV(t4, { children: [
+  /* @__PURE__ */ oe.jsxDEV(jr.StrictMode, { children: /* @__PURE__ */ oe.jsxDEV(PZ, { context: G1, eventsService: co, children: /* @__PURE__ */ oe.jsxDEV(DZ, { store: lo, children: /* @__PURE__ */ oe.jsxDEV(t4, { children: [
     /* @__PURE__ */ oe.jsxDEV(o1, {}, void 0, !1, {
       fileName: "D:/projects/widy/src-widget/main.tsx",
       lineNumber: 60,
       columnNumber: 6
     }, void 0),
-    /* @__PURE__ */ oe.jsxDEV(Ite, {}, void 0, !1, {
+    /* @__PURE__ */ oe.jsxDEV(Rne, {}, void 0, !1, {
       fileName: "D:/projects/widy/src-widget/main.tsx",
       lineNumber: 61,
       columnNumber: 6
