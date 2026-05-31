@@ -3,7 +3,7 @@
 	"off": "बंद",
 	"select": "चुनें",
 	"success": "सफल",
-	"ok": "ठीक है",
+	"ok": "ठीक",
 	"cancel": "रद्द करें",
 	"sound_volume": "ध्वनि वॉल्यूम",
 	"skip_media": "मीडिया स्किप शॉर्टकट",
@@ -11,9 +11,12 @@
 	"none": "कोई नहीं",
 	"start": "शुरू करें",
 	"stop": "रोकें",
+	"delay": "देरी",
+	"milliseconds": "मिलीसेकंड",
 	"disconnected": "डिस्कनेक्टेड",
+	"documentation": "दस्तावेज़ीकरण",
 	"authorization": {
-		"title": "अधिकारिकरण",
+		"title": "प्राधिकरण",
 		"code": "कोड का अनुरोध करें",
 		"sign_in": "साइन इन करें",
 		"phone": "फ़ोन नंबर",
@@ -23,11 +26,11 @@
 		"password": "पासवर्ड",
 		"streamelements": "आपको पहले StreamElements JWT से कनेक्ट करना होगा",
 		"you_can_find_by_url": "आप इसे इस URL से ढूंढ सकते हैं",
-		"set_id_and_jwt": "{{service}} के लिए StreamElements Account ID और JWT सेट करना आवश्यक है"
+		"set_id_and_jwt": "{{service}} के लिए StreamElements Account ID और JWT सेट करना होगा"
 	},
 	"error": {
-		"wrong_lots_format": "गलत लॉट फॉर्मेट",
-		"not_connected": "कनेक्ट नहीं है",
+		"wrong_lots_format": "गलत लॉट्स फॉर्मेट",
+		"not_connected": "कनेक्टेड नहीं है",
 		"request_error": "अनुरोध त्रुटि"
 	},
 	"updater": {
@@ -39,9 +42,9 @@
 	},
 	"media": {
 		"title": "मीडिया",
-		"youtube": "YouTube",
-		"twitch": "Twitch",
-		"tiktok": "TikTok"
+		"youtube": "यूट्यूब",
+		"twitch": "ट्विच",
+		"tiktok": "टिकटॉक"
 	},
 	"integration": {
 		"tribute": "ट्रिब्यूट संदेश दिखाएं"
@@ -56,12 +59,12 @@
 		"meter_price": "1 मीटर का मूल्य",
 		"amount": "राशि",
 		"finish": "समाप्त करें",
-		"lat_error": "अक्षांश -90 और 90 के बीच होना चाहिए",
-		"lng_error": "देशांतर -180 और 180 के बीच होना चाहिए",
-		"rules": "पॉइंटर को संदेश में स्वचालित रूप से पोजीशन बदलने के लिए इसमें केवल एक शब्द होना चाहिए:"
+		"lat_error": "अक्षांश -90 से 90 के बीच होना चाहिए",
+		"lng_error": "देशांतर -180 से 180 के बीच होना चाहिए",
+		"rules": "पॉइंटर को मैसेज में ऑटोमैटिकली पोजीशन बदलने के लिए इसमें केवल एक शब्द होना चाहिए:"
 	},
 	"media_settings": {
-		"enabled": "सक्षम",
+		"enabled": "सक्रिय",
 		"min_amount": "न्यूनतम राशि",
 		"video_volume": "वीडियो वॉल्यूम",
 		"min_views": "न्यूनतम व्यूज"
@@ -69,10 +72,10 @@
 	"dashboard": {
 		"messages": "संदेश",
 		"settings": "सेटिंग्स",
-		"services": "सेवाएं",
+		"services": "सर्विसेज",
 		"alerts": "अलर्ट्स",
 		"media": "मीडिया",
-		"goals": "लक्ष्य",
+		"goals": "गोल्स",
 		"auction": "नीलामी",
 		"maption": "मैप्शन",
 		"fighter": "फाइटर",
@@ -89,7 +92,7 @@
 		"donated": "{{user_name}} ने {{amount}}{{currency}} दान किया",
 		"followed": "{{user_name}} ने फॉलो किया",
 		"subscribed": "{{user_name}} ने सब्सक्राइब किया",
-		"gifted_subscriptions": "{{user_name}} ने {{total}} सब्सक्रिप्शन्स गिफ्ट किए",
+		"gifted_subscriptions": "{{user_name}} ने {{total}} सब्सक्रिप्शन गिफ्ट किए",
 		"raided_with": "{{user_name}} ने {{viewers}} व्यूअर्स के साथ रेड किया"
 	},
 	"filter": {
@@ -103,7 +106,7 @@
 		"title": "सेटिंग्स",
 		"pause": "अलर्ट संदेश रोकें",
 		"moderation_duration": "मॉडरेशन अवधि",
-		"black_list": "ब्लैक लिस्ट",
+		"black_list": "ब्लैकलिस्ट",
 		"remove_links": "लिंक्स हटाएं",
 		"language": "भाषा",
 		"sec": "सेकंड",
@@ -119,7 +122,7 @@
 	"timer": {
 		"continue": "जारी रखें",
 		"pause": "पॉज करें",
-		"reset": "रीसेट करें",
+		"reset": "रीसेट",
 		"add_time": "समय जोड़ें",
 		"reduce_time": "समय घटाएं",
 		"add_timex2": "समय x2 जोड़ें"
@@ -136,7 +139,7 @@
 		"start": "शुरू करें",
 		"pause": "पॉज करें",
 		"rematch": "रीमैच",
-		"resume": "जारी रखें"
+		"resume": "फिर से शुरू करें"
 	},
 	"lot": {
 		"name": "नाम",
@@ -161,8 +164,8 @@
 		"new_donation": "नया दान",
 		"show_odds": "ऑड्स दिखाएं",
 		"show_total_sum": "कुल राशि दिखाएं",
-		"greater_timer_adding_time": "बड़ा टाइमर समय जोड़ना",
-		"not_add_time_if": "यदि न जोड़ें",
+		"greater_timer_adding_time": "बड़ी टाइमर समय जोड़ना",
+		"not_add_time_if": "समय न जोड़ें अगर",
 		"adding_time": "समय"
 	},
 	"lots_options": {
@@ -178,16 +181,16 @@
 		"group": "समूह"
 	},
 	"services": {
-		"title": "सेवाएं",
+		"title": "सर्विसेज",
 		"tribute": "ट्रिब्यूट",
 		"streamelements": "StreamElements",
 		"connect": "कनेक्ट करें",
 		"integrations": "इंटीग्रेशन्स",
 		"sign_out": "साइन आउट",
-		"confirm_sign_out": "क्या आप वाकई इस सेवा से साइन आउट करना चाहते हैं?"
+		"confirm_sign_out": "क्या आप वाकई इस सर्विस से साइन आउट करना चाहते हैं?"
 	},
 	"twitch": {
-		"device_code_expired": "डिवाइस कोड समाप्त हो गया। कृपया पुनः प्रयास करें।",
+		"device_code_expired": "डिवाइस कोड समाप्त हो गया। कृपया फिर से प्रयास करें।",
 		"user_code": "यूजर कोड",
 		"authorize_with_code": "कोड से अधिकृत करें",
 		"waiting_authorization": "अधिकारिकरण की प्रतीक्षा कर रहा है..."
@@ -218,18 +221,18 @@
 		"test_text": "यह एक टेस्ट अलर्ट है!",
 		"configure": "कॉन्फ़िगर करें",
 		"test": "टेस्ट",
-		"add_new_variant": "नया वेरिएंट जोड़ें",
-		"new_variant": "नया वेरिएंट",
-		"variant_title": "वेरिएंट शीर्षक",
-		"variant_group": "वेरिएंट समूह",
+		"add_new_variant": "नया वैरिएंट जोड़ें",
+		"new_variant": "नया वैरिएंट",
+		"variant_title": "वैरिएंट शीर्षक",
+		"variant_group": "वैरिएंट समूह",
 		"status": "स्थिति",
-		"variation_condition": "वेरिएशन शर्त",
+		"variation_condition": "वैरिएशन शर्त",
 		"group": "समूह",
 		"Random": "रैंडम",
 		"AmountIsGreater": "राशि इससे अधिक है",
 		"AmountIsEqual": "राशि बराबर है",
 		"delete": "हटाएं",
-		"sure_delete": "क्या आप वाकई इस वेरिएशन को हटाना चाहते हैं?",
+		"sure_delete": "क्या आप वाकई यह वैरिएशन हटाना चाहते हैं?",
 		"type": "प्रकार",
 		"Donation": "दान",
 		"Subscription": "सब्सक्रिप्शन",
@@ -238,28 +241,28 @@
 	},
 	"general": "सामान्य",
 	"goals": {
-		"title": "लक्ष्य",
-		"create": "नया लक्ष्य बनाएं"
+		"title": "गोल्स",
+		"create": "नया गोल बनाएं"
 	},
 	"goal": {
-		"new": "नया लक्ष्य",
-		"goal": "व्यू",
+		"new": "नया गोल",
+		"goal": "गोल",
 		"type": "प्रकार",
 		"elements": "तत्व",
 		"progress": "प्रगति",
-		"goal_title": "लक्ष्य शीर्षक",
+		"goal_title": "गोल शीर्षक",
 		"amount_raise": "एकत्र करने की राशि",
-		"start_raising": "से एकत्र करना शुरू करें",
-		"end_date": "लक्ष्य समाप्ति तिथि",
+		"start_raising": "इससे शुरू करें",
+		"end_date": "गोल समाप्ति तिथि",
 		"bar_height": "बार ऊंचाई",
 		"rounding_radius": "गोलाई त्रिज्या",
 		"bar_stroke_thickness": "बार स्ट्रोक मोटाई",
 		"background_bar_color": "बैकग्राउंड बार रंग",
 		"progress_bar_color": "प्रगति बार रंग",
-		"goal_progress_bar": "लक्ष्य प्रगति बार",
+		"goal_progress_bar": "गोल प्रगति बार",
 		"progress_bar_layout": "प्रगति बार लेआउट",
-		"remaining_time": "शेष समय",
-		"goal_amount_limits": "लक्ष्य राशि सीमा",
+		"remaining_time": "बाकी समय",
+		"goal_amount_limits": "गोल राशि सीमा",
 		"widget_background": "विजेट बैकग्राउंड",
 		"background_color": "बैकग्राउंड रंग",
 		"OnTop": "ऊपर",
@@ -269,13 +272,13 @@
 		"title": "शीर्षक",
 		"limits": "सीमाएं",
 		"raised": "एकत्र",
-		"days_left": "शेष दिन",
-		"finish_goal": "लक्ष्य समाप्त करें",
-		"sure_finish": "क्या आप वाकई यह लक्ष्य समाप्त करना चाहते हैं?",
+		"days_left": "बाकी दिन",
+		"finish_goal": "गोल पूरा करें",
+		"sure_finish": "क्या आप वाकई यह गोल पूरा करना चाहते हैं?",
 		"Donation": "दान",
 		"TwitchSubscription": "Twitch सब्सक्रिप्शन",
 		"TwitchFollow": "Twitch फॉलो",
-		"goal_not_finished": "इस प्रकार का एक अधूरा लक्ष्य आपके पास है।"
+		"goal_not_finished": "इस प्रकार का एक अधूरा गोल पहले से मौजूद है।"
 	},
 	"save": "सेव करें",
 	"back": "वापस",
@@ -306,12 +309,12 @@
 		"letter_spacing": "अक्षर स्पेसिंग",
 		"word_spacing": "शब्द स्पेसिंग",
 		"horizontal_alignment": "क्षैतिज संरेखण",
-		"vertical_alignment": "ऊर्ध्वाधर संरेखण",
+		"vertical_alignment": "लंबवत संरेखण",
 		"text_preview": "यह एक पूर्वावलोकन है!",
 		"name": "नाम"
 	},
 	"audio": {
-		"play": "चलाएं",
+		"play": "प्ले करें",
 		"stop": "रोकें"
 	},
 	"version": "वर्जन",
@@ -335,7 +338,7 @@
 	},
 	"scopes": {
 		"widgets:messages.read": "संदेश पढ़ें",
-		"widgets:goals.read": "लक्ष्य पढ़ें",
+		"widgets:goals.read": "गोल्स पढ़ें",
 		"widgets:auc-fighter:settings.read": "auc-fighter सेटिंग्स पढ़ें",
 		"widgets:settings.read": "विजेट सेटिंग्स पढ़ें",
 		"widgets:alerts.read": "अलर्ट्स पढ़ें",
@@ -351,11 +354,11 @@
 		"widgets:media:playing.send": "मीडिया चल रहा है भेजें",
 		"widgets:media:paused.send": "मीडिया पॉज भेजें",
 		"widgets:media:error.send": "मीडिया त्रुटि भेजें",
-		"widgets:media:replay.send": "मीडिया रीप्ले भेजें",
-		"widgets:alert:replay.send": "अलर्ट रीप्ले भेजें",
+		"widgets:media:replay.send": "मीडिया रिप्ले भेजें",
+		"widgets:alert:replay.send": "अलर्ट रिप्ले भेजें",
 		"widgets:alert:skip.send": "अलर्ट स्किप भेजें",
 		"widgets:messages.subscription": "संदेश सब्सक्राइब करें",
-		"widgets:goal.subscription": "लक्ष्य सब्सक्राइब करें",
+		"widgets:goal.subscription": "गोल सब्सक्राइब करें",
 		"widgets:settings.subscription": "सेटिंग्स सब्सक्राइब करें",
 		"widgets:auc-fighter:start-match.subscription": "मैच शुरू सब्सक्राइब करें",
 		"widgets:auc-fighter:pause-match.subscription": "मैच पॉज सब्सक्राइब करें",
@@ -363,15 +366,15 @@
 		"widgets:auc-fighter:cancel-match.subscription": "मैच रद्द सब्सक्राइब करें",
 		"widgets:auc-fighter:update-match.subscription": "मैच अपडेट सब्सक्राइब करें",
 		"widgets:auc-fighter:settings.subscription": "auc-fighter सेटिंग्स सब्सक्राइब करें",
-		"widgets:alert:replay.subscription": "अलर्ट रीप्ले सब्सक्राइब करें",
+		"widgets:alert:replay.subscription": "अलर्ट रिप्ले सब्सक्राइब करें",
 		"widgets:alert:skip.subscription": "अलर्ट स्किप सब्सक्राइब करें",
 		"widgets:alert:test.subscription": "अलर्ट टेस्ट सब्सक्राइब करें",
-		"widgets:alert:skip-playing.subscription": "अलर्ट स्किप चल रहा सब्सक्राइब करें",
+		"widgets:alert:skip-playing.subscription": "अलर्ट स्किप प्लेइंग सब्सक्राइब करें",
 		"widgets:alert:alerts.subscription": "अलर्ट्स सब्सक्राइब करें",
-		"widgets:media:replay.subscription": "मीडिया रीप्ले सब्सक्राइब करें",
+		"widgets:media:replay.subscription": "मीडिया रिप्ले सब्सक्राइब करें",
 		"widgets:media:settings.subscription": "मीडिया सेटिंग्स सब्सक्राइब करें",
 		"widgets:media:skip.subscription": "मीडिया स्किप सब्सक्राइब करें",
-		"widgets:media:skip-playing-media.subscription": "मीडिया स्किप चल रहा सब्सक्राइब करें",
+		"widgets:media:skip-playing-media.subscription": "मीडिया स्किप प्लेइंग सब्सक्राइब करें",
 		"widgets:media:end.subscription": "मीडिया समाप्त सब्सक्राइब करें",
 		"widgets:media:error.subscription": "मीडिया त्रुटि सब्सक्राइब करें",
 		"widgets:media:pause.subscription": "मीडिया पॉज सब्सक्राइब करें",
@@ -393,7 +396,7 @@
 		"confidence_threshold": "कॉन्फिडेंस थ्रेशोल्ड",
 		"anus": "गुदा",
 		"make_love": "संभोग",
-		"nipple": "स्तनाग्र",
+		"nipple": "स्तन की निप्पल",
 		"penis": "लिंग",
 		"vagina": "योनि"
 	}

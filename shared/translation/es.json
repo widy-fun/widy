@@ -6,12 +6,15 @@
 	"ok": "Aceptar",
 	"cancel": "Cancelar",
 	"sound_volume": "Volumen de sonido",
-	"skip_media": "Atajo saltar media",
-	"skip_alert": "Atajo saltar alerta",
+	"skip_media": "Atajo para saltar medio",
+	"skip_alert": "Atajo para saltar alerta",
 	"none": "Ninguno",
 	"start": "Iniciar",
 	"stop": "Detener",
+	"delay": "Retraso",
+	"milliseconds": "ms",
 	"disconnected": "Desconectado",
+	"documentation": "Documentación",
 	"authorization": {
 		"title": "Autorización",
 		"code": "Solicitar código",
@@ -38,7 +41,7 @@
 		"downloading": "Descargando..."
 	},
 	"media": {
-		"title": "Media",
+		"title": "Medios",
 		"youtube": "YouTube",
 		"twitch": "Twitch",
 		"tiktok": "TikTok"
@@ -58,20 +61,20 @@
 		"finish": "Finalizar",
 		"lat_error": "La latitud debe estar entre -90 y 90",
 		"lng_error": "La longitud debe estar entre -180 y 180",
-		"rules": "Para que el puntero cambie automáticamente de posición en el mensaje, solo debe haber una palabra de:"
+		"rules": "Para que el puntero cambie de posición automáticamente en el mensaje, debe haber solo una palabra de:"
 	},
 	"media_settings": {
 		"enabled": "Activado",
 		"min_amount": "Cantidad mínima",
 		"video_volume": "Volumen del video",
-		"min_views": "Vistas mínimas"
+		"min_views": "Mínimo de vistas"
 	},
 	"dashboard": {
 		"messages": "Mensajes",
 		"settings": "Ajustes",
 		"services": "Servicios",
 		"alerts": "Alertas",
-		"media": "Media",
+		"media": "Medios",
 		"goals": "Metas",
 		"auction": "Subasta",
 		"maption": "Maption",
@@ -85,12 +88,12 @@
 	},
 	"message": {
 		"skip": "Saltar",
-		"replay": "Repetir",
+		"replay": "Reproducir de nuevo",
 		"donated": "{{user_name}} donó {{amount}}{{currency}}",
 		"followed": "{{user_name}} te siguió",
 		"subscribed": "{{user_name}} se suscribió",
 		"gifted_subscriptions": "{{user_name}} regaló {{total}} suscripciones",
-		"raided_with": "{{user_name}} hizo raid con {{viewers}} viewers"
+		"raided_with": "{{user_name}} hizo raid con {{viewers}} espectadores"
 	},
 	"filter": {
 		"title": "Filtrar mensajes",
@@ -167,10 +170,10 @@
 	},
 	"lots_options": {
 		"import_lots": "Importar lotes",
-		"clear_lots": "Borrar lotes"
+		"clear_lots": "Limpiar lotes"
 	},
 	"auc_fighter_settings": {
-		"round_duration": "Duración del round",
+		"round_duration": "Duración de ronda",
 		"add_players": "Añadir jugadores"
 	},
 	"alerts": {
@@ -201,11 +204,11 @@
 	},
 	"twitch_service_settings": {
 		"title": "Ajustes de Twitch",
-		"points_currency_ratio": "Ratio puntos-moneda",
+		"points_currency_ratio": "Ratio de puntos a moneda",
 		"rewards_name": "Nombre de recompensas",
 		"rewards_list": "Lista de recompensas",
 		"add_reward": "Añadir recompensa",
-		"cost": "Costo",
+		"cost": "Coste",
 		"color": "Color"
 	},
 	"alert": {
@@ -249,7 +252,7 @@
 		"progress": "Progreso",
 		"goal_title": "Título de la meta",
 		"amount_raise": "Cantidad a recaudar",
-		"start_raising": "Empezar recaudación desde",
+		"start_raising": "Empezar a recaudar desde",
 		"end_date": "Fecha de finalización",
 		"bar_height": "Altura de la barra",
 		"rounding_radius": "Radio de redondeo",
@@ -257,7 +260,7 @@
 		"background_bar_color": "Color de barra de fondo",
 		"progress_bar_color": "Color de barra de progreso",
 		"goal_progress_bar": "Barra de progreso de meta",
-		"progress_bar_layout": "Disposición de la barra de progreso",
+		"progress_bar_layout": "Diseño de barra de progreso",
 		"remaining_time": "Tiempo restante",
 		"goal_amount_limits": "Límites de cantidad de meta",
 		"widget_background": "Fondo del widget",
@@ -283,7 +286,7 @@
 		"copy": "Copiar",
 		"launch": "Lanzar",
 		"url": "URL del widget",
-		"obs_dock_url": "URL del dock de OBS"
+		"obs_dock_url": "URL de OBS Dock"
 	},
 	"view": {
 		"top": "Imagen arriba, texto abajo",
@@ -298,7 +301,7 @@
 	"text": {
 		"font": "Fuente",
 		"font_size": "Tamaño de fuente",
-		"text_color": "Color del texto",
+		"text_color": "Color de texto",
 		"bold": "Negrita",
 		"italics": "Cursiva",
 		"underline": "Subrayado",
@@ -339,19 +342,19 @@
 		"widgets:auc-fighter:settings.read": "Leer ajustes de auc-fighter",
 		"widgets:settings.read": "Leer ajustes del widget",
 		"widgets:alerts.read": "Leer alertas",
-		"widgets:media:settings.read": "Leer ajustes de media",
+		"widgets:media:settings.read": "Leer ajustes de medios",
 		"widgets:auc-fighter:match-playing.send": "Enviar combate en curso",
 		"widgets:auc-fighter:match-winner.send": "Enviar ganador del combate",
 		"widgets:auc-fighter:match-paused.send": "Enviar combate pausado",
 		"widgets:auc-fighter:match-id.send": "Enviar ID del combate",
 		"widgets:alert:played.send": "Enviar alerta reproducida",
-		"widgets:alert:playing.send": "Enviar alerta reproduciéndose",
-		"widgets:media:played.send": "Enviar media reproducida",
-		"widgets:media:end.send": "Enviar fin de media",
-		"widgets:media:playing.send": "Enviar media reproduciéndose",
-		"widgets:media:paused.send": "Enviar media pausada",
-		"widgets:media:error.send": "Enviar error de media",
-		"widgets:media:replay.send": "Enviar repetición de media",
+		"widgets:alert:playing.send": "Enviar alerta reproduciendo",
+		"widgets:media:played.send": "Enviar medio reproducido",
+		"widgets:media:end.send": "Enviar fin de medio",
+		"widgets:media:playing.send": "Enviar medio reproduciendo",
+		"widgets:media:paused.send": "Enviar medio pausado",
+		"widgets:media:error.send": "Enviar error de medio",
+		"widgets:media:replay.send": "Enviar repetición de medio",
 		"widgets:alert:replay.send": "Enviar repetición de alerta",
 		"widgets:alert:skip.send": "Enviar salto de alerta",
 		"widgets:messages.subscription": "Suscribirse a mensajes",
@@ -359,8 +362,8 @@
 		"widgets:settings.subscription": "Suscribirse a ajustes",
 		"widgets:auc-fighter:start-match.subscription": "Suscribirse a inicio de combate",
 		"widgets:auc-fighter:pause-match.subscription": "Suscribirse a pausa de combate",
-		"widgets:auc-fighter:resume-match.subscription": "Suscribirse a reanudación de combate",
-		"widgets:auc-fighter:cancel-match.subscription": "Suscribirse a cancelación de combate",
+		"widgets:auc-fighter:resume-match.subscription": "Suscribirse a reanudar combate",
+		"widgets:auc-fighter:cancel-match.subscription": "Suscribirse a cancelar combate",
 		"widgets:auc-fighter:update-match.subscription": "Suscribirse a actualización de combate",
 		"widgets:auc-fighter:settings.subscription": "Suscribirse a ajustes de auc-fighter",
 		"widgets:alert:replay.subscription": "Suscribirse a repetición de alerta",
@@ -368,14 +371,14 @@
 		"widgets:alert:test.subscription": "Suscribirse a prueba de alerta",
 		"widgets:alert:skip-playing.subscription": "Suscribirse a salto de alerta en reproducción",
 		"widgets:alert:alerts.subscription": "Suscribirse a alertas",
-		"widgets:media:replay.subscription": "Suscribirse a repetición de media",
-		"widgets:media:settings.subscription": "Suscribirse a ajustes de media",
-		"widgets:media:skip.subscription": "Suscribirse a salto de media",
-		"widgets:media:skip-playing-media.subscription": "Suscribirse a salto de media en reproducción",
-		"widgets:media:end.subscription": "Suscribirse a fin de media",
-		"widgets:media:error.subscription": "Suscribirse a error de media",
-		"widgets:media:pause.subscription": "Suscribirse a pausa de media",
-		"widgets:media:play.subscription": "Suscribirse a reproducción de media",
+		"widgets:media:replay.subscription": "Suscribirse a repetición de medio",
+		"widgets:media:settings.subscription": "Suscribirse a ajustes de medios",
+		"widgets:media:skip.subscription": "Suscribirse a salto de medio",
+		"widgets:media:skip-playing-media.subscription": "Suscribirse a salto de medio en reproducción",
+		"widgets:media:end.subscription": "Suscribirse a fin de medio",
+		"widgets:media:error.subscription": "Suscribirse a error de medio",
+		"widgets:media:pause.subscription": "Suscribirse a pausa de medio",
+		"widgets:media:play.subscription": "Suscribirse a reproducción de medio",
 		"widgets:alert:played.subscription": "Suscribirse a alerta reproducida",
 		"widgets:view:storage.read": "Leer almacenamiento de vista del widget",
 		"widgets:control:storage.read": "Leer almacenamiento de control del widget",
