@@ -48,7 +48,7 @@ const NsfwWindow = () => {
 						);
 					}
 					const avg =
-						intervals.reduce((a, b) => a + b, 0) / intervals.length + 500;
+						intervals.reduce((a, b) => a + b, 0) / intervals.length + 300;
 					setDelay(avg.toFixed(2));
 					timestampsRef.current = timestampsRef.current.slice(1);
 				}

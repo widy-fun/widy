@@ -64,9 +64,10 @@ mime_guess = "2.0.5"
 http = "1.4.0"
 zip = "8.5.0"
 image = { version = "0.25.6", features = ["default-formats"] }
-ort = "2.0.0-rc.12"
-ndarray = "0.17.2"
 xcap = { version = "0.9.4", features = ["image"] }
+rten-tensor = { git = "https://github.com/robertknight/rten.git", rev = "bae32b361aaa16fa34f8a36cac58f5376d937ab3" }
+rten-imageio = { git = "https://github.com/robertknight/rten.git", rev = "bae32b361aaa16fa34f8a36cac58f5376d937ab3" }
+rten = { git = "https://github.com/robertknight/rten.git", rev = "bae32b361aaa16fa34f8a36cac58f5376d937ab3" }
 
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
