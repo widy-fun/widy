@@ -29,7 +29,7 @@ To install and run the project locally, follow these steps:
    ```
    npm install
    ```
-3. Аill .env with environment variables
+3. Fill .env with environment variables
 4. Start the development:
    ```
    npm run tauri dev
@@ -49,4 +49,4 @@ The production-ready files will be available in the `src-tauri/target/release` d
 This project is licensed under the [AGPL License](LICENSE-AGPL).
 
 ## Contact
-For questions or feedback, please contact Discord [Widy](https://discord.gg/UCdUBBrAA).
+For questions or feedback, please contact Discord [Widy](https://discord.gg/KWxhFTrusK).

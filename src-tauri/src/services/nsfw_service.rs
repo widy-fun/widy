@@ -34,6 +34,7 @@ pub struct WindowInfo {
     pub id: u32,
     pub selected: bool,
 }
+
 pub struct NsfwService {
     pub is_stopping: Arc<AtomicBool>,
     pub selected_window: Arc<Mutex<Option<WindowInfo>>>,
@@ -59,7 +60,6 @@ impl NsfwService {
         self.is_stopping.store(false, Ordering::Relaxed);
 
         tauri::async_runtime::spawn(async move {
-            println!("Start NSFW detection for window: ");
             let windows = Window::all()
                 .map_err(|e| {
                     log::error!("Get windows error: {}", e);
