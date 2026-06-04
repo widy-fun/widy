@@ -11,6 +11,7 @@ import { useGetSettingsQuery } from "./api/settingsApi";
 import { AppSnackBar } from "./components/AppSnackBar";
 import WidgetControl from "./components/dashboard/components/widgets/components/WidgetControl";
 import Dashboard from "./components/dashboard/Dashboard";
+import Destream from "./components/destream/Destream";
 import Donatello from "./components/donatello/Donatello";
 import DonatePay from "./components/donatepay/DonatePay";
 import Donatik from "./components/donatik/Donatik";
@@ -108,6 +109,7 @@ function App() {
 					<Route path="/widy/*" element={<Widy />} />
 					<Route path="/donationalerts/*" element={<DonationAlerts />} />
 					<Route path="/donatepay/*" element={<DonatePay />} />
+					<Route path="/destream/*" element={<Destream />} />
 					<Route path="/donatello/*" element={<Donatello />} />
 					<Route path="/donatik/*" element={<Donatik />} />
 					<Route path="/dashboard/*" element={<Dashboard />} />

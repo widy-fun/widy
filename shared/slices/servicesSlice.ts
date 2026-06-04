@@ -8,7 +8,7 @@ interface ServicesState {
 			active: boolean;
 			color: string;
 			authPath: string;
-			settingsPath: string;
+			settingsPath?: string;
 		}
 	>;
 }
@@ -19,13 +19,11 @@ const initialState: ServicesState = {
 			active: false,
 			color: "#2701fb",
 			authPath: "/streamelements/token",
-			settingsPath: "",
 		},
 		[ServiceType.TributeBot]: {
 			active: false,
 			color: "#2692ffb2",
 			authPath: "/telegram-authorization/request-code",
-			settingsPath: "",
 		},
 		[ServiceType.Twitch]: {
 			active: false,
@@ -37,43 +35,41 @@ const initialState: ServicesState = {
 			active: false,
 			color: "#370161",
 			authPath: `/widy/create-donation-account/${WidyNetwork.Sol}`,
-			settingsPath: "",
 		},
 		[ServiceType.WidyTon]: {
 			active: false,
 			color: "#0098ea",
 			authPath: `/widy/create-donation-account/${WidyNetwork.Ton}`,
-			settingsPath: "",
 		},
 		[ServiceType.DonationAlerts]: {
 			active: false,
 			color: "#f57d07",
-			authPath: `/donationalerts/token`,
-			settingsPath: "",
+			authPath: "/donationalerts/token",
 		},
 		[ServiceType.StreamLabs]: {
 			active: false,
 			color: "#80f5d2",
-			authPath: `/streamlabs/token`,
-			settingsPath: "",
+			authPath: "/streamlabs/token",
 		},
 		[ServiceType.Donatello]: {
 			active: false,
 			color: "#3579f6",
-			authPath: `/donatello/token`,
-			settingsPath: "",
+			authPath: "/donatello/token",
 		},
 		[ServiceType.Donatik]: {
 			active: false,
 			color: "#7a44ed",
-			authPath: `/donatik/token`,
-			settingsPath: "",
+			authPath: "/donatik/token",
 		},
 		[ServiceType.DonatePay]: {
 			active: false,
 			color: "#44ab4f",
-			authPath: `/donatepay/token`,
-			settingsPath: "",
+			authPath: "/donatepay/token",
+		},
+		[ServiceType.Destream]: {
+			active: false,
+			color: "#f05a00",
+			authPath: "/destream/overlay-id",
 		},
 	},
 };

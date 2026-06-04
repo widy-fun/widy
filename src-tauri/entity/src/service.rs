@@ -52,6 +52,8 @@ pub enum ServiceType {
     Donatik,
     #[sea_orm(string_value = "DonatePay")]
     DonatePay,
+    #[sea_orm(string_value = "Destream")]
+    Destream,
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
 #[serde(untagged)]
@@ -70,6 +72,7 @@ pub enum ServiceAuth {
     DonationAlerts(DonationAlertsAuth),
     StreamLabs(StreamLabsAuth),
     DonatePay(DonatePayAuth),
+    Destream(DestreamAuth),
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -91,6 +94,10 @@ pub struct DonationAlertsAuth {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct DonatePayAuth {
     pub access_token: String,
+}
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct DestreamAuth {
+    pub overlayid: String,
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct StreamLabsAuth {

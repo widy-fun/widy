@@ -85,6 +85,12 @@ export const api = createApi({
 			}),
 			invalidatesTags: ["Services"],
 		}),
+		destreamSignOut: builder.mutation<void, void>({
+			query: () => ({
+				command: "destream_sign_out",
+			}),
+			invalidatesTags: ["Services"],
+		}),
 	}),
 });
 
@@ -97,4 +103,5 @@ export const {
 	useDonationAlertsSignOutMutation,
 	useStreamLabsSignOutMutation,
 	useDonatePaySignOutMutation,
+	useDestreamSignOutMutation,
 } = api;

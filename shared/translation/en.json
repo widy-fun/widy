@@ -13,6 +13,8 @@
 	"stop": "Stop",
 	"delay": "Delay",
 	"milliseconds": "ms",
+	"token": "Token",
+	"overlay_id": "Overlay Id",
 	"disconnected": "Disconnected",
 	"documentation": "Documentation",
 	"authorization": {

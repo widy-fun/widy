@@ -40,6 +40,7 @@ mod m20260318_195439_create_table_widgets;
 mod m20260525_204303_create_table_nsfw_settings;
 mod m20260525_221718_add_default_nsfw_settings;
 mod m20260530_134422_add_donatepay_service;
+mod m20260603_222729_add_destream_service;
 
 pub struct Migrator;
 
@@ -88,6 +89,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20260525_204303_create_table_nsfw_settings::Migration),
             Box::new(m20260525_221718_add_default_nsfw_settings::Migration),
             Box::new(m20260530_134422_add_donatepay_service::Migration),
+            Box::new(m20260603_222729_add_destream_service::Migration),
         ]
     }
 }

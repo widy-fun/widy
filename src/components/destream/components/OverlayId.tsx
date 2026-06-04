@@ -1,24 +1,24 @@
 import { Button, TextField } from "@mui/material";
 import type { SerializedError } from "@reduxjs/toolkit";
-import { AlertSeverity, ServiceType } from "@widy/sdk";
+import { AlertSeverity, type IDestreamAuth, ServiceType } from "@widy/sdk";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { showSnackBar } from "../../../../shared/slices/snackBarSlice";
-import { useDonatePayConnectMutation } from "../../../api/donatePayApi";
+import { useDestreamConnectMutation } from "../../../api/destreamApi";
 import {
 	useGetServiceByIdQuery,
 	useUpdateServiceAuthMutation,
 } from "../../../api/servicesApi";
 import YouCanFindByUrl from "../../YouCanFindByUrl";
 
-const Token = () => {
+const OverlayId = () => {
 	const { t } = useTranslation();
-	const { data } = useGetServiceByIdQuery({ id: ServiceType.DonatePay });
+	const { data } = useGetServiceByIdQuery({ id: ServiceType.Destream });
 	const [updateServiceAuth] = useUpdateServiceAuthMutation();
-	const [donatePayConnect] = useDonatePayConnectMutation();
-	const [token, setToken] = useState("");
+	const [destreamConnect] = useDestreamConnectMutation();
+	const [overlayid, setOverlayId] = useState("");
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
@@ -27,24 +27,24 @@ const Token = () => {
 			{data && (
 				<>
 					<TextField
-						placeholder={t("token")}
-						value={token}
+						placeholder={t("overlay_id")}
+						value={overlayid}
 						type="password"
-						onChange={(e) => setToken(e.target.value)}
+						onChange={(e) => setOverlayId(e.target.value)}
 					/>
 					<Button
 						variant="contained"
 						onClick={async () => {
 							try {
-								if (!token) {
+								if (!overlayid) {
 									return;
 								}
 								await updateServiceAuth({
-									id: ServiceType.DonatePay,
-									auth: { access_token: token },
+									id: ServiceType.Destream,
+									auth: { overlayid } as IDestreamAuth,
 									authorized: false,
 								}).unwrap();
-								await donatePayConnect().unwrap();
+								await destreamConnect().unwrap();
 								navigate(-1);
 							} catch (error) {
 								const err = error as SerializedError;
@@ -59,10 +59,10 @@ const Token = () => {
 					>
 						{t("save")}
 					</Button>
-					<YouCanFindByUrl url={"https://donatepay.ru/page/api"} />
+					<YouCanFindByUrl url={"https://destream.net/overlays"} />
 				</>
 			)}
 		</>
 	);
 };
-export default Token;
+export default OverlayId;

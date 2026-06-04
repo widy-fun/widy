@@ -116,6 +116,8 @@ pub fn run() {
             update_nsfw_settings,
             donate_pay_connect,
             donate_pay_sign_out,
+            destream_connect,
+            destream_sign_out,
             init
         ])
         .run(tauri::generate_context!())
