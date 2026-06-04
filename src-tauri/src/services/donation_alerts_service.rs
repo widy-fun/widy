@@ -135,6 +135,7 @@ impl DonationAlertsService {
 
         Ok(())
     }
+
     async fn run_websocket_client(&self, app: AppHandle, token: String) -> Result<(), String> {
         let database_service = app.state::<DatabaseService>();
         let reqwest_client = app.state::<reqwest::Client>();

@@ -53,112 +53,97 @@ impl StreamLabsService {
             ..
         }) = service
         {
-            if let Err(e) = self
-                .run_socket_io_client(app.clone(), auth.jwt.clone())
-                .await
-            {
-                database_service
-                    .update_service_auth(
-                        ServiceType::StreamLabs,
-                        Some(ServiceAuth::StreamLabs(auth)),
-                        false,
-                    )
-                    .await
-                    .map_err(|e| format!("Failed to clear auth after connection error: {e}"))?;
-
-                return Err(e);
-            }
+            let app_clone = app.clone();
+            tauri::async_runtime::spawn(async move {
+                Self::run_socket_io_client(&app_clone, &auth.jwt).await
+            });
         }
 
         Ok(())
     }
 
-    async fn run_socket_io_client(&self, app: AppHandle, jwt: String) -> Result<(), String> {
+    async fn run_socket_io_client(app: &AppHandle, jwt: &str) -> Result<(), String> {
         let database_service: tauri::State<'_, DatabaseService> = app.state::<DatabaseService>();
         database_service
             .update_service_auth(
                 ServiceType::StreamLabs,
-                Some(ServiceAuth::StreamLabs(StreamLabsAuth { jwt: jwt.clone() })),
+                Some(ServiceAuth::StreamLabs(StreamLabsAuth {
+                    jwt: jwt.to_string(),
+                })),
                 true,
             )
             .await?;
-        tauri::async_runtime::spawn(async move {
-            let stream_labs_service = app.state::<StreamLabsService>();
-            let mut sign_out_receiver = stream_labs_service.sign_out_sender.subscribe();
-            let app_error_clone = app.clone();
-            let app_event_clone = app.clone();
-            let socket =
-                ClientBuilder::new(format!("https://sockets.streamlabs.com?token={}", jwt))
-                    .transport_type(TransportType::Websocket)
-                    .on("error", move |err, socket| {
-                        let app_clone = app_error_clone.clone();
-                        async move {
-                            if let Payload::Text(values) = err {
-                                if let Some(value) = values.first() {
-                                    if let Some(s) = value.as_str() {
-                                        if let Some(start) = s.find('{') {
-                                            let json_part = &s[start..];
+        let stream_labs_service = app.state::<StreamLabsService>();
+        let mut sign_out_receiver = stream_labs_service.sign_out_sender.subscribe();
+        let app_error_clone = app.clone();
+        let app_event_clone = app.clone();
+        let socket = ClientBuilder::new(format!("https://sockets.streamlabs.com?token={}", jwt))
+            .transport_type(TransportType::Websocket)
+            .on("error", move |err, socket| {
+                let app_clone = app_error_clone.clone();
+                async move {
+                    if let Payload::Text(values) = err {
+                        if let Some(value) = values.first() {
+                            if let Some(s) = value.as_str() {
+                                if let Some(start) = s.find('{') {
+                                    let json_part = &s[start..];
 
-                                            if let Ok(_) =
-                                                serde_json::from_str::<ConnectError>(json_part)
-                                            {
-                                                let database_service =
-                                                    app_clone.state::<DatabaseService>();
-
-                                                let _ = database_service
-                                                    .update_service_auth(
-                                                        ServiceType::StreamLabs,
-                                                        None,
-                                                        false,
-                                                    )
-                                                    .await;
-                                                let _ = socket.disconnect().await;
-                                            }
-                                        }
+                                    if let Ok(_) = serde_json::from_str::<ConnectError>(json_part) {
+                                        let database_service = app_clone.state::<DatabaseService>();
+                                        let _ = database_service
+                                            .update_service_auth(
+                                                ServiceType::StreamLabs,
+                                                None,
+                                                false,
+                                            )
+                                            .await;
+                                        let _ = socket.disconnect().await;
                                     }
                                 }
                             }
                         }
-                        .boxed()
-                    })
-                    .on("event", move |payload, _| {
-                        let app_clone = app_event_clone.clone();
-                        async move {
-                            if let Payload::Text(values) = payload {
-                                if let Some(value) = values.first() {
-                                    if let Ok(donation_message) =
-                                        serde_json::from_value::<DonationMessage>(value.clone())
-                                    {
-                                        let donation = donation_message.message[0].clone();
-                                        #[cfg(not(debug_assertions))]
-                                        if donation.is_test {
-                                            return;
-                                        }
-                                        let _ = on_new_donation(
-                                            donation._id,
-                                            ServiceType::StreamLabs,
-                                            donation.from,
-                                            donation.currency,
-                                            donation.amount,
-                                            donation.message,
-                                            &app_clone,
-                                        )
-                                        .await;
-                                    }
+                    }
+                }
+                .boxed()
+            })
+            .on("event", move |payload, _| {
+                let app_clone = app_event_clone.clone();
+                async move {
+                    if let Payload::Text(values) = payload {
+                        if let Some(value) = values.first() {
+                            if let Ok(donation_message) =
+                                serde_json::from_value::<DonationMessage>(value.clone())
+                            {
+                                let donation = donation_message.message[0].clone();
+                                #[cfg(not(debug_assertions))]
+                                if donation.is_test {
+                                    return;
                                 }
+                                let _ = on_new_donation(
+                                    donation._id,
+                                    ServiceType::StreamLabs,
+                                    donation.from,
+                                    donation.currency,
+                                    donation.amount,
+                                    donation.message,
+                                    &app_clone,
+                                )
+                                .await;
                             }
                         }
-                        .boxed()
-                    })
-                    .connect()
-                    .await
-                    .map_err(|e| {
-                        log::error!("Failed to connect to StreamLabs Socket.IO: {e}");
-                    })
-                    .unwrap();
-            sign_out_receiver.recv().await.ok();
-            let _ = socket.disconnect().await;
-        });
+                    }
+                }
+                .boxed()
+            })
+            .connect()
+            .await
+            .map_err(|e| {
+                log::error!("Failed to connect to StreamLabs Socket.IO: {e}");
+                e.to_string()
+            })?;
+
+        let _ = sign_out_receiver.recv().await;
+        let _ = socket.disconnect().await;
 
         Ok(())
     }
