@@ -116,39 +116,49 @@ impl DonationAlertsService {
             ..
         }) = service
         {
+            let reqwest_client = app.state::<reqwest::Client>();
+            let (auth_token, user_info) =
+                match Self::get_auth_user(&reqwest_client, &auth.token).await {
+                    Ok(val) => val,
+                    Err(e) => {
+                        let _ = database_service
+                            .update_service_auth(ServiceType::DonationAlerts, None, false)
+                            .await;
+                        return Err(e);
+                    }
+                };
+            database_service
+                .update_service_auth(
+                    ServiceType::DonationAlerts,
+                    Some(ServiceAuth::DonationAlerts(DonationAlertsAuth {
+                        token: auth.token,
+                    })),
+                    true,
+                )
+                .await?;
             let app_clone = app.clone();
             tauri::async_runtime::spawn(async move {
-                let database_service = app_clone.state::<DatabaseService>();
-                if let Err(_) = Self::run_websocket_client(&app_clone, &auth.token).await {
-                    let _ = database_service
-                        .update_service_auth(
-                            ServiceType::DonationAlerts,
-                            Some(ServiceAuth::DonationAlerts(auth)),
-                            false,
-                        )
-                        .await;
-                };
+                Self::run_websocket_client(&app_clone, &user_info, &auth_token).await
             });
         }
 
         Ok(())
     }
 
-    async fn run_websocket_client(app: &AppHandle, token: &str) -> Result<(), String> {
-        let database_service = app.state::<DatabaseService>();
-        let reqwest_client = app.state::<reqwest::Client>();
+    async fn get_auth_user(
+        reqwest_client: &reqwest::Client,
+        token: &str,
+    ) -> Result<(String, UserInfo), String> {
         let auth_token = Self::get_auth_token(&reqwest_client, &token).await?;
-        let user_info = Self::get_user_info(&reqwest_client, &auth_token).await?;
-        database_service
-            .update_service_auth(
-                ServiceType::DonationAlerts,
-                Some(ServiceAuth::DonationAlerts(DonationAlertsAuth {
-                    token: token.to_string(),
-                })),
-                true,
-            )
-            .await?;
+        let user_info = Self::get_user_info(&reqwest_client, &token).await?;
+        Ok((auth_token, user_info))
+    }
 
+    async fn run_websocket_client(
+        app: &AppHandle,
+        user_info: &UserInfo,
+        auth_token: &str,
+    ) -> Result<(), String> {
         let donation_alerts_service = app.state::<DonationAlertsService>();
         let reqwest_client = app.state::<reqwest::Client>();
         let connect_url = "wss://centrifugo.donationalerts.com/connection/websocket";
