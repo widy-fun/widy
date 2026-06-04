@@ -53,6 +53,15 @@ impl StreamLabsService {
             ..
         }) = service
         {
+            database_service
+                .update_service_auth(
+                    ServiceType::StreamLabs,
+                    Some(ServiceAuth::StreamLabs(StreamLabsAuth {
+                        jwt: auth.jwt.clone(),
+                    })),
+                    true,
+                )
+                .await?;
             let app_clone = app.clone();
             tauri::async_runtime::spawn(async move {
                 Self::run_socket_io_client(&app_clone, &auth.jwt).await
@@ -63,16 +72,6 @@ impl StreamLabsService {
     }
 
     async fn run_socket_io_client(app: &AppHandle, jwt: &str) -> Result<(), String> {
-        let database_service: tauri::State<'_, DatabaseService> = app.state::<DatabaseService>();
-        database_service
-            .update_service_auth(
-                ServiceType::StreamLabs,
-                Some(ServiceAuth::StreamLabs(StreamLabsAuth {
-                    jwt: jwt.to_string(),
-                })),
-                true,
-            )
-            .await?;
         let stream_labs_service = app.state::<StreamLabsService>();
         let mut sign_out_receiver = stream_labs_service.sign_out_sender.subscribe();
         let app_error_clone = app.clone();

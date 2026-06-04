@@ -116,92 +116,91 @@ impl DonationAlertsService {
             ..
         }) = service
         {
-            if let Err(e) = self
-                .run_websocket_client(app.clone(), auth.token.clone())
-                .await
-            {
-                database_service
-                    .update_service_auth(
-                        ServiceType::DonationAlerts,
-                        Some(ServiceAuth::DonationAlerts(auth)),
-                        false,
-                    )
-                    .await
-                    .map_err(|e| format!("Failed to clear auth after connection error: {e}"))?;
-
-                return Err(e);
-            }
+            let app_clone = app.clone();
+            tauri::async_runtime::spawn(async move {
+                let database_service = app_clone.state::<DatabaseService>();
+                if let Err(_) = Self::run_websocket_client(&app_clone, &auth.token).await {
+                    let _ = database_service
+                        .update_service_auth(
+                            ServiceType::DonationAlerts,
+                            Some(ServiceAuth::DonationAlerts(auth)),
+                            false,
+                        )
+                        .await;
+                };
+            });
         }
 
         Ok(())
     }
 
-    async fn run_websocket_client(&self, app: AppHandle, token: String) -> Result<(), String> {
+    async fn run_websocket_client(app: &AppHandle, token: &str) -> Result<(), String> {
         let database_service = app.state::<DatabaseService>();
         let reqwest_client = app.state::<reqwest::Client>();
-        let auth_token = self.get_auth_token(&reqwest_client, &token).await?;
-        let user_info = self.get_user_info(&reqwest_client, &auth_token).await?;
+        let auth_token = Self::get_auth_token(&reqwest_client, &token).await?;
+        let user_info = Self::get_user_info(&reqwest_client, &auth_token).await?;
         database_service
             .update_service_auth(
                 ServiceType::DonationAlerts,
-                Some(ServiceAuth::DonationAlerts(DonationAlertsAuth { token })),
+                Some(ServiceAuth::DonationAlerts(DonationAlertsAuth {
+                    token: token.to_string(),
+                })),
                 true,
             )
             .await?;
-        tauri::async_runtime::spawn(async move {
-            let donation_alerts_service = app.state::<DonationAlertsService>();
-            let reqwest_client = app.state::<reqwest::Client>();
-            let connect_url = "wss://centrifugo.donationalerts.com/connection/websocket";
-            'connection_loop: loop {
-                log::info!("Connecting to donation alerts websocket: {}", connect_url);
-                match connect_async(connect_url).await {
-                    Ok((mut socket, _)) => {
-                        log::info!("Donation Alerts websocket connected.");
-                        let _ = socket
-                            .send(Message::Text(Utf8Bytes::from(
-                                json!({
-                                    "params": {
-                                        "token": user_info.socket_connection_token
-                                    },
-                                    "id": 1
-                                })
-                                .to_string(),
-                            )))
-                            .await
-                            .map_err(|e| log::error!("{}", e.to_string()));
-                        while let Some(msg_result) = socket.next().await {
-                            let is_close_connection = donation_alerts_service
-                                .is_close_connection
-                                .load(Ordering::Relaxed);
-                            if is_close_connection {
-                                donation_alerts_service
-                                    .is_close_connection
-                                    .store(false, Ordering::Relaxed);
-                                break 'connection_loop;
-                            }
 
-                            match msg_result {
-                                Ok(Message::Text(text)) => {
-                                    if let Ok(message) =
-                                        serde_json::from_str::<WebsocketMessage>(&text)
-                                    {
-                                        match message {
-                                            WebsocketMessage::Client(client_message) => {
-                                                let result = donation_alerts_service
-                                                    .subscribe(
-                                                        &reqwest_client,
-                                                        &auth_token,
-                                                        SubscriptionBody {
-                                                            channels: vec![format!(
-                                                                "$alerts:donation_{}",
-                                                                user_info.id
-                                                            )],
-                                                            client: client_message.result.client,
-                                                        },
-                                                    )
-                                                    .await;
-                                                if let Ok(response) = result {
-                                                    let _ = socket
+        let donation_alerts_service = app.state::<DonationAlertsService>();
+        let reqwest_client = app.state::<reqwest::Client>();
+        let connect_url = "wss://centrifugo.donationalerts.com/connection/websocket";
+        'connection_loop: loop {
+            log::info!("Connecting to donation alerts websocket: {}", connect_url);
+            match connect_async(connect_url).await {
+                Ok((mut socket, _)) => {
+                    log::info!("Donation Alerts websocket connected.");
+                    let _ = socket
+                        .send(Message::Text(Utf8Bytes::from(
+                            json!({
+                                "params": {
+                                    "token": user_info.socket_connection_token
+                                },
+                                "id": 1
+                            })
+                            .to_string(),
+                        )))
+                        .await
+                        .map_err(|e| log::error!("{}", e.to_string()));
+                    while let Some(msg_result) = socket.next().await {
+                        let is_close_connection = donation_alerts_service
+                            .is_close_connection
+                            .load(Ordering::Relaxed);
+                        if is_close_connection {
+                            donation_alerts_service
+                                .is_close_connection
+                                .store(false, Ordering::Relaxed);
+                            break 'connection_loop;
+                        }
+
+                        match msg_result {
+                            Ok(Message::Text(text)) => {
+                                if let Ok(message) = serde_json::from_str::<WebsocketMessage>(&text)
+                                {
+                                    match message {
+                                        WebsocketMessage::Client(client_message) => {
+                                            let result = donation_alerts_service
+                                                .subscribe(
+                                                    &reqwest_client,
+                                                    &auth_token,
+                                                    SubscriptionBody {
+                                                        channels: vec![format!(
+                                                            "$alerts:donation_{}",
+                                                            user_info.id
+                                                        )],
+                                                        client: client_message.result.client,
+                                                    },
+                                                )
+                                                .await;
+                                            if let Ok(response) = result {
+                                                let _ = socket
                                                         .send(Message::Text(Utf8Bytes::from(json!({
                                                             "params": {
                                                                 "channel": response.channels[0].channel,
@@ -212,54 +211,52 @@ impl DonationAlertsService {
                                                         }).to_string())))
                                                         .await
                                                         .map_err(|e| log::error!("{}", e.to_string()));
-                                                }
                                             }
-                                            WebsocketMessage::Donation(donation_message) => {
-                                                let donation = donation_message.result.data.data;
-                                                #[cfg(not(debug_assertions))]
-                                                if donation.payin_system.is_none() {
-                                                    continue;
-                                                }
-                                                let _ = on_new_donation(
-                                                    donation.id.to_string(),
-                                                    ServiceType::DonationAlerts,
-                                                    donation.username,
-                                                    donation.currency,
-                                                    donation.amount,
-                                                    Some(donation.message),
-                                                    &app,
-                                                )
-                                                .await;
+                                        }
+                                        WebsocketMessage::Donation(donation_message) => {
+                                            let donation = donation_message.result.data.data;
+                                            #[cfg(not(debug_assertions))]
+                                            if donation.payin_system.is_none() {
+                                                continue;
                                             }
+                                            let _ = on_new_donation(
+                                                donation.id.to_string(),
+                                                ServiceType::DonationAlerts,
+                                                donation.username,
+                                                donation.currency,
+                                                donation.amount,
+                                                Some(donation.message),
+                                                &app,
+                                            )
+                                            .await;
                                         }
                                     }
                                 }
-
-                                Ok(Message::Close(_)) => {
-                                    log::warn!("Donation Alerts closed connection.");
-                                    break;
-                                }
-                                Err(e) => {
-                                    log::error!("Donation Alerts websocket error: {}", e);
-                                    break;
-                                }
-                                _ => {}
                             }
+
+                            Ok(Message::Close(_)) => {
+                                log::warn!("Donation Alerts closed connection.");
+                                break;
+                            }
+                            Err(e) => {
+                                log::error!("Donation Alerts websocket error: {}", e);
+                                break;
+                            }
+                            _ => {}
                         }
                     }
-                    Err(e) => {
-                        log::error!("Failed to connect: {}. Retrying in 5s...", e);
-                        tokio::time::sleep(std::time::Duration::from_secs(5)).await;
-                    }
+                }
+                Err(e) => {
+                    log::error!("Failed to connect: {}. Retrying in 5s...", e);
+                    tokio::time::sleep(std::time::Duration::from_secs(5)).await;
                 }
             }
-        });
+        }
 
         Ok(())
     }
 
     async fn get_auth_token(
-        &self,
         reqwest_client: &reqwest::Client,
         token: &str,
     ) -> Result<String, String> {
@@ -288,7 +285,6 @@ impl DonationAlertsService {
     }
 
     async fn get_user_info(
-        &self,
         reqwest_client: &reqwest::Client,
         auth_token: &str,
     ) -> Result<UserInfo, String> {
