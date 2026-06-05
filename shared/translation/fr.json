@@ -3,29 +3,32 @@
 	"off": "Désactivé",
 	"select": "Sélectionner",
 	"success": "Succès",
-	"ok": "Ok",
+	"ok": "OK",
 	"cancel": "Annuler",
 	"sound_volume": "Volume du son",
-	"skip_media": "Raccourci pour passer le média",
-	"skip_alert": "Raccourci pour passer l'alerte",
+	"skip_media": "Raccourci passer le média",
+	"skip_alert": "Raccourci passer l'alerte",
 	"none": "Aucun",
 	"start": "Démarrer",
 	"stop": "Arrêter",
 	"delay": "Délai",
 	"milliseconds": "ms",
+	"token": "Token",
+	"overlay_id": "ID Overlay",
+	"api_key": "Clé API",
 	"disconnected": "Déconnecté",
 	"documentation": "Documentation",
 	"authorization": {
 		"title": "Autorisation",
-		"code": "Demander le code",
+		"code": "Code de demande",
 		"sign_in": "Se connecter",
 		"phone": "Numéro de téléphone",
 		"telegram_code": "Code de Telegram",
 		"your_code": "Votre code",
 		"2fa_password": "Mot de passe 2FA",
 		"password": "Mot de passe",
-		"streamelements": "Vous devez d'abord vous connecter avec StreamElements JWT",
-		"you_can_find_by_url": "Vous pouvez le trouver via cette URL",
+		"streamelements": "Vous devez d'abord vous connecter avec le JWT de StreamElements",
+		"you_can_find_by_url": "Vous pouvez la trouver à cette URL",
 		"set_id_and_jwt": "Vous devez définir l'ID de compte StreamElements et le JWT pour {{service}}"
 	},
 	"error": {
@@ -35,7 +38,7 @@
 	},
 	"updater": {
 		"title": "Mise à jour",
-		"description": "Une nouvelle version de l'application est disponible. Voulez-vous mettre à jour ?",
+		"description": "Une nouvelle version de l'application est disponible. Voulez-vous la mettre à jour ?",
 		"update": "Mettre à jour",
 		"later": "Plus tard",
 		"downloading": "Téléchargement en cours..."
@@ -47,7 +50,7 @@
 		"tiktok": "TikTok"
 	},
 	"integration": {
-		"tribute": "Afficher les messages de tribute"
+		"tribute": "Afficher les messages de tribut"
 	},
 	"auction": {
 		"lots": "Lots",
@@ -90,7 +93,7 @@
 		"skip": "Passer",
 		"replay": "Rejouer",
 		"donated": "{{user_name}} a donné {{amount}}{{currency}}",
-		"followed": "{{user_name}} a suivi",
+		"followed": "{{user_name}} s'est abonné",
 		"subscribed": "{{user_name}} s'est abonné",
 		"gifted_subscriptions": "{{user_name}} a offert {{total}} abonnements",
 		"raided_with": "{{user_name}} a raidé avec {{viewers}} viewers"
@@ -104,18 +107,18 @@
 	},
 	"settings": {
 		"title": "Paramètres",
-		"pause": "Mettre en pause les messages d'alerte",
+		"pause": "Mettre en pause les alertes",
 		"moderation_duration": "Durée de modération",
 		"black_list": "Liste noire",
 		"remove_links": "Supprimer les liens",
 		"language": "Langue",
-		"sec": "Sec",
+		"sec": "sec",
 		"currency": "Devise",
 		"tts_type": "Type de TTS"
 	},
 	"wheel": {
 		"normal": "Normal",
-		"dropout": "Élimination",
+		"dropout": "Dropout",
 		"spin": "Tourner",
 		"speed": "Vitesse de la roue"
 	},
@@ -135,7 +138,7 @@
 		"cancel": "Annuler la partie",
 		"winner": "Vainqueur",
 		"settings": "Paramètres",
-		"create_game": "Créer une partie à partir des lots",
+		"create_game": "Créer une partie depuis les lots",
 		"start": "Démarrer",
 		"pause": "Pause",
 		"rematch": "Revanche",
@@ -163,14 +166,14 @@
 		"new_lot": "Nouveau lot",
 		"new_donation": "Nouveau don",
 		"show_odds": "Afficher les cotes",
-		"show_total_sum": "Afficher le total",
-		"greater_timer_adding_time": "Ajout de temps pour le timer supérieur",
+		"show_total_sum": "Afficher la somme totale",
+		"greater_timer_adding_time": "Ajout de temps pour timer supérieur",
 		"not_add_time_if": "Ne pas ajouter de temps si",
 		"adding_time": "Temps"
 	},
 	"lots_options": {
 		"import_lots": "Importer des lots",
-		"clear_lots": "Effacer les lots"
+		"clear_lots": "Vider les lots"
 	},
 	"auc_fighter_settings": {
 		"round_duration": "Durée du round",
@@ -190,14 +193,14 @@
 		"confirm_sign_out": "Êtes-vous sûr de vouloir vous déconnecter de ce service ?"
 	},
 	"twitch": {
-		"device_code_expired": "Code d'appareil expiré. Veuillez réessayer.",
+		"device_code_expired": "Code appareil expiré. Veuillez réessayer.",
 		"user_code": "Code utilisateur",
 		"authorize_with_code": "Autoriser avec le code",
 		"waiting_authorization": "En attente d'autorisation..."
 	},
 	"widy": {
 		"donation_account_name": "Nom du compte de dons",
-		"donation_url": "URL de donation",
+		"donation_url": "URL de don",
 		"create_donation_account": "Créer un compte de dons Widy",
 		"connect_to_existing_account": "Se connecter à un compte existant",
 		"create_donation_account_pending": "Création du compte de dons..."
@@ -252,18 +255,18 @@
 		"progress": "Progression",
 		"goal_title": "Titre de l'objectif",
 		"amount_raise": "Montant à collecter",
-		"start_raising": "Commencer la collecte à partir de",
+		"start_raising": "Commencer la collecte à",
 		"end_date": "Date de fin de l'objectif",
 		"bar_height": "Hauteur de la barre",
 		"rounding_radius": "Rayon d'arrondi",
-		"bar_stroke_thickness": "Épaisseur du contour",
+		"bar_stroke_thickness": "Épaisseur du contour de la barre",
 		"background_bar_color": "Couleur de la barre d'arrière-plan",
 		"progress_bar_color": "Couleur de la barre de progression",
 		"goal_progress_bar": "Barre de progression de l'objectif",
-		"progress_bar_layout": "Disposition de la barre",
+		"progress_bar_layout": "Disposition de la barre de progression",
 		"remaining_time": "Temps restant",
 		"goal_amount_limits": "Limites de montant de l'objectif",
-		"widget_background": "Fond du widget",
+		"widget_background": "Arrière-plan du widget",
 		"background_color": "Couleur d'arrière-plan",
 		"OnTop": "Au-dessus",
 		"Inside": "À l'intérieur",
@@ -286,7 +289,7 @@
 		"copy": "Copier",
 		"launch": "Lancer",
 		"url": "URL du widget",
-		"obs_dock_url": "URL Obs Dock"
+		"obs_dock_url": "URL OBS Dock"
 	},
 	"view": {
 		"top": "Image en haut, texte en bas",
@@ -333,8 +336,8 @@
 		"add_confirm": "L'ajout permettra à {{widget_name}} de :",
 		"installing": "Installation en cours...",
 		"updating": "Mise à jour en cours...",
-		"view_url": "URL de visualisation",
-		"widget_connection": "Le widget peut envoyer ou recevoir des requêtes vers :"
+		"view_url": "URL de vue",
+		"widget_connection": "Le widget peut envoyer/recevoir des requêtes vers :"
 	},
 	"scopes": {
 		"widgets:messages.read": "Lire les messages",
@@ -356,7 +359,7 @@
 		"widgets:media:error.send": "Envoyer erreur média",
 		"widgets:media:replay.send": "Envoyer relecture média",
 		"widgets:alert:replay.send": "Envoyer relecture alerte",
-		"widgets:alert:skip.send": "Envoyer passer alerte",
+		"widgets:alert:skip.send": "Envoyer passer l'alerte",
 		"widgets:messages.subscription": "S'abonner aux messages",
 		"widgets:goal.subscription": "S'abonner aux objectifs",
 		"widgets:settings.subscription": "S'abonner aux paramètres",
@@ -368,24 +371,24 @@
 		"widgets:auc-fighter:settings.subscription": "S'abonner aux paramètres auc-fighter",
 		"widgets:alert:replay.subscription": "S'abonner à la relecture d'alerte",
 		"widgets:alert:skip.subscription": "S'abonner au passage d'alerte",
-		"widgets:alert:test.subscription": "S'abonner au test d'alerte",
+		"widgets:alert:test.subscription": "S'abonner aux tests d'alerte",
 		"widgets:alert:skip-playing.subscription": "S'abonner au passage d'alerte en cours",
 		"widgets:alert:alerts.subscription": "S'abonner aux alertes",
 		"widgets:media:replay.subscription": "S'abonner à la relecture média",
 		"widgets:media:settings.subscription": "S'abonner aux paramètres média",
-		"widgets:media:skip.subscription": "S'abonner au passage média",
-		"widgets:media:skip-playing-media.subscription": "S'abonner au passage du média en cours",
+		"widgets:media:skip.subscription": "S'abonner au passage de média",
+		"widgets:media:skip-playing-media.subscription": "S'abonner au passage de média en cours",
 		"widgets:media:end.subscription": "S'abonner à la fin du média",
 		"widgets:media:error.subscription": "S'abonner aux erreurs média",
 		"widgets:media:pause.subscription": "S'abonner à la pause média",
 		"widgets:media:play.subscription": "S'abonner à la lecture média",
-		"widgets:alert:played.subscription": "S'abonner à l'alerte jouée",
-		"widgets:view:storage.read": "Lire le stockage de vue du widget",
-		"widgets:control:storage.read": "Lire le stockage de contrôle du widget",
-		"widgets:view:storage.write": "Écrire dans le stockage de vue du widget",
-		"widgets:control:storage.write": "Écrire dans le stockage de contrôle du widget",
-		"widgets:view:storage.subscription": "S'abonner au stockage de vue du widget",
-		"widgets:control:storage.subscription": "S'abonner au stockage de contrôle du widget"
+		"widgets:alert:played.subscription": "S'abonner aux alertes jouées",
+		"widgets:view:storage.read": "Lire le stockage vue du widget",
+		"widgets:control:storage.read": "Lire le stockage contrôle du widget",
+		"widgets:view:storage.write": "Écrire dans le stockage vue du widget",
+		"widgets:control:storage.write": "Écrire dans le stockage contrôle du widget",
+		"widgets:view:storage.subscription": "S'abonner au stockage vue du widget",
+		"widgets:control:storage.subscription": "S'abonner au stockage contrôle du widget"
 	},
 	"nsfw": {
 		"title": "NSFW",

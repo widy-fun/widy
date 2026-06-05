@@ -3,30 +3,33 @@
 	"off": "Aus",
 	"select": "Auswählen",
 	"success": "Erfolg",
-	"ok": "Ok",
+	"ok": "OK",
 	"cancel": "Abbrechen",
 	"sound_volume": "Lautstärke",
-	"skip_media": "Shortcut Medien überspringen",
-	"skip_alert": "Shortcut Alert überspringen",
+	"skip_media": "Medien überspringen (Tastenkürzel)",
+	"skip_alert": "Alert überspringen (Tastenkürzel)",
 	"none": "Keine",
 	"start": "Starten",
 	"stop": "Stoppen",
 	"delay": "Verzögerung",
 	"milliseconds": "ms",
+	"token": "Token",
+	"overlay_id": "Overlay-ID",
+	"api_key": "API-Schlüssel",
 	"disconnected": "Getrennt",
 	"documentation": "Dokumentation",
 	"authorization": {
 		"title": "Autorisierung",
 		"code": "Code anfordern",
 		"sign_in": "Anmelden",
-		"phone": "Handynummer",
+		"phone": "Telefonnummer",
 		"telegram_code": "Code aus Telegram",
 		"your_code": "Dein Code",
 		"2fa_password": "2FA-Passwort",
 		"password": "Passwort",
 		"streamelements": "Du musst zuerst StreamElements JWT verbinden",
-		"you_can_find_by_url": "Du findest es unter folgender URL",
-		"set_id_and_jwt": "Du musst StreamElements Account ID und JWT für {{service}} eintragen"
+		"you_can_find_by_url": "Du findest es unter dieser URL",
+		"set_id_and_jwt": "Du musst StreamElements Account ID und JWT für {{service}} festlegen"
 	},
 	"error": {
 		"wrong_lots_format": "Falsches Lots-Format",
@@ -42,9 +45,9 @@
 	},
 	"media": {
 		"title": "Medien",
-		"youtube": "Youtube",
+		"youtube": "YouTube",
 		"twitch": "Twitch",
-		"tiktok": "Tiktok"
+		"tiktok": "TikTok"
 	},
 	"integration": {
 		"tribute": "Tribute-Nachrichten anzeigen"
@@ -61,7 +64,7 @@
 		"finish": "Beenden",
 		"lat_error": "Breitengrad muss zwischen -90 und 90 liegen",
 		"lng_error": "Längengrad muss zwischen -180 und 180 liegen",
-		"rules": "Damit sich der Zeiger automatisch in der Nachricht bewegt, darf nur ein Wort aus folgender Liste vorkommen:"
+		"rules": "Damit sich der Zeiger automatisch in der Nachricht bewegt, darf nur ein Wort aus folgender Liste enthalten sein:"
 	},
 	"media_settings": {
 		"enabled": "Aktiviert",
@@ -93,7 +96,7 @@
 		"followed": "{{user_name}} folgt jetzt",
 		"subscribed": "{{user_name}} hat abonniert",
 		"gifted_subscriptions": "{{user_name}} hat {{total}} Abonnements verschenkt",
-		"raided_with": "{{user_name}} raidet mit {{viewers}} Zuschauern"
+		"raided_with": "{{user_name}} raided mit {{viewers}} Zuschauern"
 	},
 	"filter": {
 		"title": "Nachrichten filtern",
@@ -125,7 +128,7 @@
 		"reset": "Zurücksetzen",
 		"add_time": "Zeit hinzufügen",
 		"reduce_time": "Zeit reduzieren",
-		"add_timex2": "Zeit x2 hinzufügen"
+		"add_timex2": "Zeit ×2 hinzufügen"
 	},
 	"fighter": {
 		"title": "Fighter",
@@ -150,7 +153,7 @@
 		"delete": "Löschen",
 		"to_lot": "Zum Lot",
 		"new": "Neu",
-		"add_to_random_slot": "Zum Zufalls-Lot hinzufügen"
+		"add_to_random_slot": "Zum zufälligen Lot hinzufügen"
 	},
 	"lots": {
 		"add": "Hinzufügen",
@@ -160,12 +163,12 @@
 	},
 	"auction_settings": {
 		"leader_change": "Führungswechsel",
-		"new_lot": "Neuer Lot",
+		"new_lot": "Neues Lot",
 		"new_donation": "Neue Spende",
 		"show_odds": "Quoten anzeigen",
 		"show_total_sum": "Gesamtsumme anzeigen",
-		"greater_timer_adding_time": "Timer-Zeit bei höherem Betrag",
-		"not_add_time_if": "Keine Zeit hinzufügen bei",
+		"greater_timer_adding_time": "Bei höherem Timer Zeit hinzufügen",
+		"not_add_time_if": "Keine Zeit hinzufügen, wenn",
 		"adding_time": "Zeit"
 	},
 	"lots_options": {
@@ -183,7 +186,7 @@
 	"services": {
 		"title": "Dienste",
 		"tribute": "Tribute",
-		"streamelements": "Streamelements",
+		"streamelements": "StreamElements",
 		"connect": "Verbinden",
 		"integrations": "Integrationen",
 		"sign_out": "Abmelden",
@@ -200,11 +203,11 @@
 		"donation_url": "Spenden-URL",
 		"create_donation_account": "Widy-Spendenaccount erstellen",
 		"connect_to_existing_account": "Mit bestehendem Account verbinden",
-		"create_donation_account_pending": "Erstelle Spendenaccount..."
+		"create_donation_account_pending": "Spendenaccount wird erstellt..."
 	},
 	"twitch_service_settings": {
 		"title": "Twitch-Einstellungen",
-		"points_currency_ratio": "Punkte-zu-Währung Verhältnis",
+		"points_currency_ratio": "Points-zu-Währung-Verhältnis",
 		"rewards_name": "Belohnungsname",
 		"rewards_list": "Belohnungsliste",
 		"add_reward": "Belohnung hinzufügen",
@@ -218,7 +221,7 @@
 		"title": "Titel",
 		"message": "Nachricht",
 		"test_name": "Test",
-		"test_text": "Dies ist ein Test-Alert!",
+		"test_text": "Das ist ein Test-Alert!",
 		"configure": "Konfigurieren",
 		"test": "Testen",
 		"add_new_variant": "Neue Variante hinzufügen",
@@ -235,7 +238,7 @@
 		"sure_delete": "Möchtest du diese Variation wirklich löschen?",
 		"type": "Typ",
 		"Donation": "Spende",
-		"Subscription": "Abonnement",
+		"Subscription": "Abo",
 		"Follow": "Follow",
 		"Raid": "Raid"
 	},
@@ -257,7 +260,7 @@
 		"bar_height": "Balkenhöhe",
 		"rounding_radius": "Abrundungsradius",
 		"bar_stroke_thickness": "Balken-Strichstärke",
-		"background_bar_color": "Hintergrundfarbe des Balkens",
+		"background_bar_color": "Hintergrund-Balkenfarbe",
 		"progress_bar_color": "Fortschrittsbalken-Farbe",
 		"goal_progress_bar": "Ziel-Fortschrittsbalken",
 		"progress_bar_layout": "Fortschrittsbalken-Layout",
@@ -273,8 +276,8 @@
 		"limits": "Limits",
 		"raised": "Erreicht",
 		"days_left": "Tage übrig",
-		"finish_goal": "Ziel beenden",
-		"sure_finish": "Möchtest du dieses Ziel wirklich beenden?",
+		"finish_goal": "Ziel abschließen",
+		"sure_finish": "Möchtest du dieses Ziel wirklich abschließen?",
 		"Donation": "Spende",
 		"TwitchSubscription": "Twitch-Abo",
 		"TwitchFollow": "Twitch-Follow",
@@ -286,7 +289,7 @@
 		"copy": "Kopieren",
 		"launch": "Starten",
 		"url": "Widget-URL",
-		"obs_dock_url": "OBS Dock-URL"
+		"obs_dock_url": "OBS-Dock-URL"
 	},
 	"view": {
 		"top": "Bild oben, Text unten",
@@ -310,7 +313,7 @@
 		"word_spacing": "Wortabstand",
 		"horizontal_alignment": "Horizontale Ausrichtung",
 		"vertical_alignment": "Vertikale Ausrichtung",
-		"text_preview": "Dies ist eine Vorschau!",
+		"text_preview": "Das ist eine Vorschau!",
 		"name": "Name"
 	},
 	"audio": {
@@ -334,27 +337,27 @@
 		"installing": "Wird installiert...",
 		"updating": "Wird aktualisiert...",
 		"view_url": "Ansichts-URL",
-		"widget_connection": "Widget sendet/empfängt Anfragen an:"
+		"widget_connection": "Widget sendet oder empfängt Anfragen an:"
 	},
 	"scopes": {
 		"widgets:messages.read": "Nachrichten lesen",
 		"widgets:goals.read": "Ziele lesen",
-		"widgets:auc-fighter:settings.read": "Auc-Fighter Einstellungen lesen",
+		"widgets:auc-fighter:settings.read": "Auc-Fighter-Einstellungen lesen",
 		"widgets:settings.read": "Widget-Einstellungen lesen",
 		"widgets:alerts.read": "Alerts lesen",
 		"widgets:media:settings.read": "Medien-Einstellungen lesen",
-		"widgets:auc-fighter:match-playing.send": "Match läuft senden",
+		"widgets:auc-fighter:match-playing.send": "Match wird gespielt senden",
 		"widgets:auc-fighter:match-winner.send": "Match-Gewinner senden",
 		"widgets:auc-fighter:match-paused.send": "Match pausiert senden",
 		"widgets:auc-fighter:match-id.send": "Match-ID senden",
 		"widgets:alert:played.send": "Alert abgespielt senden",
 		"widgets:alert:playing.send": "Alert wird abgespielt senden",
-		"widgets:media:played.send": "Medium abgespielt senden",
-		"widgets:media:end.send": "Medium Ende senden",
-		"widgets:media:playing.send": "Medium wird abgespielt senden",
-		"widgets:media:paused.send": "Medium pausiert senden",
-		"widgets:media:error.send": "Medium Fehler senden",
-		"widgets:media:replay.send": "Medium wiederholen senden",
+		"widgets:media:played.send": "Medien abgespielt senden",
+		"widgets:media:end.send": "Medien Ende senden",
+		"widgets:media:playing.send": "Medien wird abgespielt senden",
+		"widgets:media:paused.send": "Medien pausiert senden",
+		"widgets:media:error.send": "Medien-Fehler senden",
+		"widgets:media:replay.send": "Medien wiederholen senden",
 		"widgets:alert:replay.send": "Alert wiederholen senden",
 		"widgets:alert:skip.send": "Alert überspringen senden",
 		"widgets:messages.subscription": "Nachrichten abonnieren",
@@ -365,20 +368,20 @@
 		"widgets:auc-fighter:resume-match.subscription": "Match-Fortsetzen abonnieren",
 		"widgets:auc-fighter:cancel-match.subscription": "Match-Abbruch abonnieren",
 		"widgets:auc-fighter:update-match.subscription": "Match-Update abonnieren",
-		"widgets:auc-fighter:settings.subscription": "Auc-Fighter Einstellungen abonnieren",
+		"widgets:auc-fighter:settings.subscription": "Auc-Fighter-Einstellungen abonnieren",
 		"widgets:alert:replay.subscription": "Alert-Wiederholung abonnieren",
 		"widgets:alert:skip.subscription": "Alert-Überspringen abonnieren",
 		"widgets:alert:test.subscription": "Alert-Test abonnieren",
 		"widgets:alert:skip-playing.subscription": "Alert-Überspringen während Wiedergabe abonnieren",
 		"widgets:alert:alerts.subscription": "Alerts abonnieren",
-		"widgets:media:replay.subscription": "Media-Wiederholung abonnieren",
-		"widgets:media:settings.subscription": "Media-Einstellungen abonnieren",
-		"widgets:media:skip.subscription": "Media-Überspringen abonnieren",
-		"widgets:media:skip-playing-media.subscription": "Media-Überspringen während Wiedergabe abonnieren",
-		"widgets:media:end.subscription": "Media-Ende abonnieren",
-		"widgets:media:error.subscription": "Media-Fehler abonnieren",
-		"widgets:media:pause.subscription": "Media-Pause abonnieren",
-		"widgets:media:play.subscription": "Media-Play abonnieren",
+		"widgets:media:replay.subscription": "Medien-Wiederholung abonnieren",
+		"widgets:media:settings.subscription": "Medien-Einstellungen abonnieren",
+		"widgets:media:skip.subscription": "Medien-Überspringen abonnieren",
+		"widgets:media:skip-playing-media.subscription": "Medien-Überspringen während Wiedergabe abonnieren",
+		"widgets:media:end.subscription": "Medien-Ende abonnieren",
+		"widgets:media:error.subscription": "Medien-Fehler abonnieren",
+		"widgets:media:pause.subscription": "Medien-Pause abonnieren",
+		"widgets:media:play.subscription": "Medien-Play abonnieren",
 		"widgets:alert:played.subscription": "Alert abgespielt abonnieren",
 		"widgets:view:storage.read": "Widget-View-Speicher lesen",
 		"widgets:control:storage.read": "Widget-Control-Speicher lesen",
@@ -392,10 +395,10 @@
 		"nsfw_window": "NSFW-Fenster",
 		"settings": "Einstellungen",
 		"window": "Fenster",
-		"blur_timeout_duration": "Unschärfe-Timeout-Dauer",
-		"confidence_threshold": "Erkennungsschwelle",
+		"blur_timeout_duration": "Blur-Timeout-Dauer",
+		"confidence_threshold": "Konfidenzschwelle",
 		"anus": "Anus",
-		"make_love": "Geschlechtsverkehr",
+		"make_love": "Liebe machen",
 		"nipple": "Brustwarze",
 		"penis": "Penis",
 		"vagina": "Vagina"

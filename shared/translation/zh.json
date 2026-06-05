@@ -5,7 +5,7 @@
 	"success": "成功",
 	"ok": "确定",
 	"cancel": "取消",
-	"sound_volume": "声音音量",
+	"sound_volume": "音量",
 	"skip_media": "快捷跳过媒体",
 	"skip_alert": "快捷跳过提醒",
 	"none": "无",
@@ -13,6 +13,9 @@
 	"stop": "停止",
 	"delay": "延迟",
 	"milliseconds": "毫秒",
+	"token": "令牌",
+	"overlay_id": "覆盖层 ID",
+	"api_key": "API 密钥",
 	"disconnected": "已断开连接",
 	"documentation": "文档",
 	"authorization": {
@@ -20,7 +23,7 @@
 		"code": "请求代码",
 		"sign_in": "登录",
 		"phone": "手机号",
-		"telegram_code": "Telegram验证码",
+		"telegram_code": "Telegram 验证码",
 		"your_code": "您的验证码",
 		"2fa_password": "两步验证密码",
 		"password": "密码",
@@ -29,13 +32,13 @@
 		"set_id_and_jwt": "您需要为 {{service}} 设置 StreamElements 账号 ID 和 JWT"
 	},
 	"error": {
-		"wrong_lots_format": "抽奖格式错误",
+		"wrong_lots_format": "奖品格式错误",
 		"not_connected": "未连接",
 		"request_error": "请求错误"
 	},
 	"updater": {
 		"title": "更新",
-		"description": "有新版本可用。是否更新？",
+		"description": "有新版本可用，是否立即更新？",
 		"update": "更新",
 		"later": "稍后",
 		"downloading": "下载中..."
@@ -50,7 +53,7 @@
 		"tribute": "显示致敬消息"
 	},
 	"auction": {
-		"lots": "拍品",
+		"lots": "奖品",
 		"wheel": "转盘",
 		"settings": "设置"
 	},
@@ -90,8 +93,8 @@
 		"skip": "跳过",
 		"replay": "重播",
 		"donated": "{{user_name}} 捐赠了 {{amount}}{{currency}}",
-		"followed": "{{user_name}} 关注了",
-		"subscribed": "{{user_name}} 订阅了",
+		"followed": "{{user_name}} 已关注",
+		"subscribed": "{{user_name}} 已订阅",
 		"gifted_subscriptions": "{{user_name}} 赠送了 {{total}} 个订阅",
 		"raided_with": "{{user_name}} 带 {{viewers}} 名观众突袭"
 	},
@@ -129,13 +132,13 @@
 	},
 	"fighter": {
 		"title": "对战",
-		"match": "对局",
+		"match": "比赛",
 		"final": "决赛",
 		"game": "游戏",
-		"cancel": "取消对局",
+		"cancel": "取消比赛",
 		"winner": "获胜者",
 		"settings": "设置",
-		"create_game": "从拍品创建对局",
+		"create_game": "从奖品创建比赛",
 		"start": "开始",
 		"pause": "暂停",
 		"rematch": "重赛",
@@ -148,19 +151,19 @@
 	},
 	"bid": {
 		"delete": "删除",
-		"to_lot": "添加到拍品",
+		"to_lot": "添加到奖品",
 		"new": "新建",
-		"add_to_random_slot": "添加到随机拍品"
+		"add_to_random_slot": "添加到随机奖品"
 	},
 	"lots": {
 		"add": "添加",
-		"new_lot_name": "新拍品名称",
-		"search": "搜索拍品",
+		"new_lot_name": "新奖品名称",
+		"search": "搜索奖品",
 		"total": "总计"
 	},
 	"auction_settings": {
 		"leader_change": "领先者变更",
-		"new_lot": "新拍品",
+		"new_lot": "新奖品",
 		"new_donation": "新捐赠",
 		"show_odds": "显示赔率",
 		"show_total_sum": "显示总金额",
@@ -169,12 +172,12 @@
 		"adding_time": "增加时间"
 	},
 	"lots_options": {
-		"import_lots": "导入拍品",
-		"clear_lots": "清空拍品"
+		"import_lots": "导入奖品",
+		"clear_lots": "清空奖品"
 	},
 	"auc_fighter_settings": {
 		"round_duration": "回合时长",
-		"add_players": "添加玩家"
+		"add_players": "添加选手"
 	},
 	"alerts": {
 		"title": "提醒",
@@ -186,7 +189,7 @@
 		"streamelements": "StreamElements",
 		"connect": "连接",
 		"integrations": "集成",
-		"sign_out": "退出",
+		"sign_out": "退出登录",
 		"confirm_sign_out": "确定要退出此服务吗？"
 	},
 	"twitch": {
@@ -199,7 +202,7 @@
 		"donation_account_name": "捐赠账号名称",
 		"donation_url": "捐赠链接",
 		"create_donation_account": "创建 Widy 捐赠账号",
-		"connect_to_existing_account": "连接到现有账号",
+		"connect_to_existing_account": "连接已有账号",
 		"create_donation_account_pending": "正在创建捐赠账号..."
 	},
 	"twitch_service_settings": {
@@ -263,9 +266,9 @@
 		"progress_bar_layout": "进度条布局",
 		"remaining_time": "剩余时间",
 		"goal_amount_limits": "目标金额限制",
-		"widget_background": "组件背景",
+		"widget_background": "小部件背景",
 		"background_color": "背景颜色",
-		"OnTop": "顶部",
+		"OnTop": "上方",
 		"Inside": "内部",
 		"Below": "下方",
 		"DoNotDisplay": "不显示",
@@ -278,7 +281,7 @@
 		"Donation": "捐赠",
 		"TwitchSubscription": "Twitch 订阅",
 		"TwitchFollow": "Twitch 关注",
-		"goal_not_finished": "您还有未完成的同类型目标。"
+		"goal_not_finished": "您有一个同类型的未完成目标。"
 	},
 	"save": "保存",
 	"back": "返回",
@@ -286,31 +289,31 @@
 		"copy": "复制",
 		"launch": "启动",
 		"url": "小部件链接",
-		"obs_dock_url": "OBS Dock 链接"
+		"obs_dock_url": "OBS 停靠链接"
 	},
 	"view": {
 		"top": "图片在上，文字在下",
 		"bottom": "图片在下，文字在上",
 		"left": "图片在左，文字在右",
 		"right": "图片在右，文字在左",
-		"overlay": "文字叠加在图片上"
+		"overlay": "文字覆盖图片"
 	},
 	"image": {
 		"show": "显示图片"
 	},
 	"text": {
 		"font": "字体",
-		"font_size": "字体大小",
+		"font_size": "字号",
 		"text_color": "文字颜色",
 		"bold": "加粗",
 		"italics": "斜体",
 		"underline": "下划线",
-		"transformation": "转换",
+		"transformation": "变换",
 		"letter_spacing": "字间距",
-		"word_spacing": "单词间距",
+		"word_spacing": "词间距",
 		"horizontal_alignment": "水平对齐",
 		"vertical_alignment": "垂直对齐",
-		"text_preview": "这是预览文本！",
+		"text_preview": "这是预览效果！",
 		"name": "名称"
 	},
 	"audio": {
@@ -333,8 +336,8 @@
 		"add_confirm": "添加后将允许 {{widget_name}}：",
 		"installing": "安装中...",
 		"updating": "更新中...",
-		"view_url": "视图链接",
-		"widget_connection": "小部件获取或发送请求到："
+		"view_url": "查看链接",
+		"widget_connection": "小部件将获取或发送请求到："
 	},
 	"scopes": {
 		"widgets:messages.read": "读取消息",
@@ -343,15 +346,15 @@
 		"widgets:settings.read": "读取小部件设置",
 		"widgets:alerts.read": "读取提醒",
 		"widgets:media:settings.read": "读取媒体设置",
-		"widgets:auc-fighter:match-playing.send": "发送对局进行中",
-		"widgets:auc-fighter:match-winner.send": "发送对局获胜者",
-		"widgets:auc-fighter:match-paused.send": "发送对局暂停",
-		"widgets:auc-fighter:match-id.send": "发送对局ID",
+		"widgets:auc-fighter:match-playing.send": "发送比赛进行中",
+		"widgets:auc-fighter:match-winner.send": "发送获胜者",
+		"widgets:auc-fighter:match-paused.send": "发送比赛暂停",
+		"widgets:auc-fighter:match-id.send": "发送比赛 ID",
 		"widgets:alert:played.send": "发送提醒已播放",
-		"widgets:alert:playing.send": "发送提醒播放中",
+		"widgets:alert:playing.send": "发送提醒正在播放",
 		"widgets:media:played.send": "发送媒体已播放",
 		"widgets:media:end.send": "发送媒体结束",
-		"widgets:media:playing.send": "发送媒体播放中",
+		"widgets:media:playing.send": "发送媒体正在播放",
 		"widgets:media:paused.send": "发送媒体暂停",
 		"widgets:media:error.send": "发送媒体错误",
 		"widgets:media:replay.send": "发送媒体重播",
@@ -360,11 +363,11 @@
 		"widgets:messages.subscription": "订阅消息",
 		"widgets:goal.subscription": "订阅目标",
 		"widgets:settings.subscription": "订阅设置",
-		"widgets:auc-fighter:start-match.subscription": "订阅开始对局",
-		"widgets:auc-fighter:pause-match.subscription": "订阅暂停对局",
-		"widgets:auc-fighter:resume-match.subscription": "订阅继续对局",
-		"widgets:auc-fighter:cancel-match.subscription": "订阅取消对局",
-		"widgets:auc-fighter:update-match.subscription": "订阅更新对局",
+		"widgets:auc-fighter:start-match.subscription": "订阅开始比赛",
+		"widgets:auc-fighter:pause-match.subscription": "订阅暂停比赛",
+		"widgets:auc-fighter:resume-match.subscription": "订阅继续比赛",
+		"widgets:auc-fighter:cancel-match.subscription": "订阅取消比赛",
+		"widgets:auc-fighter:update-match.subscription": "订阅更新比赛",
 		"widgets:auc-fighter:settings.subscription": "订阅对战设置",
 		"widgets:alert:replay.subscription": "订阅提醒重播",
 		"widgets:alert:skip.subscription": "订阅提醒跳过",
@@ -373,7 +376,7 @@
 		"widgets:alert:alerts.subscription": "订阅提醒",
 		"widgets:media:replay.subscription": "订阅媒体重播",
 		"widgets:media:settings.subscription": "订阅媒体设置",
-		"widgets:media:skip.subscription": "订阅媒体跳过",
+		"widgets:media:skip.subscription": "订阅跳过媒体",
 		"widgets:media:skip-playing-media.subscription": "订阅跳过正在播放的媒体",
 		"widgets:media:end.subscription": "订阅媒体结束",
 		"widgets:media:error.subscription": "订阅媒体错误",

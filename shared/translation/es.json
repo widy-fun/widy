@@ -6,13 +6,16 @@
 	"ok": "Aceptar",
 	"cancel": "Cancelar",
 	"sound_volume": "Volumen de sonido",
-	"skip_media": "Atajo para saltar medio",
+	"skip_media": "Atajo para saltar media",
 	"skip_alert": "Atajo para saltar alerta",
 	"none": "Ninguno",
 	"start": "Iniciar",
 	"stop": "Detener",
 	"delay": "Retraso",
 	"milliseconds": "ms",
+	"token": "Token",
+	"overlay_id": "ID de Overlay",
+	"api_key": "Clave API",
 	"disconnected": "Desconectado",
 	"documentation": "Documentación",
 	"authorization": {
@@ -26,7 +29,7 @@
 		"password": "Contraseña",
 		"streamelements": "Necesitas conectar primero con StreamElements JWT",
 		"you_can_find_by_url": "Puedes encontrarlo en esta URL",
-		"set_id_and_jwt": "Necesitas configurar el ID de cuenta y JWT de StreamElements para {{service}}"
+		"set_id_and_jwt": "Necesitas configurar el ID de cuenta de StreamElements y JWT para {{service}}"
 	},
 	"error": {
 		"wrong_lots_format": "Formato de lotes incorrecto",
@@ -41,7 +44,7 @@
 		"downloading": "Descargando..."
 	},
 	"media": {
-		"title": "Medios",
+		"title": "Media",
 		"youtube": "YouTube",
 		"twitch": "Twitch",
 		"tiktok": "TikTok"
@@ -51,7 +54,7 @@
 	},
 	"auction": {
 		"lots": "Lotes",
-		"wheel": "Ruleta",
+		"wheel": "Rueda",
 		"settings": "Ajustes"
 	},
 	"maption": {
@@ -61,20 +64,20 @@
 		"finish": "Finalizar",
 		"lat_error": "La latitud debe estar entre -90 y 90",
 		"lng_error": "La longitud debe estar entre -180 y 180",
-		"rules": "Para que el puntero cambie de posición automáticamente en el mensaje, debe haber solo una palabra de:"
+		"rules": "Para que el puntero cambie de posición automáticamente en el mensaje solo debe haber una palabra de:"
 	},
 	"media_settings": {
 		"enabled": "Activado",
 		"min_amount": "Cantidad mínima",
 		"video_volume": "Volumen del video",
-		"min_views": "Mínimo de vistas"
+		"min_views": "Vistas mínimas"
 	},
 	"dashboard": {
 		"messages": "Mensajes",
 		"settings": "Ajustes",
 		"services": "Servicios",
 		"alerts": "Alertas",
-		"media": "Medios",
+		"media": "Media",
 		"goals": "Metas",
 		"auction": "Subasta",
 		"maption": "Maption",
@@ -115,9 +118,9 @@
 	},
 	"wheel": {
 		"normal": "Normal",
-		"dropout": "Eliminación",
+		"dropout": "Dropout",
 		"spin": "Girar",
-		"speed": "Velocidad de la ruleta"
+		"speed": "Velocidad de la rueda"
 	},
 	"timer": {
 		"continue": "Continuar",
@@ -131,11 +134,11 @@
 		"title": "Luchador",
 		"match": "Combate",
 		"final": "Final",
-		"game": "Partida",
-		"cancel": "Cancelar partida",
+		"game": "Juego",
+		"cancel": "Cancelar juego",
 		"winner": "Ganador",
 		"settings": "Ajustes",
-		"create_game": "Crear partida desde lotes",
+		"create_game": "Crear juego desde lotes",
 		"start": "Iniciar",
 		"pause": "Pausar",
 		"rematch": "Revancha",
@@ -164,7 +167,7 @@
 		"new_donation": "Nueva donación",
 		"show_odds": "Mostrar probabilidades",
 		"show_total_sum": "Mostrar suma total",
-		"greater_timer_adding_time": "Añadir tiempo al temporizador mayor",
+		"greater_timer_adding_time": "Añadir más tiempo al temporizador",
 		"not_add_time_if": "No añadir tiempo si",
 		"adding_time": "Tiempo"
 	},
@@ -208,7 +211,7 @@
 		"rewards_name": "Nombre de recompensas",
 		"rewards_list": "Lista de recompensas",
 		"add_reward": "Añadir recompensa",
-		"cost": "Coste",
+		"cost": "Costo",
 		"color": "Color"
 	},
 	"alert": {
@@ -229,8 +232,8 @@
 		"variation_condition": "Condición de variación",
 		"group": "Grupo",
 		"Random": "Aleatorio",
-		"AmountIsGreater": "La cantidad es mayor",
-		"AmountIsEqual": "La cantidad es igual",
+		"AmountIsGreater": "Cantidad es mayor",
+		"AmountIsEqual": "Cantidad es igual",
 		"delete": "Eliminar",
 		"sure_delete": "¿Estás seguro de que quieres eliminar esta variación?",
 		"type": "Tipo",
@@ -252,7 +255,7 @@
 		"progress": "Progreso",
 		"goal_title": "Título de la meta",
 		"amount_raise": "Cantidad a recaudar",
-		"start_raising": "Empezar a recaudar desde",
+		"start_raising": "Comenzar recaudación desde",
 		"end_date": "Fecha de finalización",
 		"bar_height": "Altura de la barra",
 		"rounding_radius": "Radio de redondeo",
@@ -260,7 +263,7 @@
 		"background_bar_color": "Color de barra de fondo",
 		"progress_bar_color": "Color de barra de progreso",
 		"goal_progress_bar": "Barra de progreso de meta",
-		"progress_bar_layout": "Diseño de barra de progreso",
+		"progress_bar_layout": "Disposición de la barra de progreso",
 		"remaining_time": "Tiempo restante",
 		"goal_amount_limits": "Límites de cantidad de meta",
 		"widget_background": "Fondo del widget",
@@ -293,7 +296,7 @@
 		"bottom": "Imagen abajo, texto arriba",
 		"left": "Imagen izquierda, texto derecha",
 		"right": "Imagen derecha, texto izquierda",
-		"overlay": "Texto sobre la imagen"
+		"overlay": "Texto sobre imagen"
 	},
 	"image": {
 		"show": "Mostrar imagen"
@@ -301,7 +304,7 @@
 	"text": {
 		"font": "Fuente",
 		"font_size": "Tamaño de fuente",
-		"text_color": "Color de texto",
+		"text_color": "Color del texto",
 		"bold": "Negrita",
 		"italics": "Cursiva",
 		"underline": "Subrayado",
@@ -333,7 +336,7 @@
 		"add_confirm": "Añadir permitirá a {{widget_name}}:",
 		"installing": "Instalando...",
 		"updating": "Actualizando...",
-		"view_url": "Ver URL",
+		"view_url": "URL de vista",
 		"widget_connection": "El widget obtiene o envía solicitudes a:"
 	},
 	"scopes": {
@@ -342,19 +345,19 @@
 		"widgets:auc-fighter:settings.read": "Leer ajustes de auc-fighter",
 		"widgets:settings.read": "Leer ajustes del widget",
 		"widgets:alerts.read": "Leer alertas",
-		"widgets:media:settings.read": "Leer ajustes de medios",
+		"widgets:media:settings.read": "Leer ajustes de media",
 		"widgets:auc-fighter:match-playing.send": "Enviar combate en curso",
 		"widgets:auc-fighter:match-winner.send": "Enviar ganador del combate",
 		"widgets:auc-fighter:match-paused.send": "Enviar combate pausado",
 		"widgets:auc-fighter:match-id.send": "Enviar ID del combate",
 		"widgets:alert:played.send": "Enviar alerta reproducida",
-		"widgets:alert:playing.send": "Enviar alerta reproduciendo",
-		"widgets:media:played.send": "Enviar medio reproducido",
-		"widgets:media:end.send": "Enviar fin de medio",
-		"widgets:media:playing.send": "Enviar medio reproduciendo",
-		"widgets:media:paused.send": "Enviar medio pausado",
-		"widgets:media:error.send": "Enviar error de medio",
-		"widgets:media:replay.send": "Enviar repetición de medio",
+		"widgets:alert:playing.send": "Enviar alerta en reproducción",
+		"widgets:media:played.send": "Enviar media reproducida",
+		"widgets:media:end.send": "Enviar fin de media",
+		"widgets:media:playing.send": "Enviar media en reproducción",
+		"widgets:media:paused.send": "Enviar media pausada",
+		"widgets:media:error.send": "Enviar error de media",
+		"widgets:media:replay.send": "Enviar repetición de media",
 		"widgets:alert:replay.send": "Enviar repetición de alerta",
 		"widgets:alert:skip.send": "Enviar salto de alerta",
 		"widgets:messages.subscription": "Suscribirse a mensajes",
@@ -362,8 +365,8 @@
 		"widgets:settings.subscription": "Suscribirse a ajustes",
 		"widgets:auc-fighter:start-match.subscription": "Suscribirse a inicio de combate",
 		"widgets:auc-fighter:pause-match.subscription": "Suscribirse a pausa de combate",
-		"widgets:auc-fighter:resume-match.subscription": "Suscribirse a reanudar combate",
-		"widgets:auc-fighter:cancel-match.subscription": "Suscribirse a cancelar combate",
+		"widgets:auc-fighter:resume-match.subscription": "Suscribirse a reanudación de combate",
+		"widgets:auc-fighter:cancel-match.subscription": "Suscribirse a cancelación de combate",
 		"widgets:auc-fighter:update-match.subscription": "Suscribirse a actualización de combate",
 		"widgets:auc-fighter:settings.subscription": "Suscribirse a ajustes de auc-fighter",
 		"widgets:alert:replay.subscription": "Suscribirse a repetición de alerta",
@@ -371,21 +374,21 @@
 		"widgets:alert:test.subscription": "Suscribirse a prueba de alerta",
 		"widgets:alert:skip-playing.subscription": "Suscribirse a salto de alerta en reproducción",
 		"widgets:alert:alerts.subscription": "Suscribirse a alertas",
-		"widgets:media:replay.subscription": "Suscribirse a repetición de medio",
-		"widgets:media:settings.subscription": "Suscribirse a ajustes de medios",
-		"widgets:media:skip.subscription": "Suscribirse a salto de medio",
-		"widgets:media:skip-playing-media.subscription": "Suscribirse a salto de medio en reproducción",
-		"widgets:media:end.subscription": "Suscribirse a fin de medio",
-		"widgets:media:error.subscription": "Suscribirse a error de medio",
-		"widgets:media:pause.subscription": "Suscribirse a pausa de medio",
-		"widgets:media:play.subscription": "Suscribirse a reproducción de medio",
+		"widgets:media:replay.subscription": "Suscribirse a repetición de media",
+		"widgets:media:settings.subscription": "Suscribirse a ajustes de media",
+		"widgets:media:skip.subscription": "Suscribirse a salto de media",
+		"widgets:media:skip-playing-media.subscription": "Suscribirse a salto de media en reproducción",
+		"widgets:media:end.subscription": "Suscribirse a fin de media",
+		"widgets:media:error.subscription": "Suscribirse a error de media",
+		"widgets:media:pause.subscription": "Suscribirse a pausa de media",
+		"widgets:media:play.subscription": "Suscribirse a reproducción de media",
 		"widgets:alert:played.subscription": "Suscribirse a alerta reproducida",
 		"widgets:view:storage.read": "Leer almacenamiento de vista del widget",
 		"widgets:control:storage.read": "Leer almacenamiento de control del widget",
 		"widgets:view:storage.write": "Escribir en almacenamiento de vista del widget",
 		"widgets:control:storage.write": "Escribir en almacenamiento de control del widget",
-		"widgets:view:storage.subscription": "Suscribirse al almacenamiento de vista del widget",
-		"widgets:control:storage.subscription": "Suscribirse al almacenamiento de control del widget"
+		"widgets:view:storage.subscription": "Suscribirse a almacenamiento de vista del widget",
+		"widgets:control:storage.subscription": "Suscribirse a almacenamiento de control del widget"
 	},
 	"nsfw": {
 		"title": "NSFW",
