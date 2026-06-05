@@ -150,7 +150,7 @@ impl DonationAlertsService {
         token: &str,
     ) -> Result<(String, UserInfo), String> {
         let auth_token = Self::get_auth_token(&reqwest_client, &token).await?;
-        let user_info = Self::get_user_info(&reqwest_client, &token).await?;
+        let user_info = Self::get_user_info(&reqwest_client, &auth_token).await?;
         Ok((auth_token, user_info))
     }
 
