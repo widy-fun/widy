@@ -403,7 +403,10 @@ impl TwitchService {
     }
 
     pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
-        self.run_websocket_client(app.clone()).await?;
+        let app_clone = app.clone();
+         tauri::async_runtime::spawn(async move {
+             Self::run_websocket_client(&app_clone).await
+         });
 
         Ok(())
     }
@@ -475,6 +478,7 @@ impl TwitchService {
             }
         }
     }
+    
     pub async fn get_device_code(&self) -> Result<TwitchDeviceCodeResponse, String> {
         let mut params = HashMap::new();
 
@@ -600,7 +604,7 @@ impl TwitchService {
         Ok(auth)
     }
 
-    pub async fn refresh_token(
+    async fn refresh_token(
         &self,
         client_id: &String,
         refresh_token: &String,
@@ -674,8 +678,7 @@ impl TwitchService {
         Ok(token_info.clone())
     }
 
-    pub async fn run_websocket_client(&self, app: AppHandle) -> Result<(), String> {
-        tauri::async_runtime::spawn(async move {
+     async fn run_websocket_client( app: &AppHandle) -> Result<(), String> {
             let twitch_service = app.state::<TwitchService>();
             let mut current_url = twitch_service.websocket_eventsub_url.clone();
             let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
@@ -969,7 +972,7 @@ impl TwitchService {
                     }
                 }
             }
-        });
+        
 
         Ok(())
     }
@@ -1261,6 +1264,7 @@ impl TwitchService {
 
         Ok(subscription_id)
     }
+
     async fn delete_subscription(
         &self,
         token: &String,
@@ -1291,7 +1295,7 @@ impl TwitchService {
         Ok(())
     }
 
-    pub async fn set_authorized(
+    async fn set_authorized(
         &self,
         database_service: &DatabaseService,
         auth: Option<ServiceAuth>,

@@ -156,6 +156,7 @@ impl TelegramService {
         });
         Ok(())
     }
+
     pub async fn request_login_code(
         &self,
         phone_number: String,
@@ -253,6 +254,7 @@ impl TelegramService {
         })?;
         Ok(is_authorized)
     }
+
     pub async fn sign_out(&self, app: &AppHandle) -> Result<(), String> {
         self.set_authorized(&app, false).await?;
         let telegram_client = app.state::<Client>();
