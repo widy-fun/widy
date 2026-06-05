@@ -15,6 +15,7 @@
 	"milliseconds": "ms",
 	"token": "Token",
 	"overlay_id": "Overlay Id",
+	"api_key": "Api key",
 	"disconnected": "Disconnected",
 	"documentation": "Documentation",
 	"authorization": {

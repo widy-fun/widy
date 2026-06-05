@@ -118,6 +118,8 @@ pub fn run() {
             donate_pay_sign_out,
             destream_connect,
             destream_sign_out,
+            tribute_connect,
+            tribute_sign_out,
             init
         ])
         .run(tauri::generate_context!())

@@ -20,6 +20,7 @@ import ServicesSettings from "./components/services/ServicesSettings";
 import StreamElements from "./components/streamelements/StreamElements";
 import StreamLabs from "./components/streamlabs/StreamLabs";
 import TelegramAuthorization from "./components/telegram-authorization/TelegramAuthorization";
+import Tribute from "./components/tribute/Tribute";
 import Twitch from "./components/twitch/Twitch";
 import UpdaterDialog from "./components/UpdaterDialog";
 import Widy from "./components/widy/Widy";
@@ -113,6 +114,7 @@ function App() {
 					<Route path="/donatello/*" element={<Donatello />} />
 					<Route path="/donatik/*" element={<Donatik />} />
 					<Route path="/dashboard/*" element={<Dashboard />} />
+					<Route path="/tribute/*" element={<Tribute />} />
 					<Route path="/services-settings/*" element={<ServicesSettings />} />
 					<Route path="/widget/:id" element={<WidgetControl />} />
 				</Routes>

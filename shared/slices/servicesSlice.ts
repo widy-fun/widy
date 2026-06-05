@@ -71,6 +71,11 @@ const initialState: ServicesState = {
 			color: "#f05a00",
 			authPath: "/destream/overlay-id",
 		},
+		[ServiceType.Tribute]: {
+			active: false,
+			color: "#2692ffb2",
+			authPath: "/tribute/api-key",
+		},
 	},
 };
 

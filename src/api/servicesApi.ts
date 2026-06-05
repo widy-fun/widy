@@ -5,6 +5,7 @@ import type {
 	IService,
 	IStreamElementsAuth,
 	IStreamLabsAuth,
+	ITributeAuth,
 	ITwitchIntegrationSettings,
 } from "@widy/sdk";
 import { ServiceType } from "@widy/sdk";
@@ -47,6 +48,7 @@ export const servicesApi = api.injectEndpoints({
 					| IStreamLabsAuth
 					| IDonatePayAuth
 					| IDestreamAuth
+					| ITributeAuth
 					| undefined;
 				id: ServiceType;
 				authorized: boolean;

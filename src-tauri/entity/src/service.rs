@@ -54,6 +54,8 @@ pub enum ServiceType {
     DonatePay,
     #[sea_orm(string_value = "Destream")]
     Destream,
+    #[sea_orm(string_value = "Tribute")]
+    Tribute,
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
 #[serde(untagged)]
@@ -73,6 +75,7 @@ pub enum ServiceAuth {
     StreamLabs(StreamLabsAuth),
     DonatePay(DonatePayAuth),
     Destream(DestreamAuth),
+    Tribute(TributeAuth),
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -90,6 +93,10 @@ pub struct WidyAuth {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct DonationAlertsAuth {
     pub token: String,
+}
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct TributeAuth {
+    pub api_key: String,
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct DonatePayAuth {

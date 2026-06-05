@@ -91,6 +91,12 @@ export const api = createApi({
 			}),
 			invalidatesTags: ["Services"],
 		}),
+		tributeSignOut: builder.mutation<void, void>({
+			query: () => ({
+				command: "tribute_sign_out",
+			}),
+			invalidatesTags: ["Services"],
+		}),
 	}),
 });
 
@@ -104,4 +110,5 @@ export const {
 	useStreamLabsSignOutMutation,
 	useDonatePaySignOutMutation,
 	useDestreamSignOutMutation,
+	useTributeSignOutMutation,
 } = api;
