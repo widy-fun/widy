@@ -4,7 +4,7 @@ use msedge_tts::{
     tts::{client::connect_async, SpeechConfig},
     voice::get_voices_list_async,
 };
-use std::path::PathBuf;
+use std::{fs, path::PathBuf};
 use tauri::{AppHandle, Manager};
 use tokio::{fs::File, io::AsyncWriteExt};
 
@@ -36,6 +36,11 @@ impl TtsService {
             .get_settings()
             .await?
             .ok_or_else(|| "Settings not found".to_string())?;
+
+        fs::create_dir_all(&self.audio_path).map_err(|e| {
+            log::error!("{}", e.to_string());
+            e.to_string()
+        })?;
 
         match settings.tts_type {
             TtsType::Google => self.make_google_audio(text, file_name, &language).await,
