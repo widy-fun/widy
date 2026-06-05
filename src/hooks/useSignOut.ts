@@ -4,7 +4,6 @@ import {
 	useDonatePaySignOutMutation,
 	useDonationAlertsSignOutMutation,
 	useStreamLabsSignOutMutation,
-	useTributeBotSignOutMutation,
 	useTributeSignOutMutation,
 	useTwitchSignOutMutation,
 	useWidySolSignOutMutation,
@@ -13,7 +12,6 @@ import {
 import useStreamElementsSocketService from "./useStreamElementsService";
 
 const useSignOut = (id: ServiceType) => {
-	const [tributeBotSignOut] = useTributeBotSignOutMutation();
 	const [twitchSignOut] = useTwitchSignOutMutation();
 	const [widySolSignOut] = useWidySolSignOutMutation();
 	const [widyTonSignOut] = useWidyTonSignOutMutation();
@@ -25,8 +23,6 @@ const useSignOut = (id: ServiceType) => {
 	const streamElementsSocketService = useStreamElementsSocketService();
 
 	switch (id) {
-		case ServiceType.TributeBot:
-			return tributeBotSignOut;
 		case ServiceType.Streamelements:
 			return streamElementsSocketService.signOut.bind(
 				streamElementsSocketService,

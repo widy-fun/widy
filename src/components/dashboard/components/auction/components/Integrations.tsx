@@ -92,7 +92,12 @@ const Integrations = () => {
 								</div>
 								{!!service.settings && (
 									<IconButton
-										onClick={() => navigate(services[service.id].settingsPath)}
+										onClick={() => {
+											const path = services[service.id].settingsPath;
+											if (path) {
+												navigate(path);
+											}
+										}}
 									>
 										<SettingsIcon />
 									</IconButton>

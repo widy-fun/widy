@@ -5,7 +5,6 @@ pub mod repositories;
 pub mod services;
 pub mod utils;
 use crate::commands::*;
-use crate::enums::*;
 use tauri::Manager;
 use tauri_plugin_deep_link::DeepLinkExt;
 use tokio::sync::Mutex;
@@ -55,9 +54,6 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .manage(ExecutionFlag(Mutex::new(false)))
         .invoke_handler(tauri::generate_handler![
-            is_authorized,
-            request_login_code,
-            sign_in,
             get_alert_by_id,
             get_alerts,
             get_settings,
@@ -65,7 +61,6 @@ pub fn run() {
             create_alert,
             delete_alert_by_id,
             update_settings,
-            check_password,
             get_media_settings,
             update_media_settings,
             get_auction_settings,
@@ -94,7 +89,6 @@ pub fn run() {
             get_messages,
             update_service_settings,
             get_service_with_auth_by_id,
-            tribute_bot_sign_out,
             twitch_sign_out,
             get_widy_nonce,
             widy_sol_sign_out,

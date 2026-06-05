@@ -12,8 +12,6 @@ pub struct ConfigService {
     pub auc_fighter_path: PathBuf,
     pub static_path: PathBuf,
     pub assets_path: PathBuf,
-    pub api_id: i32,
-    pub api_hash: String,
     pub client_id: String,
     pub widy_sol_program_id: String,
     pub tmp_path: PathBuf,
@@ -24,21 +22,10 @@ pub struct ConfigService {
 impl ConfigService {
     pub fn new(app: &AppHandle) -> Result<Self, String> {
         #[cfg(not(debug_assertions))]
-        let api_id: i32 = env!("API_ID").parse().expect("API_ID must be a valid i32");
-        #[cfg(not(debug_assertions))]
-        let api_hash: String = env!("API_HASH").to_string();
-        #[cfg(not(debug_assertions))]
         let client_id: String = env!("TWITCH_CLIENT_ID").to_string();
         #[cfg(not(debug_assertions))]
         let widy_sol_program_id: String = env!("WIDY_SOL_PROGRAM_ID").to_string();
 
-        #[cfg(debug_assertions)]
-        let api_id: i32 = std::env::var("API_ID")
-            .expect("API_ID must be set")
-            .parse()
-            .expect("API_ID must be a valid i32");
-        #[cfg(debug_assertions)]
-        let api_hash: String = std::env::var("API_HASH").expect("API_HASH must be set");
         #[cfg(debug_assertions)]
         let client_id: String =
             std::env::var("TWITCH_CLIENT_ID").expect("TWITCH_CLIENT_ID must be set");
@@ -89,8 +76,6 @@ impl ConfigService {
             auc_fighter_path,
             static_path,
             assets_path,
-            api_id,
-            api_hash,
             client_id,
             widy_sol_program_id,
             widgets_path,

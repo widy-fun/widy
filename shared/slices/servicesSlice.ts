@@ -20,11 +20,6 @@ const initialState: ServicesState = {
 			color: "#2701fb",
 			authPath: "/streamelements/token",
 		},
-		[ServiceType.TributeBot]: {
-			active: false,
-			color: "#2692ffb2",
-			authPath: "/telegram-authorization/request-code",
-		},
 		[ServiceType.Twitch]: {
 			active: false,
 			color: "#9147ff",

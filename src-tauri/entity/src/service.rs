@@ -14,16 +14,7 @@ pub struct Model {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub auth: Option<ServiceAuth>,
 }
-impl Default for Model {
-    fn default() -> Self {
-        Self {
-            id: ServiceType::TributeBot,
-            authorized: false,
-            auth: None,
-            settings: None,
-        }
-    }
-}
+
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {}
 
@@ -32,8 +23,6 @@ impl ActiveModelBehavior for ActiveModel {}
 #[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
 #[sea_orm(rs_type = "String", db_type = "Text")]
 pub enum ServiceType {
-    #[sea_orm(string_value = "TributeBot")]
-    TributeBot,
     #[sea_orm(string_value = "Streamelements")]
     Streamelements,
     #[sea_orm(string_value = "Twitch")]

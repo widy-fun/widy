@@ -1,11 +1,18 @@
 use axum::extract::ws::{Message, Utf8Bytes};
+use serde::Serialize;
 use std::collections::HashMap;
 use tokio::sync::{mpsc, Mutex};
 use uuid::Uuid;
 
-use crate::services::EventMessage;
+use crate::enums::AppEvent;
 
 type Tx = mpsc::UnboundedSender<Message>;
+
+#[derive(Serialize, Clone, Debug)]
+pub struct EventMessage<T> {
+    pub event: AppEvent,
+    pub data: T,
+}
 
 pub struct WebSocketBroadcaster {
     websocket_clients: Mutex<HashMap<Uuid, Tx>>,

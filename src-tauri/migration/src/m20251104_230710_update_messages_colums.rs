@@ -23,7 +23,7 @@ impl MigrationTrait for Migration {
                     .add_column(
                         ColumnDef::new(Messages::Service)
                             .text()
-                            .default(ServiceType::TributeBot),
+                            .default(ServiceType::Tribute),
                     )
                     .to_owned(),
             )

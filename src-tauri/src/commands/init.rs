@@ -1,17 +1,15 @@
 use crate::services::{
     AxumService, ConfigService, DatabaseService, DeepLinkDispatcherService, DestreamService,
     DonatePayService, DonationAlertsService, ExchangeRatesService, MediaService, NsfwService,
-    StreamElementsService, StreamLabsService, TelegramService, TributeService, TtsService,
-    TwitchService, WebSocketBroadcaster, WidySolService, WidyTonService,
+    StreamElementsService, StreamLabsService, TributeService, TtsService, TwitchService,
+    WebSocketBroadcaster, WidySolService, WidyTonService,
 };
 use crate::utils::copy_assets_to_static;
-use grammers_client::types::{LoginToken, PasswordToken};
 use lingua::Language::{
     Arabic, Chinese, English, French, German, Hindi, Portuguese, Russian, Spanish, Ukrainian,
 };
 use lingua::LanguageDetectorBuilder;
 use std::sync::Arc;
-use tauri::path::BaseDirectory;
 use tauri::{AppHandle, Manager, State};
 use tokio::sync::Mutex;
 pub struct ExecutionFlag(pub Mutex<bool>);
@@ -84,20 +82,6 @@ pub async fn init(app: AppHandle, flag: State<'_, ExecutionFlag>) -> Result<(), 
     //stream elements
     let stream_elements_service = StreamElementsService::new();
     app.manage(stream_elements_service);
-
-    //telegram
-    app.manage(Mutex::new(None::<LoginToken>));
-    app.manage(Mutex::new(None::<PasswordToken>));
-    let session_path = app
-        .path()
-        .resolve("telegram.session", BaseDirectory::AppLocalData)
-        .map_err(|e| log::error!("Failed to resolve telegram session path: {}", e));
-    if let Ok(session_path) = session_path {
-        let mut telegram_service =
-            TelegramService::new(config_service.api_id, config_service.api_hash, session_path);
-        let _ = telegram_service.connect(&app).await;
-        app.manage(telegram_service);
-    }
 
     //widy sol
     let widy_sol_service = Arc::new(WidySolService::new(&config_service.widy_sol_program_id));

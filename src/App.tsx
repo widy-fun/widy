@@ -19,7 +19,6 @@ import DonationAlerts from "./components/donationalerts/DonationAlerts";
 import ServicesSettings from "./components/services/ServicesSettings";
 import StreamElements from "./components/streamelements/StreamElements";
 import StreamLabs from "./components/streamlabs/StreamLabs";
-import TelegramAuthorization from "./components/telegram-authorization/TelegramAuthorization";
 import Tribute from "./components/tribute/Tribute";
 import Twitch from "./components/twitch/Twitch";
 import UpdaterDialog from "./components/UpdaterDialog";
@@ -100,10 +99,6 @@ function App() {
 				<CircularProgress sx={{ placeSelf: "center" }} />
 			) : (
 				<Routes>
-					<Route
-						path="/telegram-authorization/*"
-						element={<TelegramAuthorization />}
-					/>
 					<Route path="/streamelements/*" element={<StreamElements />} />
 					<Route path="/streamlabs/*" element={<StreamLabs />} />
 					<Route path="/twitch/*" element={<Twitch />} />

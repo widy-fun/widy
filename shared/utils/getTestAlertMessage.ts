@@ -37,7 +37,7 @@ const getTestAlertMessage = ({
 			exchanged_amount: 1,
 			exchanged_currency: Currency.EUR,
 			created_at: Math.round(new Date().getTime() / 1000),
-			service: ServiceType.TributeBot,
+			service: ServiceType.Tribute,
 			id: crypto.randomUUID(),
 			message_id: messageId,
 		},
