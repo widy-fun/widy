@@ -48,18 +48,18 @@ struct Operation {
     extensions: Extensions,
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TwitchClipInfo {
+struct TwitchClipInfo {
     pub data: TwitchData,
     pub extensions: TwitchExtensions,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TwitchData {
+struct TwitchData {
     pub clip: Clip,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Clip {
+struct Clip {
     pub id: String,
     #[serde(rename = "playbackAccessToken")]
     pub playback_access_token: PlaybackAccessToken,
@@ -70,7 +70,7 @@ pub struct Clip {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct PlaybackAccessToken {
+struct PlaybackAccessToken {
     pub signature: String,
     pub value: String,
     #[serde(rename = "__typename")]
@@ -78,7 +78,7 @@ pub struct PlaybackAccessToken {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Token {
+struct Token {
     pub authorization: Authorization,
     pub clip_slug: String,
     pub clip_uri: String,
@@ -88,13 +88,13 @@ pub struct Token {
     pub version: u64,
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Authorization {
+struct Authorization {
     pub forbidden: bool,
     pub reason: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct VideoQuality {
+struct VideoQuality {
     #[serde(rename = "frameRate")]
     pub frame_rate: f64,
     pub quality: String,
@@ -105,7 +105,7 @@ pub struct VideoQuality {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TwitchExtensions {
+struct TwitchExtensions {
     #[serde(rename = "durationMilliseconds")]
     pub duration_milliseconds: i64,
     #[serde(rename = "operationName")]

@@ -88,7 +88,7 @@ impl TelegramService {
         Ok(())
     }
 
-    pub async fn set_authorized(&self, app: &AppHandle, authorized: bool) -> Result<(), String> {
+    async fn set_authorized(&self, app: &AppHandle, authorized: bool) -> Result<(), String> {
         let database_service = app.state::<DatabaseService>();
         let mut authorized_guard = self.authorized.lock().await;
         *authorized_guard = authorized;
@@ -98,7 +98,7 @@ impl TelegramService {
             .await
     }
 
-    pub async fn listen_tribute(&self, app: &AppHandle) -> Result<(), String> {
+    async fn listen_tribute(&self, app: &AppHandle) -> Result<(), String> {
         let app = app.clone();
         #[cfg(not(debug_assertions))]
         let tribute_id: i64 = 6675346585;

@@ -23,7 +23,7 @@ use rten_tensor::prelude::*;
 use rten_tensor::NdTensor;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct NsfwDetection {
+struct NsfwDetection {
     pub label: &'static str,
     pub confidence: f32,
 }

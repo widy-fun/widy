@@ -32,7 +32,7 @@ use tower_http::services::{ServeDir, ServeFile};
 type Tx = mpsc::UnboundedSender<Message>;
 
 #[derive(Debug, Deserialize)]
-pub struct DonationsQuery {
+struct DonationsQuery {
     pub limit: u64,
     pub offset: u64,
     pub exclude_donations: bool,
@@ -41,7 +41,7 @@ pub struct DonationsQuery {
     pub exclude_raids: bool,
 }
 #[derive(Debug, Deserialize)]
-pub struct GoalsQuery {
+struct GoalsQuery {
     pub r#type: GoalType,
 }
 
