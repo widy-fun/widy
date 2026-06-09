@@ -159,7 +159,7 @@ impl TributeService {
         let database_service = app.state::<DatabaseService>();
         database_service
             .update_service(entity::service::Model {
-                id: ServiceType::WidyTon,
+                id: ServiceType::Tribute,
                 settings: None,
                 auth: None,
                 authorized: false,
