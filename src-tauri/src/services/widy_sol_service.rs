@@ -151,66 +151,71 @@ impl WidySolService {
             ..
         }) = service
         {
-            let app_clone = app.clone();
-            tauri::async_runtime::spawn(async move {
-                if let Err(e) = Self::subscribe_to_donation_event(app_clone, auth.user).await {
-                    ::log::error!("Failed to listen to program events: {}", e);
-                }
-            });
+            self.subscribe_to_donation_event(app.clone(), auth.user)
+                .await;
         }
         Ok(())
     }
 
-    async fn subscribe_to_donation_event(
-        app: AppHandle,
-        user: String,
-    ) -> core::result::Result<(), Box<dyn std::error::Error>> {
-        let widy_sol_service = app.state::<Arc<WidySolService>>();
-        let mut sign_out_receiver = widy_sol_service.sign_out_sender.subscribe();
-        let payer = Keypair::new();
-        #[cfg(debug_assertions)]
-        let cluster = Cluster::Devnet;
-        #[cfg(not(debug_assertions))]
-        let cluster = Cluster::Mainnet;
-        let client =
-            Client::new_with_options(cluster, Arc::new(payer), CommitmentConfig::finalized());
+    async fn subscribe_to_donation_event(&self, app: AppHandle, user: String) {
+        tauri::async_runtime::spawn(async move {
+            let widy_sol_service = app.state::<Arc<WidySolService>>();
+            let mut sign_out_receiver = widy_sol_service.sign_out_sender.subscribe();
+            let payer = Keypair::new();
+            #[cfg(debug_assertions)]
+            let cluster = Cluster::Devnet;
+            #[cfg(not(debug_assertions))]
+            let cluster = Cluster::Mainnet;
+            let client =
+                Client::new_with_options(cluster, Arc::new(payer), CommitmentConfig::finalized());
 
-        let program = client.program(Pubkey::from_str_const(
-            &widy_sol_service.widy_sol_program_id,
-        ))?;
-        let subscription = program
-            .on(move |ctx: &EventContext, event: DonationEvent| {
-                if ctx.signature.to_string()
-                    == "1111111111111111111111111111111111111111111111111111111111111111"
-                        .to_string()
-                {
-                    return;
-                }
-                let app = app.clone();
-                let signature = ctx.signature.to_string();
-                let amount = event.amount;
-                let event_user = event.user;
-                let message = event.message.clone();
-                if user == event_user.to_string() {
-                    tauri::async_runtime::spawn(async move {
-                        let _ = on_new_donation(
-                            signature,
-                            ServiceType::WidySol,
-                            event.name.clone(),
-                            entity::settings::Currency::USD,
-                            amount as f64 / USDT_MULTIPLICATION,
-                            message.clone(),
-                            &app,
-                        )
-                        .await;
-                    });
-                }
-            })
-            .await?;
+            let program = client
+                .program(Pubkey::from_str_const(
+                    &widy_sol_service.widy_sol_program_id,
+                ))
+                .map_err(|e| {
+                    ::log::error!("WidySol program error: {}", e);
+                    e.to_string()
+                })
+                .unwrap();
+            let subscription = program
+                .on(move |ctx: &EventContext, event: DonationEvent| {
+                    if ctx.signature.to_string()
+                        == "1111111111111111111111111111111111111111111111111111111111111111"
+                            .to_string()
+                    {
+                        return;
+                    }
+                    let app = app.clone();
+                    let signature = ctx.signature.to_string();
+                    let amount = event.amount;
+                    let event_user = event.user;
+                    let message = event.message.clone();
+                    if user == event_user.to_string() {
+                        tauri::async_runtime::spawn(async move {
+                            let _ = on_new_donation(
+                                signature,
+                                ServiceType::WidySol,
+                                event.name.clone(),
+                                entity::settings::Currency::USD,
+                                amount as f64 / USDT_MULTIPLICATION,
+                                message.clone(),
+                                &app,
+                            )
+                            .await;
+                        });
+                    }
+                })
+                .await
+                .map_err(|e| {
+                    ::log::error!("WidySol subscription error: {}", e);
+                    e.to_string()
+                })
+                .unwrap();
 
-        sign_out_receiver.recv().await.ok();
-        subscription.unsubscribe().await;
-        Ok(())
+            sign_out_receiver.recv().await.ok();
+            subscription.unsubscribe().await;
+        });
     }
 
     pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), String> {
