@@ -39,6 +39,7 @@ struct InnerData {
 enum NotificationType {
     #[serde(rename = "donation")]
     Donation,
+    Any,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -115,129 +116,106 @@ impl DonatePayService {
                     true,
                 )
                 .await?;
-            let app_clone = app.clone();
-            tauri::async_runtime::spawn(async move {
-                let _ =
-                    Self::run_websocket_client(&app_clone, &auth.access_token, &user_info).await;
-            });
+            let token = self.get_token(&reqwest_client, &auth.access_token).await?;
+            self.run_websocket_client(app.clone(), user_info, token)
+                .await;
         }
 
         Ok(())
     }
 
-    async fn run_websocket_client(
-        app: &AppHandle,
-        access_token: &str,
-        user_info: &UserInfo,
-    ) -> Result<(), String> {
-        let donate_pay_service = app.state::<DonatePayService>();
-        let reqwest_client = app.state::<reqwest::Client>();
+    async fn run_websocket_client(&self, app: AppHandle, user_info: UserInfo, token: String) {
+        tauri::async_runtime::spawn(async move {
+            let donate_pay_service = app.state::<DonatePayService>();
+            'connection_loop: loop {
+                log::info!("Connecting to DonatePay websocket");
+                match connect_async("wss://centrifugo.donatepay.ru:443/connection/websocket").await
+                {
+                    Ok((mut socket, _)) => {
+                        log::info!("DonatePay webSocket connected.");
 
-        'connection_loop: loop {
-            log::info!("Connecting to DonatePay websocket");
-            match connect_async("wss://centrifugo.donatepay.ru:443/connection/websocket").await {
-                Ok((mut socket, _)) => {
-                    log::info!("DonatePay webSocket connected.");
-                    let token: String = donate_pay_service
-                        .get_token(&reqwest_client, &access_token)
-                        .await?;
-                    let auth_msg = json!({
-                        "params": { "token": token, "name": "js" },
-                        "id": 1,
-                    });
-                    let sub_msg = json!({
-                        "method": 1,
-                        "params": { "channel": format!("widgets:LastEvents#{}", user_info.id) },
-                        "id": 2,
-                    });
+                        let auth_msg = json!({
+                            "params": { "token": token, "name": "js" },
+                            "id": 1,
+                        });
+                        let sub_msg = json!({
+                            "method": 1,
+                            "params": { "channel": format!("widgets:LastEvents#{}", user_info.id) },
+                            "id": 2,
+                        });
 
-                    if let Err(e) = socket
-                        .send(Message::Text(auth_msg.to_string().into()))
-                        .await
-                    {
-                        log::error!("Failed to send DonatePay auth: {e}");
-                        continue 'connection_loop;
-                    }
-                    if let Err(e) = socket.send(Message::Text(sub_msg.to_string().into())).await {
-                        log::error!("Failed to send subscription: {e}");
-                        continue 'connection_loop;
-                    }
-                    while let Some(msg_result) = socket.next().await {
-                        if donate_pay_service.is_sign_out.load(Ordering::Relaxed) {
-                            donate_pay_service
-                                .is_sign_out
-                                .store(false, Ordering::Relaxed);
-                            break 'connection_loop;
+                        if let Err(e) = socket
+                            .send(Message::Text(auth_msg.to_string().into()))
+                            .await
+                        {
+                            log::error!("Failed to send DonatePay auth: {e}");
+                            continue 'connection_loop;
                         }
-                        match msg_result {
-                            Ok(Message::Text(text)) => {
-                                if let Ok(WidgetEvent {
-                                    result:
-                                        EventResult {
-                                            data:
-                                                EventData {
-                                                    data:
-                                                        InnerData {
-                                                            notification:
-                                                                EventNotification {
-                                                                    vars,
-                                                                    notification_type:
-                                                                        NotificationType::Donation,
-                                                                    ..
-                                                                },
-                                                            ..
-                                                        },
-                                                    ..
-                                                },
-                                            ..
-                                        },
-                                }) = serde_json::from_str::<WidgetEvent>(&text)
-                                {
-                                    if let Ok(event_vars) = serde_json::from_str::<EventVars>(&vars)
-                                    {
-                                        let service_id = uuid::Uuid::new_v4().to_string();
-                                        let _ = on_new_donation(
-                                            service_id,
-                                            ServiceType::DonatePay,
-                                            Some(event_vars.name),
-                                            entity::settings::Currency::RUB,
-                                            event_vars.sum,
-                                            Some(event_vars.comment),
-                                            &app,
-                                        )
-                                        .await;
-                                    } else {
-                                        log::error!(
-                                            "Failed to parse event vars for message: {}",
-                                            text
-                                        );
+                        if let Err(e) = socket.send(Message::Text(sub_msg.to_string().into())).await
+                        {
+                            log::error!("Failed to send subscription: {e}");
+                            continue 'connection_loop;
+                        }
+                        while let Some(msg_result) = socket.next().await {
+                            if donate_pay_service.is_sign_out.load(Ordering::Relaxed) {
+                                donate_pay_service
+                                    .is_sign_out
+                                    .store(false, Ordering::Relaxed);
+                                break 'connection_loop;
+                            }
+                            match msg_result {
+                                Ok(Message::Text(text)) => {
+                                    if let Ok(event) = serde_json::from_str::<WidgetEvent>(&text) {
+                                        if let NotificationType::Donation =
+                                            event.result.data.data.notification.notification_type
+                                        {
+                                            let vars = event.result.data.data.notification.vars;
+                                            if let Ok(event_vars) =
+                                                serde_json::from_str::<EventVars>(&vars)
+                                            {
+                                                let service_id = uuid::Uuid::new_v4().to_string();
+                                                let _ = on_new_donation(
+                                                    service_id,
+                                                    ServiceType::DonatePay,
+                                                    Some(event_vars.name),
+                                                    entity::settings::Currency::RUB,
+                                                    event_vars.sum,
+                                                    Some(event_vars.comment),
+                                                    &app,
+                                                )
+                                                .await;
+                                            } else {
+                                                log::error!(
+                                                    "Failed to parse event vars for message: {}",
+                                                    text
+                                                );
+                                            }
+                                        }
                                     }
                                 }
-                            }
 
-                            Ok(Message::Close(_)) => {
-                                log::warn!("DonatePay closed connection.");
-                                break;
+                                Ok(Message::Close(_)) => {
+                                    log::warn!("DonatePay closed connection.");
+                                    break;
+                                }
+                                Err(e) => {
+                                    log::error!("DonatePay WebSocket error: {}", e);
+                                    break;
+                                }
+                                _ => {}
                             }
-                            Err(e) => {
-                                log::error!("DonatePay WebSocket error: {}", e);
-                                break;
-                            }
-                            _ => {}
                         }
                     }
-                }
-                Err(e) => {
-                    log::error!(
-                        "Failed to connect DonatePay WebSocket: {}. Retrying in 5s...",
-                        e
-                    );
-                    tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+                    Err(e) => {
+                        log::error!(
+                            "Failed to connect DonatePay WebSocket: {}. Retrying in 5s...",
+                            e
+                        );
+                        tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+                    }
                 }
             }
-        }
-
-        Ok(())
+        });
     }
 
     async fn get_token(
