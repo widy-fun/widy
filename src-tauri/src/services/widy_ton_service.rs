@@ -191,78 +191,75 @@ impl WidyTonService {
             ..
         }) = service
         {
-            let app_clone = app.clone();
-            tauri::async_runtime::spawn(async move {
-                if let Err(e) =
-                    Self::subscribe_to_donation_event(app_clone, auth.donation_account_address)
-                        .await
-                {
-                    ::log::error!("Failed to listen to program events: {}", e);
-                }
-            });
+            self.subscribe_to_donation_event(app.clone(), auth.donation_account_address)
+                .await;
         }
 
         Ok(())
     }
 
     pub async fn subscribe_to_donation_event(
+        &self,
         app: AppHandle,
         donation_account_address: String,
-    ) -> core::result::Result<(), Box<dyn std::error::Error>> {
-        let widy_ton_service = app.state::<Arc<WidyTonService>>();
-        let mut sign_out_receiver = widy_ton_service.sign_out_sender.subscribe();
-        let client = es::ClientBuilder::for_url(&format!(
-            "https://tonapi.io/v2/sse/accounts/traces?accounts={}&operations=0x05a73567",
-            donation_account_address
-        ))
-        .map_err(|e| {
-            log::error!("{}", e.to_string());
-        })
-        .unwrap()
-        .reconnect(
-            es::ReconnectOptions::reconnect(true)
-                .retry_initial(false)
-                .delay(Duration::from_secs(1))
-                .backoff_factor(2)
-                .delay_max(Duration::from_secs(60))
-                .build(),
-        )
-        .build();
-        let stop_signal = sign_out_receiver.recv();
-        pin!(stop_signal);
-        let mut stream = client.stream().take_until(stop_signal);
+    ) {
+        tauri::async_runtime::spawn(async move {
+            let widy_ton_service = app.state::<Arc<WidyTonService>>();
+            let mut sign_out_receiver = widy_ton_service.sign_out_sender.subscribe();
+            let client = es::ClientBuilder::for_url(&format!(
+                "https://tonapi.io/v2/sse/accounts/traces?accounts={}&operations=0x05a73567",
+                donation_account_address
+            ))
+            .map_err(|e| {
+                log::error!("WidyTon es build error: {}", e.to_string());
+                e.to_string()
+            })
+            .unwrap()
+            .reconnect(
+                es::ReconnectOptions::reconnect(true)
+                    .retry_initial(false)
+                    .delay(Duration::from_secs(1))
+                    .backoff_factor(2)
+                    .delay_max(Duration::from_secs(60))
+                    .build(),
+            )
+            .build();
+            let stop_signal = sign_out_receiver.recv();
+            pin!(stop_signal);
+            let mut stream = client.stream().take_until(stop_signal);
 
-        while let Ok(Some(sse)) = stream.try_next().await {
-            match sse {
-                es::SSE::Event(ev) => {
-                    if let Ok(trace) = serde_json::from_str::<TonTraceAccounts>(&ev.data) {
-                        if let Some(transaction) =
-                            widy_ton_service.get_donation_transaction(trace.hash).await
-                        {
-                            if let Some(message) = transaction.out_msgs.first() {
-                                if let Ok(event) =
-                                    widy_ton_service.parse_donation_event(&message.raw_body)
-                                {
-                                    let _ = on_new_donation(
-                                        transaction.hash,
-                                        ServiceType::WidyTon,
-                                        Some(event.name),
-                                        entity::settings::Currency::USD,
-                                        event.amount as f64 / USDT_MULTIPLICATION,
-                                        Some(event.message),
-                                        &app,
-                                    )
-                                    .await;
+            while let Ok(Some(sse)) = stream.try_next().await {
+                match sse {
+                    es::SSE::Event(ev) => {
+                        if let Ok(trace) = serde_json::from_str::<TonTraceAccounts>(&ev.data) {
+                            if let Some(transaction) =
+                                widy_ton_service.get_donation_transaction(trace.hash).await
+                            {
+                                if let Some(message) = transaction.out_msgs.first() {
+                                    if let Ok(event) =
+                                        widy_ton_service.parse_donation_event(&message.raw_body)
+                                    {
+                                        let _ = on_new_donation(
+                                            transaction.hash,
+                                            ServiceType::WidyTon,
+                                            Some(event.name),
+                                            entity::settings::Currency::USD,
+                                            event.amount as f64 / USDT_MULTIPLICATION,
+                                            Some(event.message),
+                                            &app,
+                                        )
+                                        .await;
+                                    }
                                 }
-                            }
-                        };
+                            };
+                        }
                     }
+                    _ => {}
                 }
-                _ => {}
             }
-        }
-        Ok(())
+        });
     }
+
     fn parse_donation_event(&self, hex: &str) -> Result<DonationEvent, String> {
         let boc_bytes = hex::decode(hex).map_err(|e| e.to_string())?;
         let boc = BagOfCells::parse(&boc_bytes).map_err(|e| e.to_string())?;
