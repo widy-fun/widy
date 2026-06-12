@@ -91,105 +91,104 @@ impl DestreamService {
                     true,
                 )
                 .await?;
-            let app_clone = app.clone();
-            tauri::async_runtime::spawn(async move {
-                let _ = Self::run_websocket_client(&app_clone, &auth.overlayid).await;
-            });
+            self.run_websocket_client(app.clone(), auth.overlayid).await;
         }
 
         Ok(())
     }
 
-    async fn run_websocket_client(app: &AppHandle, overlayid: &str) -> Result<(), String> {
-        let destream_service = app.state::<DestreamService>();
-        let handshake = format!(
-            "{}{}",
-            "{\"protocol\":\"json\",\"version\":1}",
-            char::from(30)
-        );
-        let ping_message = &format!("{}{}", "{\"type\":6}", char::from(30));
-        'connection_loop: loop {
-            log::info!("Connecting to Destream websocket");
-            match connect_async(format!(
-                "wss://api.destream.net/ws/overlays?overlayid={}",
-                overlayid
-            ))
-            .await
-            {
-                Ok((mut socket, _)) => {
-                    log::info!("Destream webSocket connected.");
+    async fn run_websocket_client(&self, app: AppHandle, overlayid: String) {
+        tauri::async_runtime::spawn(async move {
+            let destream_service = app.state::<DestreamService>();
+            let handshake = format!(
+                "{}{}",
+                "{\"protocol\":\"json\",\"version\":1}",
+                char::from(30)
+            );
+            let ping_message = &format!("{}{}", "{\"type\":6}", char::from(30));
+            'connection_loop: loop {
+                log::info!("Connecting to Destream websocket");
+                match connect_async(format!(
+                    "wss://api.destream.net/ws/overlays?overlayid={}",
+                    overlayid
+                ))
+                .await
+                {
+                    Ok((mut socket, _)) => {
+                        log::info!("Destream webSocket connected.");
 
-                    if let Err(e) = socket.send(Message::Text(handshake.as_str().into())).await {
-                        log::error!("Failed to send Destream version: {e}");
-                        continue 'connection_loop;
-                    }
-
-                    while let Some(msg_result) = socket.next().await {
-                        if destream_service.is_sign_out.load(Ordering::Relaxed) {
-                            destream_service.is_sign_out.store(false, Ordering::Relaxed);
-                            break 'connection_loop;
+                        if let Err(e) = socket.send(Message::Text(handshake.as_str().into())).await
+                        {
+                            log::error!("Failed to send Destream version: {e}");
+                            continue 'connection_loop;
                         }
-                        match msg_result {
-                            Ok(Message::Text(text)) => {
-                                if text == ping_message {
-                                    let _ = socket.send(Message::Text(ping_message.into())).await;
-                                    continue;
-                                }
-                                if let Ok(event) = serde_json::from_str::<DestreamEvent>(
-                                    &text.replace(char::from(30), ""),
-                                ) {
-                                    let donations: Vec<Donation> = {
-                                        if cfg!(debug_assertions) {
-                                            event
-                                                .arguments
-                                                .iter()
-                                                .flat_map(|arg| arg.test_data.clone())
-                                                .collect()
-                                        } else {
-                                            event
-                                                .arguments
-                                                .iter()
-                                                .flat_map(|arg| arg.data.clone())
-                                                .collect()
+
+                        while let Some(msg_result) = socket.next().await {
+                            if destream_service.is_sign_out.load(Ordering::Relaxed) {
+                                destream_service.is_sign_out.store(false, Ordering::Relaxed);
+                                break 'connection_loop;
+                            }
+                            match msg_result {
+                                Ok(Message::Text(text)) => {
+                                    if text == ping_message {
+                                        let _ =
+                                            socket.send(Message::Text(ping_message.into())).await;
+                                        continue;
+                                    }
+                                    if let Ok(event) = serde_json::from_str::<DestreamEvent>(
+                                        &text.replace(char::from(30), ""),
+                                    ) {
+                                        let donations: Vec<Donation> = {
+                                            if cfg!(debug_assertions) {
+                                                event
+                                                    .arguments
+                                                    .iter()
+                                                    .flat_map(|arg| arg.test_data.clone())
+                                                    .collect()
+                                            } else {
+                                                event
+                                                    .arguments
+                                                    .iter()
+                                                    .flat_map(|arg| arg.data.clone())
+                                                    .collect()
+                                            }
+                                        };
+                                        for donation in donations {
+                                            let _ = on_new_donation(
+                                                donation.id,
+                                                ServiceType::Destream,
+                                                donation.username,
+                                                donation.source_currency_id,
+                                                donation.source_currency_amount,
+                                                donation.description,
+                                                &app,
+                                            )
+                                            .await;
                                         }
-                                    };
-                                    for donation in donations {
-                                        let _ = on_new_donation(
-                                            donation.id,
-                                            ServiceType::Destream,
-                                            donation.username,
-                                            donation.source_currency_id,
-                                            donation.source_currency_amount,
-                                            donation.description,
-                                            app,
-                                        )
-                                        .await;
                                     }
                                 }
+                                Ok(Message::Close(_)) => {
+                                    log::warn!("Destream closed connection.");
+                                    break;
+                                }
+                                Err(e) => {
+                                    log::error!("Destream WebSocket error: {}", e);
+                                    break;
+                                }
+                                _ => {}
                             }
-                            Ok(Message::Close(_)) => {
-                                log::warn!("Destream closed connection.");
-                                break;
-                            }
-                            Err(e) => {
-                                log::error!("Destream WebSocket error: {}", e);
-                                break;
-                            }
-                            _ => {}
                         }
                     }
-                }
-                Err(e) => {
-                    log::error!(
-                        "Failed to connect Destream WebSocket: {}. Retrying in 5s...",
-                        e
-                    );
-                    tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+                    Err(e) => {
+                        log::error!(
+                            "Failed to connect Destream WebSocket: {}. Retrying in 5s...",
+                            e
+                        );
+                        tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+                    }
                 }
             }
-        }
-
-        Ok(())
+        });
     }
 
     async fn get_overlay_info(
