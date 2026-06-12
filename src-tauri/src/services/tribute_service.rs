@@ -74,62 +74,60 @@ impl TributeService {
                     true,
                 )
                 .await?;
-            let app_clone = app.clone();
-            tauri::async_runtime::spawn(async move {
-                Self::subscribe_to_donation_event(&app_clone, &auth.api_key).await
-            });
+
+            self.subscribe_to_donation_event(app.clone(), auth.api_key)
+                .await;
         }
 
         Ok(())
     }
 
-    pub async fn subscribe_to_donation_event(
-        app: &AppHandle,
-        api_key: &str,
-    ) -> core::result::Result<(), String> {
-        let tribute_service = app.state::<TributeService>();
-        let mut sign_out_receiver = tribute_service.sign_out_sender.subscribe();
-        let client = es::ClientBuilder::for_url(&format!(
-            "https://proxy.tribute.tg/api/v1/obs/alerts/stream?token={}",
-            api_key
-        ))
-        .map_err(|e| {
-            log::error!("{}", e.to_string());
-            e.to_string()
-        })?
-        .reconnect(
-            es::ReconnectOptions::reconnect(true)
-                .retry_initial(false)
-                .delay(Duration::from_secs(1))
-                .backoff_factor(2)
-                .delay_max(Duration::from_secs(60))
-                .build(),
-        )
-        .build();
-        let stop_signal = sign_out_receiver.recv();
-        pin!(stop_signal);
-        let mut stream = client.stream().take_until(stop_signal);
+    pub async fn subscribe_to_donation_event(&self, app: AppHandle, api_key: String) {
+        tauri::async_runtime::spawn(async move {
+            let tribute_service = app.state::<TributeService>();
+            let mut sign_out_receiver = tribute_service.sign_out_sender.subscribe();
+            let client = es::ClientBuilder::for_url(&format!(
+                "https://proxy.tribute.tg/api/v1/obs/alerts/stream?token={}",
+                api_key
+            ))
+            .map_err(|e| {
+                log::error!("Tribute es build error: {}", e.to_string());
+                e.to_string()
+            })
+            .unwrap()
+            .reconnect(
+                es::ReconnectOptions::reconnect(true)
+                    .retry_initial(false)
+                    .delay(Duration::from_secs(1))
+                    .backoff_factor(2)
+                    .delay_max(Duration::from_secs(60))
+                    .build(),
+            )
+            .build();
+            let stop_signal = sign_out_receiver.recv();
+            pin!(stop_signal);
+            let mut stream = client.stream().take_until(stop_signal);
 
-        while let Ok(Some(sse)) = stream.try_next().await {
-            match sse {
-                es::SSE::Event(ev) => {
-                    if let Ok(tribute_event) = serde_json::from_str::<TributeEvent>(&ev.data) {
-                        let _ = on_new_donation(
-                            tribute_event.id,
-                            ServiceType::Tribute,
-                            tribute_event.data.display_name,
-                            tribute_event.data.currency,
-                            tribute_event.data.amount as f64 / 100.0,
-                            tribute_event.data.message,
-                            &app,
-                        )
-                        .await;
+            while let Ok(Some(sse)) = stream.try_next().await {
+                match sse {
+                    es::SSE::Event(ev) => {
+                        if let Ok(tribute_event) = serde_json::from_str::<TributeEvent>(&ev.data) {
+                            let _ = on_new_donation(
+                                tribute_event.id,
+                                ServiceType::Tribute,
+                                tribute_event.data.display_name,
+                                tribute_event.data.currency,
+                                tribute_event.data.amount as f64 / 100.0,
+                                tribute_event.data.message,
+                                &app,
+                            )
+                            .await;
+                        }
                     }
+                    _ => {}
                 }
-                _ => {}
             }
-        }
-        Ok(())
+        });
     }
 
     async fn get_products(
