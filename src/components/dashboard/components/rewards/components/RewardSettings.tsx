@@ -1,11 +1,19 @@
 import { Button, MenuItem, Select, TextField } from "@mui/material";
-import { type IReward, Platform, RewardType } from "@widy/sdk";
+import {
+	AlertSeverity,
+	type IReward,
+	Platform,
+	RewardType,
+	ServiceType,
+} from "@widy/sdk";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { NumericFormat } from "react-number-format";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
+import { showSnackBar } from "../../../../../../shared/slices/snackBarSlice";
+import { useGetServiceByIdQuery } from "../../../../../api/servicesApi";
 import { DEFAULT_REWARD } from "../../../../../constants";
 import type { AppState } from "../../../../../store";
 import { setReward } from "../../../../../store/slices/rewardsSlice";
@@ -19,6 +27,7 @@ const RewardSettings = ({ onSave }: { onSave: () => Promise<void> }) => {
 	const dispatch = useDispatch();
 	const { reward } = useSelector((state: AppState) => state.rewardsState);
 	const navigate = useNavigate();
+	const { data: twitch } = useGetServiceByIdQuery({ id: ServiceType.Twitch });
 
 	const { control, handleSubmit, reset } = useForm<IReward>({
 		defaultValues: reward,
@@ -29,6 +38,15 @@ const RewardSettings = ({ onSave }: { onSave: () => Promise<void> }) => {
 	}, [reward, reset]);
 
 	const onSubmit = async (data: IReward) => {
+		if (!twitch?.authorized) {
+			dispatch(
+				showSnackBar({
+					message: t("error.not_connected"),
+					alertSeverity: AlertSeverity.warning,
+				}),
+			);
+			return;
+		}
 		dispatch(setReward(data));
 		await onSave();
 	};

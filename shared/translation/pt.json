@@ -15,7 +15,7 @@
 	"milliseconds": "ms",
 	"token": "Token",
 	"overlay_id": "ID do Overlay",
-	"api_key": "Chave API",
+	"api_key": "Chave da API",
 	"disconnected": "Desconectado",
 	"documentation": "Documentação",
 	"authorization": {
@@ -29,7 +29,7 @@
 		"password": "Senha",
 		"streamelements": "Você precisa conectar com o JWT do StreamElements primeiro",
 		"you_can_find_by_url": "Você pode encontrar em",
-		"set_id_and_jwt": "Você precisa definir o ID da conta e JWT do StreamElements para {{service}}"
+		"set_id_and_jwt": "Você precisa definir o ID da conta StreamElements e o JWT para {{service}}"
 	},
 	"error": {
 		"wrong_lots_format": "Formato de lotes incorreto",
@@ -40,7 +40,7 @@
 		"title": "Atualização",
 		"description": "Uma nova versão do aplicativo está disponível. Deseja atualizar?",
 		"update": "Atualizar",
-		"later": "Mais tarde",
+		"later": "Depois",
 		"downloading": "Baixando..."
 	},
 	"media": {
@@ -50,11 +50,11 @@
 		"tiktok": "Tiktok"
 	},
 	"integration": {
-		"tribute": "Exibir mensagens de tributo"
+		"tribute": "Mostrar mensagens de tributo"
 	},
 	"auction": {
 		"lots": "Lotes",
-		"wheel": "Roleta",
+		"wheel": "Roda",
 		"settings": "Configurações"
 	},
 	"maption": {
@@ -64,7 +64,7 @@
 		"finish": "Finalizar",
 		"lat_error": "A latitude deve estar entre -90 e 90",
 		"lng_error": "A longitude deve estar entre -180 e 180",
-		"rules": "Para o ponteiro mudar automaticamente de posição na mensagem deve haver apenas uma palavra de:"
+		"rules": "Para o ponteiro mudar de posição automaticamente na mensagem deve haver apenas uma palavra de:"
 	},
 	"media_settings": {
 		"enabled": "Ativado",
@@ -84,7 +84,8 @@
 		"fighter": "Fighter",
 		"widgets": "Widgets",
 		"info": "Informações",
-		"nsfw": "NSFW"
+		"nsfw": "NSFW",
+		"rewards": "Recompensas"
 	},
 	"messages": {
 		"title": "Últimas mensagens"
@@ -93,6 +94,7 @@
 		"skip": "Pular",
 		"replay": "Reproduzir novamente",
 		"donated": "{{user_name}} doou {{amount}}{{currency}}",
+		"redemption": "{{user_name}} resgatou {{title}} {{cost}}",
 		"followed": "{{user_name}} seguiu",
 		"subscribed": "{{user_name}} assinou",
 		"gifted_subscriptions": "{{user_name}} presenteou {{total}} assinaturas",
@@ -101,9 +103,10 @@
 	"filter": {
 		"title": "Filtrar mensagens",
 		"exclude_donations": "Excluir doações",
-		"exclude_follows": "Excluir follows",
+		"exclude_follows": "Excluir seguidores",
 		"exclude_subscriptions": "Excluir assinaturas",
-		"exclude_raids": "Excluir raids"
+		"exclude_raids": "Excluir raids",
+		"exclude_redemptions": "Excluir resgates"
 	},
 	"settings": {
 		"title": "Configurações",
@@ -120,12 +123,12 @@
 		"normal": "Normal",
 		"dropout": "Dropout",
 		"spin": "Girar",
-		"speed": "Velocidade da roleta"
+		"speed": "Velocidade da roda"
 	},
 	"timer": {
 		"continue": "Continuar",
 		"pause": "Pausar",
-		"reset": "Resetar",
+		"reset": "Redefinir",
 		"add_time": "Adicionar tempo",
 		"reduce_time": "Reduzir tempo",
 		"add_timex2": "Adicionar tempo x2"
@@ -153,7 +156,7 @@
 		"delete": "Excluir",
 		"to_lot": "Para o lote",
 		"new": "Novo",
-		"add_to_random_slot": "Adicionar a lote aleatório"
+		"add_to_random_slot": "Adicionar a um lote aleatório"
 	},
 	"lots": {
 		"add": "Adicionar",
@@ -167,7 +170,7 @@
 		"new_donation": "Nova doação",
 		"show_odds": "Mostrar probabilidades",
 		"show_total_sum": "Mostrar soma total",
-		"greater_timer_adding_time": "Tempo adicional do timer maior",
+		"greater_timer_adding_time": "Maior tempo de adição do timer",
 		"not_add_time_if": "Não adicionar tempo se",
 		"adding_time": "Tempo"
 	},
@@ -193,7 +196,7 @@
 		"confirm_sign_out": "Tem certeza que deseja sair deste serviço?"
 	},
 	"twitch": {
-		"device_code_expired": "Código do dispositivo expirou. Tente novamente.",
+		"device_code_expired": "Código do dispositivo expirado. Tente novamente.",
 		"user_code": "Código do usuário",
 		"authorize_with_code": "Autorizar com código",
 		"waiting_authorization": "Aguardando autorização..."
@@ -205,19 +208,10 @@
 		"connect_to_existing_account": "Conectar a uma conta existente",
 		"create_donation_account_pending": "Criando conta de doação..."
 	},
-	"twitch_service_settings": {
-		"title": "Configurações do Twitch",
-		"points_currency_ratio": "Taxa de pontos para moeda",
-		"rewards_name": "Nome das recompensas",
-		"rewards_list": "Lista de recompensas",
-		"add_reward": "Adicionar recompensa",
-		"cost": "Custo",
-		"color": "Cor"
-	},
 	"alert": {
 		"image": "Imagem",
 		"audio": "Áudio",
-		"view": "Visualização",
+		"view": "Visualizar",
 		"title": "Título",
 		"message": "Mensagem",
 		"test_name": "Teste",
@@ -239,8 +233,20 @@
 		"type": "Tipo",
 		"Donation": "Doação",
 		"Subscription": "Assinatura",
-		"Follow": "Follow",
-		"Raid": "Raid"
+		"Follow": "Seguir",
+		"Raid": "Raid",
+		"variant": "Variante",
+		"audio_volume": "Volume do áudio",
+		"video_volume": "Volume do vídeo",
+		"video": "Vídeo",
+		"duration": "Duração",
+		"delay": "Atraso"
+	},
+	"alert_variant": {
+		"Image": "Imagem",
+		"Audio": "Áudio",
+		"Video": "Vídeo",
+		"ImageAndAudio": "Imagem e áudio"
 	},
 	"general": "Geral",
 	"goals": {
@@ -254,8 +260,8 @@
 		"elements": "Elementos",
 		"progress": "Progresso",
 		"goal_title": "Título da meta",
-		"amount_raise": "Valor a arrecadar",
-		"start_raising": "Iniciar arrecadação a partir de",
+		"amount_raise": "Quantidade a arrecadar",
+		"start_raising": "Começar a arrecadar a partir de",
 		"end_date": "Data final da meta",
 		"bar_height": "Altura da barra",
 		"rounding_radius": "Raio de arredondamento",
@@ -280,7 +286,7 @@
 		"sure_finish": "Tem certeza que deseja finalizar esta meta?",
 		"Donation": "Doação",
 		"TwitchSubscription": "Assinatura Twitch",
-		"TwitchFollow": "Follow Twitch",
+		"TwitchFollow": "Seguidor Twitch",
 		"goal_not_finished": "Você tem uma meta inacabada deste tipo."
 	},
 	"save": "Salvar",
@@ -292,8 +298,8 @@
 		"obs_dock_url": "URL do dock OBS"
 	},
 	"view": {
-		"top": "Imagem acima, texto abaixo",
-		"bottom": "Imagem abaixo, texto acima",
+		"top": "Imagem em cima, texto embaixo",
+		"bottom": "Imagem embaixo, texto em cima",
 		"left": "Imagem à esquerda, texto à direita",
 		"right": "Imagem à direita, texto à esquerda",
 		"overlay": "Texto sobreposto na imagem"
@@ -332,12 +338,12 @@
 		"settings": "Configurações",
 		"control": "Controle",
 		"delete_confirm": "Tem certeza que deseja excluir este widget?",
-		"invalid_manifest": "Manifest do widget inválido",
+		"invalid_manifest": "Manifesto do widget inválido",
 		"add_confirm": "Adicionar permitirá que {{widget_name}}:",
 		"installing": "Instalando...",
 		"updating": "Atualizando...",
 		"view_url": "URL de visualização",
-		"widget_connection": "O widget obtém ou envia requisições para:"
+		"widget_connection": "O widget envia ou recebe requisições para:"
 	},
 	"scopes": {
 		"widgets:messages.read": "Ler mensagens",
@@ -368,7 +374,7 @@
 		"widgets:auc-fighter:resume-match.subscription": "Inscrever em retomar partida",
 		"widgets:auc-fighter:cancel-match.subscription": "Inscrever em cancelar partida",
 		"widgets:auc-fighter:update-match.subscription": "Inscrever em atualizar partida",
-		"widgets:auc-fighter:settings.subscription": "Inscrever em configurações do auc-fighter",
+		"widgets:auc-fighter:settings.subscription": "Inscrever em configurações auc-fighter",
 		"widgets:alert:replay.subscription": "Inscrever em replay de alerta",
 		"widgets:alert:skip.subscription": "Inscrever em pular alerta",
 		"widgets:alert:test.subscription": "Inscrever em teste de alerta",
@@ -378,7 +384,7 @@
 		"widgets:media:settings.subscription": "Inscrever em configurações de mídia",
 		"widgets:media:skip.subscription": "Inscrever em pular mídia",
 		"widgets:media:skip-playing-media.subscription": "Inscrever em pular mídia em reprodução",
-		"widgets:media:end.subscription": "Inscrever em fim da mídia",
+		"widgets:media:end.subscription": "Inscrever em fim de mídia",
 		"widgets:media:error.subscription": "Inscrever em erro de mídia",
 		"widgets:media:pause.subscription": "Inscrever em pausar mídia",
 		"widgets:media:play.subscription": "Inscrever em reproduzir mídia",
@@ -396,11 +402,33 @@
 		"settings": "Configurações",
 		"window": "Janela",
 		"blur_timeout_duration": "Duração do timeout de desfoque",
-		"confidence_threshold": "Limite de confiança",
+		"confidence_threshold": "Limiar de confiança",
 		"anus": "Ânus",
 		"make_love": "Fazer amor",
 		"nipple": "Mamilo",
 		"penis": "Pênis",
 		"vagina": "Vagina"
+	},
+	"rewards": {
+		"title": "Recompensas",
+		"create": "Criar recompensa"
+	},
+	"reward": {
+		"new": "Nova recompensa",
+		"platform": "Plataforma",
+		"title": "Título",
+		"type": "Tipo",
+		"description": "Descrição",
+		"cost": "Custo",
+		"background_color": "Cor de fundo",
+		"is_user_input_required": "Entrada do usuário é obrigatória?",
+		"delete": "Excluir",
+		"sure_delete": "Tem certeza que deseja excluir esta recompensa?",
+		"points_currency_ratio": "Taxa de pontos por moeda",
+		"is_global_cooldown_enabled": "Cooldown global ativado?",
+		"global_cooldown_seconds": "Segundos de cooldown global"
+	},
+	"validation": {
+		"required": "Obrigatório"
 	}
 }

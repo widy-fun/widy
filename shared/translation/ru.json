@@ -29,7 +29,7 @@
 		"password": "Пароль",
 		"streamelements": "Сначала нужно подключить StreamElements JWT",
 		"you_can_find_by_url": "Вы можете найти его по этой ссылке",
-		"set_id_and_jwt": "Нужно установить StreamElements Account ID и JWT для {{service}}"
+		"set_id_and_jwt": "Необходимо установить StreamElements Account ID и JWT для {{service}}"
 	},
 	"error": {
 		"wrong_lots_format": "Неверный формат лотов",
@@ -62,15 +62,15 @@
 		"meter_price": "Цена за 1 метр",
 		"amount": "Сумма",
 		"finish": "Завершить",
-		"lat_error": "Широта должна быть от -90 до 90",
-		"lng_error": "Долгота должна быть от -180 до 180",
+		"lat_error": "Широта должна быть между -90 и 90",
+		"lng_error": "Долгота должна быть между -180 и 180",
 		"rules": "Для автоматического изменения позиции указателя в сообщении должно быть только одно слово из:"
 	},
 	"media_settings": {
 		"enabled": "Включено",
 		"min_amount": "Мин. сумма",
 		"video_volume": "Громкость видео",
-		"min_views": "Мин. просмотры"
+		"min_views": "Мин. просмотров"
 	},
 	"dashboard": {
 		"messages": "Сообщения",
@@ -84,7 +84,8 @@
 		"fighter": "Fighter",
 		"widgets": "Виджеты",
 		"info": "Инфо",
-		"nsfw": "NSFW"
+		"nsfw": "NSFW",
+		"rewards": "Награды"
 	},
 	"messages": {
 		"title": "Последние сообщения"
@@ -93,6 +94,7 @@
 		"skip": "Пропустить",
 		"replay": "Повторить",
 		"donated": "{{user_name}} донатнул {{amount}}{{currency}}",
+		"redemption": "{{user_name}} редемпнул {{title}} {{cost}}",
 		"followed": "{{user_name}} подписался",
 		"subscribed": "{{user_name}} оформил подписку",
 		"gifted_subscriptions": "{{user_name}} подарил {{total}} подписок",
@@ -103,7 +105,8 @@
 		"exclude_donations": "Исключить донаты",
 		"exclude_follows": "Исключить подписки",
 		"exclude_subscriptions": "Исключить подписки",
-		"exclude_raids": "Исключить рейды"
+		"exclude_raids": "Исключить рейды",
+		"exclude_redemptions": "Исключить редемпшены"
 	},
 	"settings": {
 		"title": "Настройки",
@@ -118,7 +121,7 @@
 	},
 	"wheel": {
 		"normal": "Обычное",
-		"dropout": "Выбывание",
+		"dropout": "Выпадение",
 		"spin": "Крутить",
 		"speed": "Скорость колеса"
 	},
@@ -142,7 +145,7 @@
 		"start": "Начать",
 		"pause": "Пауза",
 		"rematch": "Реванш",
-		"resume": "Возобновить"
+		"resume": "Продолжить"
 	},
 	"lot": {
 		"name": "Название",
@@ -159,7 +162,7 @@
 		"add": "Добавить",
 		"new_lot_name": "Название нового лота",
 		"search": "Поиск лота",
-		"total": "Всего"
+		"total": "Итого"
 	},
 	"auction_settings": {
 		"leader_change": "Смена лидера",
@@ -172,7 +175,7 @@
 		"adding_time": "Время"
 	},
 	"lots_options": {
-		"import_lots": "Импортировать лоты",
+		"import_lots": "Импорт лотов",
 		"clear_lots": "Очистить лоты"
 	},
 	"auc_fighter_settings": {
@@ -199,20 +202,11 @@
 		"waiting_authorization": "Ожидание авторизации..."
 	},
 	"widy": {
-		"donation_account_name": "Название аккаунта донатов",
-		"donation_url": "Ссылка на донат",
-		"create_donation_account": "Создать аккаунт донатов Widy",
+		"donation_account_name": "Название донат-аккаунта",
+		"donation_url": "Ссылка на донаты",
+		"create_donation_account": "Создать Widy донат-аккаунт",
 		"connect_to_existing_account": "Подключить существующий аккаунт",
-		"create_donation_account_pending": "Создание аккаунта донатов..."
-	},
-	"twitch_service_settings": {
-		"title": "Настройки Twitch",
-		"points_currency_ratio": "Соотношение баллов и валюты",
-		"rewards_name": "Название наград",
-		"rewards_list": "Список наград",
-		"add_reward": "Добавить награду",
-		"cost": "Стоимость",
-		"color": "Цвет"
+		"create_donation_account_pending": "Создание донат-аккаунта..."
 	},
 	"alert": {
 		"image": "Изображение",
@@ -223,7 +217,7 @@
 		"test_name": "Тест",
 		"test_text": "Это тестовый алерт!",
 		"configure": "Настроить",
-		"test": "Тест",
+		"test": "Протестировать",
 		"add_new_variant": "Добавить новый вариант",
 		"new_variant": "Новый вариант",
 		"variant_title": "Название варианта",
@@ -240,7 +234,19 @@
 		"Donation": "Донат",
 		"Subscription": "Подписка",
 		"Follow": "Подписка",
-		"Raid": "Рейд"
+		"Raid": "Рейд",
+		"variant": "Вариант",
+		"audio_volume": "Громкость аудио",
+		"video_volume": "Громкость видео",
+		"video": "Видео",
+		"duration": "Длительность",
+		"delay": "Задержка"
+	},
+	"alert_variant": {
+		"Image": "Изображение",
+		"Audio": "Аудио",
+		"Video": "Видео",
+		"ImageAndAudio": "Изображение и аудио"
 	},
 	"general": "Общие",
 	"goals": {
@@ -261,11 +267,11 @@
 		"rounding_radius": "Радиус скругления",
 		"bar_stroke_thickness": "Толщина обводки бара",
 		"background_bar_color": "Цвет фона бара",
-		"progress_bar_color": "Цвет бара прогресса",
+		"progress_bar_color": "Цвет прогресс-бара",
 		"goal_progress_bar": "Прогресс-бар цели",
 		"progress_bar_layout": "Расположение прогресс-бара",
 		"remaining_time": "Оставшееся время",
-		"goal_amount_limits": "Ограничения суммы цели",
+		"goal_amount_limits": "Лимиты суммы цели",
 		"widget_background": "Фон виджета",
 		"background_color": "Цвет фона",
 		"OnTop": "Сверху",
@@ -273,7 +279,7 @@
 		"Below": "Снизу",
 		"DoNotDisplay": "Не отображать",
 		"title": "Заголовок",
-		"limits": "ограничения",
+		"limits": "лимиты",
 		"raised": "Собрано",
 		"days_left": "Дней осталось",
 		"finish_goal": "Завершить цель",
@@ -307,7 +313,7 @@
 		"text_color": "Цвет текста",
 		"bold": "Жирный",
 		"italics": "Курсив",
-		"underline": "Подчёркивание",
+		"underline": "Подчёркнутый",
 		"transformation": "Трансформация",
 		"letter_spacing": "Межбуквенный интервал",
 		"word_spacing": "Межсловный интервал",
@@ -346,7 +352,7 @@
 		"widgets:settings.read": "Читать настройки виджета",
 		"widgets:alerts.read": "Читать алерты",
 		"widgets:media:settings.read": "Читать настройки медиа",
-		"widgets:auc-fighter:match-playing.send": "Отправлять статус матча (играется)",
+		"widgets:auc-fighter:match-playing.send": "Отправлять статус матча (играет)",
 		"widgets:auc-fighter:match-winner.send": "Отправлять победителя матча",
 		"widgets:auc-fighter:match-paused.send": "Отправлять статус паузы матча",
 		"widgets:auc-fighter:match-id.send": "Отправлять ID матча",
@@ -359,7 +365,7 @@
 		"widgets:media:error.send": "Отправлять ошибку медиа",
 		"widgets:media:replay.send": "Отправлять повтор медиа",
 		"widgets:alert:replay.send": "Отправлять повтор алерта",
-		"widgets:alert:skip.send": "Отправлять скип алерта",
+		"widgets:alert:skip.send": "Отправлять пропуск алерта",
 		"widgets:messages.subscription": "Подписка на сообщения",
 		"widgets:goal.subscription": "Подписка на цели",
 		"widgets:settings.subscription": "Подписка на настройки",
@@ -370,25 +376,25 @@
 		"widgets:auc-fighter:update-match.subscription": "Подписка на обновление матча",
 		"widgets:auc-fighter:settings.subscription": "Подписка на настройки auc-fighter",
 		"widgets:alert:replay.subscription": "Подписка на повтор алерта",
-		"widgets:alert:skip.subscription": "Подписка на скип алерта",
+		"widgets:alert:skip.subscription": "Подписка на пропуск алерта",
 		"widgets:alert:test.subscription": "Подписка на тестовый алерт",
-		"widgets:alert:skip-playing.subscription": "Подписка на скип проигрываемого алерта",
+		"widgets:alert:skip-playing.subscription": "Подписка на пропуск проигрываемого алерта",
 		"widgets:alert:alerts.subscription": "Подписка на алерты",
 		"widgets:media:replay.subscription": "Подписка на повтор медиа",
 		"widgets:media:settings.subscription": "Подписка на настройки медиа",
-		"widgets:media:skip.subscription": "Подписка на скип медиа",
-		"widgets:media:skip-playing-media.subscription": "Подписка на скип проигрываемого медиа",
+		"widgets:media:skip.subscription": "Подписка на пропуск медиа",
+		"widgets:media:skip-playing-media.subscription": "Подписка на пропуск проигрываемого медиа",
 		"widgets:media:end.subscription": "Подписка на окончание медиа",
 		"widgets:media:error.subscription": "Подписка на ошибку медиа",
 		"widgets:media:pause.subscription": "Подписка на паузу медиа",
-		"widgets:media:play.subscription": "Подписка на воспроизведение медиа",
+		"widgets:media:play.subscription": "Подписка на запуск медиа",
 		"widgets:alert:played.subscription": "Подписка на проигрывание алерта",
-		"widgets:view:storage.read": "Читать хранилище вида виджета",
-		"widgets:control:storage.read": "Читать хранилище управления виджета",
-		"widgets:view:storage.write": "Записывать в хранилище вида виджета",
-		"widgets:control:storage.write": "Записывать в хранилище управления виджета",
-		"widgets:view:storage.subscription": "Подписка на хранилище вида виджета",
-		"widgets:control:storage.subscription": "Подписка на хранилище управления виджета"
+		"widgets:view:storage.read": "Читать хранилище view",
+		"widgets:control:storage.read": "Читать хранилище control",
+		"widgets:view:storage.write": "Записывать в хранилище view",
+		"widgets:control:storage.write": "Записывать в хранилище control",
+		"widgets:view:storage.subscription": "Подписка на хранилище view",
+		"widgets:control:storage.subscription": "Подписка на хранилище control"
 	},
 	"nsfw": {
 		"title": "NSFW",
@@ -402,5 +408,27 @@
 		"nipple": "Сосок",
 		"penis": "Пенис",
 		"vagina": "Вагина"
+	},
+	"rewards": {
+		"title": "Награды",
+		"create": "Создать награду"
+	},
+	"reward": {
+		"new": "Новая награда",
+		"platform": "Платформа",
+		"title": "Название",
+		"type": "Тип",
+		"description": "Описание",
+		"cost": "Стоимость",
+		"background_color": "Цвет фона",
+		"is_user_input_required": "Требуется ввод от пользователя",
+		"delete": "Удалить",
+		"sure_delete": "Вы уверены, что хотите удалить эту награду?",
+		"points_currency_ratio": "Соотношение поинтов и валюты",
+		"is_global_cooldown_enabled": "Включён глобальный кулдаун",
+		"global_cooldown_seconds": "Глобальный кулдаун (секунды)"
+	},
+	"validation": {
+		"required": "Обязательно"
 	}
 }

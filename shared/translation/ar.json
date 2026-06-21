@@ -2,14 +2,14 @@
 	"on": "تشغيل",
 	"off": "إيقاف",
 	"select": "اختر",
-	"success": "نجاح",
+	"success": "نجح",
 	"ok": "موافق",
 	"cancel": "إلغاء",
 	"sound_volume": "مستوى الصوت",
 	"skip_media": "اختصار تخطي الوسائط",
 	"skip_alert": "اختصار تخطي التنبيه",
 	"none": "لا شيء",
-	"start": "بدء",
+	"start": "ابدأ",
 	"stop": "إيقاف",
 	"delay": "تأخير",
 	"milliseconds": "مللي ثانية",
@@ -23,16 +23,16 @@
 		"code": "طلب الرمز",
 		"sign_in": "تسجيل الدخول",
 		"phone": "رقم الهاتف",
-		"telegram_code": "الرمز من تيليجرام",
+		"telegram_code": "الرمز من تليجرام",
 		"your_code": "الرمز الخاص بك",
 		"2fa_password": "كلمة مرور التحقق بخطوتين",
 		"password": "كلمة المرور",
-		"streamelements": "يجب عليك الاتصال بـ StreamElements JWT أولاً",
+		"streamelements": "تحتاج إلى الاتصال بـ StreamElements JWT أولاً",
 		"you_can_find_by_url": "يمكنك العثور عليه من خلال هذا الرابط",
-		"set_id_and_jwt": "يجب عليك تعيين معرف حساب StreamElements و JWT لـ {{service}}"
+		"set_id_and_jwt": "تحتاج إلى تعيين معرف حساب StreamElements و JWT لـ {{service}}"
 	},
 	"error": {
-		"wrong_lots_format": "تنسيق الحصص خاطئ",
+		"wrong_lots_format": "تنسيق اللوتس غير صحيح",
 		"not_connected": "غير متصل",
 		"request_error": "خطأ في الطلب"
 	},
@@ -50,10 +50,10 @@
 		"tiktok": "تيك توك"
 	},
 	"integration": {
-		"tribute": "إظهار رسائل الشكر"
+		"tribute": "إظهار رسائل التكريم"
 	},
 	"auction": {
-		"lots": "الحصص",
+		"lots": "اللوتات",
 		"wheel": "العجلة",
 		"settings": "الإعدادات"
 	},
@@ -62,9 +62,9 @@
 		"meter_price": "السعر لكل متر",
 		"amount": "المبلغ",
 		"finish": "إنهاء",
-		"lat_error": "يجب أن تكون خطوط العرض بين -90 و 90",
-		"lng_error": "يجب أن تكون خطوط الطول بين -180 و 180",
-		"rules": "لكي يتغير موضع المؤشر تلقائياً في الرسالة، يجب أن يكون هناك كلمة واحدة فقط من:"
+		"lat_error": "يجب أن تكون خط العرض بين -90 و 90",
+		"lng_error": "يجب أن تكون خط الطول بين -180 و 180",
+		"rules": "لكي يتغير موضع المؤشر تلقائياً في الرسالة، يجب أن تحتوي على كلمة واحدة فقط من:"
 	},
 	"media_settings": {
 		"enabled": "مفعل",
@@ -80,11 +80,12 @@
 		"media": "الوسائط",
 		"goals": "الأهداف",
 		"auction": "المزاد",
-		"maption": "خرائط",
-		"fighter": "المقاتل",
-		"widgets": "الأدوات",
+		"maption": "مابتيون",
+		"fighter": "فايتر",
+		"widgets": "الويدجتس",
 		"info": "معلومات",
-		"nsfw": "محتوى للبالغين"
+		"nsfw": "محتوى للبالغين",
+		"rewards": "المكافآت"
 	},
 	"messages": {
 		"title": "آخر الرسائل"
@@ -93,21 +94,23 @@
 		"skip": "تخطي",
 		"replay": "إعادة تشغيل",
 		"donated": "تبرع {{user_name}} بمبلغ {{amount}}{{currency}}",
-		"followed": "تابع {{user_name}}",
-		"subscribed": "اشترك {{user_name}}",
-		"gifted_subscriptions": "أهدى {{user_name}} {{total}} اشتراك",
-		"raided_with": "غار {{user_name}} مع {{viewers}} مشاهد"
+		"redemption": "{{user_name}} استرد {{title}} {{cost}}",
+		"followed": "{{user_name}} تابع",
+		"subscribed": "{{user_name}} اشترك",
+		"gifted_subscriptions": "{{user_name}} أهدى {{total}} اشتراك",
+		"raided_with": "{{user_name}} غزا بـ {{viewers}} مشاهد"
 	},
 	"filter": {
 		"title": "تصفية الرسائل",
 		"exclude_donations": "استبعاد التبرعات",
-		"exclude_follows": "استبعاد المتابعات",
+		"exclude_follows": "استبعاد المتابعين",
 		"exclude_subscriptions": "استبعاد الاشتراكات",
-		"exclude_raids": "استبعاد الغارات"
+		"exclude_raids": "استبعاد الغزوات",
+		"exclude_redemptions": "استبعاد الاستردادات"
 	},
 	"settings": {
 		"title": "الإعدادات",
-		"pause": "إيقاف تنبيهات الرسائل مؤقتاً",
+		"pause": "إيقاف رسائل التنبيه مؤقتاً",
 		"moderation_duration": "مدة الإشراف",
 		"black_list": "القائمة السوداء",
 		"remove_links": "إزالة الروابط",
@@ -118,8 +121,8 @@
 	},
 	"wheel": {
 		"normal": "عادي",
-		"dropout": "انسحاب",
-		"spin": "دوران",
+		"dropout": "إسقاط",
+		"spin": "تدوير",
 		"speed": "سرعة العجلة"
 	},
 	"timer": {
@@ -131,17 +134,17 @@
 		"add_timex2": "إضافة وقت ×2"
 	},
 	"fighter": {
-		"title": "المقاتل",
+		"title": "فايتر",
 		"match": "مباراة",
 		"final": "النهائي",
 		"game": "اللعبة",
 		"cancel": "إلغاء اللعبة",
 		"winner": "الفائز",
 		"settings": "الإعدادات",
-		"create_game": "إنشاء لعبة من الحصص",
-		"start": "بدء",
+		"create_game": "إنشاء لعبة من اللوتات",
+		"start": "ابدأ",
 		"pause": "إيقاف مؤقت",
-		"rematch": "مباراة إعادة",
+		"rematch": "مباراة أخرى",
 		"resume": "استئناف"
 	},
 	"lot": {
@@ -151,29 +154,29 @@
 	},
 	"bid": {
 		"delete": "حذف",
-		"to_lot": "إلى الحصة",
+		"to_lot": "إلى اللوت",
 		"new": "جديد",
-		"add_to_random_slot": "إضافة إلى حصة عشوائية"
+		"add_to_random_slot": "إضافة إلى لوت عشوائي"
 	},
 	"lots": {
 		"add": "إضافة",
-		"new_lot_name": "اسم الحصة الجديدة",
-		"search": "البحث عن حصة",
+		"new_lot_name": "اسم اللوت الجديد",
+		"search": "البحث عن لوت",
 		"total": "الإجمالي"
 	},
 	"auction_settings": {
-		"leader_change": "تغيير القائد",
-		"new_lot": "حصة جديدة",
+		"leader_change": "تغيير المتصدر",
+		"new_lot": "لوت جديد",
 		"new_donation": "تبرع جديد",
 		"show_odds": "إظهار الاحتمالات",
-		"show_total_sum": "إظهار المبلغ الإجمالي",
-		"greater_timer_adding_time": "إضافة وقت أكبر للمؤقت",
-		"not_add_time_if": "لا تضف وقتاً إذا",
+		"show_total_sum": "إظهار المجموع الكلي",
+		"greater_timer_adding_time": "إضافة وقت للمؤقت الأكبر",
+		"not_add_time_if": "عدم إضافة الوقت إذا",
 		"adding_time": "الوقت"
 	},
 	"lots_options": {
-		"import_lots": "استيراد الحصص",
-		"clear_lots": "مسح الحصص"
+		"import_lots": "استيراد اللوتات",
+		"clear_lots": "مسح اللوتات"
 	},
 	"auc_fighter_settings": {
 		"round_duration": "مدة الجولة",
@@ -185,7 +188,7 @@
 	},
 	"services": {
 		"title": "الخدمات",
-		"tribute": "الشكر",
+		"tribute": "تكريم",
 		"streamelements": "StreamElements",
 		"connect": "اتصال",
 		"integrations": "التكاملات",
@@ -195,7 +198,7 @@
 	"twitch": {
 		"device_code_expired": "انتهت صلاحية رمز الجهاز. يرجى المحاولة مرة أخرى.",
 		"user_code": "رمز المستخدم",
-		"authorize_with_code": "تفويض بالرمز",
+		"authorize_with_code": "التفويض بالرمز",
 		"waiting_authorization": "في انتظار التفويض..."
 	},
 	"widy": {
@@ -205,15 +208,6 @@
 		"connect_to_existing_account": "الاتصال بحساب موجود",
 		"create_donation_account_pending": "جاري إنشاء حساب التبرعات..."
 	},
-	"twitch_service_settings": {
-		"title": "إعدادات Twitch",
-		"points_currency_ratio": "نسبة نقاط العملة",
-		"rewards_name": "اسم المكافآت",
-		"rewards_list": "قائمة المكافآت",
-		"add_reward": "إضافة مكافأة",
-		"cost": "التكلفة",
-		"color": "اللون"
-	},
 	"alert": {
 		"image": "صورة",
 		"audio": "صوت",
@@ -221,7 +215,7 @@
 		"title": "العنوان",
 		"message": "الرسالة",
 		"test_name": "اختبار",
-		"test_text": "هذا تنبيه اختباري!",
+		"test_text": "هذا تنبيه تجريبي!",
 		"configure": "إعداد",
 		"test": "اختبار",
 		"add_new_variant": "إضافة متغير جديد",
@@ -240,7 +234,19 @@
 		"Donation": "تبرع",
 		"Subscription": "اشتراك",
 		"Follow": "متابعة",
-		"Raid": "غارة"
+		"Raid": "غزو",
+		"variant": "متغير",
+		"audio_volume": "مستوى الصوت",
+		"video_volume": "مستوى صوت الفيديو",
+		"video": "فيديو",
+		"duration": "المدة",
+		"delay": "تأخير"
+	},
+	"alert_variant": {
+		"Image": "صورة",
+		"Audio": "صوت",
+		"Video": "فيديو",
+		"ImageAndAudio": "صورة وصوت"
 	},
 	"general": "عام",
 	"goals": {
@@ -266,7 +272,7 @@
 		"progress_bar_layout": "تخطيط شريط التقدم",
 		"remaining_time": "الوقت المتبقي",
 		"goal_amount_limits": "حدود مبلغ الهدف",
-		"widget_background": "خلفية الأداة",
+		"widget_background": "خلفية الويدجت",
 		"background_color": "لون الخلفية",
 		"OnTop": "في الأعلى",
 		"Inside": "داخل",
@@ -288,7 +294,7 @@
 	"widget": {
 		"copy": "نسخ",
 		"launch": "تشغيل",
-		"url": "رابط الأداة",
+		"url": "رابط الويدجت",
 		"obs_dock_url": "رابط OBS Dock"
 	},
 	"view": {
@@ -296,7 +302,7 @@
 		"bottom": "الصورة أسفل، النص أعلى",
 		"left": "الصورة يسار، النص يمين",
 		"right": "الصورة يمين، النص يسار",
-		"overlay": "تراكب النص على الصورة"
+		"overlay": "النص فوق الصورة"
 	},
 	"image": {
 		"show": "إظهار الصورة"
@@ -307,8 +313,8 @@
 		"text_color": "لون النص",
 		"bold": "غامق",
 		"italics": "مائل",
-		"underline": "مسطر",
-		"transformation": "تحويل",
+		"underline": "تسطير",
+		"transformation": "التحويل",
 		"letter_spacing": "تباعد الحروف",
 		"word_spacing": "تباعد الكلمات",
 		"horizontal_alignment": "محاذاة أفقية",
@@ -322,40 +328,40 @@
 	},
 	"version": "الإصدار",
 	"widgets": {
-		"title": "الأدوات",
-		"add": "إضافة أداة",
+		"title": "الويدجتس",
+		"add": "إضافة ويدجت",
 		"install": "تثبيت",
 		"delete": "حذف",
-		"installed": "مثبتة",
+		"installed": "مثبت",
 		"update": "تحديث",
 		"all": "الكل",
 		"settings": "الإعدادات",
 		"control": "التحكم",
-		"delete_confirm": "هل أنت متأكد أنك تريد حذف هذه الأداة؟",
-		"invalid_manifest": "بيان الأداة غير صالح",
+		"delete_confirm": "هل أنت متأكد أنك تريد حذف هذا الويدجت؟",
+		"invalid_manifest": "ملف manifest غير صالح",
 		"add_confirm": "سيسمح الإضافة لـ {{widget_name}} بـ:",
 		"installing": "جاري التثبيت...",
 		"updating": "جاري التحديث...",
 		"view_url": "رابط العرض",
-		"widget_connection": "تتلقى الأداة أو ترسل طلبات إلى:"
+		"widget_connection": "يحصل الويدجت أو يرسل طلبات إلى:"
 	},
 	"scopes": {
 		"widgets:messages.read": "قراءة الرسائل",
 		"widgets:goals.read": "قراءة الأهداف",
 		"widgets:auc-fighter:settings.read": "قراءة إعدادات auc-fighter",
-		"widgets:settings.read": "قراءة إعدادات الأدوات",
+		"widgets:settings.read": "قراءة إعدادات الويدجت",
 		"widgets:alerts.read": "قراءة التنبيهات",
 		"widgets:media:settings.read": "قراءة إعدادات الوسائط",
 		"widgets:auc-fighter:match-playing.send": "إرسال مباراة جارية",
 		"widgets:auc-fighter:match-winner.send": "إرسال فائز المباراة",
-		"widgets:auc-fighter:match-paused.send": "إرسال مباراة متوقفة",
+		"widgets:auc-fighter:match-paused.send": "إرسال إيقاف المباراة",
 		"widgets:auc-fighter:match-id.send": "إرسال معرف المباراة",
 		"widgets:alert:played.send": "إرسال تنبيه تم تشغيله",
-		"widgets:alert:playing.send": "إرسال تنبيه جارٍ",
+		"widgets:alert:playing.send": "إرسال تنبيه جاري التشغيل",
 		"widgets:media:played.send": "إرسال وسائط تم تشغيلها",
 		"widgets:media:end.send": "إرسال انتهاء الوسائط",
 		"widgets:media:playing.send": "إرسال وسائط جارية",
-		"widgets:media:paused.send": "إرسال وسائط متوقفة",
+		"widgets:media:paused.send": "إرسال إيقاف الوسائط",
 		"widgets:media:error.send": "إرسال خطأ في الوسائط",
 		"widgets:media:replay.send": "إرسال إعادة تشغيل الوسائط",
 		"widgets:alert:replay.send": "إرسال إعادة تشغيل التنبيه",
@@ -383,12 +389,12 @@
 		"widgets:media:pause.subscription": "الاشتراك في إيقاف الوسائط",
 		"widgets:media:play.subscription": "الاشتراك في تشغيل الوسائط",
 		"widgets:alert:played.subscription": "الاشتراك في تنبيه تم تشغيله",
-		"widgets:view:storage.read": "قراءة تخزين عرض الأداة",
-		"widgets:control:storage.read": "قراءة تخزين التحكم بالأداة",
-		"widgets:view:storage.write": "الكتابة في تخزين عرض الأداة",
-		"widgets:control:storage.write": "الكتابة في تخزين التحكم بالأداة",
-		"widgets:view:storage.subscription": "الاشتراك في تخزين عرض الأداة",
-		"widgets:control:storage.subscription": "الاشتراك في تخزين التحكم بالأداة"
+		"widgets:view:storage.read": "قراءة تخزين عرض الويدجت",
+		"widgets:control:storage.read": "قراءة تخزين التحكم في الويدجت",
+		"widgets:view:storage.write": "الكتابة في تخزين عرض الويدجت",
+		"widgets:control:storage.write": "الكتابة في تخزين التحكم في الويدجت",
+		"widgets:view:storage.subscription": "الاشتراك في تخزين عرض الويدجت",
+		"widgets:control:storage.subscription": "الاشتراك في تخزين التحكم في الويدجت"
 	},
 	"nsfw": {
 		"title": "محتوى للبالغين",
@@ -402,5 +408,27 @@
 		"nipple": "حلمة",
 		"penis": "قضيب",
 		"vagina": "مهبل"
+	},
+	"rewards": {
+		"title": "المكافآت",
+		"create": "إنشاء مكافأة"
+	},
+	"reward": {
+		"new": "مكافأة جديدة",
+		"platform": "المنصة",
+		"title": "العنوان",
+		"type": "النوع",
+		"description": "الوصف",
+		"cost": "التكلفة",
+		"background_color": "لون الخلفية",
+		"is_user_input_required": "هل يتطلب إدخال المستخدم",
+		"delete": "حذف",
+		"sure_delete": "هل أنت متأكد أنك تريد حذف هذه المكافأة؟",
+		"points_currency_ratio": "نسبة نقاط العملة",
+		"is_global_cooldown_enabled": "هل تمكين التبريد العالمي",
+		"global_cooldown_seconds": "ثواني التبريد العالمي"
+	},
+	"validation": {
+		"required": "مطلوب"
 	}
 }

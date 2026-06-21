@@ -100,7 +100,7 @@ jobs:
         with:
           tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: "v__VERSION__"
-          releaseBody: "Fix tribute sign out."
+          releaseBody: "Add twitch rewards."
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
@@ -119,7 +119,7 @@ jobs:
         with:
           tagName: latest # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: "latest"
-          releaseBody: "Fix tribute sign out."
+          releaseBody: "Add twitch rewards."
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
