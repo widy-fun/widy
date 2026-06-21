@@ -69,7 +69,7 @@ const AuctionWheel = ({ lots }: { lots: ILot[] }) => {
 	const [isSpinning, setIsSpinning] = useState(false);
 	const [isShowWinner, setIsShowWinner] = useState(false);
 	const [winnerIndex, setWinnerNumber] = useState(
-		getRandomWinnerIndex(wheelData.map((data) => data.optionSize ?? 0)),
+		getRandomWinnerIndex(wheelData.map((data) => data.amount ?? 0)),
 	);
 	const [winner, setWinner] = useState(wheelData[winnerIndex]);
 
@@ -77,7 +77,7 @@ const AuctionWheel = ({ lots }: { lots: ILot[] }) => {
 		if (!isSpinning) {
 			setIsShowWinner(false);
 			const index = getRandomWinnerIndex(
-				wheelData.map((data) => data.optionSize ?? 0),
+				wheelData.map((data) => data.amount ?? 0),
 			);
 			setWinnerNumber(index);
 			setWinner(wheelData[index]);
@@ -156,6 +156,7 @@ const AuctionWheel = ({ lots }: { lots: ILot[] }) => {
 											maxAmount: max?.amount,
 											minAmount: min?.amount,
 											totalAmount,
+											lotsLen: dropoutLotsRef.current.length,
 										}),
 									};
 								});
@@ -221,7 +222,7 @@ const AuctionWheel = ({ lots }: { lots: ILot[] }) => {
 							}
 							setWheelVariant(value);
 							const index = getRandomWinnerIndex(
-								newWheelData.map((data) => data.optionSize ?? 0),
+								newWheelData.map((data) => data.amount ?? 0),
 							);
 							setWinner(newWheelData[index]);
 							setWinnerNumber(index);

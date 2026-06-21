@@ -6,6 +6,7 @@ export type WheelDataWithFastId = WheelData & {
 	fastId: number;
 	name?: string;
 	color: string;
+	amount?: number;
 };
 
 const wheelDataFromLots = (
@@ -22,6 +23,7 @@ const wheelDataFromLots = (
 				optionSize: lot.normalOptionSize,
 				name: lot.name,
 				color: lot.color,
+				amount: lot.amount,
 			}));
 
 		case WheelVariant.dropout:
@@ -30,6 +32,7 @@ const wheelDataFromLots = (
 				name: lot.name,
 				optionSize: lot.dropoutOptionSize,
 				color: lot.color,
+				amount: lot.dropoutAmount,
 			}));
 	}
 };

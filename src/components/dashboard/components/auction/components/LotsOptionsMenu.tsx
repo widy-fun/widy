@@ -57,6 +57,7 @@ const LotsOptionsMenu = () => {
 									totalAmount,
 									maxAmount: max?.amount,
 									minAmount: min?.amount,
+									lotsLen: lots.length,
 								}),
 							};
 						})

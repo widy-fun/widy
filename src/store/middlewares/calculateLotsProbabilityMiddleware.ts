@@ -1,9 +1,9 @@
-import type { UnknownAction, Middleware } from "@reduxjs/toolkit";
+import type { Middleware, UnknownAction } from "@reduxjs/toolkit";
+import calculateLotProbability from "../../helpers/calculateLotProbability";
+import findLotsMinMaxAmount from "../../helpers/findLotsMinMaxAmount";
+import lotsTotalAmount from "../../helpers/lotsTotalAmount";
 import type { AppState } from "..";
 import { lotsSlice, setLots } from "../slices/lotsSlice";
-import calculateLotProbability from "../../helpers/calculateLotProbability";
-import lotsTotalAmount from "../../helpers/lotsTotalAmount";
-import findLotsMinMaxAmount from "../../helpers/findLotsMinMaxAmount";
 
 const calculateLotsProbabilityMiddleware: Middleware<unknown, AppState> =
 	(store) => (next) => (action) => {
@@ -35,6 +35,7 @@ const calculateLotsProbabilityMiddleware: Middleware<unknown, AppState> =
 									totalAmount,
 									maxAmount: max?.amount,
 									minAmount: min?.amount,
+									lotsLen: lots.length,
 								}),
 							};
 						})
