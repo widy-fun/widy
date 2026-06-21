@@ -2,7 +2,12 @@ import AlertView from "../../../shared/components/AlertView";
 import usePlayAlert from "../../hooks/usePlayAlert";
 
 const Alert = () => {
-	const { currentAlert, currentMessage } = usePlayAlert();
+	const {
+		currentAlert,
+		currentMessage,
+		currentVideoSrcObject,
+		isShowVideoElement,
+	} = usePlayAlert();
 	return (
 		currentMessage &&
 		currentAlert && (
@@ -11,7 +16,9 @@ const Alert = () => {
 				message={currentMessage}
 				width={window.innerWidth}
 				height={window.innerHeight}
-				imageSrc={`static/${currentAlert.image}`}
+				videoSrcObject={currentVideoSrcObject}
+				base={"static"}
+				isShowVideoElement={isShowVideoElement}
 			/>
 		)
 	);

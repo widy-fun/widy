@@ -1,4 +1,4 @@
-use entity::service::*;
+use entity::services::*;
 
 use crate::services::DatabaseService;
 use async_trait::async_trait;

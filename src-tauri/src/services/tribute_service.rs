@@ -1,6 +1,6 @@
 use crate::{repositories::ServicesRepository, services::DatabaseService, utils::on_new_donation};
 use entity::{
-    service::{ServiceAuth, ServiceType, TributeAuth},
+    services::{ServiceAuth, ServiceType, TributeAuth},
     settings::Currency,
 };
 use eventsource_client::{self as es, Client};
@@ -52,7 +52,7 @@ impl TributeService {
         let service = database_service
             .get_service_with_auth_by_id(ServiceType::Tribute)
             .await?;
-        if let Some(entity::service::Model {
+        if let Some(entity::services::Model {
             id: ServiceType::Tribute,
             auth: Some(ServiceAuth::Tribute(auth)),
             ..
@@ -156,7 +156,7 @@ impl TributeService {
     pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), String> {
         let database_service = app.state::<DatabaseService>();
         database_service
-            .update_service(entity::service::Model {
+            .update_service(entity::services::Model {
                 id: ServiceType::Tribute,
                 settings: None,
                 auth: None,

@@ -1,4 +1,13 @@
-import { ITextStyle } from "@widy/sdk";
+import {
+	AlertVariant,
+	IReward,
+	ITextStyle,
+	Platform,
+	RewardType,
+	TextAnimation,
+	TextAnimationVariant,
+} from "@widy/sdk";
+import i18n from "../shared/i18n/i18n";
 
 export const MENU_WIDTH = 260;
 export const MENU_WIDTH_MD = 64;
@@ -20,6 +29,8 @@ export const TEXT_STYLE: ITextStyle = {
 	underline: false,
 	letter_spacing: 0,
 	word_spacing: 0,
+	animation: TextAnimation.No,
+	animation_variant: TextAnimationVariant.AllText,
 };
 
 export const SCROLLBAR_STYLES = {
@@ -41,3 +52,41 @@ export const SCROLLBAR_STYLES = {
 		display: "none",
 	},
 } as unknown as TemplateStringsArray;
+
+export const FILE_FILTERS = {
+	image: {
+		name: "Images",
+		extensions: ["png", "jpg", "jpeg", "gif", "bmp"],
+	},
+	audio: {
+		name: "Audio",
+		extensions: ["mp3", "wav", "ogg"],
+	},
+	video: {
+		name: "Video",
+		extensions: ["mp4"],
+	},
+};
+
+export const DEFAULT_REWARD: IReward = {
+	id: crypto.randomUUID(),
+	platform: Platform.Twitch,
+	type: RewardType.Alert,
+	title: i18n.t("reward.new"),
+	description: "",
+	cost: 100,
+	background_color: "#1976d2",
+	is_user_input_required: false,
+	alert_variant: AlertVariant.ImageAndAudio,
+	audio_volume: 50,
+	video_volume: 50,
+	duration: 3000,
+	delay: 0,
+	is_enabled: true,
+	points_currency_ratio: 1,
+	audio: "alert.mp3",
+	video: "video.mp4",
+	image: "image.gif",
+	global_cooldown_seconds: 0,
+	is_global_cooldown_enabled: false,
+};

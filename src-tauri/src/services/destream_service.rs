@@ -1,5 +1,5 @@
 use entity::{
-    service::{DestreamAuth, ServiceAuth, ServiceType},
+    services::{DestreamAuth, ServiceAuth, ServiceType},
     settings::Currency,
 };
 use futures::{SinkExt, StreamExt};
@@ -64,9 +64,9 @@ impl DestreamService {
         let database_service = app.state::<DatabaseService>();
         let reqwest_client = app.state::<reqwest::Client>();
         let service = database_service
-            .get_service_with_auth_by_id(entity::service::ServiceType::Destream)
+            .get_service_with_auth_by_id(entity::services::ServiceType::Destream)
             .await?;
-        if let Some(entity::service::Model {
+        if let Some(entity::services::Model {
             id: ServiceType::Destream,
             auth: Some(ServiceAuth::Destream(auth)),
             ..
@@ -115,7 +115,7 @@ impl DestreamService {
                 .await
                 {
                     Ok((mut socket, _)) => {
-                        log::info!("Destream webSocket connected.");
+                        log::info!("Destream websocket connected.");
 
                         if let Err(e) = socket.send(Message::Text(handshake.as_str().into())).await
                         {
@@ -219,7 +219,7 @@ impl DestreamService {
     pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), String> {
         let database_service = app.state::<DatabaseService>();
         database_service
-            .update_service(entity::service::Model {
+            .update_service(entity::services::Model {
                 id: ServiceType::Destream,
                 settings: None,
                 auth: None,

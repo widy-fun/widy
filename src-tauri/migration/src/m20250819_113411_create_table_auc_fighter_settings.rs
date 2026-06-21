@@ -9,29 +9,19 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(AucFighterSettings::Table)
+                    .table("auc_fighter_settings")
                     .if_not_exists()
-                    .col(pk_auto(AucFighterSettings::Id))
-                    .col(integer(AucFighterSettings::RoundDuration))
-                    .col(boolean(AucFighterSettings::IsAddPlayers))
+                    .col(pk_auto("id"))
+                    .col(integer("round_duration"))
+                    .col(boolean("is_add_players"))
                     .to_owned(),
             )
-            .await?;
-        Ok(())
+            .await
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(AucFighterSettings::Table).to_owned())
+            .drop_table(Table::drop().table("auc_fighter_settings").to_owned())
             .await
     }
-}
-
-#[derive(DeriveIden)]
-enum AucFighterSettings {
-    #[sea_orm(iden = "auc_fighter_settings")]
-    Table,
-    Id,
-    RoundDuration,
-    IsAddPlayers,
 }

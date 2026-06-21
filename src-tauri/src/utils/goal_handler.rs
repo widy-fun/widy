@@ -1,4 +1,4 @@
-use entity::goal::GoalType;
+use entity::goals::GoalType;
 
 use crate::{
     enums::AppEvent,

@@ -44,7 +44,13 @@ const DonationMessageCard = ({
 						overflow: "hidden",
 					})}
 				>
-					{isMediaPlaying && <MediaTile donation={donation} />}
+					{isMediaPlaying && (
+						<MediaTile
+							message={message}
+							media={message.donation?.media}
+							user_name={message.donation?.user_name}
+						/>
+					)}
 					<Box
 						sx={{
 							width: "3rem",

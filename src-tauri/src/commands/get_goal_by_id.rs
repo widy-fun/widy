@@ -1,5 +1,5 @@
 use crate::{repositories::GoalsRepository, services::DatabaseService};
-use entity::goal::*;
+use entity::goals::*;
 use tauri::State;
 
 #[tauri::command]

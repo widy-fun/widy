@@ -1,5 +1,5 @@
 use crate::{repositories::WidgetsRepository, services::DatabaseService};
-use entity::widget::*;
+use entity::widgets::*;
 use tauri::State;
 
 #[tauri::command]

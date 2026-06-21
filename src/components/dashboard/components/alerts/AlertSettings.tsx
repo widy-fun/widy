@@ -1,4 +1,3 @@
-import AudiotrackIcon from "@mui/icons-material/Audiotrack";
 import ImageIcon from "@mui/icons-material/Image";
 import SettingsIcon from "@mui/icons-material/Settings";
 import TitleIcon from "@mui/icons-material/Title";
@@ -8,15 +7,15 @@ import { convertFileSrc } from "@tauri-apps/api/core";
 import type { IAlert, IClientMessage } from "@widy/sdk";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import AlertView from "../../../../../shared/components/AlertView";
+import { setAlert } from "../../../../../shared/slices/alertsSlice";
 import getTestAlertMessage from "../../../../../shared/utils/getTestAlertMessage";
 import type { AppState } from "../../../../store";
 import TabPanel from "../../../TabPanel";
-import AudioSettings from "./components/AudioSettings";
+import AlertVariantSettings from "./components/AlertVariantSettings";
 import GeneralSettings from "./components/GeneralSettings";
-import ImageSettings from "./components/ImageSettings";
 import MessageStyle from "./components/MessageStyle";
 import TitleStyle from "./components/TitleStyle";
 import ViewSettings from "./components/ViewSettings";
@@ -35,12 +34,14 @@ const AlertSettings = ({
 	const { t } = useTranslation();
 	const { alert } = useSelector((state: AppState) => state.alertsState);
 	const { appDataDir } = useSelector((state: AppState) => state.mainState);
+	const dispatch = useDispatch();
+	const base = convertFileSrc(`${appDataDir}/static`);
 
 	return (
 		<>
 			{alert && (
 				<>
-					<h3>{name}</h3>
+					<h3 style={{ height: 20 }}>{name}</h3>
 					<Box
 						sx={{
 							borderBottom: 1,
@@ -67,12 +68,7 @@ const AlertSettings = ({
 							<Tab
 								icon={<ImageIcon />}
 								iconPosition="start"
-								label={t("alert.image")}
-							/>
-							<Tab
-								icon={<AudiotrackIcon />}
-								iconPosition="start"
-								label={t("alert.audio")}
+								label={t("alert.variant")}
 							/>
 							<Tab
 								icon={<TitleIcon />}
@@ -98,19 +94,20 @@ const AlertSettings = ({
 							<ViewSettings />
 						</TabPanel>
 						<TabPanel index={1} value={value}>
-							<ImageSettings />
+							<AlertVariantSettings
+								value={alert}
+								setValue={(updated) => {
+									dispatch(setAlert(updated as IAlert));
+								}}
+							/>
 						</TabPanel>
 						<TabPanel index={2} value={value}>
-							<AudioSettings />
-						</TabPanel>
-
-						<TabPanel index={3} value={value}>
 							<TitleStyle />
 						</TabPanel>
-						<TabPanel index={4} value={value}>
+						<TabPanel index={3} value={value}>
 							<MessageStyle />
 						</TabPanel>
-						<TabPanel index={5} value={value}>
+						<TabPanel index={4} value={value}>
 							<GeneralSettings />
 						</TabPanel>
 					</div>
@@ -119,6 +116,7 @@ const AlertSettings = ({
 							width={400}
 							height={300}
 							alert={alert as IAlert}
+							isShowVideoElement={true}
 							backgroundColor="green"
 							message={
 								getTestAlertMessage({
@@ -128,7 +126,7 @@ const AlertSettings = ({
 									text: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis",
 								}) as IClientMessage
 							}
-							imageSrc={convertFileSrc(`${appDataDir}/static/${alert?.image}`)}
+							base={base}
 						/>
 					</div>
 					<div

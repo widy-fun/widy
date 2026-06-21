@@ -1,4 +1,4 @@
-use entity::widget;
+use entity::widgets;
 use tauri::State;
 use tokio::fs;
 
@@ -11,7 +11,7 @@ use crate::{
 pub async fn delete_widget(
     database_service: State<'_, DatabaseService>,
     config_service: State<'_, ConfigService>,
-    widget: widget::Model,
+    widget: widgets::Model,
 ) -> Result<(), String> {
     database_service
         .delete_widget_by_id(widget.id.clone())

@@ -14,17 +14,21 @@ import Alert from "./Alert";
 const AlertView = ({
 	alert,
 	message,
-	imageSrc,
+	base,
 	width,
 	height,
 	backgroundColor,
+	videoSrcObject,
+	isShowVideoElement,
 }: {
 	alert: IAlert;
 	message: IClientMessage;
-	imageSrc: string;
+	base: string;
 	width: number;
 	height: number;
 	backgroundColor?: string;
+	videoSrcObject?: MediaProvider;
+	isShowVideoElement: boolean;
 }) => {
 	const { t } = useTranslation();
 
@@ -36,10 +40,12 @@ const AlertView = ({
 				<Alert
 					alert={alert}
 					text={donation.text}
-					imageSrc={imageSrc}
+					base={base}
 					width={width}
 					height={height}
 					backgroundColor={backgroundColor}
+					videoSrcObject={videoSrcObject}
+					isShowVideoElement={isShowVideoElement}
 				>
 					{t("message.donated", {
 						user_name: donation.user_name,
@@ -55,10 +61,12 @@ const AlertView = ({
 			return (
 				<Alert
 					alert={alert}
-					imageSrc={imageSrc}
+					base={base}
 					width={width}
 					height={height}
 					backgroundColor={backgroundColor}
+					videoSrcObject={videoSrcObject}
+					isShowVideoElement={isShowVideoElement}
 				>
 					{t("message.followed", { user_name: follow.user_name })}
 				</Alert>
@@ -70,10 +78,12 @@ const AlertView = ({
 			return (
 				<Alert
 					alert={alert}
-					imageSrc={imageSrc}
+					base={base}
 					width={width}
 					height={height}
 					backgroundColor={backgroundColor}
+					videoSrcObject={videoSrcObject}
+					isShowVideoElement={isShowVideoElement}
 				>
 					{!subscription.is_gift
 						? t("message.subscribed", { user_name: subscription.user_name })
@@ -90,10 +100,12 @@ const AlertView = ({
 			return (
 				<Alert
 					alert={alert}
-					imageSrc={imageSrc}
+					base={base}
 					width={width}
 					height={height}
 					backgroundColor={backgroundColor}
+					videoSrcObject={videoSrcObject}
+					isShowVideoElement={isShowVideoElement}
 				>
 					{t("message.raided_with", {
 						viewers: raid.viewers,
@@ -102,9 +114,21 @@ const AlertView = ({
 				</Alert>
 			);
 		}
-
-		default:
-			return <div></div>;
+		case MessageType.Redemption: {
+			return (
+				<Alert
+					alert={alert}
+					base={base}
+					width={width}
+					height={height}
+					backgroundColor={backgroundColor}
+					videoSrcObject={videoSrcObject}
+					isShowVideoElement={isShowVideoElement}
+				>
+					{""}
+				</Alert>
+			);
+		}
 	}
 };
 export default AlertView;

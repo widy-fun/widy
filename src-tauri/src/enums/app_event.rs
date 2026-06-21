@@ -3,7 +3,8 @@ use serde::Serialize;
 #[derive(Serialize, Clone, Debug)]
 pub enum AppEvent {
     Message,
-    MediaMessage,
+    Media,
+    Alert,
     SkipAlert,
     SkipPlayingAlert,
     SkipPlayingMedia,
@@ -33,19 +34,20 @@ pub enum AppEvent {
     CancelAucFighterMatch,
     AucFighterSettings,
     TestAlert,
-    TwitchRewardRedemptionAdd,
     Goal,
     CreateDonationAccount,
     WidgetViewStorage,
     WidgetControlStorage,
     NsfwDetection,
     NsfwSettings,
+    Donation,
+    Redemption,
 }
 impl AppEvent {
     pub fn as_str(e: AppEvent) -> &'static str {
         match e {
             AppEvent::Message => "Message",
-            AppEvent::MediaMessage => "MediaMessage",
+            AppEvent::Media => "Media",
             AppEvent::SkipAlert => "SkipAlert",
             AppEvent::SkipPlayingAlert => "SkipPlayingAlert",
             AppEvent::SkipMedia => "SkipMedia",
@@ -76,12 +78,14 @@ impl AppEvent {
             AppEvent::AucFighterSettings => "AucFighterSettings",
             AppEvent::TestAlert => "TestAlert",
             AppEvent::Goal => "Goal",
-            AppEvent::TwitchRewardRedemptionAdd => "TwitchRewardRedemptionAdd",
             AppEvent::CreateDonationAccount => "CreateDonationAccount",
             AppEvent::WidgetViewStorage => "WidgetViewStorage",
             AppEvent::WidgetControlStorage => "WidgetControlStorage",
             AppEvent::NsfwDetection => "NsfwDetection",
             AppEvent::NsfwSettings => "NsfwSettings",
+            AppEvent::Alert => "Alert",
+            AppEvent::Donation => "Donation",
+            AppEvent::Redemption => "Redemption",
         }
     }
 }

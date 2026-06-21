@@ -8,30 +8,19 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(NsfwSettings::Table)
+                    .table("nsfw_settings")
                     .if_not_exists()
-                    .col(pk_auto(NsfwSettings::Id))
-                    .col(json_binary(NsfwSettings::LabelsConfidence))
-                    .col(integer(NsfwSettings::BlurTimeoutDuration))
+                    .col(pk_auto("id"))
+                    .col(json_binary("labels_confidence"))
+                    .col(integer("blur_timeout_duration"))
                     .to_owned(),
             )
-            .await?;
-
-        Ok(())
+            .await
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(NsfwSettings::Table).to_owned())
+            .drop_table(Table::drop().table("nsfw_settings").to_owned())
             .await
     }
-}
-
-#[derive(DeriveIden)]
-pub enum NsfwSettings {
-    #[sea_orm(iden = "nsfw_settings")]
-    Table,
-    Id,
-    LabelsConfidence,
-    BlurTimeoutDuration,
 }

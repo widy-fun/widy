@@ -36,6 +36,7 @@ export const api = createApi({
 		"Messages",
 		"Widgets",
 		"Nsfw-Settings",
+		"Rewards",
 	],
 	endpoints: (builder) => ({
 		init: builder.mutation<void, void>({

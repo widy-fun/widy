@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use entity::{
-    message::{self, ClientMessage},
-    subscription,
+    messages::{self, ClientMessage},
+    subscriptions,
 };
 
 use crate::services::DatabaseService;
@@ -15,7 +15,7 @@ pub trait SubscriptionsRepository: Send + Sync {
 impl SubscriptionsRepository for DatabaseService {
     async fn save_subscribe_message(&self, client_message: ClientMessage) -> Result<(), String> {
         if let Some(subscription) = client_message.subscription {
-            subscription::ActiveModel::builder()
+            subscriptions::ActiveModel::builder()
                 .set_subscribed_at(subscription.subscribed_at)
                 .set_id(subscription.id)
                 .set_played(subscription.played)
@@ -29,7 +29,7 @@ impl SubscriptionsRepository for DatabaseService {
                 .set_total(subscription.total)
                 .set_cumulative_total(subscription.cumulative_total)
                 .set_message(
-                    message::ActiveModel::builder()
+                    messages::ActiveModel::builder()
                         .set_id(client_message.id)
                         .set_type(client_message.r#type)
                         .set_created_at(client_message.created_at),

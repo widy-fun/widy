@@ -73,24 +73,26 @@ const GeneralSettings = () => {
 							</div>
 							<div style={{ display: "flex", gap: 5 }}>
 								<Select sx={{ width: 170 }} value={alert.type}>
-									{Object.values(MessageType).map((value) => (
-										<MenuItem
-											key={value}
-											value={value}
-											onClick={() => {
-												dispatch(
-													setAlert({
-														...alert,
-														type: value,
-														variation_conditions:
-															AlertVariationConditions.Random,
-													}),
-												);
-											}}
-										>
-											{t(`alert.${value}`)}
-										</MenuItem>
-									))}
+									{Object.values(MessageType)
+										.filter((value) => value !== MessageType.Redemption)
+										.map((value) => (
+											<MenuItem
+												key={value}
+												value={value}
+												onClick={() => {
+													dispatch(
+														setAlert({
+															...alert,
+															type: value,
+															variation_conditions:
+																AlertVariationConditions.Random,
+														}),
+													);
+												}}
+											>
+												{t(`alert.${value}`)}
+											</MenuItem>
+										))}
 								</Select>
 							</div>
 						</div>

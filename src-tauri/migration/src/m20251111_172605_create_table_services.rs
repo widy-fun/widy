@@ -8,30 +8,20 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Services::Table)
+                    .table("services")
                     .if_not_exists()
-                    .col(pk_uuid(Services::Id))
-                    .col(boolean(Services::Authorized))
-                    .col(string_null(Services::Auth))
-                    .col(string_null(Services::Settings))
+                    .col(string("id").primary_key())
+                    .col(boolean("authorized"))
+                    .col(json_null("settings"))
+                    .col(json_null("auth"))
                     .to_owned(),
             )
-            .await?;
-        Ok(())
+            .await
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(Services::Table).to_owned())
+            .drop_table(Table::drop().table("services").to_owned())
             .await
     }
-}
-
-#[derive(DeriveIden)]
-pub enum Services {
-    Table,
-    Id,
-    Authorized,
-    Auth,
-    Settings,
 }

@@ -1,8 +1,9 @@
 use super::DatabaseService;
 use crate::repositories::MediaSettingsRepository;
 use entity::{
-    donation::{Media, MediaType},
+    donations::{Media, MediaType},
     media_settings::MediaPlatformSettings,
+    messages::MessageType,
 };
 #[cfg(test)]
 use mockall::predicate::*;
@@ -38,6 +39,7 @@ struct Extensions {
 #[derive(Serialize)]
 struct Variables {
     slug: String,
+    platform: String,
 }
 
 #[derive(Serialize)]
@@ -122,9 +124,10 @@ impl MediaService {
 
     pub async fn get_media(
         &self,
-        text: Option<String>,
-        amount: f64,
+        text: &Option<String>,
+        amount: &f64,
         app: &AppHandle,
+        message_type: MessageType,
     ) -> Option<Media> {
         let database_service = app.state::<DatabaseService>();
         let media_settings = match database_service.get_media_settings().await {
@@ -140,7 +143,9 @@ impl MediaService {
 
         match url_media.media_type {
             MediaType::Twitch => {
-                self.check_enabled_and_min_amount(amount, &media_settings.twitch)?;
+                if let MessageType::Donation = message_type {
+                    self.check_enabled_and_min_amount(amount, &media_settings.twitch)?;
+                }
 
                 let twitch_clip_info = self.get_twitch_clip_info(&url_media.url, app).await?;
                 let token = match serde_json::from_str::<Token>(
@@ -163,7 +168,9 @@ impl MediaService {
                 });
             }
             MediaType::TikTok => {
-                self.check_enabled_and_min_amount(amount, &media_settings.tiktok)?;
+                if let MessageType::Donation = message_type {
+                    self.check_enabled_and_min_amount(amount, &media_settings.tiktok)?;
+                }
 
                 let tiktok_info = self.get_tiktok_info(&url_media.url, app).await?;
 
@@ -179,7 +186,9 @@ impl MediaService {
                 });
             }
             MediaType::Youtube => {
-                self.check_enabled_and_min_amount(amount, &media_settings.youtube)?;
+                if let MessageType::Donation = message_type {
+                    self.check_enabled_and_min_amount(amount, &media_settings.youtube)?;
+                }
 
                 let video_id = self.get_youtube_video_id(&url_media.url.clone())?;
 
@@ -201,13 +210,13 @@ impl MediaService {
 
     fn check_enabled_and_min_amount(
         &self,
-        amount: f64,
+        amount: &f64,
         media_platform_settings: &MediaPlatformSettings,
     ) -> Option<bool> {
         if !media_platform_settings.enabled {
             return None;
         }
-        if media_platform_settings.min_amount as f64 > amount {
+        if media_platform_settings.min_amount as f64 > *amount {
             return None;
         }
 
@@ -311,11 +320,14 @@ impl MediaService {
         let slug = clip_url.split('/').last().unwrap_or_default().to_string();
         let payload = vec![Operation {
             operation_name: "VideoAccessToken_Clip".to_string(),
-            variables: Variables { slug: slug.clone() },
+            variables: Variables {
+                slug: slug.clone(),
+                platform: "web".to_string(),
+            },
             extensions: Extensions {
                 persisted_query: PersistedQuery {
                     version: 1,
-                    sha256_hash: "36b89d2507fce29e5ca551df756d27c1cfe079e2609642b4390aa4c35796eb11"
+                    sha256_hash: "4f35f1ac933d76b1da008c806cd5546a7534dfaff83e033a422a81f24e5991b3"
                         .to_string(),
                 },
             },

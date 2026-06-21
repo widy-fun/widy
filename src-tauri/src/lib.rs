@@ -83,8 +83,6 @@ pub fn run() {
             get_exchange_rates,
             get_device_code,
             get_token,
-            add_custom_rewards,
-            remove_custom_rewards,
             twitch_connect,
             get_messages,
             update_service_settings,
@@ -114,6 +112,11 @@ pub fn run() {
             destream_sign_out,
             tribute_connect,
             tribute_sign_out,
+            get_rewards,
+            twitch_add_custom_reward,
+            twitch_remove_custom_reward,
+            get_reward_by_id,
+            update_reward_settings,
             init
         ])
         .run(tauri::generate_context!())

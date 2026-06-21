@@ -35,7 +35,7 @@ const GoalSettings = ({
 		<>
 			{goal && (
 				<>
-					<h3>{goal.title.toUpperCase()}</h3>
+					<h3 style={{ height: 20 }}>{goal.title.toUpperCase()}</h3>
 					<Box
 						sx={{
 							borderBottom: 1,

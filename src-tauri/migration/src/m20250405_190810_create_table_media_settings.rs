@@ -9,30 +9,19 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(MediaSettings::Table)
+                    .table("media_settings")
                     .if_not_exists()
-                    .col(pk_auto(MediaSettings::Id))
-                    .col(string(MediaSettings::Youtube))
-                    .col(string(MediaSettings::Twitch))
-                    .col(string(MediaSettings::Tiktok))
+                    .col(pk_auto("id"))
+                    .col(text("youtube"))
+                    .col(text("twitch"))
+                    .col(text("tiktok"))
                     .to_owned(),
             )
             .await
     }
-
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(MediaSettings::Table).to_owned())
+            .drop_table(Table::drop().table("media_settings").to_owned())
             .await
     }
-}
-
-#[derive(DeriveIden)]
-enum MediaSettings {
-    #[sea_orm(iden = "media_settings")]
-    Table,
-    Id,
-    Youtube,
-    Twitch,
-    Tiktok,
 }

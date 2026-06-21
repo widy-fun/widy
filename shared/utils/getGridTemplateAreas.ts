@@ -3,15 +3,15 @@ import { ViewType } from "@widy/sdk";
 const getGridTemplateAreas = (view_type: ViewType) => {
 	switch (view_type) {
 		case ViewType.Top:
-			return `"Image"
+			return `"Media"
                     "Text"`;
 		case ViewType.Bottom:
 			return `"Text"
-                    "Image"`;
+                    "Media"`;
 		case ViewType.Left:
-			return `"Image Text"`;
+			return `"Media Text"`;
 		case ViewType.Right:
-			return `"Text Image"`;
+			return `"Text Media"`;
 
 		default:
 			return;

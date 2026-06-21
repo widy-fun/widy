@@ -4,7 +4,7 @@ use anchor_client::{
 };
 use anchor_lang::prelude::*;
 use anchor_lang::{AnchorDeserialize, AnchorSerialize};
-use entity::service::{ServiceAuth, ServiceType, WidyAuth};
+use entity::services::{ServiceAuth, ServiceType, WidyAuth};
 use serde::{Deserialize, Serialize};
 use serde_qs;
 use std::sync::{Arc, Mutex};
@@ -104,7 +104,7 @@ impl DeepLinkHandler for WidySolService {
             let websocket_broadcaster = app_clone.state::<WebSocketBroadcaster>();
 
             let _ = database_service
-                .update_service(entity::service::Model {
+                .update_service(entity::services::Model {
                     id: ServiceType::WidySol,
                     auth: Some(ServiceAuth::Widy(WidyAuth {
                         donation_account_name: query_params.donation_account_name.clone(),
@@ -145,7 +145,7 @@ impl WidySolService {
         let service = database_service
             .get_service_with_auth_by_id(ServiceType::WidySol)
             .await?;
-        if let Some(entity::service::Model {
+        if let Some(entity::services::Model {
             authorized: true,
             auth: Some(ServiceAuth::Widy(auth)),
             ..
@@ -221,7 +221,7 @@ impl WidySolService {
     pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), String> {
         let database_service = app.state::<DatabaseService>();
         database_service
-            .update_service(entity::service::Model {
+            .update_service(entity::services::Model {
                 id: ServiceType::WidySol,
                 settings: None,
                 auth: None,

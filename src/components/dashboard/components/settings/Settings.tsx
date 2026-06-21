@@ -7,19 +7,14 @@ import { languages } from "../../../../../shared/i18n/languages";
 import { showSnackBar } from "../../../../../shared/slices/snackBarSlice";
 import { useUpdateSettingsMutation } from "../../../../api/settingsApi";
 import type { AppState } from "../../../../store";
-import {
-	setDuration,
-	setSettings,
-} from "../../../../store/slices/settingsSlice";
+import { setSettings } from "../../../../store/slices/settingsSlice";
 import InputSlider from "../../../InputSlider";
 import OnOffSwitch from "../../../OnOffSwitch";
 import styles from "./Settings.module.css";
 
 const Settings = () => {
 	const { t, i18n } = useTranslation();
-	const { settings, duration } = useSelector(
-		(state: AppState) => state.settingsState,
-	);
+	const { settings } = useSelector((state: AppState) => state.settingsState);
 	const dispatch = useDispatch();
 	const [updateSettings] = useUpdateSettingsMutation();
 
@@ -143,13 +138,12 @@ const Settings = () => {
 							</div>
 							<InputSlider
 								sliderValue={settings.moderation_duration}
-								inputValue={duration}
+								inputValue={settings.moderation_duration / 1000}
 								onChange={(value) => {
-									dispatch(setDuration((value as number) / 1000));
 									dispatch(
 										setSettings({
 											...settings,
-											moderation_duration: value as number,
+											moderation_duration: value,
 										}),
 									);
 								}}

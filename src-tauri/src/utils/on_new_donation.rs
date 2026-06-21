@@ -1,8 +1,8 @@
 use chrono::Utc;
 use entity::{
-    donation::Donation,
-    message::{ClientMessage, MessageType},
-    service::ServiceType,
+    donations::Donation,
+    messages::{ClientMessage, MessageType},
+    services::ServiceType,
     settings::Currency,
 };
 use tauri::{AppHandle, Manager};
@@ -64,7 +64,7 @@ pub async fn on_new_donation(
         .await;
 
     let media = media_service
-        .get_media(message.clone(), exchanged_amount.clone(), app)
+        .get_media(&message, &exchanged_amount, app, MessageType::Donation)
         .await;
 
     let text = match message {
@@ -114,6 +114,7 @@ pub async fn on_new_donation(
         follow: None,
         subscription: None,
         raid: None,
+        redemption: None,
         donation: Some(Donation {
             id,
             user_name,
@@ -136,7 +137,7 @@ pub async fn on_new_donation(
         &database_service,
         &websocket_broadcaster,
         exchanged_amount as u32,
-        entity::goal::GoalType::Donation,
+        entity::goals::GoalType::Donation,
     )
     .await?;
 
@@ -153,9 +154,27 @@ pub async fn on_new_donation(
         .broadcast_event_message(&event_message)
         .await;
 
+    let event_message = EventMessage {
+        event: AppEvent::Donation,
+        data: client_message.clone(),
+    };
+
+    websocket_broadcaster
+        .broadcast_event_message(&event_message)
+        .await;
+
+    let event_message = EventMessage {
+        event: AppEvent::Alert,
+        data: client_message.clone(),
+    };
+
+    websocket_broadcaster
+        .broadcast_event_message(&event_message)
+        .await;
+
     if !media.is_none() {
         let event_message = EventMessage {
-            event: AppEvent::MediaMessage,
+            event: AppEvent::Media,
             data: client_message,
         };
 

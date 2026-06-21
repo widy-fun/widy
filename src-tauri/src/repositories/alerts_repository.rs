@@ -1,4 +1,4 @@
-use entity::alert::*;
+use entity::alerts::*;
 
 use crate::services::DatabaseService;
 use async_trait::async_trait;
@@ -38,13 +38,17 @@ impl AlertsRepository for DatabaseService {
             r#type: Set(alert.r#type),
             status: Set(alert.status),
             amount: Set(alert.amount),
-            show_image: Set(alert.show_image),
             variation_conditions: Set(alert.variation_conditions),
             group_id: Set(alert.group_id),
             audio_volume: Set(alert.audio_volume),
             view_type: Set(alert.view_type),
             title_style: Set(alert.title_style),
             message_style: Set(alert.message_style),
+            video_volume: Set(alert.video_volume),
+            video: Set(alert.video),
+            alert_variant: Set(alert.alert_variant),
+            delay: Set(alert.delay),
+            duration: Set(alert.duration),
         })
         .exec(&self.connection)
         .await
@@ -62,7 +66,6 @@ impl AlertsRepository for DatabaseService {
             name: Set(alert.name),
             r#type: Set(alert.r#type),
             status: Set(alert.status),
-            show_image: Set(alert.show_image),
             amount: Set(alert.amount),
             variation_conditions: Set(alert.variation_conditions),
             group_id: Set(alert.group_id),
@@ -70,6 +73,11 @@ impl AlertsRepository for DatabaseService {
             view_type: Set(alert.view_type),
             title_style: Set(alert.title_style),
             message_style: Set(alert.message_style),
+            video_volume: Set(alert.video_volume),
+            video: Set(alert.video),
+            alert_variant: Set(alert.alert_variant),
+            delay: Set(alert.delay),
+            duration: Set(alert.duration),
         })
         .exec(&self.connection)
         .await

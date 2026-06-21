@@ -11,13 +11,10 @@ import type {
 	IAucFighterMatchWinner,
 	IClientMessage,
 	IService,
-	ITwitchEventPayload,
-	ITwitchIntegrationSettings,
-	ITwitchRedemptionEvent,
 } from "@widy/sdk";
 import {
 	AppEvent,
-	MessageType,
+	RewardType,
 	ServiceType,
 	WidgetOutboundBridge,
 } from "@widy/sdk";
@@ -34,7 +31,7 @@ import { messagesApi } from "./api/messagesApi";
 import { servicesApi } from "./api/servicesApi";
 import { settingsApi } from "./api/settingsApi";
 import { StreamElementsSocketServiceContext } from "./contexts/StreamElementsSocketServiceContext";
-import twitchRedemptionToDonation from "./helpers/twitchRedemptionToDonation";
+import donationFromRedemption from "./helpers/donationFromRedemption";
 import updateAucFighterTeamAmount from "./helpers/updateAucFighterTeamAmount";
 import StreamElementsSocketServiceProvider from "./providers/StreamElementsSocketServiceProvider";
 import StreamElementsSocketService from "./services/streamElementsSocketService";
@@ -58,56 +55,61 @@ const eventsService = new WebsocketEventsService("ws://127.0.0.1:12553/ws");
 const { addDonation: addAuctionDonation } = auctionDonationsSlice.actions;
 const { addDonation: addMaptionDonation } = maptionDonationsSlice.actions;
 
-eventsService.subscribe<IClientMessage>(AppEvent.Message, (message) => {
+eventsService.subscribe<IClientMessage>(AppEvent.Message, (_) => {
+	store.dispatch(messagesApi.util.invalidateTags(["Messages"]));
+});
+
+eventsService.subscribe<IClientMessage>(AppEvent.Donation, (message) => {
 	const state = store.getState() as AppState;
 	const { services } = state.servicesState;
-	if (message.type === MessageType.Donation && message.donation) {
+	if (message.donation) {
 		if (services[message.donation.service].active) {
 			store.dispatch(addAuctionDonation(message.donation));
 		}
 		updateAucFighterTeamAmount(message.donation, eventsService);
 		store.dispatch(addMaptionDonation(message.donation));
 	}
-	store.dispatch(messagesApi.util.invalidateTags(["Messages"]));
 });
 
 eventsService.subscribe<IClientMessage>(AppEvent.Goal, () => {
 	store.dispatch(settingsApi.util.invalidateTags(["Goals"]));
 });
 
-eventsService.subscribe<ITwitchEventPayload<ITwitchRedemptionEvent>>(
-	AppEvent.TwitchRewardRedemptionAdd,
-	async (payload) => {
-		const state = store.getState() as AppState;
-		const { services } = state.servicesState;
-		const { data: settings } = await store.dispatch(
-			settingsApi.endpoints.getSettings.initiate(undefined, {
-				forceRefetch: true,
-			}),
-		);
-		const { data } = await store.dispatch(
-			servicesApi.endpoints.getServiceById.initiate(
-				{
-					id: ServiceType.Twitch,
-				},
-				{ forceRefetch: true },
-			),
-		);
-		const service = data as IService<unknown, ITwitchIntegrationSettings>;
-
-		if (services[ServiceType.Twitch].active && settings && service) {
-			store.dispatch(
-				addAuctionDonation(
-					twitchRedemptionToDonation({
-						payload,
-						currency: settings.currency,
-						ratio: service.settings.points_currency_ratio,
-					}),
+eventsService.subscribe<IClientMessage>(
+	AppEvent.Redemption,
+	async (message) => {
+		if (message.redemption?.type === RewardType.Auction) {
+			const state = store.getState() as AppState;
+			const { services } = state.servicesState;
+			const { data: settings } = await store.dispatch(
+				settingsApi.endpoints.getSettings.initiate(undefined, {
+					forceRefetch: true,
+				}),
+			);
+			const { data } = await store.dispatch(
+				servicesApi.endpoints.getServiceById.initiate(
+					{
+						id: ServiceType.Twitch,
+					},
+					{ forceRefetch: true },
 				),
 			);
+			const service = data as IService<unknown, unknown>;
+
+			if (services[ServiceType.Twitch].active && settings && service) {
+				store.dispatch(
+					addAuctionDonation(
+						donationFromRedemption({
+							redemption: message.redemption,
+							message,
+						}),
+					),
+				);
+			}
 		}
 	},
 );
+
 eventsService.subscribe<string>(AppEvent.AlertPlaying, (id) => {
 	store.dispatch(setPlayingAlertId(id));
 });

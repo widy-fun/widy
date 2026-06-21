@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use entity::{
-    follow,
-    message::{self, ClientMessage},
+    followers,
+    messages::{self, ClientMessage},
 };
 
 use crate::services::DatabaseService;
@@ -15,7 +15,7 @@ pub trait FollowsRepository: Send + Sync {
 impl FollowsRepository for DatabaseService {
     async fn save_follow_message(&self, client_message: ClientMessage) -> Result<(), String> {
         if let Some(follow) = client_message.follow {
-            follow::ActiveModel::builder()
+            followers::ActiveModel::builder()
                 .set_followed_at(follow.followed_at)
                 .set_id(follow.id)
                 .set_played(follow.played)
@@ -24,7 +24,7 @@ impl FollowsRepository for DatabaseService {
                 .set_user_name(follow.user_name)
                 .set_user_id(follow.user_id)
                 .set_message(
-                    message::ActiveModel::builder()
+                    messages::ActiveModel::builder()
                         .set_id(client_message.id)
                         .set_type(client_message.r#type)
                         .set_created_at(client_message.created_at),

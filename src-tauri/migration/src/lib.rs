@@ -12,36 +12,27 @@ mod m20250717_152323_create_table_maption_settings;
 mod m20250717_152358_add_default_maption_settings;
 mod m20250819_113411_create_table_auc_fighter_settings;
 mod m20250819_113447_add_default_auc_fighter_settings;
-mod m20250909_130535_add_alert_columns;
 mod m20250911_130555_create_table_goals;
-mod m20251104_230710_update_messages_colums;
 mod m20251111_172605_create_table_services;
 mod m20251111_183902_add_default_services;
-mod m20251115_183022_update_settings;
-mod m20251122_001838_update_media_settings;
 mod m20251212_023401_create_donations_table;
-mod m20251212_124415_update_messages_type;
-mod m20251212_124711_split_messages_and_donations;
-mod m20251213_195846_add_alert_type;
 mod m20251219_012429_create_table_followers;
 mod m20251219_211909_create_table_subscriptions;
 mod m20251224_193112_create_table_raids;
-mod m20251225_002805_add_goal_type;
-mod m20251225_233550_add_alert_show_image;
 mod m20260131_232002_add_widy_sol_service;
 mod m20260214_231116_add_widy_ton_service;
 mod m20260306_172034_add_donation_alerts_service;
 mod m20260307_000508_add_stream_labs_service;
 mod m20260308_122456_add_donatello_service;
 mod m20260308_122513_add_donatik_service;
-mod m20260310_224044_add_column_tts_type_tts_settings_to_settings;
-mod m20260318_193754_add_column_widget_token_to_settings;
 mod m20260318_195439_create_table_widgets;
 mod m20260525_204303_create_table_nsfw_settings;
 mod m20260525_221718_add_default_nsfw_settings;
 mod m20260530_134422_add_donatepay_service;
 mod m20260603_222729_add_destream_service;
 mod m20260605_175133_add_tribute_service;
+mod m20260612_150622_create_table_rewards;
+mod m20260612_153247_create_table_redemptions;
 
 pub struct Migrator;
 
@@ -62,36 +53,27 @@ impl MigratorTrait for Migrator {
             Box::new(m20250717_152358_add_default_maption_settings::Migration),
             Box::new(m20250819_113411_create_table_auc_fighter_settings::Migration),
             Box::new(m20250819_113447_add_default_auc_fighter_settings::Migration),
-            Box::new(m20250909_130535_add_alert_columns::Migration),
             Box::new(m20250911_130555_create_table_goals::Migration),
-            Box::new(m20251104_230710_update_messages_colums::Migration),
             Box::new(m20251111_172605_create_table_services::Migration),
             Box::new(m20251111_183902_add_default_services::Migration),
-            Box::new(m20251115_183022_update_settings::Migration),
-            Box::new(m20251122_001838_update_media_settings::Migration),
             Box::new(m20251212_023401_create_donations_table::Migration),
-            Box::new(m20251212_124415_update_messages_type::Migration),
-            Box::new(m20251212_124711_split_messages_and_donations::Migration),
-            Box::new(m20251213_195846_add_alert_type::Migration),
             Box::new(m20251219_012429_create_table_followers::Migration),
             Box::new(m20251219_211909_create_table_subscriptions::Migration),
             Box::new(m20251224_193112_create_table_raids::Migration),
-            Box::new(m20251225_002805_add_goal_type::Migration),
-            Box::new(m20251225_233550_add_alert_show_image::Migration),
             Box::new(m20260131_232002_add_widy_sol_service::Migration),
             Box::new(m20260214_231116_add_widy_ton_service::Migration),
             Box::new(m20260306_172034_add_donation_alerts_service::Migration),
             Box::new(m20260307_000508_add_stream_labs_service::Migration),
             Box::new(m20260308_122456_add_donatello_service::Migration),
             Box::new(m20260308_122513_add_donatik_service::Migration),
-            Box::new(m20260310_224044_add_column_tts_type_tts_settings_to_settings::Migration),
-            Box::new(m20260318_193754_add_column_widget_token_to_settings::Migration),
             Box::new(m20260318_195439_create_table_widgets::Migration),
             Box::new(m20260525_204303_create_table_nsfw_settings::Migration),
             Box::new(m20260525_221718_add_default_nsfw_settings::Migration),
             Box::new(m20260530_134422_add_donatepay_service::Migration),
             Box::new(m20260603_222729_add_destream_service::Migration),
             Box::new(m20260605_175133_add_tribute_service::Migration),
+            Box::new(m20260612_150622_create_table_rewards::Migration),
+            Box::new(m20260612_153247_create_table_redemptions::Migration),
         ]
     }
 }

@@ -1,6 +1,6 @@
 use crate::{repositories::ServicesRepository, services::DatabaseService, utils::on_new_donation};
 use entity::{
-    service::{DonationAlertsAuth, ServiceAuth, ServiceType},
+    services::{DonationAlertsAuth, ServiceAuth, ServiceType},
     settings::Currency,
 };
 use futures::{SinkExt, StreamExt};
@@ -108,9 +108,9 @@ impl DonationAlertsService {
     pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
         let database_service = app.state::<DatabaseService>();
         let service = database_service
-            .get_service_with_auth_by_id(entity::service::ServiceType::DonationAlerts)
+            .get_service_with_auth_by_id(entity::services::ServiceType::DonationAlerts)
             .await?;
-        if let Some(entity::service::Model {
+        if let Some(entity::services::Model {
             id: ServiceType::DonationAlerts,
             auth: Some(ServiceAuth::DonationAlerts(auth)),
             ..

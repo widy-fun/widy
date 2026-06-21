@@ -1,5 +1,5 @@
 use crate::utils::on_new_donation;
-use entity::{service::ServiceType, settings::Currency};
+use entity::{services::ServiceType, settings::Currency};
 use serde::{Deserialize, Serialize};
 use tauri::AppHandle;
 

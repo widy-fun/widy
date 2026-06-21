@@ -1,4 +1,4 @@
-use entity::widget::Manifest;
+use entity::widgets::Manifest;
 use tauri::State;
 
 use crate::{

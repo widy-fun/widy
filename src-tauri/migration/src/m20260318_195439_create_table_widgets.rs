@@ -8,34 +8,21 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Widgets::Table)
+                    .table("widgets")
                     .if_not_exists()
-                    .col(pk_uuid(Widgets::Id))
-                    .col(string(Widgets::Manifest))
-                    .col(string_null(Widgets::DevPath))
-                    .col(string_null(Widgets::ViewStorage))
-                    .col(string_null(Widgets::ControlStorage))
+                    .col(pk_uuid("id"))
+                    .col(text("manifest"))
+                    .col(string_null("dev_path"))
+                    .col(string_null("view_storage"))
+                    .col(string_null("control_storage"))
                     .to_owned(),
             )
-            .await?;
-
-        Ok(())
+            .await
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(Widgets::Table).to_owned())
+            .drop_table(Table::drop().table("widgets").to_owned())
             .await
     }
-}
-
-#[derive(DeriveIden)]
-pub enum Widgets {
-    #[sea_orm(iden = "widgets")]
-    Table,
-    Id,
-    Manifest,
-    DevPath,
-    ViewStorage,
-    ControlStorage,
 }

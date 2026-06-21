@@ -11,6 +11,7 @@ const initialState: MessagesState = {
 		exclude_follows: false,
 		exclude_subscriptions: false,
 		exclude_raids: false,
+		exclude_redemptions: false,
 	},
 };
 

@@ -1,4 +1,4 @@
-use entity::alert::*;
+use entity::alerts::*;
 use tauri::{AppHandle, Manager, State};
 
 use crate::{

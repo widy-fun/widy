@@ -6,7 +6,6 @@ import type {
 	IStreamElementsAuth,
 	IStreamLabsAuth,
 	ITributeAuth,
-	ITwitchIntegrationSettings,
 } from "@widy/sdk";
 import { ServiceType } from "@widy/sdk";
 import { api } from ".";
@@ -62,7 +61,7 @@ export const servicesApi = api.injectEndpoints({
 		}),
 		updateServiceSettings: builder.mutation<
 			void,
-			{ settings: ITwitchIntegrationSettings; id: ServiceType }
+			{ settings: unknown; id: ServiceType }
 		>({
 			query: (args) => ({
 				command: "update_service_settings",

@@ -28,6 +28,7 @@ import { goalsSlice } from "./slices/goalsSlice";
 import { lotsSlice } from "./slices/lotsSlice";
 import { mainSlice } from "./slices/mainSlice";
 import { maptionSlice } from "./slices/maptionSlice";
+import { rewardsSlice } from "./slices/rewardsSlice.ts";
 import { settingsSlice } from "./slices/settingsSlice";
 
 export const rootReducer = combineReducers({
@@ -36,6 +37,7 @@ export const rootReducer = combineReducers({
 	messagesState: messagesSlice.reducer,
 	mediaState: mediaSlice.reducer,
 	alertsState: alertsSlice.reducer,
+	rewardsState: rewardsSlice.reducer,
 	settingsState: settingsSlice.reducer,
 	lotsState: lotsSlice.reducer,
 	auctionState: auctionSlice.reducer,

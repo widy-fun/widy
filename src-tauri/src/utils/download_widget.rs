@@ -1,4 +1,4 @@
-use entity::widget::Manifest;
+use entity::widgets::Manifest;
 use futures::StreamExt;
 use tauri::State;
 use tokio::{fs, io::AsyncWriteExt};

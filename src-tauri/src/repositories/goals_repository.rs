@@ -1,4 +1,4 @@
-use entity::goal::*;
+use entity::goals::*;
 use migration::Expr;
 
 use crate::services::DatabaseService;

@@ -17,8 +17,8 @@ use axum::{
     routing::get,
     Router,
 };
-use entity::goal::GoalType;
-use entity::message::ClientMessage;
+use entity::goals::GoalType;
+use entity::messages::ClientMessage;
 use futures::{sink::SinkExt, stream::StreamExt};
 use http::header;
 use serde::Deserialize;
@@ -39,6 +39,7 @@ struct DonationsQuery {
     pub exclude_subscriptions: bool,
     pub exclude_follows: bool,
     pub exclude_raids: bool,
+    pub exclude_redemptions: bool,
 }
 #[derive(Debug, Deserialize)]
 struct GoalsQuery {
@@ -211,6 +212,7 @@ impl AxumService {
                 &params.exclude_subscriptions,
                 &params.exclude_follows,
                 &params.exclude_raids,
+                &params.exclude_redemptions,
             )
             .await
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
@@ -221,7 +223,7 @@ impl AxumService {
     async fn get_not_ended_goal(
         Query(params): Query<GoalsQuery>,
         State(state): State<AxumState>,
-    ) -> Result<Json<Option<entity::goal::Model>>, StatusCode> {
+    ) -> Result<Json<Option<entity::goals::Model>>, StatusCode> {
         let database_service = state.app.state::<DatabaseService>();
         let goal = database_service
             .get_not_ended_goal(params.r#type)
@@ -234,7 +236,7 @@ impl AxumService {
     async fn get_widget_by_id(
         Path(id): Path<String>,
         State(state): State<AxumState>,
-    ) -> Result<Json<Option<entity::widget::Model>>, StatusCode> {
+    ) -> Result<Json<Option<entity::widgets::Model>>, StatusCode> {
         let database_service = state.app.state::<DatabaseService>();
         let widget = database_service
             .get_widget_by_id(id)
@@ -303,7 +305,7 @@ impl AxumService {
 
     async fn get_alerts(
         State(state): State<AxumState>,
-    ) -> Result<Json<Vec<entity::alert::Model>>, StatusCode> {
+    ) -> Result<Json<Vec<entity::alerts::Model>>, StatusCode> {
         let database_service = state.app.state::<DatabaseService>();
         let alerts = database_service
             .get_alerts()

@@ -9,40 +9,24 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(MaptionSettings::Table)
+                    .table("maption_settings")
                     .if_not_exists()
-                    .col(pk_auto(MaptionSettings::Id))
-                    .col(string(MaptionSettings::PriceForMeter))
-                    .col(string(MaptionSettings::Latitude))
-                    .col(string(MaptionSettings::Longitude))
-                    .col(integer(MaptionSettings::NewDonationAddingTime))
-                    .col(integer(MaptionSettings::TimerAddingTime))
-                    .col(boolean(MaptionSettings::IsGreaterTimerAddingTime))
-                    .col(boolean(MaptionSettings::IsNewDonationAddingTime))
+                    .col(pk_auto("id"))
+                    .col(string("price_for_meter"))
+                    .col(string("latitude"))
+                    .col(string("longitude"))
+                    .col(integer("new_donation_adding_time"))
+                    .col(integer("timer_adding_time"))
+                    .col(boolean("is_greater_timer_adding_time"))
+                    .col(boolean("is_new_donation_adding_time"))
                     .to_owned(),
             )
-            .await?;
-
-        Ok(())
+            .await
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(MaptionSettings::Table).to_owned())
+            .drop_table(Table::drop().table("maption_settings").to_owned())
             .await
     }
-}
-
-#[derive(DeriveIden)]
-enum MaptionSettings {
-    #[sea_orm(iden = "maption_settings")]
-    Table,
-    Id,
-    PriceForMeter,
-    Latitude,
-    Longitude,
-    NewDonationAddingTime,
-    TimerAddingTime,
-    IsGreaterTimerAddingTime,
-    IsNewDonationAddingTime,
 }

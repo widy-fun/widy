@@ -1,4 +1,4 @@
-use sea_orm_migration::{prelude::*, schema::*}; 
+use sea_orm_migration::{prelude::*, schema::*};
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
@@ -8,18 +8,11 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Messages::Table)
+                    .table("messages")
                     .if_not_exists()
-                    .col(pk_uuid(Messages::Id))
-                    .col(string(Messages::TelegramMessageId))
-                    .col(float(Messages::Amount))
-                    .col(string(Messages::UserName))
-                    .col(string_null(Messages::Text))
-                    .col(string_null(Messages::Audio))
-                    .col(string_null(Messages::Media))
-                    .col(string(Messages::Currency))
-                    .col(boolean(Messages::Played))
-                    .col(integer(Messages::CreatedAt))
+                    .col(pk_uuid("id"))
+                    .col(string("type"))
+                    .col(big_integer("created_at"))
                     .to_owned(),
             )
             .await
@@ -27,23 +20,7 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(Messages::Table).to_owned())
+            .drop_table(Table::drop().table("messages").to_owned())
             .await
     }
-}
-
-#[derive(DeriveIden)]
-enum Messages {
-    #[sea_orm(iden = "messages")]
-    Table,
-    Id,
-    TelegramMessageId,
-    Amount,
-    UserName,
-    Text,
-    Audio,
-    Media,
-    Currency,
-    Played,
-    CreatedAt,
 }

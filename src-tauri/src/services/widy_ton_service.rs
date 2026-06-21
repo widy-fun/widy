@@ -8,7 +8,7 @@ use crate::{
     },
     utils::on_new_donation,
 };
-use entity::service::{ServiceAuth, ServiceType, WidyAuth};
+use entity::services::{ServiceAuth, ServiceType, WidyAuth};
 use eventsource_client::{self as es, Client};
 use futures::{StreamExt, TryStreamExt};
 use serde::Deserialize;
@@ -134,7 +134,7 @@ impl DeepLinkHandler for WidyTonService {
             let websocket_broadcaster = app_clone.state::<WebSocketBroadcaster>();
 
             let _ = database_service
-                .update_service(entity::service::Model {
+                .update_service(entity::services::Model {
                     id: ServiceType::WidyTon,
                     auth: Some(ServiceAuth::Widy(WidyAuth {
                         donation_account_name: query_params.donation_account_name.clone(),
@@ -185,7 +185,7 @@ impl WidyTonService {
         let service = database_service
             .get_service_with_auth_by_id(ServiceType::WidyTon)
             .await?;
-        if let Some(entity::service::Model {
+        if let Some(entity::services::Model {
             authorized: true,
             auth: Some(ServiceAuth::Widy(auth)),
             ..
@@ -313,7 +313,7 @@ impl WidyTonService {
     pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), String> {
         let database_service = app.state::<DatabaseService>();
         database_service
-            .update_service(entity::service::Model {
+            .update_service(entity::services::Model {
                 id: ServiceType::WidyTon,
                 settings: None,
                 auth: None,

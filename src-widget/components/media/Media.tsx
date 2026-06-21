@@ -2,15 +2,16 @@ import usePlayMedia from "../../hooks/usePlayMedia";
 import getElementByMediaType from "../../utils/getElementByMediaType";
 
 const Media = () => {
-	const { currentMessage, mediaSettings } = usePlayMedia();
+	const { media, mediaSettings, messageId } = usePlayMedia();
+
 	return (
 		mediaSettings &&
-		currentMessage &&
-		currentMessage.donation?.media && (
+		messageId &&
+		media && (
 			<div style={{ height: "100dvh", width: "100dvw" }}>
 				{getElementByMediaType({
-					media: currentMessage.donation.media,
-					messageId: currentMessage.id,
+					media,
+					messageId,
 					mediaSettings,
 				})}
 			</div>

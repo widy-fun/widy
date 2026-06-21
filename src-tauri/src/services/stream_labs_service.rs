@@ -1,5 +1,5 @@
 use entity::{
-    service::{ServiceAuth, ServiceType, StreamLabsAuth},
+    services::{ServiceAuth, ServiceType, StreamLabsAuth},
     settings::Currency,
 };
 use futures::FutureExt;
@@ -45,9 +45,9 @@ impl StreamLabsService {
     pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
         let database_service = app.state::<DatabaseService>();
         let service = database_service
-            .get_service_with_auth_by_id(entity::service::ServiceType::StreamLabs)
+            .get_service_with_auth_by_id(entity::services::ServiceType::StreamLabs)
             .await?;
-        if let Some(entity::service::Model {
+        if let Some(entity::services::Model {
             id: ServiceType::StreamLabs,
             auth: Some(ServiceAuth::StreamLabs(auth)),
             ..
@@ -152,7 +152,7 @@ impl StreamLabsService {
     pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), String> {
         let database_service = app.state::<DatabaseService>();
         database_service
-            .update_service(entity::service::Model {
+            .update_service(entity::services::Model {
                 id: ServiceType::StreamLabs,
                 settings: None,
                 auth: None,

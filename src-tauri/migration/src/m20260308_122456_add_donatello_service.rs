@@ -1,4 +1,4 @@
-use entity::service::*;
+use entity::services::*;
 use sea_orm_migration::prelude::*;
 use sea_orm_migration::sea_orm::entity::*;
 #[derive(DeriveMigrationName)]

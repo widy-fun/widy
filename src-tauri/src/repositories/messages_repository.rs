@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use entity::{donation, follow, message::*, raid, subscription};
+use entity::{donations, followers, messages::*, raids, redemptions, subscriptions};
 
 use crate::services::DatabaseService;
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter, QueryOrder, QuerySelect};
@@ -14,6 +14,7 @@ pub trait MessagesRepository: Send + Sync {
         exclude_subscriptions: &bool,
         exclude_follows: &bool,
         exclude_raids: &bool,
+        exclude_redemptions: &bool,
     ) -> Result<Vec<ClientMessage>, String>;
 }
 
@@ -27,23 +28,29 @@ impl MessagesRepository for DatabaseService {
         exclude_subscriptions: &bool,
         exclude_follows: &bool,
         exclude_raids: &bool,
+        exclude_redemptions: &bool,
     ) -> Result<Vec<ClientMessage>, String> {
         let mut query = Entity::find()
-            .left_join(donation::Entity)
-            .left_join(follow::Entity)
-            .left_join(subscription::Entity)
-            .left_join(raid::Entity);
+            .left_join(donations::Entity)
+            .left_join(followers::Entity)
+            .left_join(subscriptions::Entity)
+            .left_join(redemptions::Entity)
+            .left_join(raids::Entity);
+
         if *exclude_donations {
-            query = query.filter(donation::Column::Id.is_null());
+            query = query.filter(donations::Column::Id.is_null());
         }
         if *exclude_subscriptions {
-            query = query.filter(subscription::Column::Id.is_null());
+            query = query.filter(subscriptions::Column::Id.is_null());
         }
         if *exclude_follows {
-            query = query.filter(follow::Column::Id.is_null());
+            query = query.filter(followers::Column::Id.is_null());
         }
         if *exclude_raids {
-            query = query.filter(raid::Column::Id.is_null());
+            query = query.filter(raids::Column::Id.is_null());
+        }
+        if *exclude_redemptions {
+            query = query.filter(redemptions::Column::Id.is_null());
         }
         let client_messages: Vec<ClientMessage> = query
             .order_by_desc(Column::CreatedAt)

@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use entity::{
-    donation,
-    message::{self, ClientMessage},
+    donations,
+    messages::{self, ClientMessage},
 };
 
 use crate::services::DatabaseService;
@@ -12,7 +12,7 @@ pub trait DonationsRepository: Send + Sync {
     async fn get_donation_by_service_id(
         &self,
         service_id: String,
-    ) -> Result<Option<donation::Model>, String>;
+    ) -> Result<Option<donations::Model>, String>;
     async fn save_donation_message(&self, client_message: ClientMessage) -> Result<(), String>;
 }
 
@@ -21,9 +21,9 @@ impl DonationsRepository for DatabaseService {
     async fn get_donation_by_service_id(
         &self,
         service_id: String,
-    ) -> Result<Option<donation::Model>, String> {
-        donation::Entity::find()
-            .filter(donation::Column::ServiceId.eq(service_id))
+    ) -> Result<Option<donations::Model>, String> {
+        donations::Entity::find()
+            .filter(donations::Column::ServiceId.eq(service_id))
             .one(&self.connection)
             .await
             .map_err(|e| {
@@ -33,7 +33,7 @@ impl DonationsRepository for DatabaseService {
     }
     async fn save_donation_message(&self, client_message: ClientMessage) -> Result<(), String> {
         if let Some(donation) = client_message.donation {
-            donation::ActiveModel::builder()
+            donations::ActiveModel::builder()
                 .set_amount(donation.amount)
                 .set_audio(donation.audio)
                 .set_created_at(donation.created_at)
@@ -48,7 +48,7 @@ impl DonationsRepository for DatabaseService {
                 .set_text(donation.text)
                 .set_user_name(donation.user_name)
                 .set_message(
-                    message::ActiveModel::builder()
+                    messages::ActiveModel::builder()
                         .set_id(client_message.id)
                         .set_type(client_message.r#type)
                         .set_created_at(client_message.created_at),

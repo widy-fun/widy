@@ -1,6 +1,6 @@
 use crate::services::DatabaseService;
 use async_trait::async_trait;
-use entity::widget::*;
+use entity::widgets::*;
 use sea_orm::{ActiveModelTrait, ActiveValue::Set, ColumnTrait, EntityTrait, QueryFilter};
 
 #[async_trait]

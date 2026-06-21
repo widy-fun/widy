@@ -4,9 +4,10 @@ import type {
 	ISettings,
 	MessageId,
 } from "@widy/sdk";
-import { AppEvent } from "@widy/sdk";
+import { AppEvent, RewardType } from "@widy/sdk";
 import { useCallback, useEffect, useRef, useState } from "react";
 import useAppEvents from "../../shared/hooks/useAppEvents";
+import getMediaFromMessage from "../utils/getMediaFromMessage";
 
 const usePlayMedia = () => {
 	const eventsService = useAppEvents();
@@ -63,9 +64,12 @@ const usePlayMedia = () => {
 	}, [handleMediaEnd, currentMessage]);
 
 	const handleNewMessage = useCallback((message: IClientMessage) => {
-		const media = message.donation?.media;
+		const media = getMediaFromMessage(message);
 		if (media) {
 			messagesRef.current = [...messagesRef.current, message];
+			if (!currentMessage) {
+				playMedia({ message: message });
+			}
 		}
 	}, []);
 
@@ -82,8 +86,21 @@ const usePlayMedia = () => {
 
 	useEffect(() => {
 		const unsubscribe = eventsService.subscribe<IClientMessage>(
-			AppEvent.MediaMessage,
+			AppEvent.Media,
 			handleNewMessage,
+		);
+
+		return () => unsubscribe();
+	}, [handleNewMessage]);
+
+	useEffect(() => {
+		const unsubscribe = eventsService.subscribe<IClientMessage>(
+			AppEvent.Redemption,
+			(message) => {
+				if (message.redemption?.type === RewardType.Media) {
+					handleNewMessage(message);
+				}
+			},
 		);
 
 		return () => unsubscribe();
@@ -174,24 +191,9 @@ const usePlayMedia = () => {
 		return () => unsubscribe();
 	}, [handleMediaEnd]);
 
-	useEffect(() => {
-		const unsubscribe = eventsService.subscribe<string>(
-			AppEvent.AlertPlayed,
-			(id) => {
-				const message = messagesRef.current.find(
-					(message) => message.id === id,
-				);
-				if (!currentMessage && message) {
-					playMedia({ message: message });
-				}
-			},
-		);
-
-		return () => unsubscribe();
-	}, [playMedia, currentMessage]);
-
 	return {
-		currentMessage,
+		messageId: currentMessage?.id,
+		media: getMediaFromMessage(currentMessage),
 		mediaSettings: mediaSettingsRef.current,
 	};
 };

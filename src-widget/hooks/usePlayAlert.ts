@@ -1,60 +1,61 @@
 import type { IAlert, IClientMessage, ISettings, MessageId } from "@widy/sdk";
-import { AppEvent } from "@widy/sdk";
+import { AlertVariant, AppEvent, RewardType } from "@widy/sdk";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useAppEvents from "../../shared/hooks/useAppEvents";
 import getTestAlertMessage from "../../shared/utils/getTestAlertMessage";
-import getAlertByMessage from "../utils/getAlertByMessage";
+import getAlert from "../utils/getAlert";
 
 const usePlayAlert = () => {
 	const { t } = useTranslation();
 	const eventsService = useAppEvents();
 	const alertAudioRef = useRef<HTMLAudioElement>(new Audio());
 	const messageAudioRef = useRef<HTMLAudioElement>(new Audio());
+	const alertVideoRef = useRef<HTMLVideoElement>(
+		document.createElement("video"),
+	);
 	const alertsRef = useRef<IAlert[]>([]);
 	const settingsRef = useRef<ISettings | null>(null);
 	const messagesRef = useRef<IClientMessage[]>([]);
 	const [currentMessage, setCurrentMessage] = useState<IClientMessage>();
 	const [currentAlert, setCurrentAlert] = useState<IAlert>();
+	const [currentVideoSrcObject, setCurrentVideoSrcObject] =
+		useState<MediaProvider>();
+	const [isShowVideoElement, setIsShowVideoElement] = useState(true);
+	const replaysIdRef = useRef<Set<string>>(new Set());
 
 	const handleMessageAudioEnd = useCallback(
 		({
 			message,
-			skip = false,
+			duration = 3000,
 		}: {
-			message: IClientMessage | undefined;
-			skip?: boolean;
+			message?: IClientMessage;
+			duration?: number;
 		}) => {
 			messageAudioRef.current.pause();
 			alertAudioRef.current.pause();
-			setTimeout(
-				() => {
-					if (!message) return;
-					eventsService.send<MessageId>({
-						event: AppEvent.AlertPlayed,
-						data: message.id,
+			alertVideoRef.current.pause();
+			if (!message) return;
+			setTimeout(() => {
+				eventsService.send<MessageId>({
+					event: AppEvent.AlertPlayed,
+					data: message.id,
+				});
+				messagesRef.current = messagesRef.current.filter(
+					(m) => m.id !== message.id,
+				);
+				const newCurrentMessage = messagesRef.current.at(0);
+				setCurrentMessage(undefined);
+				if (newCurrentMessage) {
+					const newAlert = getAlert({
+						message: newCurrentMessage,
+						alerts: alertsRef.current,
 					});
-					messagesRef.current = messagesRef.current.filter(
-						(m) => m.id !== message.id,
-					);
-
-					const newCurrentMessage = messagesRef.current.at(0);
-
-					setCurrentMessage(undefined);
-					setTimeout(() => {
-						if (newCurrentMessage) {
-							const alert = getAlertByMessage({
-								alerts: alertsRef.current,
-								message: newCurrentMessage,
-							});
-							if (alert) {
-								playMessage({ message: newCurrentMessage, alert });
-							}
-						}
-					}, 0);
-				},
-				skip ? 0 : 3000,
-			);
+					if (newAlert) {
+						playMessage({ message: newCurrentMessage, alert: newAlert });
+					}
+				}
+			}, duration);
 		},
 		[],
 	);
@@ -62,19 +63,49 @@ const usePlayAlert = () => {
 	const playMessage = useCallback(
 		({ message, alert }: { message: IClientMessage; alert: IAlert }) => {
 			if (settingsRef.current && !settingsRef.current.alert_paused) {
-				setTimeout(() => {
-					if (settingsRef.current && messagesRef.current.length) {
-						eventsService.send<MessageId>({
-							event: AppEvent.AlertPlaying,
-							data: message.id,
-						});
-						alertAudioRef.current.src = `static/${alert.audio}`;
-						alertAudioRef.current.volume = alert.audio_volume / 100;
-						alertAudioRef.current.play();
-						setCurrentMessage(message);
-						setCurrentAlert(alert);
-					}
-				}, settingsRef.current.moderation_duration);
+				const replay = replaysIdRef.current.has(message.id);
+				replaysIdRef.current.delete(message.id);
+				setTimeout(
+					() => {
+						if (settingsRef.current && messagesRef.current.length) {
+							eventsService.send<MessageId>({
+								event: AppEvent.AlertPlaying,
+								data: message.id,
+							});
+
+							setAlertAndMessage({ message, alert });
+						}
+					},
+					replay ? 0 : settingsRef.current.moderation_duration,
+				);
+			}
+		},
+		[],
+	);
+
+	const setAlertAndMessage = useCallback(
+		({ message, alert }: { message: IClientMessage; alert: IAlert }) => {
+			setCurrentMessage(message);
+			setCurrentAlert(alert);
+
+			if (alert.alert_variant === AlertVariant.Video) {
+				alertVideoRef.current.src = `static/${alert.video}`;
+				alertVideoRef.current.volume = alert.video_volume / 100;
+				alertVideoRef.current.play();
+				setCurrentVideoSrcObject(alertVideoRef.current.captureStream());
+				setIsShowVideoElement(true);
+			} else if (
+				alert.alert_variant === AlertVariant.Audio ||
+				alert.alert_variant === AlertVariant.ImageAndAudio
+			) {
+				alertAudioRef.current.src = `static/${alert.audio}`;
+				alertAudioRef.current.volume = alert.audio_volume / 100;
+				alertAudioRef.current.play();
+			} else if (alert.alert_variant === AlertVariant.Image) {
+				handleMessageAudioEnd({
+					message,
+					duration: alert.duration,
+				});
 			}
 		},
 		[],
@@ -96,23 +127,14 @@ const usePlayAlert = () => {
 		if (!testMessage) return;
 
 		if (!messagesRef.current.length && settingsRef.current) {
-			eventsService.send<MessageId>({
-				event: AppEvent.AlertPlaying,
-				data: testMessage.id,
-			});
-
-			alertAudioRef.current.src = `static/${alert.audio}`;
-			alertAudioRef.current.volume = alert.audio_volume / 100;
-			alertAudioRef.current.play();
-			setCurrentMessage(testMessage);
-			setCurrentAlert(alert);
+			setAlertAndMessage({ message: testMessage, alert });
 		}
 	}, []);
 
 	const skipMessage = useCallback(
 		(id: string) => {
 			if (currentMessage?.id === id) {
-				handleMessageAudioEnd({ message: currentMessage, skip: true });
+				handleMessageAudioEnd({ message: currentMessage, duration: 0 });
 			} else {
 				messagesRef.current = messagesRef.current.filter(
 					(message) => message.id !== id,
@@ -123,16 +145,13 @@ const usePlayAlert = () => {
 	);
 	const skipPlayingMessage = useCallback(() => {
 		if (currentMessage) {
-			handleMessageAudioEnd({ message: currentMessage, skip: true });
+			handleMessageAudioEnd({ message: currentMessage, duration: 0 });
 		}
 	}, [handleMessageAudioEnd, currentMessage]);
 
 	const handleNewMessage = useCallback(
 		(message: IClientMessage) => {
-			const alert = getAlertByMessage({
-				alerts: alertsRef.current,
-				message: message,
-			});
+			const alert = getAlert({ message, alerts: alertsRef.current });
 			if (alert) {
 				messagesRef.current = [...messagesRef.current, message];
 				if (messagesRef.current.length === 1) {
@@ -144,13 +163,10 @@ const usePlayAlert = () => {
 	);
 	const handleReplayMessage = useCallback(
 		(message: IClientMessage) => {
-			const alert = getAlertByMessage({
-				alerts: alertsRef.current,
-				message: message,
-			});
+			const alert = getAlert({ message, alerts: alertsRef.current });
 			if (alert) {
+				replaysIdRef.current.add(message.id);
 				messagesRef.current = [message, ...messagesRef.current];
-
 				if (messagesRef.current.length === 1) {
 					playMessage({ message, alert });
 				}
@@ -159,22 +175,41 @@ const usePlayAlert = () => {
 		[playMessage],
 	);
 
-	const handleAlertAudioEnd = useCallback(() => {
-		const audio = currentMessage?.donation?.audio;
-		if (audio && settingsRef.current) {
-			messageAudioRef.current.src = `static/audio/${audio}`;
-			messageAudioRef.current.volume = settingsRef.current.tts_volume / 100;
-			messageAudioRef.current.play();
-		} else {
-			handleMessageAudioEnd({ message: currentMessage });
-		}
-	}, [currentMessage, handleMessageAudioEnd]);
+	const handleAlertAudioVideoEnd = useCallback(
+		({ message, delay = 0 }: { message?: IClientMessage; delay?: number }) => {
+			setTimeout(() => {
+				setIsShowVideoElement(false);
+				const audio = message?.donation?.audio;
+				if (
+					audio &&
+					settingsRef.current &&
+					currentAlert?.alert_variant !== AlertVariant.Image
+				) {
+					messageAudioRef.current.src = `static/audio/${audio}`;
+					messageAudioRef.current.volume = settingsRef.current.tts_volume / 100;
+					messageAudioRef.current.play();
+				} else {
+					handleMessageAudioEnd({
+						message: currentMessage,
+						duration: currentAlert?.duration,
+					});
+				}
+			}, delay);
+		},
+		[currentMessage, handleMessageAudioEnd],
+	);
 
 	useEffect(() => {
 		messageAudioRef.current.onended = () =>
-			handleMessageAudioEnd({ message: currentMessage });
+			handleMessageAudioEnd({
+				message: currentMessage,
+				duration: currentAlert?.duration,
+			});
 		messageAudioRef.current.onerror = () =>
-			handleMessageAudioEnd({ message: currentMessage });
+			handleMessageAudioEnd({
+				message: currentMessage,
+				duration: currentAlert?.duration,
+			});
 
 		return () => {
 			messageAudioRef.current.onended = null;
@@ -183,19 +218,56 @@ const usePlayAlert = () => {
 	}, [currentMessage, handleMessageAudioEnd]);
 
 	useEffect(() => {
-		alertAudioRef.current.onended = handleAlertAudioEnd;
-		alertAudioRef.current.onerror = handleAlertAudioEnd;
-
+		alertAudioRef.current.onended = () =>
+			handleAlertAudioVideoEnd({
+				message: currentMessage,
+				delay: currentAlert?.delay,
+			});
+		alertAudioRef.current.onerror = () =>
+			handleAlertAudioVideoEnd({
+				message: currentMessage,
+				delay: currentAlert?.delay,
+			});
 		return () => {
 			alertAudioRef.current.onended = null;
 			alertAudioRef.current.onerror = null;
 		};
-	}, [handleAlertAudioEnd]);
+	}, [handleAlertAudioVideoEnd]);
+
+	useEffect(() => {
+		alertVideoRef.current.onended = () =>
+			handleAlertAudioVideoEnd({
+				message: currentMessage,
+				delay: currentAlert?.delay,
+			});
+		alertVideoRef.current.onerror = () =>
+			handleAlertAudioVideoEnd({
+				message: currentMessage,
+				delay: currentAlert?.delay,
+			});
+		return () => {
+			alertVideoRef.current.onended = null;
+			alertVideoRef.current.onerror = null;
+		};
+	}, [handleAlertAudioVideoEnd]);
 
 	useEffect(() => {
 		const unsubscribe = eventsService.subscribe<IClientMessage>(
-			AppEvent.Message,
+			AppEvent.Alert,
 			handleNewMessage,
+		);
+
+		return () => unsubscribe();
+	}, [handleNewMessage]);
+
+	useEffect(() => {
+		const unsubscribe = eventsService.subscribe<IClientMessage>(
+			AppEvent.Redemption,
+			(message) => {
+				if (message.redemption?.type === RewardType.Alert) {
+					handleNewMessage(message);
+				}
+			},
 		);
 
 		return () => unsubscribe();
@@ -261,10 +333,7 @@ const usePlayAlert = () => {
 					const message = messagesRef.current.at(0);
 
 					if (message) {
-						const alert = getAlertByMessage({
-							alerts: alertsRef.current,
-							message: message,
-						});
+						const alert = getAlert({ message, alerts: alertsRef.current });
 						if (alert) {
 							playMessage({ message, alert });
 						}
@@ -282,6 +351,8 @@ const usePlayAlert = () => {
 		currentMessage,
 		currentAlert,
 		settings: settingsRef.current,
+		currentVideoSrcObject,
+		isShowVideoElement,
 	};
 };
 export default usePlayAlert;

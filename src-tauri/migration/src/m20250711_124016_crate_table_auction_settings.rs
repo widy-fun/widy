@@ -9,46 +9,27 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(AuctionSettings::Table)
+                    .table("auction_settings")
                     .if_not_exists()
-                    .col(pk_auto(AuctionSettings::Id))
-                    .col(integer(AuctionSettings::LeaderChangeAddingTime))
-                    .col(integer(AuctionSettings::NewLotAddingTime))
-                    .col(integer(AuctionSettings::NewDonationAddingTime))
-                    .col(integer(AuctionSettings::TimerAddingTime))
-                    .col(boolean(AuctionSettings::IsGreaterTimerAddingTime))
-                    .col(boolean(AuctionSettings::IsShowOdds))
-                    .col(boolean(AuctionSettings::IsShowTotalSum))
-                    .col(boolean(AuctionSettings::IsNewLotAddingTime))
-                    .col(boolean(AuctionSettings::IsLeaderChangeAddingTime))
-                    .col(boolean(AuctionSettings::IsNewDonationAddingTime))
+                    .col(pk_auto("id"))
+                    .col(integer("leader_change_adding_time"))
+                    .col(integer("new_lot_adding_time"))
+                    .col(integer("new_donation_adding_time"))
+                    .col(integer("timer_adding_time"))
+                    .col(boolean("is_greater_timer_adding_time"))
+                    .col(boolean("is_show_odds"))
+                    .col(boolean("is_show_total_sum"))
+                    .col(boolean("is_new_lot_adding_time"))
+                    .col(boolean("is_leader_change_adding_time"))
+                    .col(boolean("is_new_donation_adding_time"))
                     .to_owned(),
             )
-            .await?;
-
-        Ok(())
+            .await
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(AuctionSettings::Table).to_owned())
+            .drop_table(Table::drop().table("auction_settings").to_owned())
             .await
     }
-}
-
-#[derive(DeriveIden)]
-enum AuctionSettings {
-    #[sea_orm(iden = "auction_settings")]
-    Table,
-    Id,
-    LeaderChangeAddingTime,
-    NewLotAddingTime,
-    NewDonationAddingTime,
-    TimerAddingTime,
-    IsGreaterTimerAddingTime,
-    IsShowOdds,
-    IsShowTotalSum,
-    IsNewLotAddingTime,
-    IsLeaderChangeAddingTime,
-    IsNewDonationAddingTime,
 }

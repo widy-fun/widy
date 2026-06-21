@@ -1,4 +1,4 @@
-use entity::service::{ServiceAuth, ServiceType};
+use entity::services::{ServiceAuth, ServiceType};
 use tauri::State;
 
 use crate::{

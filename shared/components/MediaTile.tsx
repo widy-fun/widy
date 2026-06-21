@@ -2,7 +2,7 @@ import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import { IconButton } from "@mui/material";
-import type { IDonation, MessageId } from "@widy/sdk";
+import type { IClientMessage, IMedia, MessageId } from "@widy/sdk";
 import { AppEvent } from "@widy/sdk";
 import { useSelector } from "react-redux";
 import type { AppState } from "../../src/store";
@@ -10,13 +10,21 @@ import useAppEvents from "../hooks/useAppEvents";
 import getColorByMediaType from "../utils/getColorByMediaType";
 import MessageDate from "./MessageDate";
 
-const MediaTile = ({ donation }: { donation: IDonation }) => {
+const MediaTile = ({
+	media,
+	message,
+	user_name,
+}: {
+	media?: IMedia;
+	message: IClientMessage;
+	user_name?: string;
+}) => {
 	const { pausedMediaId } = useSelector((state: AppState) => state.mediaState);
 	const eventsService = useAppEvents();
 
 	return (
 		<>
-			{donation.media && (
+			{media && (
 				<div
 					style={{
 						height: "100%",
@@ -27,7 +35,7 @@ const MediaTile = ({ donation }: { donation: IDonation }) => {
 						zIndex: 1,
 						top: 0,
 						left: 0,
-						background: getColorByMediaType(donation.media.media_type),
+						background: getColorByMediaType(media.media_type),
 					}}
 				>
 					<div
@@ -37,7 +45,7 @@ const MediaTile = ({ donation }: { donation: IDonation }) => {
 							right: 15,
 						}}
 					>
-						<MessageDate createdAt={donation.created_at} />
+						<MessageDate createdAt={message.created_at} />
 					</div>
 					<div
 						style={{
@@ -46,25 +54,25 @@ const MediaTile = ({ donation }: { donation: IDonation }) => {
 							left: 15,
 						}}
 					>
-						{donation.user_name}
+						{user_name}
 					</div>
 					<div style={{ position: "relative", display: "grid" }}>
 						<IconButton
 							onClick={() => {
-								if (pausedMediaId === donation.message_id) {
+								if (pausedMediaId === message.id) {
 									eventsService.send<MessageId>({
 										event: AppEvent.PlayMedia,
-										data: donation.message_id,
+										data: message.id,
 									});
 								} else {
 									eventsService.send<MessageId>({
 										event: AppEvent.PauseMedia,
-										data: donation.message_id,
+										data: message.id,
 									});
 								}
 							}}
 						>
-							{pausedMediaId === donation.message_id ? (
+							{pausedMediaId === message.id ? (
 								<PlayArrowIcon sx={{ height: 50, width: 50 }} />
 							) : (
 								<PauseIcon sx={{ height: 50, width: 50 }} />
@@ -81,7 +89,7 @@ const MediaTile = ({ donation }: { donation: IDonation }) => {
 							onClick={() => {
 								eventsService.send<MessageId>({
 									event: AppEvent.SkipMedia,
-									data: donation.message_id,
+									data: message.id,
 								});
 							}}
 						>

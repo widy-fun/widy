@@ -1,4 +1,4 @@
-use entity::goal::*;
+use entity::goals::*;
 use tauri::{AppHandle, Manager, State};
 
 use crate::{

@@ -1,4 +1,4 @@
-import type { ITwitchDeviceCodeResponse } from "@widy/sdk";
+import type { IReward, ITwitchDeviceCodeResponse } from "@widy/sdk";
 import { api } from ".";
 
 export const twitchApi = api.injectEndpoints({
@@ -20,22 +20,27 @@ export const twitchApi = api.injectEndpoints({
 			}),
 			invalidatesTags: ["Services"],
 		}),
-		addCustomRewards: builder.mutation<void, void>({
-			query: () => ({
-				command: "add_custom_rewards",
+
+		twitchAddCustomReward: builder.mutation<void, { reward: IReward }>({
+			query: (args) => ({
+				command: "twitch_add_custom_reward",
+				args,
 			}),
+			invalidatesTags: ["Rewards"],
 		}),
-		removeCustomRewards: builder.mutation<void, void>({
-			query: () => ({
-				command: "remove_custom_rewards",
+		twitchRemoveCustomReward: builder.mutation<void, { id: string }>({
+			query: (args) => ({
+				command: "twitch_remove_custom_reward",
+				args,
 			}),
+			invalidatesTags: ["Rewards"],
 		}),
 	}),
 });
 export const {
 	useGetDeviceCodeQuery,
 	useGetTokenMutation,
-	useAddCustomRewardsMutation,
 	useTwitchConnectMutation,
-	useRemoveCustomRewardsMutation,
+	useTwitchAddCustomRewardMutation,
+	useTwitchRemoveCustomRewardMutation,
 } = twitchApi;

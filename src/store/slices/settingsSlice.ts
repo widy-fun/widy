@@ -2,12 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { ISettings } from "@widy/sdk";
 
 interface SettingsState {
-	duration: number;
 	settings: ISettings | null;
 }
 
 const initialState: SettingsState = {
-	duration: 0,
 	settings: null,
 };
 
@@ -23,15 +21,7 @@ export const settingsSlice = createSlice({
 		) => {
 			state.settings = action.payload;
 		},
-		setDuration: (
-			state,
-			action: {
-				payload: number;
-			},
-		) => {
-			state.duration = action.payload;
-		},
 	},
 });
 
-export const { setSettings, setDuration } = settingsSlice.actions;
+export const { setSettings } = settingsSlice.actions;

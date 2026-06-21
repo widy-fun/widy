@@ -137,7 +137,7 @@ const GoalCard = ({ goal }: { goal: IGoal }) => {
 								navigate(`/dashboard/goals/${goal.id}`);
 							}}
 						>
-							<EditIcon></EditIcon>
+							<EditIcon />
 						</IconButton>
 					</Box>
 				</CardContent>

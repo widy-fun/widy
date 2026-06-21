@@ -10,6 +10,8 @@ const getColorByMessageType = (type: MessageType) => {
 			return "#B2DFDB";
 		case MessageType.Raid:
 			return "#00ffbfff";
+		case MessageType.Redemption:
+			return "#5C7E8C";
 	}
 };
 export default getColorByMessageType;

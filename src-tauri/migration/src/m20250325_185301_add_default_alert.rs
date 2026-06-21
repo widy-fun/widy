@@ -1,6 +1,8 @@
+use entity::{
+    alerts::{AlertVariant, AlertVariationConditions, ViewType},
+    messages::MessageType,
+};
 use sea_orm_migration::prelude::*;
-
-use crate::m20250325_171158_create_table_alerts::Alerts;
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -9,33 +11,51 @@ pub struct Migration;
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         let text_style = String::from(
-            r#"{"bold":true,"font_size":60,"italics":false,"letter_spacing":0,"text_color":"rgb(255,255,255,1)","underline":false,"word_spacing":0}"#,
+            r#"{"bold":true,"font_size":60,"italics":false,"letter_spacing":0,"text_color":"rgb(255,255,255,1)","underline":false,"word_spacing":0,"animation":"No","animation_variant":"AllText"}"#,
         );
         manager
             .exec_stmt(
                 Query::insert()
-                    .into_table(Alerts::Table)
+                    .into_table("alerts")
                     .columns([
-                        Alerts::Id,
-                        Alerts::Audio,
-                        Alerts::AudioVolume,
-                        Alerts::Image,
-                        Alerts::GroupId,
-                        Alerts::ViewType,
-                        Alerts::Name,
-                        Alerts::TitleStyle,
-                        Alerts::MessageStyle,
+                        "id",
+                        "type",
+                        "audio",
+                        "audio_volume",
+                        "image",
+                        "alert_variant",
+                        "video_volume",
+                        "group_id",
+                        "name",
+                        "view_type",
+                        "status",
+                        "amount",
+                        "delay",
+                        "duration",
+                        "variation_conditions",
+                        "title_style",
+                        "message_style",
+                        "video",
                     ])
                     .values_panic([
                         "default".into(),
+                        MessageType::Donation.into(),
                         "alert.mp3".into(),
                         50.into(),
                         "image.gif".into(),
+                        AlertVariant::ImageAndAudio.into(),
+                        50.into(),
                         "1".into(),
-                        "Top".into(),
                         "default".into(),
+                        ViewType::Top.into(),
+                        true.into(),
+                        50.into(),
+                        0.into(),
+                        3000.into(),
+                        AlertVariationConditions::Random.into(),
                         text_style.clone().into(),
                         text_style.into(),
+                        "video.mp4".into(),
                     ])
                     .to_owned(),
             )
@@ -47,8 +67,8 @@ impl MigrationTrait for Migration {
         manager
             .exec_stmt(
                 Query::delete()
-                    .from_table(Alerts::Table)
-                    .and_where(Expr::col(Alerts::Id).eq("default"))
+                    .from_table("alerts")
+                    .and_where(Expr::col("id").eq("default"))
                     .to_owned(),
             )
             .await?;

@@ -2,7 +2,7 @@ use crate::{
     repositories::{MessagesRepository, SettingsRepository},
     services::{DatabaseService, ExchangeRatesService},
 };
-use entity::{donation::Donation, message::*};
+use entity::{donations::Donation, messages::*};
 use tauri::State;
 use tokio::sync::Mutex;
 
@@ -24,6 +24,7 @@ pub async fn get_messages(
             &filter.exclude_subscriptions,
             &filter.exclude_follows,
             &filter.exclude_raids,
+            &filter.exclude_redemptions,
         )
         .await?;
     let settings = database_service.get_settings().await?;

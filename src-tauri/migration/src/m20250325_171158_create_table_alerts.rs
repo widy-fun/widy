@@ -8,40 +8,34 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Alerts::Table)
+                    .table("alerts")
                     .if_not_exists()
-                    .col(pk_uuid(Alerts::Id))
-                    .col(string(Alerts::Audio))
-                    .col(integer(Alerts::AudioVolume))
-                    .col(string(Alerts::Image))
-                    .col(string(Alerts::GroupId))
-                    .col(string(Alerts::ViewType))
-                    .col(string(Alerts::Name))
-                    .col(string(Alerts::TitleStyle))
-                    .col(string(Alerts::MessageStyle))
+                    .col(pk_uuid("id"))
+                    .col(string("type"))
+                    .col(string_null("audio"))
+                    .col(integer("audio_volume"))
+                    .col(string_null("image"))
+                    .col(string("alert_variant"))
+                    .col(string_null("video"))
+                    .col(integer("video_volume"))
+                    .col(string("group_id"))
+                    .col(string("name"))
+                    .col(string("view_type"))
+                    .col(boolean("status"))
+                    .col(integer("amount"))
+                    .col(integer("delay"))
+                    .col(integer("duration"))
+                    .col(text("variation_conditions"))
+                    .col(text("title_style"))
+                    .col(text("message_style"))
                     .to_owned(),
             )
-            .await?;
-        Ok(())
+            .await
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(Alerts::Table).to_owned())
+            .drop_table(Table::drop().table("alerts").to_owned())
             .await
     }
-}
-
-#[derive(DeriveIden)]
-pub enum Alerts {
-    Table,
-    Id,
-    Audio,
-    AudioVolume,
-    Image,
-    GroupId,
-    ViewType,
-    TitleStyle,
-    MessageStyle,
-    Name,
 }

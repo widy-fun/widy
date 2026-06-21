@@ -24,7 +24,6 @@ const initialState: ServicesState = {
 			active: false,
 			color: "#9147ff",
 			authPath: "/twitch/device-code",
-			settingsPath: "/services-settings/twitch",
 		},
 		[ServiceType.WidySol]: {
 			active: false,

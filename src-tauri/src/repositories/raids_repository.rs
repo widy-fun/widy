@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use entity::{
-    message::{self, ClientMessage},
-    raid,
+    messages::{self, ClientMessage},
+    raids,
 };
 
 use crate::services::DatabaseService;
@@ -15,7 +15,7 @@ pub trait RaidsRepository: Send + Sync {
 impl RaidsRepository for DatabaseService {
     async fn save_raid_message(&self, client_message: ClientMessage) -> Result<(), String> {
         if let Some(raid) = client_message.raid {
-            raid::ActiveModel::builder()
+            raids::ActiveModel::builder()
                 .set_created_at(raid.created_at)
                 .set_id(raid.id)
                 .set_played(raid.played)
@@ -25,7 +25,7 @@ impl RaidsRepository for DatabaseService {
                 .set_from_broadcaster_user_name(raid.from_broadcaster_user_name)
                 .set_viewers(raid.viewers)
                 .set_message(
-                    message::ActiveModel::builder()
+                    messages::ActiveModel::builder()
                         .set_id(client_message.id)
                         .set_type(client_message.r#type)
                         .set_created_at(client_message.created_at),

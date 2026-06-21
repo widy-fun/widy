@@ -10,17 +10,13 @@ import {
 	Switch,
 	Typography,
 } from "@mui/material";
-import { AlertSeverity, ServiceType } from "@widy/sdk";
+import { AlertSeverity } from "@widy/sdk";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { setServiceActive } from "../../../../../../shared/slices/servicesSlice";
 import { showSnackBar } from "../../../../../../shared/slices/snackBarSlice";
 import { useGetServicesQuery } from "../../../../../api/servicesApi";
-import {
-	useAddCustomRewardsMutation,
-	useRemoveCustomRewardsMutation,
-} from "../../../../../api/twitchApi";
 import type { AppState } from "../../../../../store";
 
 const Integrations = () => {
@@ -29,8 +25,6 @@ const Integrations = () => {
 	const { services } = useSelector((state: AppState) => state.servicesState);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const [addCustomRewards] = useAddCustomRewardsMutation();
-	const [removeCustomRewards] = useRemoveCustomRewardsMutation();
 
 	return (
 		<Accordion>
@@ -66,13 +60,6 @@ const Integrations = () => {
 														active: value,
 													}),
 												);
-												if (service.id === ServiceType.Twitch) {
-													if (value) {
-														await addCustomRewards().unwrap();
-													} else {
-														await removeCustomRewards().unwrap();
-													}
-												}
 											} catch {
 												dispatch(
 													showSnackBar({

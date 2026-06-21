@@ -1,9 +1,9 @@
-const AuctionIcon = () => {
+const AuctionIcon = ({ size = 24 }: { size?: number }) => {
 	return (
 		<svg
 			fill="currentColor"
-			width="24px"
-			height="24px"
+			width={size}
+			height={size}
 			viewBox="0 0 24 24"
 			xmlns="http://www.w3.org/2000/svg"
 		>

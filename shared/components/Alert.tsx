@@ -1,6 +1,6 @@
 import type { IAlert } from "@widy/sdk";
-import { MessageType, ViewType } from "@widy/sdk";
-import type { ReactNode } from "react";
+import { AlertVariant, MessageType, ViewType } from "@widy/sdk";
+import { type ReactNode, useEffect, useRef } from "react";
 import computePXSize from "../utils/computePXSize";
 import getGridAutoColumns from "../utils/getGridAutoColumns";
 import getGridAutoRows from "../utils/getGridAutoRows";
@@ -8,21 +8,46 @@ import getGridTemplateAreas from "../utils/getGridTemplateAreas";
 
 const Alert = ({
 	alert,
-	imageSrc,
 	width,
 	height,
 	backgroundColor,
+	base,
 	text,
 	children,
+	videoSrcObject,
+	isShowVideoElement,
 }: {
 	alert: IAlert;
-	imageSrc: string;
+	base: string;
 	width: number;
 	height: number;
 	backgroundColor?: string;
 	text?: string;
 	children: ReactNode;
+	videoSrcObject?: MediaProvider;
+	isShowVideoElement: boolean;
 }) => {
+	const videoRef = useRef<HTMLVideoElement>(null);
+	const isShowImage =
+		alert.alert_variant !== AlertVariant.Video &&
+		alert.alert_variant !== AlertVariant.Audio;
+	const isShowVideo = alert.alert_variant === AlertVariant.Video;
+
+	useEffect(() => {
+		const video = videoRef.current;
+		if (!video || !videoSrcObject) return;
+		if (video && videoSrcObject) {
+			video.srcObject = videoSrcObject;
+			video.volume = 0;
+			video.play();
+		}
+
+		return () => {
+			video.pause();
+			video.srcObject = null;
+		};
+	}, [videoSrcObject]);
+
 	return (
 		<div
 			style={{
@@ -39,24 +64,42 @@ const Alert = ({
 				fontSize: 25,
 			}}
 		>
-			{alert.show_image && (
+			{isShowImage && (
 				<div
 					style={{
-						gridArea: "Image",
+						gridArea: "Media",
 						height: alert.view_type === ViewType.Overlay ? height : "100%",
 						width: alert.view_type === ViewType.Overlay ? width : "100%",
 						position:
 							alert.view_type === ViewType.Overlay ? "absolute" : undefined,
-						backgroundImage: `url(${imageSrc})`,
+						backgroundImage: `url(${base}/${alert.image})`,
 						backgroundPosition: "center",
 						backgroundRepeat: "no-repeat",
 						backgroundSize: "contain",
 					}}
 				/>
 			)}
+			{isShowVideo && (
+				<video
+					ref={videoRef}
+					src={`${base}/${alert.video}`}
+					style={{
+						gridArea: "Media",
+						display: isShowVideoElement ? "block" : "none",
+						height: alert.view_type === ViewType.Overlay ? height : "100%",
+						width: alert.view_type === ViewType.Overlay ? width : "100%",
+						position:
+							alert.view_type === ViewType.Overlay ? "absolute" : undefined,
+						minHeight: 0,
+					}}
+				>
+					<track default kind="captions" srcLang="en" />
+				</video>
+			)}
+
 			<div
 				style={{
-					gridArea: alert.show_image ? "Text" : "Image",
+					gridArea: isShowImage || isShowVideo ? "Text" : "Media",
 					height: alert.view_type === ViewType.Overlay ? height : "100%",
 					width: alert.view_type === ViewType.Overlay ? width : "100%",
 					maxWidth: `${(width / 100) * 60}px`,

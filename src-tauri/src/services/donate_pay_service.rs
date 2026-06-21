@@ -3,7 +3,7 @@ use std::sync::{
     Arc,
 };
 
-use entity::service::{DonatePayAuth, ServiceAuth, ServiceType};
+use entity::services::{DonatePayAuth, ServiceAuth, ServiceType};
 use futures::{SinkExt, StreamExt};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
@@ -95,9 +95,9 @@ impl DonatePayService {
     pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
         let database_service = app.state::<DatabaseService>();
         let service = database_service
-            .get_service_with_auth_by_id(entity::service::ServiceType::DonatePay)
+            .get_service_with_auth_by_id(entity::services::ServiceType::DonatePay)
             .await?;
-        if let Some(entity::service::Model {
+        if let Some(entity::services::Model {
             id: ServiceType::DonatePay,
             auth: Some(ServiceAuth::DonatePay(auth)),
             ..
@@ -132,7 +132,7 @@ impl DonatePayService {
                 match connect_async("wss://centrifugo.donatepay.ru:443/connection/websocket").await
                 {
                     Ok((mut socket, _)) => {
-                        log::info!("DonatePay webSocket connected.");
+                        log::info!("DonatePay websocket connected.");
 
                         let auth_msg = json!({
                             "params": { "token": token, "name": "js" },
@@ -273,7 +273,7 @@ impl DonatePayService {
     pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), String> {
         let database_service = app.state::<DatabaseService>();
         database_service
-            .update_service(entity::service::Model {
+            .update_service(entity::services::Model {
                 id: ServiceType::DonatePay,
                 settings: None,
                 auth: None,

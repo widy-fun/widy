@@ -8,40 +8,26 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Settings::Table)
+                    .table("settings")
                     .if_not_exists()
-                    .col(pk_auto(Settings::Id))
-                    .col(integer(Settings::ModerationDuration))
-                    .col(integer(Settings::TtsVolume))
-                    .col(boolean(Settings::AlertPaused))
-                    .col(boolean(Settings::RemoveLinks))
-                    .col(string(Settings::BlackList))
-                    .col(string(Settings::Language))
-                    .col(text(Settings::Currency))
+                    .col(pk_auto("id"))
+                    .col(integer("moderation_duration"))
+                    .col(boolean("alert_paused"))
+                    .col(integer("tts_volume"))
+                    .col(boolean("remove_links"))
+                    .col(string("black_list"))
+                    .col(string("language"))
+                    .col(string("currency"))
+                    .col(string("tts_type"))
+                    .col(text_null("tts_settings"))
+                    .col(string("widget_token"))
                     .to_owned(),
             )
-            .await?;
-
-        Ok(())
-    }
-
-    async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        manager
-            .drop_table(Table::drop().table(Settings::Table).to_owned())
             .await
     }
-}
-
-#[derive(DeriveIden)]
-pub enum Settings {
-    #[sea_orm(iden = "settings")]
-    Table,
-    Id,
-    ModerationDuration,
-    AlertPaused,
-    RemoveLinks,
-    TtsVolume,
-    BlackList,
-    Language,
-    Currency,
+    async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        manager
+            .drop_table(Table::drop().table("settings").to_owned())
+            .await
+    }
 }

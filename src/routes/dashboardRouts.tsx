@@ -19,6 +19,8 @@ import Maption from "../components/dashboard/components/maption/Maption";
 import Media from "../components/dashboard/components/media/Media";
 import Messages from "../components/dashboard/components/messages/Messages";
 import Nsfw from "../components/dashboard/components/nsfw/Nsfw";
+import RewardIcon from "../components/dashboard/components/rewards/components/RewardIcon";
+import Rewards from "../components/dashboard/components/rewards/Rewards";
 import Services from "../components/dashboard/components/services/Services";
 import Settings from "../components/dashboard/components/settings/Settings";
 import Widgets from "../components/dashboard/components/widgets/Widgets";
@@ -47,6 +49,12 @@ export const dashboardRouts = [
 		element: <Alerts />,
 		icon: <CampaignIcon />,
 		name: "alerts",
+	},
+	{
+		path: "rewards",
+		element: <Rewards />,
+		icon: <RewardIcon />,
+		name: "rewards",
 	},
 	{
 		path: "goals",

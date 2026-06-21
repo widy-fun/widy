@@ -6,8 +6,10 @@ import type { AppTheme } from "../theme/default";
 const OnOffSwitch = ({
 	checked,
 	onChange,
+	disabled,
 }: {
 	checked: boolean;
+	disabled?: boolean;
 	onChange: (event: ChangeEvent<HTMLInputElement>, checked: boolean) => void;
 }) => {
 	const { t } = useTranslation();
@@ -19,7 +21,7 @@ const OnOffSwitch = ({
 			>
 				{t("off")}
 			</span>
-			<Switch checked={checked} onChange={onChange} />
+			<Switch checked={checked} onChange={onChange} disabled={disabled} />
 			<span
 				style={{ color: checked ? undefined : theme.palette.switchOff.text }}
 			>
