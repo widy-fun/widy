@@ -77,4 +77,6 @@ pub enum GoalType {
     TwitchFollow,
     #[sea_orm(string_value = "TwitchSubscription")]
     TwitchSubscription,
+    #[sea_orm(string_value = "KickSubscription")]
+    KickSubscription,
 }

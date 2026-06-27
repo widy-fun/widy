@@ -45,6 +45,8 @@ pub enum ServiceType {
     Destream,
     #[sea_orm(string_value = "Tribute")]
     Tribute,
+    #[sea_orm(string_value = "Kick")]
+    Kick,
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
 #[serde(untagged)]
@@ -57,6 +59,7 @@ pub enum ServiceSettings {
 #[serde(untagged)]
 
 pub enum ServiceAuth {
+    Kick(KickAuth),
     Twitch(TwitchAuth),
     StreamElements(StreamElementsAuth),
     Widy(WidyAuth),
@@ -101,6 +104,16 @@ pub struct TwitchAuth {
     pub expires_in: u32,
     pub user_id: String,
 }
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct KickAuth {
+    pub access_token: String,
+    pub token_type: String,
+    pub refresh_token: String,
+    pub expires_in: u32,
+    pub scope: String,
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct StreamElementsAuth {
     pub jwt_token: String,

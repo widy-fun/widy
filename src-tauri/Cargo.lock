@@ -15234,12 +15234,13 @@ checksum = "72069c3113ab32ab29e5584db3c6ec55d416895e60715417b5b883a357c3e471"
 
 [[package]]
 name = "widy"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "anchor-client",
  "anchor-lang",
  "async-trait",
  "axum 0.8.9",
+ "base64 0.22.1",
  "chrono",
  "dotenvy",
  "entity",
@@ -15255,6 +15256,7 @@ dependencies = [
  "mockall",
  "msedge-tts",
  "openssl-sys",
+ "rand 0.10.1",
  "regex",
  "reqwest 0.12.28",
  "rten",
@@ -15265,6 +15267,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_qs",
+ "sha2 0.11.0",
  "solana-sdk 3.0.0",
  "tauri",
  "tauri-build",

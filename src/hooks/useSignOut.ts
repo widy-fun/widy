@@ -3,6 +3,7 @@ import {
 	useDestreamSignOutMutation,
 	useDonatePaySignOutMutation,
 	useDonationAlertsSignOutMutation,
+	useKickSignOutMutation,
 	useStreamLabsSignOutMutation,
 	useTributeSignOutMutation,
 	useTwitchSignOutMutation,
@@ -21,6 +22,7 @@ const useSignOut = (id: ServiceType) => {
 	const [destreamSignOut] = useDestreamSignOutMutation();
 	const [tributeSignOut] = useTributeSignOutMutation();
 	const streamElementsSocketService = useStreamElementsSocketService();
+	const [kickSignOut] = useKickSignOutMutation();
 
 	switch (id) {
 		case ServiceType.Streamelements:
@@ -43,6 +45,8 @@ const useSignOut = (id: ServiceType) => {
 			return destreamSignOut;
 		case ServiceType.Tribute:
 			return tributeSignOut;
+		case ServiceType.Kick:
+			return kickSignOut;
 		default:
 			return () => null;
 	}

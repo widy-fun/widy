@@ -287,7 +287,8 @@
 		"Donation": "Донат",
 		"TwitchSubscription": "Twitch Подписка",
 		"TwitchFollow": "Twitch Подписка",
-		"goal_not_finished": "У вас есть незавершённая цель этого типа."
+		"goal_not_finished": "У вас есть незавершённая цель этого типа.",
+		"KickSubscription": "Подписка Kick"
 	},
 	"save": "Сохранить",
 	"back": "Назад",
@@ -426,7 +427,8 @@
 		"sure_delete": "Вы уверены, что хотите удалить эту награду?",
 		"points_currency_ratio": "Соотношение поинтов и валюты",
 		"is_global_cooldown_enabled": "Включён глобальный кулдаун",
-		"global_cooldown_seconds": "Глобальный кулдаун (секунды)"
+		"global_cooldown_seconds": "Глобальный кулдаун (секунды)",
+		"title_exist": "Награда с таким же названием уже существует"
 	},
 	"validation": {
 		"required": "Обязательно"

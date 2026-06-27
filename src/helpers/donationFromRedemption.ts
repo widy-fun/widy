@@ -20,7 +20,7 @@ const donationFromRedemption = ({
 		user_name: redemption.user_name,
 		played: false,
 		text: redemption.user_input,
-		service: ServiceType.Twitch,
+		service: redemption.platform as unknown as ServiceType,
 		currency: Currency.NONE,
 		exchanged_amount: amount,
 		exchanged_currency: Currency.NONE,

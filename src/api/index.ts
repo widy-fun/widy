@@ -92,6 +92,12 @@ export const api = createApi({
 			}),
 			invalidatesTags: ["Services"],
 		}),
+		kickSignOut: builder.mutation<void, void>({
+			query: () => ({
+				command: "kick_sign_out",
+			}),
+			invalidatesTags: ["Services"],
+		}),
 	}),
 });
 
@@ -105,4 +111,5 @@ export const {
 	useDonatePaySignOutMutation,
 	useDestreamSignOutMutation,
 	useTributeSignOutMutation,
+	useKickSignOutMutation,
 } = api;

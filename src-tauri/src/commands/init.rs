@@ -1,8 +1,8 @@
 use crate::services::{
     AxumService, ConfigService, DatabaseService, DeepLinkDispatcherService, DestreamService,
-    DonatePayService, DonationAlertsService, ExchangeRatesService, MediaService, NsfwService,
-    StreamElementsService, StreamLabsService, TributeService, TtsService, TwitchService,
-    WebSocketBroadcaster, WidySolService, WidyTonService,
+    DonatePayService, DonationAlertsService, ExchangeRatesService, KickService, MediaService,
+    NsfwService, StreamElementsService, StreamLabsService, TributeService, TtsService,
+    TwitchService, WebSocketBroadcaster, WidySolService, WidyTonService,
 };
 use crate::utils::copy_assets_to_static;
 use lingua::Language::{
@@ -75,9 +75,19 @@ pub async fn init(app: AppHandle, flag: State<'_, ExecutionFlag>) -> Result<(), 
     app.manage(media_service);
 
     //twitch
-    let twitch_service = TwitchService::new(config_service.client_id);
+    let twitch_service = TwitchService::new(config_service.twitch_client_id);
     let _ = twitch_service.connect(&app).await;
     app.manage(twitch_service);
+
+    //kick
+    let kick_service = KickService::new(
+        config_service.kick_client_id,
+        config_service.kick_token_endpoint,
+        config_service.kick_redirect_uri,
+        config_service.app_token,
+    );
+    let _ = kick_service.connect(&app).await;
+    app.manage(kick_service);
 
     //stream elements
     let stream_elements_service = StreamElementsService::new();

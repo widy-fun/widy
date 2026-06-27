@@ -1,4 +1,4 @@
-import { IReward } from "@widy/sdk";
+import { IReward, Platform } from "@widy/sdk";
 import { api } from ".";
 
 export const rewardsApi = api.injectEndpoints({
@@ -16,6 +16,15 @@ export const rewardsApi = api.injectEndpoints({
 			}),
 			providesTags: ["Rewards"],
 		}),
+		getRewardByTitle: builder.mutation<
+			IReward | undefined,
+			{ title: string; platform: Platform }
+		>({
+			query: (args) => ({
+				command: "get_reward_by_title",
+				args,
+			}),
+		}),
 		updateRewardSettings: builder.mutation<void, { reward: IReward }>({
 			query: (args) => ({
 				command: "update_reward_settings",
@@ -29,4 +38,5 @@ export const {
 	useGetRewardsQuery,
 	useGetRewardByIdQuery,
 	useUpdateRewardSettingsMutation,
+	useGetRewardByTitleMutation,
 } = rewardsApi;

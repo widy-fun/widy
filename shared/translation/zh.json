@@ -287,7 +287,8 @@
 		"Donation": "捐赠",
 		"TwitchSubscription": "Twitch 订阅",
 		"TwitchFollow": "Twitch 关注",
-		"goal_not_finished": "您有一个未完成的该类型目标。"
+		"goal_not_finished": "您有一个未完成的该类型目标。",
+		"KickSubscription": "Kick 订阅"
 	},
 	"save": "保存",
 	"back": "返回",
@@ -426,7 +427,8 @@
 		"sure_delete": "确定要删除此奖励吗？",
 		"points_currency_ratio": "积分货币比例",
 		"is_global_cooldown_enabled": "是否启用全局冷却",
-		"global_cooldown_seconds": "全局冷却秒数"
+		"global_cooldown_seconds": "全局冷却秒数",
+		"title_exist": "存在相同标题的奖励"
 	},
 	"validation": {
 		"required": "必填"

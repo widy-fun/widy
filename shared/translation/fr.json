@@ -287,7 +287,8 @@
 		"Donation": "Don",
 		"TwitchSubscription": "Abonnement Twitch",
 		"TwitchFollow": "Follow Twitch",
-		"goal_not_finished": "Vous avez un objectif inachevé de ce type."
+		"goal_not_finished": "Vous avez un objectif inachevé de ce type.",
+		"KickSubscription": "Abonnement Kick"
 	},
 	"save": "Enregistrer",
 	"back": "Retour",
@@ -426,7 +427,8 @@
 		"sure_delete": "Êtes-vous sûr de vouloir supprimer cette récompense ?",
 		"points_currency_ratio": "Ratio points/devise",
 		"is_global_cooldown_enabled": "Cooldown global activé ?",
-		"global_cooldown_seconds": "Cooldown global (secondes)"
+		"global_cooldown_seconds": "Cooldown global (secondes)",
+		"title_exist": "Une récompense avec le même titre existe"
 	},
 	"validation": {
 		"required": "Requis"

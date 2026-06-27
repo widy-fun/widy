@@ -1,19 +1,29 @@
 use crate::{
-    enums::AppEvent,
-    repositories::{
-        FollowsRepository, RaidsRepository, RedemptionsRepository, RewardsRepository, ServicesRepository, SubscriptionsRepository
-    },
-    services::{DatabaseService, EventMessage, MediaService, WebSocketBroadcaster},
-    utils::goal_handler,
+    repositories::{RedemptionsRepository, RewardsRepository, ServicesRepository},
+    services::DatabaseService,
+    utils::{on_new_follow, on_new_raid, on_new_redemption, on_new_subscription},
 };
 use chrono::Utc;
 use entity::{
-    donations::Media, followers::Follow, messages::{ClientMessage, MessageType}, raids, redemptions::Redemption, rewards::{Platform, RewardType}, services::{ServiceAuth, ServiceType, TwitchAuth, }, subscriptions::{self}
+    followers::Follow,
+    goals::GoalType,
+    raids,
+    redemptions::Redemption,
+    rewards::Platform,
+    services::{ServiceAuth, ServiceType, TwitchAuth},
+    subscriptions::{self},
 };
 use futures::{lock::Mutex, StreamExt};
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, sync::Arc, time::Duration};
-use tauri::{AppHandle, Manager,};
+use std::{
+    collections::HashMap,
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        Arc,
+    },
+    time::Duration,
+};
+use tauri::{AppHandle, Manager};
 use tokio_tungstenite::{connect_async, tungstenite::Message};
 use uuid::Uuid;
 
@@ -25,7 +35,7 @@ enum WebSocketInstruction {
     Revocation,
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
- struct SubscriptionRequestBody {
+struct SubscriptionRequestBody {
     pub r#type: String,
     pub version: String,
     pub condition: Condition,
@@ -33,7 +43,7 @@ enum WebSocketInstruction {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
- struct AddTwitchRewardBody {
+struct AddTwitchRewardBody {
     pub title: String,
     pub prompt: Option<String>,
     pub cost: i64,
@@ -51,7 +61,7 @@ enum WebSocketInstruction {
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum Condition {
+enum Condition {
     Follow(FollowCondition),
     ChannelPointsCustomRewardRedemptionAdd(ChannelPointsCustomRewardRedemptionAddCondition),
     Raid(RaidCondition),
@@ -60,25 +70,25 @@ pub enum Condition {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct SubscriptionCondition {
+struct SubscriptionCondition {
     pub broadcaster_user_id: String,
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct ChannelPointsCustomRewardRedemptionAddCondition {
+struct ChannelPointsCustomRewardRedemptionAddCondition {
     pub broadcaster_user_id: String,
     pub reward_id: String,
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct FollowCondition {
+struct FollowCondition {
     pub broadcaster_user_id: String,
     pub moderator_user_id: String,
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct RaidCondition {
+struct RaidCondition {
     pub to_broadcaster_user_id: String,
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct CheerCondition {
+struct CheerCondition {
     pub broadcaster_user_id: String,
 }
 
@@ -92,13 +102,15 @@ pub struct TwitchDeviceCodeResponse {
 }
 
 #[derive(Deserialize, Debug)]
-pub struct TwitchBadResponse {
+#[allow(dead_code)]
+struct TwitchBadResponse {
     pub error: Option<String>,
     pub status: u16,
     pub message: String,
 }
 #[derive(Deserialize, Debug)]
-pub struct TwitchTokenResponse {
+#[allow(dead_code)]
+struct TwitchTokenResponse {
     pub access_token: String,
     pub refresh_token: String,
     pub expires_in: u32,
@@ -106,7 +118,8 @@ pub struct TwitchTokenResponse {
     pub token_type: String,
 }
 #[derive(Deserialize, Debug)]
-pub struct TwitchRefreshTokenResponse {
+#[allow(dead_code)]
+struct TwitchRefreshTokenResponse {
     pub access_token: String,
     pub refresh_token: String,
     pub scope: Vec<String>,
@@ -114,11 +127,13 @@ pub struct TwitchRefreshTokenResponse {
 }
 
 #[derive(Deserialize, Debug)]
-pub struct TwitchUsersResponse {
+#[allow(dead_code)]
+struct TwitchUsersResponse {
     pub data: Vec<TwitchUser>,
 }
 #[derive(Deserialize, Debug, Clone)]
-pub struct TwitchUser {
+#[allow(dead_code)]
+struct TwitchUser {
     pub id: String,
     pub login: String,
     pub display_name: String,
@@ -132,7 +147,8 @@ pub struct TwitchUser {
     pub created_at: String,
 }
 #[derive(Deserialize, Debug, Clone)]
-pub struct TwitchTokenInfo {
+#[allow(dead_code)]
+struct TwitchTokenInfo {
     pub client_id: String,
     pub login: String,
     pub user_id: String,
@@ -141,13 +157,14 @@ pub struct TwitchTokenInfo {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct NotificationMessage {
+struct NotificationMessage {
     pub metadata: Metadata,
     pub payload: Payload,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct Metadata {
+#[allow(dead_code)]
+struct Metadata {
     pub message_type: String,
     pub message_id: String,
     pub message_timestamp: String,
@@ -156,19 +173,19 @@ pub struct Metadata {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct SessionPayload {
+struct SessionPayload {
     pub session: SessionDetails,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Transport {
+struct Transport {
     pub method: String,
     pub session_id: String,
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(untagged)]
 
-pub enum Event {
+enum Event {
     ChannelPointsCustomRewardRedemptionAdd(ChannelPointsCustomRewardRedemptionAddEvent),
     SubscriptionMessage(SubscriptionMessageEvent),
     SubscriptionGift(SubscriptionGiftEvent),
@@ -179,7 +196,7 @@ pub enum Event {
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
 /// 7 fields
-pub struct RaidEvent {
+struct RaidEvent {
     pub from_broadcaster_user_id: String,
     pub from_broadcaster_user_login: String,
     pub from_broadcaster_user_name: String,
@@ -190,7 +207,7 @@ pub struct RaidEvent {
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
 /// 9 fields
-pub struct CheerEvent {
+struct CheerEvent {
     pub is_anonymous: bool,
     pub user_id: Option<String>,    // null if is_anonymous=true
     pub user_login: Option<String>, // null if is_anonymous=true
@@ -203,7 +220,7 @@ pub struct CheerEvent {
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
 /// 7 fields
-pub struct FollowEvent {
+struct FollowEvent {
     pub user_id: String,
     pub user_login: String,
     pub user_name: String,
@@ -214,7 +231,7 @@ pub struct FollowEvent {
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
 /// 11 fields
-pub struct SubscriptionMessageEvent {
+struct SubscriptionMessageEvent {
     pub user_id: String,
     pub user_login: String,
     pub user_name: String,
@@ -229,13 +246,13 @@ pub struct SubscriptionMessageEvent {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct SubscriptionMessage {
+struct SubscriptionMessage {
     pub text: String,
     // emotes
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
 /// 10 fields
-pub struct SubscriptionGiftEvent {
+struct SubscriptionGiftEvent {
     pub user_id: String,
     pub user_login: String,
     pub user_name: String,
@@ -249,7 +266,7 @@ pub struct SubscriptionGiftEvent {
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
 /// 8 fields
-pub struct SubscribeEvent {
+struct SubscribeEvent {
     pub user_id: String,
     pub user_login: String,
     pub user_name: String,
@@ -261,7 +278,7 @@ pub struct SubscribeEvent {
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
 /// 11 fields
-pub struct ChannelPointsCustomRewardRedemptionAddEvent {
+struct ChannelPointsCustomRewardRedemptionAddEvent {
     pub id: String,
     pub user_id: String,
     pub user_login: String,
@@ -275,7 +292,7 @@ pub struct ChannelPointsCustomRewardRedemptionAddEvent {
     pub redeemed_at: String,
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
- pub enum ChannelPointsCustomRewardRedemptionStatus {
+enum ChannelPointsCustomRewardRedemptionStatus {
     #[serde(rename = "unfulfilled")]
     Unfulfilled,
     #[serde(rename = "unknown")]
@@ -286,19 +303,19 @@ pub struct ChannelPointsCustomRewardRedemptionAddEvent {
     Canceled,
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct EventPayload {
+struct EventPayload {
     pub subscription: Subscription,
     pub event: Event,
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Reward {
+struct Reward {
     pub id: String,
     pub title: String,
     pub cost: i64,
     pub prompt: Option<String>,
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Subscription {
+struct Subscription {
     pub id: String,
     pub status: String,
     pub r#type: SubscriptionType,
@@ -309,7 +326,7 @@ pub struct Subscription {
     pub created_at: String,
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub enum SubscriptionType {
+enum SubscriptionType {
     #[serde(rename = "channel.channel_points_custom_reward_redemption.add")]
     ChannelPointsCustomRewardRedemptionAdd,
     #[serde(rename = "channel.subscribe")]
@@ -348,7 +365,7 @@ impl SubscriptionType {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct SessionDetails {
+struct SessionDetails {
     pub id: String,
     pub keepalive_timeout_seconds: Option<u64>,
     pub status: Option<String>,
@@ -358,7 +375,7 @@ pub struct SessionDetails {
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum Payload {
+enum Payload {
     Welcome(SessionPayload),
     Reconnect(SessionPayload),
     Event(EventPayload),
@@ -367,7 +384,7 @@ pub enum Payload {
 
 #[derive(Clone, Debug)]
 pub struct TwitchService {
-    is_close_connection: Arc<Mutex<bool>>,
+    is_close_connection: Arc<AtomicBool>,
     client_id: String,
     scopes: String,
     websocket_eventsub_url: String,
@@ -399,7 +416,7 @@ impl TwitchService {
         let eventsub_endpoint = "http://localhost:8081".to_string();
 
         Self {
-            is_close_connection:Arc::new(Mutex::new(false)),
+            is_close_connection:Arc::new(AtomicBool::new(false)),
             client_id,
             scopes: "user:read:email channel:read:subscriptions moderator:read:followers channel:manage:redemptions"
                 .to_string(),
@@ -413,29 +430,29 @@ impl TwitchService {
     }
 
     pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
-        self.run_websocket_client(app.clone()).await;
+        let auth = self.check_auth(&app).await?;
+        self.run_websocket_client(app.clone(), auth).await;
         Ok(())
     }
 
-     async fn run_websocket_client(&self, app: AppHandle)  {
+    async fn run_websocket_client(&self, app: AppHandle, auth: TwitchAuth) {
         tauri::async_runtime::spawn(async move {
             let twitch_service = app.state::<TwitchService>();
             let mut current_url = twitch_service.websocket_eventsub_url.clone();
-            let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
-            let database_service = app.state::<DatabaseService>();
             'connection_loop: loop {
                 log::info!("Connecting to Twitch EventSub: {}", current_url);
                 match connect_async(&current_url).await {
                     Ok((mut socket, _)) => {
                         log::info!("Twitch websocket connected.");
                         while let Some(msg_result) = socket.next().await {
-                            let mut is_close_connection =
-                                twitch_service.is_close_connection.lock().await;
-                            if *is_close_connection {
-                                *is_close_connection = false;
+                            let is_close_connection =
+                                twitch_service.is_close_connection.load(Ordering::Relaxed);
+                            if is_close_connection {
+                                twitch_service
+                                    .is_close_connection
+                                    .store(false, Ordering::Relaxed);
                                 break 'connection_loop;
                             }
-                            drop(is_close_connection);
                             match msg_result {
                                 Ok(Message::Text(text)) => {
                                     let instruction =
@@ -446,337 +463,26 @@ impl TwitchService {
                                                 twitch_service.session_id.lock().await;
                                             *session_id_guard = Some(session_id.clone());
                                             drop(session_id_guard);
-                                            let auth = twitch_service.check_auth(&app).await;
-                                            if let Ok(auth) = auth {
-                                                twitch_service
-                                                    .create_subscriptions(
-                                                        &session_id,
-                                                        &auth.access_token,
-                                                        &auth.user_id,
-                                                    )
-                                                    .await;
-                                            } else {
-                                                let _ = twitch_service
-                                                    .set_authorized(
-                                                        &database_service,
-                                                        None,
-                                                        false,
-                                                        false,
-                                                    )
-                                                    .await;
-                                                break 'connection_loop;
-                                            }
+                                            twitch_service
+                                                .create_subscriptions(
+                                                    &session_id,
+                                                    &auth.access_token,
+                                                    &auth.user_id,
+                                                )
+                                                .await;
                                         }
                                         WebSocketInstruction::Notification(message) => {
                                             if let Payload::Event(payload) = message.payload {
-                                                match payload.subscription.r#type  {
-                                                    SubscriptionType::ChannelPointsCustomRewardRedemptionAdd => {                                   
-                                                        if let Event::ChannelPointsCustomRewardRedemptionAdd(event) =payload.event{
-                                                            let redemption =database_service.get_redemption_by_external_id(&event.id).await;
-                                                            if let Ok(None)= redemption{
-                                                                if let Ok(Some(reward))=database_service.get_reward_by_external_id(&event.reward.id,Platform::Twitch).await{
-                                                                    let media:Option<Media> = match reward.r#type{
-                                                                        RewardType::Media=>{
-                                                                            let media_service=app.state::<MediaService>();
-                                                                            media_service
-                                                                                                    .get_media(&event.user_input, &0.0, &app,MessageType::Redemption)
-                                                                                                    .await
-                                                                        },
-                                                                        _=> None,
-                                                                     };
-                                                                    let created_at = Utc::now().timestamp();    
-                                                                    let message_id=Uuid::new_v4().to_string();
-                                                                    let client_message=ClientMessage{
-                                                                        id: message_id.clone(),
-                                                                        r#type: MessageType::Redemption,
-                                                                        created_at: created_at,
-                                                                        donation: None,
-                                                                        subscription: None,
-                                                                        raid: None,
-                                                                        follow:None,
-                                                                        redemption: Some(Redemption{
-                                                                            id: Uuid::new_v4().to_string(),
-                                                                            user_id: event.user_id,
-                                                                            user_name: event.user_name,
-                                                                            user_input: event.user_input,
-                                                                            external_id:event.id,
-                                                                            reward_id: event.reward.id,
-                                                                            description:event.reward.prompt,
-                                                                            title:event.reward.title,
-                                                                            cost:event.reward.cost,
-                                                                            r#type:reward.r#type,
-                                                                            platform:reward.platform,
-                                                                            points_currency_ratio:reward.points_currency_ratio,
-                                                                            media:media.clone(),
-                                                                            image:reward.image,
-                                                                            audio:reward.audio,
-                                                                            video: reward.video,
-                                                                            alert_variant: reward.alert_variant,
-                                                                            audio_volume: reward.audio_volume,
-                                                                            video_volume: reward.video_volume,
-                                                                            duration: reward.duration,
-                                                                            delay: reward.delay,
-                                                                            message_id:message_id
-                                                                        }),
-                                                                    };
-                                                                    let _=database_service.save_redemption_message(client_message.clone()).await;                                                  
-                                                                    let event_message = EventMessage {
-                                                                        event: AppEvent::Message,
-                                                                        data: client_message.clone(),
-                                                                    };
-                                                                    websocket_broadcaster
-                                                                        .broadcast_event_message(&event_message)
-                                                                        .await;
-                                                                    let event_message = EventMessage {
-                                                                        event: AppEvent::Redemption,
-                                                                        data: client_message.clone(),
-                                                                    };
-                                                                    websocket_broadcaster
-                                                                        .broadcast_event_message(&event_message)
-                                                                        .await;
-                                                                   
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                    SubscriptionType::ChannelFollow => {
-                                                        if let Event::Follow(event)=payload.event {
-                                                            let created_at = Utc::now().timestamp();
-                                                            let message_id=Uuid::new_v4().to_string();
-                                                            let client_message=ClientMessage{
-                                                                id: message_id.clone(),
-                                                                r#type: MessageType::Follow,
-                                                                created_at: created_at.clone(),
-                                                                donation: None,
-                                                                subscription: None,
-                                                                raid: None,
-                                                                redemption: None,
-                                                                follow:Some(Follow {
-                                                                    id: Uuid::new_v4().to_string(),
-                                                                    user_id:event.user_id,
-                                                                    service_id: payload.subscription.id,
-                                                                    user_name: event.user_name,
-                                                                    message_id:message_id,
-                                                                    played: false,
-                                                                    service:ServiceType::Twitch,
-                                                                    followed_at: created_at
-                                                                }),
-                                                            };
-                                                            let event_message = EventMessage {
-                                                                event: AppEvent::Message,
-                                                                data: client_message.clone(),
-                                                            };
-                                                            websocket_broadcaster
-                                                                .broadcast_event_message(&event_message)
-                                                                .await;
-                                                            let event_message = EventMessage {
-                                                                event: AppEvent::Alert,
-                                                                data: client_message.clone(),
-                                                            };
-                                                            websocket_broadcaster
-                                                                .broadcast_event_message(&event_message)
-                                                                .await;
-                                                            let _= database_service.save_follow_message(client_message).await;
-                                                            let _= goal_handler(&database_service, &websocket_broadcaster, 1, entity::goals::GoalType::TwitchFollow).await;
-
-                                                        }
-
-                                                    },
-                                                    SubscriptionType::ChannelSubscribe =>{
-                                                        if let Event::Subscribe(event)=payload.event{
-                                                            let created_at = Utc::now().timestamp();
-                                                            let message_id=Uuid::new_v4().to_string();
-                                                            let client_message=ClientMessage{
-                                                                id: message_id.clone(),
-                                                                r#type: MessageType::Subscription,
-                                                                created_at: created_at.clone(),
-                                                                donation: None,
-                                                                follow: None,
-                                                                raid: None,
-                                                                redemption:None,
-                                                                subscription:Some(subscriptions::Subscription{
-                                                                    id: Uuid::new_v4().to_string(),
-                                                                    user_id:event.user_id,
-                                                                    service_id: payload.subscription.id,
-                                                                    user_name: event.user_name,
-                                                                    message_id:message_id,
-                                                                    played: false,
-                                                                    service:ServiceType::Twitch,
-                                                                    subscribed_at: created_at,
-                                                                    is_gift: event.is_gift,
-                                                                    is_anonymous:false,
-                                                                    tier: event.tier,
-                                                                    cumulative_total:None,
-                                                                    total: 1,
-                                                                }),
-                                                            };
-                                                            let event_message = EventMessage {
-                                                                event: AppEvent::Message,
-                                                                data: client_message.clone(),
-                                                            };
-                                                            websocket_broadcaster
-                                                                .broadcast_event_message(&event_message)
-                                                                .await;
-                                                            let event_message = EventMessage {
-                                                                event: AppEvent::Alert,
-                                                                data: client_message.clone(),
-                                                            };
-                                                            websocket_broadcaster
-                                                                .broadcast_event_message(&event_message)
-                                                                .await;
-                                                            let _= database_service.save_subscribe_message(client_message).await;
-                                                            let _= goal_handler(&database_service, &websocket_broadcaster, 1, entity::goals::GoalType::TwitchSubscription).await;
-                                                          
-                                                        }
-                                                    }
-                                                    SubscriptionType::ChannelSubscriptionGift =>{
-                                                         if let Event::SubscriptionGift(event)=payload.event{
-
-                                                            let created_at = Utc::now().timestamp();
-                                                            let message_id=Uuid::new_v4().to_string();
-                                                            let client_message=ClientMessage{
-                                                                id: message_id.clone(),
-                                                                r#type: MessageType::Subscription,
-                                                                created_at: created_at.clone(),
-                                                                donation: None,
-                                                                follow: None,
-                                                                raid: None,
-                                                                 redemption:None,
-                                                                subscription:Some(subscriptions::Subscription{
-                                                                    id: Uuid::new_v4().to_string(),
-                                                                    user_id:event.user_id,
-                                                                    service_id: payload.subscription.id,
-                                                                    user_name: event.user_name,
-                                                                    message_id:message_id,
-                                                                    played: false,
-                                                                    service:ServiceType::Twitch,
-                                                                    subscribed_at: created_at,
-                                                                    is_gift: true,
-                                                                    is_anonymous:event.is_anonymous,
-                                                                    tier: event.tier,
-                                                                    cumulative_total: event.cumulative_total,
-                                                                    total: event.total,
-                                                                }),
-                                                            };
-                                                            let event_message = EventMessage {
-                                                                event: AppEvent::Message,
-                                                                data: client_message.clone(),
-                                                            };
-                                                            websocket_broadcaster
-                                                                .broadcast_event_message(&event_message)
-                                                                .await;
-                                                            let event_message = EventMessage {
-                                                                event: AppEvent::Alert,
-                                                                data: client_message.clone(),
-                                                            };
-                                                            websocket_broadcaster
-                                                                .broadcast_event_message(&event_message)
-                                                                .await;
-                                                             let _= database_service.save_subscribe_message(client_message).await;
-                                                             let _= goal_handler(&database_service, &websocket_broadcaster, event.total, entity::goals::GoalType::TwitchSubscription).await;
-
-                                                        }
-                                                    }
-                                                    SubscriptionType::ChannelSubscriptionMessage => {
-                                                         if let Event::SubscriptionMessage(event)=payload.event{
-
-                                                             let created_at = Utc::now().timestamp();
-                                                             let message_id=Uuid::new_v4().to_string();
-                                                             let client_message=ClientMessage{
-                                                                 id: message_id.clone(),
-                                                                 r#type: MessageType::Subscription,
-                                                                 created_at: created_at.clone(),
-                                                                 donation: None,
-                                                                 follow: None,
-                                                                 raid: None,
-                                                                 redemption:None,
-                                                                 subscription:Some(subscriptions::Subscription{
-                                                                     id: Uuid::new_v4().to_string(),
-                                                                     user_id:event.user_id,
-                                                                     service_id: payload.subscription.id,
-                                                                     user_name: event.user_name,
-                                                                     message_id:message_id,
-                                                                     played: false,
-                                                                     service:ServiceType::Twitch,
-                                                                     subscribed_at: created_at,
-                                                                     is_gift: false,
-                                                                     is_anonymous:false,
-                                                                     tier: event.tier,
-                                                                     cumulative_total: Some(event.cumulative_months),
-                                                                     total: 1,
-                                                                 }),
-                                                             };
-                                                            let event_message = EventMessage {
-                                                                event: AppEvent::Message,
-                                                                data: client_message.clone(),
-                                                            };
-                                                            websocket_broadcaster
-                                                                .broadcast_event_message(&event_message)
-                                                                .await;
-                                                            let event_message = EventMessage {
-                                                                event: AppEvent::Alert,
-                                                                data: client_message.clone(),
-                                                            };
-                                                            websocket_broadcaster
-                                                                .broadcast_event_message(&event_message)
-                                                                .await;
-                                                            let _= database_service.save_subscribe_message(client_message).await;
-                                                            let _= goal_handler(&database_service, &websocket_broadcaster, 1, entity::goals::GoalType::TwitchSubscription).await;
-                                                         }
-
-                                                    },
-                                                    SubscriptionType::ChannelRaid => {
-                                                         if let Event::Raid(event)=payload.event{
-                                                              let created_at = Utc::now().timestamp();
-                                                             let message_id=Uuid::new_v4().to_string();
-                                                             let client_message=ClientMessage{
-                                                                 id: message_id.clone(),
-                                                                 r#type: MessageType::Raid,
-                                                                 created_at: created_at.clone(),
-                                                                 donation: None,
-                                                                 follow: None,
-                                                                 subscription:None,
-                                                                 redemption:None,
-                                                                 raid: Some(raids::Raid{
-                                                                     id: Uuid::new_v4().to_string(),
-                                                                     service_id: payload.subscription.id,
-                                                                     message_id:message_id,
-                                                                     played: false,
-                                                                     service:ServiceType::Twitch,
-                                                                     viewers: event.viewers,
-                                                                     from_broadcaster_user_id: event.from_broadcaster_user_id,
-                                                                     from_broadcaster_user_name: event.from_broadcaster_user_name,
-                                                                    created_at,
-                                                                 }),
-                                                             };
-                                                             let event_message = EventMessage {
-                                                                event: AppEvent::Message,
-                                                                data: client_message.clone(),
-                                                            };
-                                                            websocket_broadcaster
-                                                                .broadcast_event_message(&event_message)
-                                                                .await;
-                                                            let event_message = EventMessage {
-                                                                event: AppEvent::Alert,
-                                                                data: client_message.clone(),
-                                                            };
-                                                            websocket_broadcaster
-                                                                .broadcast_event_message(&event_message)
-                                                                .await;
-                                                            let _= database_service.save_raid_message(client_message).await;
-                                                         }
-                                                       
-
-                                                    },
-                                                     _ => {}
-                                                }
+                                                twitch_service
+                                                    .handle_subscriptions(payload, &app)
+                                                    .await;
                                             }
                                         }
-
                                         WebSocketInstruction::Revocation => {
                                             log::error!(
                                                 "Fatal twitch instruction received. Exiting connection loop."
                                             );
+
                                             break 'connection_loop;
                                         }
                                         WebSocketInstruction::Reconnect(new_url) => {
@@ -806,10 +512,161 @@ impl TwitchService {
                     }
                 }
             }
-        
-        });  
+        });
     }
 
+    async fn handle_subscriptions(&self, payload: EventPayload, app: &AppHandle) {
+        let database_service = app.state::<DatabaseService>();
+
+        match payload.subscription.r#type {
+            SubscriptionType::ChannelPointsCustomRewardRedemptionAdd => {
+                if let Event::ChannelPointsCustomRewardRedemptionAdd(event) = payload.event {
+                    let redemption = database_service
+                        .get_redemption_by_external_id(&event.id)
+                        .await;
+                    if let Ok(None) = redemption {
+                        if let Ok(Some(reward)) = database_service
+                            .get_reward_by_external_id(&event.reward.id, Platform::Twitch)
+                            .await
+                        {
+                            let message_id = Uuid::new_v4().to_string();
+                            let redemption = Redemption {
+                                id: Uuid::new_v4().to_string(),
+                                user_id: event.user_id,
+                                user_name: event.user_name,
+                                user_input: event.user_input,
+                                external_id: event.id,
+                                reward_id: event.reward.id,
+                                description: event.reward.prompt,
+                                title: event.reward.title,
+                                cost: event.reward.cost,
+                                r#type: reward.r#type.clone(),
+                                platform: reward.platform,
+                                points_currency_ratio: reward.points_currency_ratio,
+                                media: None,
+                                image: reward.image,
+                                audio: reward.audio,
+                                video: reward.video,
+                                alert_variant: reward.alert_variant,
+                                audio_volume: reward.audio_volume,
+                                video_volume: reward.video_volume,
+                                duration: reward.duration,
+                                delay: reward.delay,
+                                message_id: message_id,
+                            };
+                            let _ = on_new_redemption(redemption, reward.r#type, &app).await;
+                        }
+                    }
+                }
+            }
+            SubscriptionType::ChannelFollow => {
+                if let Event::Follow(event) = payload.event {
+                    let created_at = Utc::now().timestamp();
+                    let message_id = Uuid::new_v4().to_string();
+                    let follow = Follow {
+                        id: Uuid::new_v4().to_string(),
+                        user_id: event.user_id,
+                        service_id: payload.subscription.id,
+                        user_name: event.user_name,
+                        message_id: message_id,
+                        played: false,
+                        service: ServiceType::Twitch,
+                        followed_at: created_at,
+                    };
+
+                    let _ = on_new_follow(follow, GoalType::TwitchFollow, app).await;
+                }
+            }
+            SubscriptionType::ChannelSubscribe => {
+                if let Event::Subscribe(event) = payload.event {
+                    let created_at = Utc::now().timestamp();
+                    let message_id = Uuid::new_v4().to_string();
+                    let subscription = subscriptions::Subscription {
+                        id: Uuid::new_v4().to_string(),
+                        user_id: event.user_id,
+                        service_id: payload.subscription.id,
+                        user_name: event.user_name,
+                        message_id: message_id,
+                        played: false,
+                        service: ServiceType::Twitch,
+                        subscribed_at: created_at,
+                        is_gift: event.is_gift,
+                        is_anonymous: false,
+                        tier: event.tier,
+                        cumulative_total: None,
+                        total: 1,
+                    };
+                    let _ =
+                        on_new_subscription(subscription, GoalType::TwitchSubscription, &app).await;
+                }
+            }
+            SubscriptionType::ChannelSubscriptionGift => {
+                if let Event::SubscriptionGift(event) = payload.event {
+                    let created_at = Utc::now().timestamp();
+                    let message_id = Uuid::new_v4().to_string();
+                    let subscription = subscriptions::Subscription {
+                        id: Uuid::new_v4().to_string(),
+                        user_id: event.user_id,
+                        service_id: payload.subscription.id,
+                        user_name: event.user_name,
+                        message_id: message_id,
+                        played: false,
+                        service: ServiceType::Twitch,
+                        subscribed_at: created_at,
+                        is_gift: true,
+                        is_anonymous: event.is_anonymous,
+                        tier: event.tier,
+                        cumulative_total: event.cumulative_total,
+                        total: event.total,
+                    };
+                    let _ =
+                        on_new_subscription(subscription, GoalType::TwitchSubscription, &app).await;
+                }
+            }
+            SubscriptionType::ChannelSubscriptionMessage => {
+                if let Event::SubscriptionMessage(event) = payload.event {
+                    let created_at = Utc::now().timestamp();
+                    let message_id = Uuid::new_v4().to_string();
+                    let subscription = subscriptions::Subscription {
+                        id: Uuid::new_v4().to_string(),
+                        user_id: event.user_id,
+                        service_id: payload.subscription.id,
+                        user_name: event.user_name,
+                        message_id: message_id,
+                        played: false,
+                        service: ServiceType::Twitch,
+                        subscribed_at: created_at,
+                        is_gift: false,
+                        is_anonymous: false,
+                        tier: event.tier,
+                        cumulative_total: Some(event.cumulative_months),
+                        total: 1,
+                    };
+                    let _ =
+                        on_new_subscription(subscription, GoalType::TwitchSubscription, &app).await;
+                }
+            }
+            SubscriptionType::ChannelRaid => {
+                if let Event::Raid(event) = payload.event {
+                    let created_at = Utc::now().timestamp();
+                    let message_id = Uuid::new_v4().to_string();
+                    let raid = raids::Raid {
+                        id: Uuid::new_v4().to_string(),
+                        service_id: payload.subscription.id,
+                        message_id: message_id,
+                        played: false,
+                        service: ServiceType::Twitch,
+                        viewers: event.viewers,
+                        from_broadcaster_user_id: event.from_broadcaster_user_id,
+                        from_broadcaster_user_name: event.from_broadcaster_user_name,
+                        created_at,
+                    };
+                    let _ = on_new_raid(raid, &app).await;
+                }
+            }
+            _ => {}
+        }
+    }
 
     pub async fn check_auth(&self, app: &AppHandle) -> Result<TwitchAuth, String> {
         let database_service = app.state::<DatabaseService>();
@@ -878,7 +735,7 @@ impl TwitchService {
             }
         }
     }
-    
+
     pub async fn get_device_code(&self) -> Result<TwitchDeviceCodeResponse, String> {
         let mut params = HashMap::new();
 
@@ -1077,115 +934,128 @@ impl TwitchService {
         })?;
         Ok(token_info.clone())
     }
-    
+
     pub async fn add_custom_reward(
         &self,
-        app:&AppHandle,
-        auth:&TwitchAuth,
+        app: &AppHandle,
+        auth: &TwitchAuth,
         reward: &entity::rewards::Model,
     ) -> Result<(), String> {
         let database_service = app.state::<DatabaseService>();
-          let reqwest_client = app.state::<reqwest::Client>();
-            let twitch_reward_body = AddTwitchRewardBody {
-                title: reward.title.clone(),
-                cost: reward.cost,
-                prompt: reward.description.clone(),
-                background_color: Some(reward.background_color.clone()),
-                is_user_input_required: reward.is_user_input_required,
-                is_enabled: reward.is_enabled,
-                is_max_per_stream_enabled: reward.is_max_per_stream_enabled,
-                max_per_stream: reward.max_per_stream,
-                is_max_per_user_per_stream_enabled: reward.is_max_per_user_per_stream_enabled,
-                max_per_user_per_stream: reward.max_per_user_per_stream,
-                is_global_cooldown_enabled: reward.is_global_cooldown_enabled,
-                global_cooldown_seconds: reward.global_cooldown_seconds,
-                should_redemptions_skip_request_queue: reward.should_redemptions_skip_request_queue,
-            };
+        let reqwest_client = app.state::<reqwest::Client>();
+        let twitch_reward_body = AddTwitchRewardBody {
+            title: reward.title.clone(),
+            cost: reward.cost,
+            prompt: reward.description.clone(),
+            background_color: Some(reward.background_color.clone()),
+            is_user_input_required: reward.is_user_input_required,
+            is_enabled: reward.is_enabled,
+            is_max_per_stream_enabled: reward.is_max_per_stream_enabled,
+            max_per_stream: reward.max_per_stream,
+            is_max_per_user_per_stream_enabled: reward.is_max_per_user_per_stream_enabled,
+            max_per_user_per_stream: reward.max_per_user_per_stream,
+            is_global_cooldown_enabled: reward.is_global_cooldown_enabled,
+            global_cooldown_seconds: reward.global_cooldown_seconds,
+            should_redemptions_skip_request_queue: reward.should_redemptions_skip_request_queue,
+        };
 
-            let response = reqwest_client
-                .post(format!(
-                    "{}/channel_points/custom_rewards",
-                    self.api_endpoint
-                ))
-                .header("Authorization", format!("Bearer {}", auth.access_token))
-                .header(
-                    "Client-Id",
-                    std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap_or(self.client_id.clone()),
-                )
-                .query(&[("broadcaster_id", &auth.user_id)])
-                .json(&twitch_reward_body)
-                .send()
-                .await
-                .map_err(|e| {
-                    log::error!("{}", e.to_string());
-                    e.to_string()
-                })?;
-
-            if !response.status().is_success() {
-                let err_text = response.text().await.map_err(|e| {
-                    log::error!("{}", e.to_string());
-                    e.to_string()
-                })?;
-                log::error!("Twitch subscription error response: {}", err_text);
-                return Err(err_text);
-            }
-
-            let json: serde_json::Value = response.json().await.map_err(|e| {
+        let response = reqwest_client
+            .post(format!(
+                "{}/channel_points/custom_rewards",
+                self.api_endpoint
+            ))
+            .header("Authorization", format!("Bearer {}", auth.access_token))
+            .header(
+                "Client-Id",
+                std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap_or(self.client_id.clone()),
+            )
+            .query(&[("broadcaster_id", &auth.user_id)])
+            .json(&twitch_reward_body)
+            .send()
+            .await
+            .map_err(|e| {
                 log::error!("{}", e.to_string());
                 e.to_string()
             })?;
 
-            let reward_id = json["data"][0]["id"].as_str().map(|s| s.to_string()).ok_or("Twitch reward create error".to_string())?;
-     
-            let _ = database_service.create_reward(entity::rewards::Model{
-                external_id:Some(reward_id),
-               ..reward.clone()
-            }).await?;
-        
-      
-            Ok(())
+        if !response.status().is_success() {
+            let err_text = response.text().await.map_err(|e| {
+                log::error!("{}", e.to_string());
+                e.to_string()
+            })?;
+            log::error!("Twitch subscription error response: {}", err_text);
+            return Err(err_text);
+        }
+
+        let json: serde_json::Value = response.json().await.map_err(|e| {
+            log::error!("{}", e.to_string());
+            e.to_string()
+        })?;
+
+        let reward_id = json["data"][0]["id"]
+            .as_str()
+            .map(|s| s.to_string())
+            .ok_or("Twitch reward create error".to_string())?;
+
+        let _ = database_service
+            .create_reward(entity::rewards::Model {
+                external_id: Some(reward_id),
+                ..reward.clone()
+            })
+            .await?;
+
+        Ok(())
     }
 
     pub async fn remove_custom_reward(
         &self,
-        app:&AppHandle,
-        auth:&TwitchAuth,
-        id:&String,
+        app: &AppHandle,
+        auth: &TwitchAuth,
+        id: &String,
     ) -> Result<(), String> {
-          let database_service = app.state::<DatabaseService>();
-          let reqwest_client = app.state::<reqwest::Client>();
-          let reward=database_service.get_reward_by_id(id).await?.ok_or("Reward not found".to_string())?;
-          database_service.delete_reward_by_id(id).await?;
-            let response = reqwest_client
-                .delete(format!(
-                    "{}/channel_points/custom_rewards",
-                    self.api_endpoint
-                ))
-                .header("Authorization", format!("Bearer {}", auth.access_token))
-                .header(
-                    "Client-Id",
-                    std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap_or(self.client_id.clone()),
-                )
-                .query(&[("broadcaster_id", auth.user_id.clone()), ("id", reward.external_id.ok_or("Reward external_id not exist".to_string())?)])
-                .send()
-                .await
-                .map_err(|e| {
-                    log::error!("{}", e.to_string());
-                    e.to_string()
-                })?;
-            if !response.status().is_success() {
-                let err_text = response.text().await.map_err(|e| {
-                    log::error!("{}", e.to_string());
-                    e.to_string()
-                })?;
-                log::error!("Twitch subscription error response: {}", err_text);
-                return Err(err_text);
-            }
-            
-            
+        let database_service = app.state::<DatabaseService>();
+        let reqwest_client = app.state::<reqwest::Client>();
+        let reward = database_service
+            .get_reward_by_id(id)
+            .await?
+            .ok_or("Reward not found".to_string())?;
+        database_service.delete_reward_by_id(id).await?;
+        let response = reqwest_client
+            .delete(format!(
+                "{}/channel_points/custom_rewards",
+                self.api_endpoint
+            ))
+            .header("Authorization", format!("Bearer {}", auth.access_token))
+            .header(
+                "Client-Id",
+                std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap_or(self.client_id.clone()),
+            )
+            .query(&[
+                ("broadcaster_id", auth.user_id.clone()),
+                (
+                    "id",
+                    reward
+                        .external_id
+                        .ok_or("Reward external_id not exist".to_string())?,
+                ),
+            ])
+            .send()
+            .await
+            .map_err(|e| {
+                log::error!("{}", e.to_string());
+                e.to_string()
+            })?;
+        if !response.status().is_success() {
+            let err_text = response.text().await.map_err(|e| {
+                log::error!("{}", e.to_string());
+                e.to_string()
+            })?;
+            log::error!("Twitch subscription error response: {}", err_text);
+            return Err(err_text);
+        }
+
         Ok(())
     }
-
 
     async fn handle_text_message(&self, text: &str) -> WebSocketInstruction {
         let event_msg: NotificationMessage = match serde_json::from_str(text) {
@@ -1244,15 +1114,9 @@ impl TwitchService {
             session_id: session_id.clone(),
         };
         let subscribes_types = vec![
-            SubscriptionType::to_string(
-                            SubscriptionType::ChannelSubscribe,
-                        ),
-            SubscriptionType::to_string(
-                            SubscriptionType::ChannelSubscriptionGift,
-                        ),
-            SubscriptionType::to_string(
-                            SubscriptionType::ChannelSubscriptionMessage,
-                        ),
+            SubscriptionType::to_string(SubscriptionType::ChannelSubscribe),
+            SubscriptionType::to_string(SubscriptionType::ChannelSubscriptionGift),
+            SubscriptionType::to_string(SubscriptionType::ChannelSubscriptionMessage),
         ];
         for subscribe_type in subscribes_types {
             let _ = self
@@ -1275,9 +1139,7 @@ impl TwitchService {
             .create_subscription(
                 &access_token,
                 SubscriptionRequestBody {
-                    r#type:  SubscriptionType::to_string(
-                            SubscriptionType::ChannelFollow,
-                        ),
+                    r#type: SubscriptionType::to_string(SubscriptionType::ChannelFollow),
                     version: "2".to_string(),
                     condition: Condition::Follow({
                         FollowCondition {
@@ -1293,9 +1155,7 @@ impl TwitchService {
             .create_subscription(
                 &access_token,
                 SubscriptionRequestBody {
-                    r#type:  SubscriptionType::to_string(
-                            SubscriptionType::ChannelRaid,
-                        ),
+                    r#type: SubscriptionType::to_string(SubscriptionType::ChannelRaid),
                     version: "1".to_string(),
                     condition: Condition::Raid({
                         RaidCondition {
@@ -1310,9 +1170,7 @@ impl TwitchService {
             .create_subscription(
                 &access_token,
                 SubscriptionRequestBody {
-                    r#type:  SubscriptionType::to_string(
-                            SubscriptionType::ChannelCheer,
-                        ),
+                    r#type: SubscriptionType::to_string(SubscriptionType::ChannelCheer),
                     version: "1".to_string(),
                     condition: Condition::Cheer({
                         CheerCondition {
@@ -1327,9 +1185,9 @@ impl TwitchService {
             .create_subscription(
                 &access_token,
                 SubscriptionRequestBody {
-                    r#type:  SubscriptionType::to_string(
-                            SubscriptionType::ChannelPointsCustomRewardRedemptionAdd,
-                        ),
+                    r#type: SubscriptionType::to_string(
+                        SubscriptionType::ChannelPointsCustomRewardRedemptionAdd,
+                    ),
                     version: "1".to_string(),
                     condition: Condition::Subscription({
                         SubscriptionCondition {
@@ -1416,9 +1274,8 @@ impl TwitchService {
         authorized: bool,
         is_close_connection: bool,
     ) -> Result<(), String> {
-        let mut is_close_connection_guard = self.is_close_connection.lock().await;
-        *is_close_connection_guard = is_close_connection;
-        drop(is_close_connection_guard);
+        self.is_close_connection
+            .store(is_close_connection, Ordering::Relaxed);
         database_service
             .update_service_auth(ServiceType::Twitch, auth, authorized)
             .await

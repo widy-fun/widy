@@ -6,7 +6,7 @@ const ColorPicker = ({
 	onChange,
 }: {
 	initialColor: string;
-	onChange: (color: string) => void;
+	onChange: ({ rgba, hex }: { rgba: string; hex: string }) => void;
 }) => {
 	const [displayColorPicker, setDisplayColorPicker] = useState(false);
 	const [color, setColor] = useState(initialColor);
@@ -20,9 +20,9 @@ const ColorPicker = ({
 	};
 
 	const handleChange = (colorResult: ColorResult) => {
-		const color = `rgba(${colorResult.rgb.r}, ${colorResult.rgb.g}, ${colorResult.rgb.b}, ${colorResult.rgb.a})`;
-		setColor(color);
-		onChange(color);
+		const rgba = `rgba(${colorResult.rgb.r}, ${colorResult.rgb.g}, ${colorResult.rgb.b}, ${colorResult.rgb.a})`;
+		setColor(rgba);
+		onChange({ rgba, hex: colorResult.hex });
 	};
 
 	return (

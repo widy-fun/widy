@@ -6,7 +6,7 @@ import {
 	RewardType,
 	ServiceType,
 } from "@widy/sdk";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { NumericFormat } from "react-number-format";
@@ -28,6 +28,8 @@ const RewardSettings = ({ onSave }: { onSave: () => Promise<void> }) => {
 	const { reward } = useSelector((state: AppState) => state.rewardsState);
 	const navigate = useNavigate();
 	const { data: twitch } = useGetServiceByIdQuery({ id: ServiceType.Twitch });
+	const { data: kick } = useGetServiceByIdQuery({ id: ServiceType.Kick });
+	const [isPending, setIsPending] = useState(false);
 
 	const { control, handleSubmit, reset } = useForm<IReward>({
 		defaultValues: reward,
@@ -38,7 +40,13 @@ const RewardSettings = ({ onSave }: { onSave: () => Promise<void> }) => {
 	}, [reward, reset]);
 
 	const onSubmit = async (data: IReward) => {
-		if (!twitch?.authorized) {
+		console.log("data:", data);
+		const platformAuthMap = {
+			[Platform.Twitch]: twitch?.authorized,
+			[Platform.Kick]: kick?.authorized,
+		};
+
+		if (!platformAuthMap[data.platform]) {
 			dispatch(
 				showSnackBar({
 					message: t("error.not_connected"),
@@ -47,8 +55,14 @@ const RewardSettings = ({ onSave }: { onSave: () => Promise<void> }) => {
 			);
 			return;
 		}
+		setIsPending(true);
+
 		dispatch(setReward(data));
-		await onSave();
+		try {
+			await onSave();
+		} finally {
+			setIsPending(false);
+		}
 	};
 
 	return (
@@ -237,13 +251,13 @@ const RewardSettings = ({ onSave }: { onSave: () => Promise<void> }) => {
 						</div>
 						<ColorPicker
 							initialColor={reward.background_color}
-							onChange={(value) => {
+							onChange={({ hex }) => {
 								dispatch(
 									setReward({
 										...reward,
 										background_color: reward.external_id
 											? DEFAULT_REWARD.background_color
-											: value,
+											: hex,
 									}),
 								);
 							}}
@@ -303,7 +317,11 @@ const RewardSettings = ({ onSave }: { onSave: () => Promise<void> }) => {
 						marginTop: 20,
 					}}
 				>
-					<Button variant="contained" onClick={handleSubmit(onSubmit)}>
+					<Button
+						variant="contained"
+						onClick={handleSubmit(onSubmit)}
+						disabled={isPending}
+					>
 						{t("save")}
 					</Button>
 					<Button onClick={() => navigate(-1)}>{t("back")}</Button>

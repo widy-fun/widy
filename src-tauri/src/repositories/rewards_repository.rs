@@ -12,6 +12,11 @@ pub trait RewardsRepository: Send + Sync {
         platform: Platform,
     ) -> Result<Option<Model>, String>;
     async fn get_reward_by_id(&self, external_id: &String) -> Result<Option<Model>, String>;
+    async fn get_reward_by_title(
+        &self,
+        external_id: &String,
+        platform: Platform,
+    ) -> Result<Option<Model>, String>;
     async fn get_rewards(&self) -> Result<Vec<Model>, String>;
     async fn create_reward(&self, reward: Model) -> Result<(), String>;
     async fn update_reward_settings(&self, reward: Model) -> Result<(), String>;
@@ -77,6 +82,22 @@ impl RewardsRepository for DatabaseService {
             .await
             .map_err(|e| {
                 log::error!("Get reward by external_id error: {}", e.to_string());
+                e.to_string()
+            })
+    }
+
+    async fn get_reward_by_title(
+        &self,
+        title: &String,
+        platform: Platform,
+    ) -> Result<Option<Model>, String> {
+        Entity::find()
+            .filter(Column::Title.eq(title))
+            .filter(Column::Platform.eq(platform))
+            .one(&self.connection)
+            .await
+            .map_err(|e| {
+                log::error!("Get reward by title error: {}", e.to_string());
                 e.to_string()
             })
     }

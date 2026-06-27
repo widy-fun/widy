@@ -76,6 +76,8 @@ impl ActiveModelBehavior for ActiveModel {}
 pub enum Platform {
     #[sea_orm(string_value = "Twitch")]
     Twitch,
+    #[sea_orm(string_value = "Kick")]
+    Kick,
 }
 
 #[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Serialize, Deserialize, Eq)]

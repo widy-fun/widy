@@ -134,35 +134,6 @@ const GoalElementsSettings = () => {
 								}}
 							/>
 						</div>
-						{/* <div className={styles.settings}>
-							<div className={styles.label}>
-								<span>{t("goal.widget_background")}:</span>
-							</div>
-							<OnOffSwitch
-								checked={goal.widget_background}
-								onChange={() => {
-									dispatch(
-										setGoal({
-											...goal,
-											widget_background: !goal.widget_background,
-										}),
-									);
-								}}
-							/>
-						</div>
-						<div className={styles.settings}>
-							<div className={styles.label}>
-								<span>{t("goal.background_color")}:</span>
-							</div>
-							<ColorPicker
-								initialColor={goal.widget_background_color}
-								onChange={(value) => {
-									dispatch(
-										setGoal({ ...goal, widget_background_color: value }),
-									);
-								}}
-							/>
-						</div> */}
 					</div>
 				</div>
 			)}

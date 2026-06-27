@@ -287,7 +287,8 @@
 		"Donation": "Spende",
 		"TwitchSubscription": "Twitch-Abo",
 		"TwitchFollow": "Twitch-Follow",
-		"goal_not_finished": "Du hast ein unvollendetes Ziel dieses Typs."
+		"goal_not_finished": "Du hast ein unvollendetes Ziel dieses Typs.",
+		"KickSubscription": "Kick-Abonnement"
 	},
 	"save": "Speichern",
 	"back": "Zurück",
@@ -426,7 +427,8 @@
 		"sure_delete": "Möchtest du diese Belohnung wirklich löschen?",
 		"points_currency_ratio": "Punkte-Währungsverhältnis",
 		"is_global_cooldown_enabled": "Globaler Cooldown aktiviert",
-		"global_cooldown_seconds": "Globaler Cooldown (Sekunden)"
+		"global_cooldown_seconds": "Globaler Cooldown (Sekunden)",
+		"title_exist": "Belohnung mit demselben Titel existiert bereits"
 	},
 	"validation": {
 		"required": "Erforderlich"

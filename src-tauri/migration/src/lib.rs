@@ -33,6 +33,7 @@ mod m20260603_222729_add_destream_service;
 mod m20260605_175133_add_tribute_service;
 mod m20260612_150622_create_table_rewards;
 mod m20260612_153247_create_table_redemptions;
+mod m20260625_110014_add_kick_service;
 
 pub struct Migrator;
 
@@ -74,6 +75,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20260605_175133_add_tribute_service::Migration),
             Box::new(m20260612_150622_create_table_rewards::Migration),
             Box::new(m20260612_153247_create_table_redemptions::Migration),
+            Box::new(m20260625_110014_add_kick_service::Migration),
         ]
     }
 }

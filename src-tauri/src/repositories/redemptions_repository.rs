@@ -33,6 +33,7 @@ impl RedemptionsRepository for DatabaseService {
                 .set_audio(redemption.audio)
                 .set_image(redemption.image)
                 .set_video(redemption.video)
+                .set_media(redemption.media)
                 .set_alert_variant(redemption.alert_variant)
                 .set_video_volume(redemption.video_volume)
                 .set_audio_volume(redemption.audio_volume)

@@ -75,8 +75,8 @@ const GoalProgressSettings = () => {
 							</div>
 							<ColorPicker
 								initialColor={goal.background_bar_color}
-								onChange={(value) => {
-									dispatch(setGoal({ ...goal, background_bar_color: value }));
+								onChange={({ rgba }) => {
+									dispatch(setGoal({ ...goal, background_bar_color: rgba }));
 								}}
 							/>
 						</div>
@@ -86,8 +86,8 @@ const GoalProgressSettings = () => {
 							</div>
 							<ColorPicker
 								initialColor={goal.progress_bar_color}
-								onChange={(value) => {
-									dispatch(setGoal({ ...goal, progress_bar_color: value }));
+								onChange={({ rgba }) => {
+									dispatch(setGoal({ ...goal, progress_bar_color: rgba }));
 								}}
 							/>
 						</div>

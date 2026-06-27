@@ -16,6 +16,7 @@ import Donatello from "./components/donatello/Donatello";
 import DonatePay from "./components/donatepay/DonatePay";
 import Donatik from "./components/donatik/Donatik";
 import DonationAlerts from "./components/donationalerts/DonationAlerts";
+import Kick from "./components/kick/Kick";
 import StreamElements from "./components/streamelements/StreamElements";
 import StreamLabs from "./components/streamlabs/StreamLabs";
 import Tribute from "./components/tribute/Tribute";
@@ -101,6 +102,7 @@ function App() {
 					<Route path="/streamelements/*" element={<StreamElements />} />
 					<Route path="/streamlabs/*" element={<StreamLabs />} />
 					<Route path="/twitch/*" element={<Twitch />} />
+					<Route path="/kick/*" element={<Kick />} />
 					<Route path="/widy/*" element={<Widy />} />
 					<Route path="/donationalerts/*" element={<DonationAlerts />} />
 					<Route path="/donatepay/*" element={<DonatePay />} />

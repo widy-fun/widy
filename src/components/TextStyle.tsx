@@ -53,8 +53,8 @@ const TextStyle = ({
 
 					<ColorPicker
 						initialColor={textStyle.text_color}
-						onChange={(value) => {
-							dispatch(setTextStyle({ ...textStyle, text_color: value }));
+						onChange={({ rgba }) => {
+							dispatch(setTextStyle({ ...textStyle, text_color: rgba }));
 						}}
 					/>
 				</div>

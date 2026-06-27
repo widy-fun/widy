@@ -70,6 +70,11 @@ const initialState: ServicesState = {
 			color: "#2692ffb2",
 			authPath: "/tribute/api-key",
 		},
+		[ServiceType.Kick]: {
+			active: false,
+			color: "#53fc18",
+			authPath: "/kick/authorize",
+		},
 	},
 };
 

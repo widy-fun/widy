@@ -7,17 +7,8 @@ import "../shared/i18n/i18n";
 import { CssBaseline, createTheme, ThemeProvider } from "@mui/material";
 import { appLocalDataDir } from "@tauri-apps/api/path";
 import { BridgeContext } from "@widy/react";
-import type {
-	IAucFighterMatchWinner,
-	IClientMessage,
-	IService,
-} from "@widy/sdk";
-import {
-	AppEvent,
-	RewardType,
-	ServiceType,
-	WidgetOutboundBridge,
-} from "@widy/sdk";
+import type { IAucFighterMatchWinner, IClientMessage } from "@widy/sdk";
+import { AppEvent, RewardType, WidgetOutboundBridge } from "@widy/sdk";
 import { BrowserRouter } from "react-router";
 import { EventsContext } from "../shared/contexts/EventsContext";
 import EventsProvider from "../shared/providers/EventsProvider";
@@ -28,7 +19,6 @@ import {
 	setPlayingMediaId,
 } from "../shared/slices/mediaSlice";
 import { messagesApi } from "./api/messagesApi";
-import { servicesApi } from "./api/servicesApi";
 import { settingsApi } from "./api/settingsApi";
 import { StreamElementsSocketServiceContext } from "./contexts/StreamElementsSocketServiceContext";
 import donationFromRedemption from "./helpers/donationFromRedemption";
@@ -86,17 +76,7 @@ eventsService.subscribe<IClientMessage>(
 					forceRefetch: true,
 				}),
 			);
-			const { data } = await store.dispatch(
-				servicesApi.endpoints.getServiceById.initiate(
-					{
-						id: ServiceType.Twitch,
-					},
-					{ forceRefetch: true },
-				),
-			);
-			const service = data as IService<unknown, unknown>;
-
-			if (services[ServiceType.Twitch].active && settings && service) {
+			if (services[message.redemption.platform].active && settings) {
 				store.dispatch(
 					addAuctionDonation(
 						donationFromRedemption({

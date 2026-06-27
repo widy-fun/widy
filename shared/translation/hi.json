@@ -287,7 +287,8 @@
 		"Donation": "दान",
 		"TwitchSubscription": "ट्विच सब्सक्रिप्शन",
 		"TwitchFollow": "ट्विच फॉलो",
-		"goal_not_finished": "आपके पास इस प्रकार का एक अधूरा लक्ष्य है।"
+		"goal_not_finished": "आपके पास इस प्रकार का एक अधूरा लक्ष्य है।",
+		"KickSubscription": "Kick सब्सक्रिप्शन"
 	},
 	"save": "सेव करें",
 	"back": "वापस",
@@ -426,7 +427,8 @@
 		"sure_delete": "क्या आप वाकई इस पुरस्कार को हटाना चाहते हैं?",
 		"points_currency_ratio": "पॉइंट्स मुद्रा अनुपात",
 		"is_global_cooldown_enabled": "क्या ग्लोबल कूलडाउन सक्षम है",
-		"global_cooldown_seconds": "ग्लोबल कूलडाउन सेकंड"
+		"global_cooldown_seconds": "ग्लोबल कूलडाउन सेकंड",
+		"title_exist": "समान शीर्षक वाला रिवॉर्ड मौजूद है"
 	},
 	"validation": {
 		"required": "आवश्यक"

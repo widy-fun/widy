@@ -287,6 +287,7 @@
 		"Donation": "تبرع",
 		"TwitchSubscription": "اشتراك تويتش",
 		"TwitchFollow": "متابعة تويتش",
+		"KickSubscription": "اشتراك Kick",
 		"goal_not_finished": "لديك هدف غير مكتمل من هذا النوع."
 	},
 	"save": "حفظ",
@@ -426,7 +427,8 @@
 		"sure_delete": "هل أنت متأكد أنك تريد حذف هذه المكافأة؟",
 		"points_currency_ratio": "نسبة نقاط العملة",
 		"is_global_cooldown_enabled": "هل تمكين التبريد العالمي",
-		"global_cooldown_seconds": "ثواني التبريد العالمي"
+		"global_cooldown_seconds": "ثواني التبريد العالمي",
+		"title_exist": "توجد مكافأة بنفس العنوان"
 	},
 	"validation": {
 		"required": "مطلوب"

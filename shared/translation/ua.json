@@ -287,7 +287,8 @@
 		"Donation": "Донат",
 		"TwitchSubscription": "Підписка Twitch",
 		"TwitchFollow": "Підписка Twitch",
-		"goal_not_finished": "У вас є незавершена ціль цього типу."
+		"goal_not_finished": "У вас є незавершена ціль цього типу.",
+		"KickSubscription": "Підписка Kick"
 	},
 	"save": "Зберегти",
 	"back": "Назад",
@@ -426,7 +427,8 @@
 		"sure_delete": "Ви впевнені, що хочете видалити цю нагороду?",
 		"points_currency_ratio": "Співвідношення балів до валюти",
 		"is_global_cooldown_enabled": "Увімкнено глобальний кулдаун",
-		"global_cooldown_seconds": "Глобальний кулдаун (секунди)"
+		"global_cooldown_seconds": "Глобальний кулдаун (секунди)",
+		"title_exist": "Нагорода з такою ж назвою вже існує"
 	},
 	"validation": {
 		"required": "Обов’язкове поле"

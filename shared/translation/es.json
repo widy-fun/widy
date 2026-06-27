@@ -287,7 +287,8 @@
 		"Donation": "Donación",
 		"TwitchSubscription": "Suscripción de Twitch",
 		"TwitchFollow": "Follow de Twitch",
-		"goal_not_finished": "Tienes una meta sin finalizar de este tipo."
+		"goal_not_finished": "Tienes una meta sin finalizar de este tipo.",
+		"KickSubscription": "Suscripción Kick"
 	},
 	"save": "Guardar",
 	"back": "Atrás",
@@ -426,7 +427,8 @@
 		"sure_delete": "¿Estás seguro de que quieres eliminar esta recompensa?",
 		"points_currency_ratio": "Ratio de puntos a moneda",
 		"is_global_cooldown_enabled": "¿Está habilitado el cooldown global?",
-		"global_cooldown_seconds": "Segundos de cooldown global"
+		"global_cooldown_seconds": "Segundos de cooldown global",
+		"title_exist": "Ya existe una recompensa con el mismo título"
 	},
 	"validation": {
 		"required": "Requerido"
