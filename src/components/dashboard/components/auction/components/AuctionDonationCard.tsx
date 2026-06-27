@@ -17,7 +17,6 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { findBestMatch } from "string-similarity";
 import { showSnackBar } from "../../../../../../shared/slices/snackBarSlice";
-import getCurrencySymbol from "../../../../../../shared/utils/getCurrencySymbol.ts";
 import getRandomColor from "../../../../../helpers/getRandomColor";
 import type { AppState } from "../../../../../store";
 import { auctionDonationsSlice } from "../../../../../store/slices/donationsSlice.ts";
@@ -109,7 +108,7 @@ const AuctionDonationCard = ({ donation }: { donation: IDonation }) => {
 				>
 					<Typography variant="h6">
 						{donation.amount}
-						{getCurrencySymbol(donation.currency)} {donation.user_name}
+						{donation.currency} {donation.user_name}
 					</Typography>
 					<IconButton
 						onClick={() => {

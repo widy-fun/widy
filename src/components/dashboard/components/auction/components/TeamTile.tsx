@@ -1,6 +1,5 @@
 import { Box, Chip } from "@mui/material";
 import type { IAucFighterTeam } from "@widy/sdk";
-import getCurrencySymbol from "../../../../../../shared/utils/getCurrencySymbol";
 import { useGetSettingsQuery } from "../../../../../api/settingsApi";
 
 const TeamTile = ({ team }: { team: IAucFighterTeam }) => {
@@ -36,7 +35,7 @@ const TeamTile = ({ team }: { team: IAucFighterTeam }) => {
 					<div>
 						<div>
 							<div style={{ float: "right" }}>
-								{team.amount.toFixed(2)} {getCurrencySymbol(settings.currency)}
+								{team.amount.toFixed(2)} {settings.currency}
 							</div>
 						</div>
 					</div>

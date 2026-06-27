@@ -93,7 +93,7 @@
 	"message": {
 		"skip": "Пропустити",
 		"replay": "Повторити",
-		"donated": "{{user_name}} задонатив {{amount}}{{currency}}",
+		"donated": "{{user_name}} задонатив {{amount}} {{currency}}",
 		"redemption": "{{user_name}} redemption {{title}} {{cost}}",
 		"followed": "{{user_name}} підписався",
 		"subscribed": "{{user_name}} оформив підписку",

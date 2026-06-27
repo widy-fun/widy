@@ -8,7 +8,6 @@ import type {
 } from "@widy/sdk";
 import { MessageType } from "@widy/sdk";
 import { useTranslation } from "react-i18next";
-import getCurrencySymbol from "../utils/getCurrencySymbol";
 import Alert from "./Alert";
 
 const AlertView = ({
@@ -49,7 +48,7 @@ const AlertView = ({
 				>
 					{t("message.donated", {
 						user_name: donation.user_name,
-						currency: getCurrencySymbol(donation.currency),
+						currency: donation.currency,
 						amount: donation.amount,
 					})}
 				</Alert>

@@ -93,7 +93,7 @@
 	"message": {
 		"skip": "Pular",
 		"replay": "Reproduzir novamente",
-		"donated": "{{user_name}} doou {{amount}}{{currency}}",
+		"donated": "{{user_name}} doou {{amount}} {{currency}}",
 		"redemption": "{{user_name}} resgatou {{title}} {{cost}}",
 		"followed": "{{user_name}} seguiu",
 		"subscribed": "{{user_name}} assinou",

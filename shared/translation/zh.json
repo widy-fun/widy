@@ -93,7 +93,7 @@
 	"message": {
 		"skip": "跳过",
 		"replay": "重播",
-		"donated": "{{user_name}} 捐赠了 {{amount}}{{currency}}",
+		"donated": "{{user_name}} 捐赠了 {{amount}} {{currency}}",
 		"redemption": "{{user_name}} 兑换 {{title}} {{cost}}",
 		"followed": "{{user_name}} 关注了",
 		"subscribed": "{{user_name}} 订阅了",

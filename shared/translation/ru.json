@@ -93,7 +93,7 @@
 	"message": {
 		"skip": "Пропустить",
 		"replay": "Повторить",
-		"donated": "{{user_name}} донатнул {{amount}}{{currency}}",
+		"donated": "{{user_name}} донатнул {{amount}} {{currency}}",
 		"redemption": "{{user_name}} редемпнул {{title}} {{cost}}",
 		"followed": "{{user_name}} подписался",
 		"subscribed": "{{user_name}} оформил подписку",

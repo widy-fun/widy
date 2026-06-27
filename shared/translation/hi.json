@@ -93,7 +93,7 @@
 	"message": {
 		"skip": "छोड़ें",
 		"replay": "दोबारा चलाएं",
-		"donated": "{{user_name}} ने {{amount}}{{currency}} दान किया",
+		"donated": "{{user_name}} ने {{amount}} {{currency}} दान किया",
 		"redemption": "{{user_name}} ने {{title}} {{cost}} रिडीम किया",
 		"followed": "{{user_name}} ने फॉलो किया",
 		"subscribed": "{{user_name}} ने सब्सक्राइब किया",

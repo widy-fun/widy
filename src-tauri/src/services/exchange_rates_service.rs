@@ -15,14 +15,25 @@ struct ExchangeRatesData {
 #[derive(Clone, Debug)]
 pub struct ExchangeRatesService {
     rates: Option<HashMap<String, String>>,
+    virtual_rates: HashMap<String, String>,
     fetch_timestamp: i64,
 }
 
 impl ExchangeRatesService {
     pub fn new() -> Self {
+        let mut virtual_rates: HashMap<String, String> = HashMap::new();
+        virtual_rates.insert(
+            Currency::as_str(&Currency::BITS).to_string(),
+            "100.0".to_string(),
+        );
+        virtual_rates.insert(
+            Currency::as_str(&Currency::KICKS).to_string(),
+            "100.0".to_string(),
+        );
         Self {
             fetch_timestamp: 0,
             rates: None,
+            virtual_rates,
         }
     }
 
@@ -62,9 +73,13 @@ impl ExchangeRatesService {
         target_currency: Currency,
         target_amount: f64,
     ) -> f64 {
-        let rates = match self.get_exchange_rates().await {
-            Some(rates) => rates,
-            _ => return 0.0,
+        let rates = if target_currency == Currency::BITS || target_currency == Currency::KICKS {
+            self.virtual_rates.clone()
+        } else {
+            match self.get_exchange_rates().await {
+                Some(rates) => rates,
+                _ => return 0.0,
+            }
         };
         if base_currency == Currency::USD {
             let target_rate = rates

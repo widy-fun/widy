@@ -6,6 +6,7 @@ use entity::{
     redemptions::Redemption,
     rewards::Platform,
     services::{KickAuth, ServiceAuth, ServiceType},
+    settings::Currency,
     subscriptions::Subscription,
 };
 use futures::{SinkExt, StreamExt};
@@ -30,7 +31,7 @@ use uuid::Uuid;
 use crate::{
     repositories::{RewardsRepository, ServicesRepository},
     services::{DatabaseService, GrantType},
-    utils::{on_new_raid, on_new_redemption, on_new_subscription},
+    utils::{on_new_donation, on_new_raid, on_new_redemption, on_new_subscription},
 };
 
 #[derive(Debug, Serialize)]
@@ -53,7 +54,7 @@ struct AddKickRewardBody {
 
 #[derive(Debug, Clone, Deserialize)]
 #[allow(dead_code)]
-struct PusherEvent {
+struct EventPayload {
     pub chanel: Option<String>,
     pub data: String,
     pub event: Event,
@@ -363,7 +364,6 @@ impl KickService {
     async fn run_websocket_client(&self, app: AppHandle, chatroom: Chatroom) {
         tauri::async_runtime::spawn(async move {
             let kick_service = app.state::<KickService>();
-            let database_service = app.state::<DatabaseService>();
             let connect_url = "wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.5.0&flash=false";
             'connection_loop: loop {
                 log::info!("Connecting to Kick websocket: {}", connect_url);
@@ -386,149 +386,9 @@ impl KickService {
 
                             match msg_result {
                                 Ok(Message::Text(text)) => {
-                                    if let Ok(pusher_event) =
-                                        serde_json::from_str::<PusherEvent>(&text)
+                                    if let Ok(payload) = serde_json::from_str::<EventPayload>(&text)
                                     {
-                                        match pusher_event.event {
-                                            Event::RewardRedeemedEvent => {
-                                                let event_data =
-                                                    serde_json::from_str::<RewardRedeemedData>(
-                                                        &pusher_event.data,
-                                                    );
-                                                if let Ok(data) = event_data {
-                                                    if let Ok(Some(reward)) = database_service
-                                                        .get_reward_by_title(
-                                                            &data.reward_title,
-                                                            Platform::Kick,
-                                                        )
-                                                        .await
-                                                    {
-                                                        let message_id = Uuid::new_v4().to_string();
-                                                        let redemption = Redemption {
-                                                            id: Uuid::new_v4().to_string(),
-                                                            user_id: data.user_id.to_string(),
-                                                            user_name: data.username,
-                                                            user_input: data.user_input,
-                                                            external_id: message_id.clone(),
-                                                            reward_id: reward.id,
-                                                            description: None,
-                                                            title: data.reward_title,
-                                                            cost: reward.cost,
-                                                            r#type: reward.r#type.clone(),
-                                                            platform: reward.platform,
-                                                            media: None,
-                                                            points_currency_ratio: reward
-                                                                .points_currency_ratio,
-                                                            image: reward.image,
-                                                            audio: reward.audio,
-                                                            video: reward.video,
-                                                            alert_variant: reward.alert_variant,
-                                                            audio_volume: reward.audio_volume,
-                                                            video_volume: reward.video_volume,
-                                                            duration: reward.duration,
-                                                            delay: reward.delay,
-                                                            message_id: message_id,
-                                                        };
-                                                        let _ = on_new_redemption(
-                                                            redemption,
-                                                            reward.r#type,
-                                                            &app,
-                                                        )
-                                                        .await;
-                                                    }
-                                                }
-                                            }
-                                            Event::GiftedSubscriptionsEvent => {
-                                                let event_data = serde_json::from_str::<
-                                                    GiftedSubscriptionsData,
-                                                >(
-                                                    &pusher_event.data
-                                                );
-                                                if let Ok(data) = event_data {
-                                                    let message_id = Uuid::new_v4().to_string();
-                                                    let created_at = Utc::now().timestamp();
-                                                    let subscription = Subscription {
-                                                        id: Uuid::new_v4().to_string(),
-                                                        user_id: data.gifter_username.clone(),
-                                                        service_id: message_id.clone(),
-                                                        user_name: data.gifter_username,
-                                                        message_id: message_id,
-                                                        played: false,
-                                                        service: ServiceType::Kick,
-                                                        subscribed_at: created_at,
-                                                        is_gift: true,
-                                                        is_anonymous: false,
-                                                        tier: "1".to_string(),
-                                                        cumulative_total: None,
-                                                        total: data.gifted_total,
-                                                    };
-                                                    let _ = on_new_subscription(
-                                                        subscription,
-                                                        GoalType::KickSubscription,
-                                                        &app,
-                                                    )
-                                                    .await;
-                                                }
-                                            }
-                                            Event::SubscriptionEvent => {
-                                                let event_data =
-                                                    serde_json::from_str::<SubscriptionData>(
-                                                        &pusher_event.data,
-                                                    );
-                                                if let Ok(data) = event_data {
-                                                    let message_id = Uuid::new_v4().to_string();
-                                                    let created_at = Utc::now().timestamp();
-                                                    let subscription = Subscription {
-                                                        id: Uuid::new_v4().to_string(),
-                                                        user_id: data.username.clone(),
-                                                        service_id: message_id.clone(),
-                                                        user_name: data.username,
-                                                        message_id: message_id,
-                                                        played: false,
-                                                        service: ServiceType::Kick,
-                                                        subscribed_at: created_at,
-                                                        is_gift: false,
-                                                        is_anonymous: false,
-                                                        tier: data.months.to_string(),
-                                                        cumulative_total: None,
-                                                        total: 1,
-                                                    };
-                                                    let _ = on_new_subscription(
-                                                        subscription,
-                                                        GoalType::KickSubscription,
-                                                        &app,
-                                                    )
-                                                    .await;
-                                                }
-                                            }
-                                            Event::StreamHostEvent => {
-                                                let event_data =
-                                                    serde_json::from_str::<StreamHostData>(
-                                                        &pusher_event.data,
-                                                    );
-                                                if let Ok(data) = event_data {
-                                                    let created_at = Utc::now().timestamp();
-                                                    let message_id = Uuid::new_v4().to_string();
-
-                                                    let raid = raids::Raid {
-                                                        id: Uuid::new_v4().to_string(),
-                                                        service_id: message_id.clone(),
-                                                        message_id: message_id,
-                                                        played: false,
-                                                        service: ServiceType::Kick,
-                                                        viewers: data.number_viewers,
-                                                        from_broadcaster_user_id: data
-                                                            .host_username
-                                                            .clone(),
-                                                        from_broadcaster_user_name: data
-                                                            .host_username,
-                                                        created_at,
-                                                    };
-                                                    let _ = on_new_raid(raid, &app).await;
-                                                }
-                                            }
-                                            _ => {}
-                                        }
+                                        kick_service.handle_subscriptions(payload, &app).await;
                                     }
                                 }
 
@@ -551,6 +411,132 @@ impl KickService {
                 }
             }
         });
+    }
+
+    async fn handle_subscriptions(&self, payload: EventPayload, app: &AppHandle) {
+        let database_service = app.state::<DatabaseService>();
+        match payload.event {
+            Event::RewardRedeemedEvent => {
+                let event_data = serde_json::from_str::<RewardRedeemedData>(&payload.data);
+                if let Ok(data) = event_data {
+                    if let Ok(Some(reward)) = database_service
+                        .get_reward_by_title(&data.reward_title, Platform::Kick)
+                        .await
+                    {
+                        let message_id = Uuid::new_v4().to_string();
+                        let redemption = Redemption {
+                            id: Uuid::new_v4().to_string(),
+                            user_id: data.user_id.to_string(),
+                            user_name: data.username,
+                            user_input: data.user_input,
+                            external_id: message_id.clone(),
+                            reward_id: reward.id,
+                            description: None,
+                            title: data.reward_title,
+                            cost: reward.cost,
+                            r#type: reward.r#type.clone(),
+                            platform: reward.platform,
+                            media: None,
+                            points_currency_ratio: reward.points_currency_ratio,
+                            image: reward.image,
+                            audio: reward.audio,
+                            video: reward.video,
+                            alert_variant: reward.alert_variant,
+                            audio_volume: reward.audio_volume,
+                            video_volume: reward.video_volume,
+                            duration: reward.duration,
+                            delay: reward.delay,
+                            message_id: message_id,
+                        };
+                        let _ = on_new_redemption(redemption, reward.r#type, &app).await;
+                    }
+                }
+            }
+            Event::GiftedSubscriptionsEvent => {
+                let event_data = serde_json::from_str::<GiftedSubscriptionsData>(&payload.data);
+                if let Ok(data) = event_data {
+                    let message_id = Uuid::new_v4().to_string();
+                    let created_at = Utc::now().timestamp();
+                    let subscription = Subscription {
+                        id: Uuid::new_v4().to_string(),
+                        user_id: data.gifter_username.clone(),
+                        service_id: message_id.clone(),
+                        user_name: data.gifter_username,
+                        message_id: message_id,
+                        played: false,
+                        service: ServiceType::Kick,
+                        subscribed_at: created_at,
+                        is_gift: true,
+                        is_anonymous: false,
+                        tier: "1".to_string(),
+                        cumulative_total: None,
+                        total: data.gifted_total,
+                    };
+                    let _ =
+                        on_new_subscription(subscription, GoalType::KickSubscription, &app).await;
+                }
+            }
+            Event::SubscriptionEvent => {
+                let event_data = serde_json::from_str::<SubscriptionData>(&payload.data);
+                if let Ok(data) = event_data {
+                    let message_id = Uuid::new_v4().to_string();
+                    let created_at = Utc::now().timestamp();
+                    let subscription = Subscription {
+                        id: Uuid::new_v4().to_string(),
+                        user_id: data.username.clone(),
+                        service_id: message_id.clone(),
+                        user_name: data.username,
+                        message_id: message_id,
+                        played: false,
+                        service: ServiceType::Kick,
+                        subscribed_at: created_at,
+                        is_gift: false,
+                        is_anonymous: false,
+                        tier: data.months.to_string(),
+                        cumulative_total: None,
+                        total: 1,
+                    };
+                    let _ =
+                        on_new_subscription(subscription, GoalType::KickSubscription, &app).await;
+                }
+            }
+            Event::StreamHostEvent => {
+                let event_data = serde_json::from_str::<StreamHostData>(&payload.data);
+                if let Ok(data) = event_data {
+                    let created_at = Utc::now().timestamp();
+                    let message_id = Uuid::new_v4().to_string();
+
+                    let raid = raids::Raid {
+                        id: Uuid::new_v4().to_string(),
+                        service_id: message_id.clone(),
+                        message_id: message_id,
+                        played: false,
+                        service: ServiceType::Kick,
+                        viewers: data.number_viewers,
+                        from_broadcaster_user_id: data.host_username.clone(),
+                        from_broadcaster_user_name: data.host_username,
+                        created_at,
+                    };
+                    let _ = on_new_raid(raid, &app).await;
+                }
+            }
+            Event::KicksGifted => {
+                let event_data = serde_json::from_str::<KicksGiftedData>(&payload.data);
+                if let Ok(data) = event_data {
+                    let _ = on_new_donation(
+                        data.gift_transaction_id,
+                        ServiceType::Kick,
+                        Some(data.sender.username),
+                        Currency::KICKS,
+                        data.gift.amount as f64,
+                        Some(data.message),
+                        &app,
+                    )
+                    .await;
+                }
+            }
+            _ => {}
+        }
     }
 
     async fn create_subscriptions(

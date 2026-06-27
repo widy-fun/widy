@@ -8,7 +8,6 @@ import type { AppState } from "../../src/store";
 import useAppEvents from "../hooks/useAppEvents";
 import getColorByMediaType from "../utils/getColorByMediaType";
 import getColorByMessageType from "../utils/getColorByMessageType";
-import getCurrencySymbol from "../utils/getCurrencySymbol";
 import MediaTile from "./MediaTile";
 import MessageDate from "./MessageDate";
 
@@ -88,7 +87,7 @@ const DonationMessageCard = ({
 							>
 								{t("message.donated", {
 									user_name: donation.user_name,
-									currency: getCurrencySymbol(donation.currency),
+									currency: donation.currency,
 									amount: donation.amount,
 								})}
 							</Typography>

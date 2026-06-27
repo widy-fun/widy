@@ -93,7 +93,7 @@
 	"message": {
 		"skip": "Überspringen",
 		"replay": "Wiederholen",
-		"donated": "{{user_name}} hat {{amount}}{{currency}} gespendet",
+		"donated": "{{user_name}} hat {{amount}} {{currency}} gespendet",
 		"redemption": "{{user_name}} hat {{title}} für {{cost}} eingelöst",
 		"followed": "{{user_name}} folgt jetzt",
 		"subscribed": "{{user_name}} hat abonniert",

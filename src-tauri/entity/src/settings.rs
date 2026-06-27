@@ -76,6 +76,10 @@ pub enum Currency {
     CHF,
     #[sea_orm(string_value = "THB")]
     THB,
+    #[sea_orm(string_value = "BITS")]
+    BITS,
+    #[sea_orm(string_value = "KICKS")]
+    KICKS,
     #[sea_orm(string_value = "NONE")]
     NONE,
 }
@@ -108,6 +112,8 @@ impl Currency {
             Currency::SEK => "SEK",
             Currency::CHF => "CHF",
             Currency::THB => "THB",
+            Currency::BITS => "BITS",
+            Currency::KICKS => "KICKS",
             Currency::NONE => "NONE",
         }
     }

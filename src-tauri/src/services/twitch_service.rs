@@ -1,7 +1,7 @@
 use crate::{
     repositories::{RedemptionsRepository, RewardsRepository, ServicesRepository},
     services::DatabaseService,
-    utils::{on_new_follow, on_new_raid, on_new_redemption, on_new_subscription},
+    utils::{on_new_donation, on_new_follow, on_new_raid, on_new_redemption, on_new_subscription},
 };
 use chrono::Utc;
 use entity::{
@@ -11,6 +11,7 @@ use entity::{
     redemptions::Redemption,
     rewards::Platform,
     services::{ServiceAuth, ServiceType, TwitchAuth},
+    settings::Currency,
     subscriptions::{self},
 };
 use futures::{lock::Mutex, StreamExt};
@@ -215,8 +216,8 @@ struct CheerEvent {
     pub broadcaster_user_id: String,
     pub broadcaster_user_login: String,
     pub broadcaster_user_name: String,
-    pub message: String,
-    pub bits: u32,
+    pub message: Option<String>,
+    pub bits: u64,
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
 /// 7 fields
@@ -662,6 +663,20 @@ impl TwitchService {
                         created_at,
                     };
                     let _ = on_new_raid(raid, &app).await;
+                }
+            }
+            SubscriptionType::ChannelCheer => {
+                if let Event::Cheer(event) = payload.event {
+                    let _ = on_new_donation(
+                        payload.subscription.id,
+                        ServiceType::Twitch,
+                        event.user_name,
+                        Currency::BITS,
+                        event.bits as f64,
+                        event.message,
+                        app,
+                    )
+                    .await;
                 }
             }
             _ => {}
