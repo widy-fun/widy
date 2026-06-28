@@ -147,14 +147,14 @@ pub struct ModerationInfo {
 pub struct UnifiedChatMessage {
     pub id: String,
     pub platform: Platform,
-    pub channel_id: String, // Twitch: broadcaster_user_id / Kick: chatroom_id
-    pub channel_name: String, // Twitch: broadcaster_user_login / Kick: slug канала
+    pub channel_id: String,
+    pub channel_name: String,
 
     pub sender: UnifiedSender,
     pub content: UnifiedContent,
     pub metadata: UnifiedMetadata,
 
-    pub created_at: String, // Twitch: из EventSub timestamp / Kick: created_at
+    pub created_at: String,
 }
 
 #[derive(Debug, Clone, Serialize)]

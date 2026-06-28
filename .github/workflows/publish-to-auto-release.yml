@@ -97,6 +97,10 @@ jobs:
           TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}
           VITE_WIDY_BASE_DOMAINE: ${{ secrets.VITE_WIDY_BASE_DOMAINE }}
           WIDY_SOL_PROGRAM_ID: ${{ secrets.WIDY_SOL_PROGRAM_ID }}
+          KICK_CLIENT_ID: ${{ secrets.KICK_CLIENT_ID }}
+          KICK_TOKEN_ENDPOINT: ${{ secrets.KICK_TOKEN_ENDPOINT }}
+          KICK_REDIRECT_URI: ${{ secrets.KICK_REDIRECT_URI }}
+          APP_TOKEN: ${{ secrets.APP_TOKEN }}
         with:
           tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: "v__VERSION__"
@@ -116,6 +120,10 @@ jobs:
           TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}
           VITE_WIDY_BASE_DOMAINE: ${{ secrets.VITE_WIDY_BASE_DOMAINE }}
           WIDY_SOL_PROGRAM_ID: ${{ secrets.WIDY_SOL_PROGRAM_ID }}
+          KICK_CLIENT_ID: ${{ secrets.KICK_CLIENT_ID }}
+          KICK_TOKEN_ENDPOINT: ${{ secrets.KICK_TOKEN_ENDPOINT }}
+          KICK_REDIRECT_URI: ${{ secrets.KICK_REDIRECT_URI }}
+          APP_TOKEN: ${{ secrets.APP_TOKEN }}
         with:
           tagName: latest # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: "latest"
