@@ -1,9 +1,8 @@
 use tauri::{AppHandle, Manager, State};
 
 use crate::{
-    enums::AppEvent,
     repositories::AlertsRepository,
-    services::{DatabaseService, EventMessage, WebSocketBroadcaster},
+    services::{AppEvent, DatabaseService, EventMessage, WebSocketBroadcaster},
 };
 
 #[tauri::command]

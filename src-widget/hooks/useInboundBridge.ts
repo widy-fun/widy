@@ -49,6 +49,48 @@ const useInboundBridge = (widget?: IWidget) => {
 							},
 						);
 						break;
+					case "widgets:donation.subscription":
+						eventsService.subscribe<IClientMessage>(
+							AppEvent.Donation,
+							(data) => {
+								iframeRef.current?.contentWindow?.postMessage(
+									{ id, data },
+									"*",
+								);
+							},
+						);
+						break;
+					case "widgets:redemption.subscription":
+						eventsService.subscribe<IClientMessage>(
+							AppEvent.Redemption,
+							(data) => {
+								iframeRef.current?.contentWindow?.postMessage(
+									{ id, data },
+									"*",
+								);
+							},
+						);
+						break;
+					case "widgets:media.subscription":
+						eventsService.subscribe<IClientMessage>(AppEvent.Media, (data) => {
+							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
+						});
+						break;
+					case "widgets:alert.subscription":
+						eventsService.subscribe<IClientMessage>(AppEvent.Alert, (data) => {
+							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
+						});
+						break;
+					case "widgets:chat-message.subscription":
+						eventsService.subscribe(AppEvent.ChatMessage, (data) => {
+							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
+						});
+						break;
+					case "widgets:chat-message-delete.subscription":
+						eventsService.subscribe(AppEvent.ChatMessageDelete, (data) => {
+							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
+						});
+						break;
 					case "widgets:goal.subscription":
 						eventsService.subscribe<IGoal>(AppEvent.Goal, (data) => {
 							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
@@ -56,7 +98,7 @@ const useInboundBridge = (widget?: IWidget) => {
 						break;
 					case "widgets:settings.subscription":
 						eventsService.subscribe<ISettings>(AppEvent.Settings, (data) => {
-							data.widget_token="";
+							data.widget_token = "";
 							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
 						});
 						break;
@@ -234,8 +276,8 @@ const useInboundBridge = (widget?: IWidget) => {
 								forceRefetch: true,
 							}),
 						);
-						if(data){
-							data.widget_token="";
+						if (data) {
+							data.widget_token = "";
 						}
 
 						iframeRef.current?.contentWindow?.postMessage(

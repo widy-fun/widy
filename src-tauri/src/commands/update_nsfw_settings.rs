@@ -1,7 +1,6 @@
 use crate::{
-    enums::AppEvent,
     repositories::NsfwRepository,
-    services::{DatabaseService, EventMessage, WebSocketBroadcaster},
+    services::{AppEvent, DatabaseService, EventMessage, WebSocketBroadcaster},
 };
 use entity::nsfw_settings::*;
 use tauri::{AppHandle, Manager, State};

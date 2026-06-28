@@ -2,9 +2,8 @@ use entity::media_settings::*;
 use tauri::{AppHandle, Manager, State};
 
 use crate::{
-    enums::AppEvent,
     repositories::MediaSettingsRepository,
-    services::{DatabaseService, EventMessage, WebSocketBroadcaster},
+    services::{AppEvent, DatabaseService, EventMessage, WebSocketBroadcaster},
 };
 
 #[tauri::command]

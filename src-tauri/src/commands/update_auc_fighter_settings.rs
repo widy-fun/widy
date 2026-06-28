@@ -1,7 +1,6 @@
 use crate::{
-    enums::AppEvent,
     repositories::AucFighterSettingsRepository,
-    services::{DatabaseService, EventMessage, WebSocketBroadcaster},
+    services::{AppEvent, DatabaseService, EventMessage, WebSocketBroadcaster},
 };
 use entity::auc_fighter_settings::*;
 use tauri::{AppHandle, Manager, State};

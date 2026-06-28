@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use tokio::sync::{mpsc, Mutex};
 use uuid::Uuid;
 
-use crate::enums::AppEvent;
+use crate::services::AppEvent;
 
 type Tx = mpsc::UnboundedSender<Message>;
 

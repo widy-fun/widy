@@ -15,8 +15,7 @@ use xcap::Window;
 
 use crate::{
     constants::NSFW_LABELS,
-    enums::AppEvent,
-    services::{ConfigService, EventMessage, WebSocketBroadcaster},
+    services::{AppEvent, ConfigService, EventMessage, WebSocketBroadcaster},
 };
 use rten::{FloatOperators, Model, NodeId};
 use rten_tensor::prelude::*;

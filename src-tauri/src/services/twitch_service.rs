@@ -1,7 +1,10 @@
 use crate::{
     repositories::{RedemptionsRepository, RewardsRepository, ServicesRepository},
-    services::DatabaseService,
-    utils::{on_new_donation, on_new_follow, on_new_raid, on_new_redemption, on_new_subscription},
+    services::{
+        ChatFragment, ChatMessageType, DatabaseService, DeletedMessageUser, EventsService,
+        FragmentKind, ReplyInfo, SenderRoles, UnifiedBadge, UnifiedChatMessage,
+        UnifiedChatMessageDeleteEvent, UnifiedContent, UnifiedMetadata, UnifiedSender,
+    },
 };
 use chrono::Utc;
 use entity::{
@@ -68,8 +71,19 @@ enum Condition {
     Raid(RaidCondition),
     Cheer(CheerCondition),
     Subscription(SubscriptionCondition),
+    Redemption(RedemptionCondition),
+    ChatMessage(ChatMessageCondition),
 }
 
+#[derive(Debug, Clone, Deserialize, Serialize)]
+struct ChatMessageCondition {
+    pub broadcaster_user_id: String,
+    pub user_id: String,
+}
+#[derive(Debug, Clone, Deserialize, Serialize)]
+struct RedemptionCondition {
+    pub broadcaster_user_id: String,
+}
 #[derive(Debug, Clone, Deserialize, Serialize)]
 struct SubscriptionCondition {
     pub broadcaster_user_id: String,
@@ -187,6 +201,7 @@ struct Transport {
 #[serde(untagged)]
 
 enum Event {
+    ChannelChatMessage(ChannelChatMessageEvent),
     ChannelPointsCustomRewardRedemptionAdd(ChannelPointsCustomRewardRedemptionAddEvent),
     SubscriptionMessage(SubscriptionMessageEvent),
     SubscriptionGift(SubscriptionGiftEvent),
@@ -194,6 +209,106 @@ enum Event {
     Subscribe(SubscribeEvent),
     Follow(FollowEvent),
     Raid(RaidEvent),
+    ChannelChatMessageDelete(ChannelChatMessageDeleteEvent),
+    ChannelChatClearUserMessages(ChannelChatClearUserMessagesEvent),
+}
+#[derive(Debug, Clone, Deserialize, Serialize)]
+struct ChannelChatMessageDeleteEvent {
+    pub broadcaster_user_id: String,
+    pub broadcaster_user_name: String,
+    pub broadcaster_user_login: String,
+    pub target_user_id: String,
+    pub target_user_name: String,
+    pub target_user_login: String,
+    pub message_id: String,
+}
+#[derive(Debug, Clone, Deserialize, Serialize)]
+/// 20 fields
+struct ChannelChatMessageEvent {
+    pub broadcaster_user_id: String,
+    pub broadcaster_user_name: String,
+    pub broadcaster_user_login: String,
+    pub chatter_user_id: String,
+    pub chatter_user_login: String,
+    pub chatter_user_name: String,
+    pub message_id: String,
+    pub message: ChatMessage,
+    pub color: String,
+    pub badges: Vec<Badge>,
+    pub message_type: String,
+    pub cheer: Option<Cheer>,
+    pub reply: Option<Reply>,
+    pub channel_points_custom_reward_id: Option<String>,
+    pub source_broadcaster_user_id: Option<String>,
+    pub source_broadcaster_user_name: Option<String>,
+    pub source_broadcaster_user_login: Option<String>,
+    pub source_message_id: Option<String>,
+    pub source_badges: Option<Vec<Badge>>,
+    pub is_source_only: Option<bool>,
+}
+#[derive(Debug, Clone, Deserialize, Serialize)]
+struct Reply {
+    pub parent_message_id: String,
+    pub parent_message_body: String,
+    pub parent_user_id: String,
+    pub parent_user_name: String,
+    pub parent_user_login: String,
+    pub thread_message_id: String,
+    pub thread_user_id: String,
+    pub thread_user_name: String,
+    pub thread_user_login: String,
+}
+#[derive(Debug, Clone, Deserialize, Serialize)]
+struct Cheer {
+    pub bits: u64,
+}
+#[derive(Debug, Clone, Deserialize, Serialize)]
+struct ChatMessage {
+    pub text: String,
+    pub fragments: Vec<Fragment>,
+}
+#[derive(Debug, Clone, Deserialize, Serialize)]
+struct Badge {
+    pub set_id: String,
+    pub id: String,
+    pub info: String,
+}
+#[derive(Debug, Clone, Deserialize, Serialize)]
+struct Fragment {
+    pub r#type: String,
+    pub text: String,
+    pub cheermote: Option<Cheermote>,
+    pub emote: Option<Emote>,
+    pub mention: Option<Mention>,
+}
+#[derive(Debug, Clone, Deserialize, Serialize)]
+struct Cheermote {
+    pub prefix: String,
+    pub bits: u64,
+    pub tier: u64,
+}
+#[derive(Debug, Clone, Deserialize, Serialize)]
+struct Emote {
+    pub id: String,
+    pub emote_set_id: String,
+    pub owner_id: String,
+    pub format: Vec<String>,
+}
+#[derive(Debug, Clone, Deserialize, Serialize)]
+struct Mention {
+    pub user_id: String,
+    pub user_name: String,
+    pub user_login: String,
+}
+#[derive(Debug, Clone, Deserialize, Serialize)]
+/// 6 fields
+struct ChannelChatClearUserMessagesEvent {
+    pub broadcaster_user_id: String,
+    pub broadcaster_user_name: String,
+    pub broadcaster_user_login: String,
+    pub target_user_id: String,
+    pub target_user_name: String,
+    pub target_user_login: String,
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
 /// 7 fields
@@ -342,6 +457,12 @@ enum SubscriptionType {
     ChannelCheer,
     #[serde(rename = "channel.raid")]
     ChannelRaid,
+    #[serde(rename = "channel.chat.message")]
+    ChannelChatMessage,
+    #[serde(rename = "channel.chat.message_delete")]
+    ChannelChatMessageDelete,
+    #[serde(rename = "channel.chat.clear_user_messages")]
+    ChannelChatClearUserMessages,
     #[serde(other)]
     Unknown,
 }
@@ -360,6 +481,11 @@ impl SubscriptionType {
             }
             SubscriptionType::ChannelCheer => "channel.cheer".to_string(),
             SubscriptionType::ChannelRaid => "channel.raid".to_string(),
+            SubscriptionType::ChannelChatMessage => "channel.chat.message".to_string(),
+            SubscriptionType::ChannelChatMessageDelete => "channel.chat.message_delete".to_string(),
+            SubscriptionType::ChannelChatClearUserMessages => {
+                "channel.chat.clear_user_messages".to_string()
+            }
             SubscriptionType::Unknown => "unknown".to_string(),
         }
     }
@@ -415,18 +541,23 @@ impl TwitchService {
         let eventsub_endpoint = api_endpoint.clone();
         #[cfg(debug_assertions)]
         let eventsub_endpoint = "http://localhost:8081".to_string();
+        let scopes="user:read:email channel:read:subscriptions moderator:read:followers channel:manage:redemptions".to_string();
+        #[cfg(not(debug_assertions))]
+        let scopes = format!("{scopes} user:read:chat user:write:chat user:bot channel:bot");
 
         Self {
-            is_close_connection:Arc::new(AtomicBool::new(false)),
+            is_close_connection: Arc::new(AtomicBool::new(false)),
             client_id,
-            scopes: "user:read:email channel:read:subscriptions moderator:read:followers channel:manage:redemptions"
-                .to_string(),
+            scopes,
             websocket_eventsub_url,
             api_endpoint,
             auth_endpoint,
             eventsub_endpoint,
-            http_client: reqwest::Client::builder().timeout(Duration::from_secs(5)).build().expect("http_client build error"),
-            session_id:Arc::new(Mutex::new(None))
+            http_client: reqwest::Client::builder()
+                .timeout(Duration::from_secs(5))
+                .build()
+                .expect("http_client build error"),
+            session_id: Arc::new(Mutex::new(None)),
         }
     }
 
@@ -555,7 +686,8 @@ impl TwitchService {
                                 delay: reward.delay,
                                 message_id: message_id,
                             };
-                            let _ = on_new_redemption(redemption, reward.r#type, &app).await;
+                            let _ =
+                                EventsService::redemption(redemption, reward.r#type, &app).await;
                         }
                     }
                 }
@@ -575,7 +707,7 @@ impl TwitchService {
                         followed_at: created_at,
                     };
 
-                    let _ = on_new_follow(follow, GoalType::TwitchFollow, app).await;
+                    let _ = EventsService::follow(follow, GoalType::TwitchFollow, app).await;
                 }
             }
             SubscriptionType::ChannelSubscribe => {
@@ -597,8 +729,12 @@ impl TwitchService {
                         cumulative_total: None,
                         total: 1,
                     };
-                    let _ =
-                        on_new_subscription(subscription, GoalType::TwitchSubscription, &app).await;
+                    let _ = EventsService::subscription(
+                        subscription,
+                        GoalType::TwitchSubscription,
+                        &app,
+                    )
+                    .await;
                 }
             }
             SubscriptionType::ChannelSubscriptionGift => {
@@ -620,8 +756,12 @@ impl TwitchService {
                         cumulative_total: event.cumulative_total,
                         total: event.total,
                     };
-                    let _ =
-                        on_new_subscription(subscription, GoalType::TwitchSubscription, &app).await;
+                    let _ = EventsService::subscription(
+                        subscription,
+                        GoalType::TwitchSubscription,
+                        &app,
+                    )
+                    .await;
                 }
             }
             SubscriptionType::ChannelSubscriptionMessage => {
@@ -643,8 +783,12 @@ impl TwitchService {
                         cumulative_total: Some(event.cumulative_months),
                         total: 1,
                     };
-                    let _ =
-                        on_new_subscription(subscription, GoalType::TwitchSubscription, &app).await;
+                    let _ = EventsService::subscription(
+                        subscription,
+                        GoalType::TwitchSubscription,
+                        &app,
+                    )
+                    .await;
                 }
             }
             SubscriptionType::ChannelRaid => {
@@ -662,18 +806,36 @@ impl TwitchService {
                         from_broadcaster_user_name: event.from_broadcaster_user_name,
                         created_at,
                     };
-                    let _ = on_new_raid(raid, &app).await;
+                    let _ = EventsService::raid(raid, &app).await;
                 }
             }
             SubscriptionType::ChannelCheer => {
                 if let Event::Cheer(event) = payload.event {
-                    let _ = on_new_donation(
+                    let _ = EventsService::donation(
                         payload.subscription.id,
                         ServiceType::Twitch,
                         event.user_name,
                         Currency::BITS,
                         event.bits as f64,
                         event.message,
+                        app,
+                    )
+                    .await;
+                }
+            }
+            SubscriptionType::ChannelChatMessage => {
+                if let Event::ChannelChatMessage(event) = payload.event {
+                    let _ = EventsService::chat_message(
+                        UnifiedChatMessage::from_twitch(event, payload.subscription.created_at),
+                        app,
+                    )
+                    .await;
+                }
+            }
+            SubscriptionType::ChannelChatMessageDelete => {
+                if let Event::ChannelChatMessageDelete(event) = payload.event {
+                    let _ = EventsService::chat_message_delete(
+                        UnifiedChatMessageDeleteEvent::from(event),
                         app,
                     )
                     .await;
@@ -1204,9 +1366,59 @@ impl TwitchService {
                         SubscriptionType::ChannelPointsCustomRewardRedemptionAdd,
                     ),
                     version: "1".to_string(),
-                    condition: Condition::Subscription({
-                        SubscriptionCondition {
+                    condition: Condition::Redemption({
+                        RedemptionCondition {
                             broadcaster_user_id: user_id.clone(),
+                        }
+                    }),
+                    transport: transport.clone(),
+                },
+            )
+            .await;
+        let _ = self
+            .create_subscription(
+                &access_token,
+                SubscriptionRequestBody {
+                    r#type: SubscriptionType::to_string(SubscriptionType::ChannelChatMessage),
+                    version: "1".to_string(),
+                    condition: Condition::ChatMessage({
+                        ChatMessageCondition {
+                            broadcaster_user_id: user_id.clone(),
+                            user_id: user_id.clone(),
+                        }
+                    }),
+                    transport: transport.clone(),
+                },
+            )
+            .await;
+        let _ = self
+            .create_subscription(
+                &access_token,
+                SubscriptionRequestBody {
+                    r#type: SubscriptionType::to_string(SubscriptionType::ChannelChatMessageDelete),
+                    version: "1".to_string(),
+                    condition: Condition::ChatMessage({
+                        ChatMessageCondition {
+                            broadcaster_user_id: user_id.clone(),
+                            user_id: user_id.clone(),
+                        }
+                    }),
+                    transport: transport.clone(),
+                },
+            )
+            .await;
+        let _ = self
+            .create_subscription(
+                &access_token,
+                SubscriptionRequestBody {
+                    r#type: SubscriptionType::to_string(
+                        SubscriptionType::ChannelChatClearUserMessages,
+                    ),
+                    version: "1".to_string(),
+                    condition: Condition::ChatMessage({
+                        ChatMessageCondition {
+                            broadcaster_user_id: user_id.clone(),
+                            user_id: user_id.clone(),
                         }
                     }),
                     transport: transport.clone(),
@@ -1301,5 +1513,141 @@ impl TwitchService {
         self.set_authorized(&database_service, None, false, true)
             .await?;
         Ok(())
+    }
+}
+
+impl UnifiedChatMessage {
+    fn from_twitch(e: ChannelChatMessageEvent, created_at: String) -> Self {
+        let is_broadcaster = e.badges.iter().any(|b| b.set_id == "broadcaster");
+        let is_moderator = e.badges.iter().any(|b| b.set_id == "moderator");
+        let is_subscriber = e.badges.iter().any(|b| b.set_id == "subscriber");
+
+        let cheer_bits = e.cheer.as_ref().map(|c| c.bits);
+
+        let message_type = match e.message_type.as_str() {
+            "channel_points_highlighted" => ChatMessageType::ChannelPointsHighlighted,
+            "channel_points_sub_only" => ChatMessageType::ChannelPointsSubOnly,
+            "user_intro" => ChatMessageType::UserIntro,
+            "power_ups_message_effect" => ChatMessageType::PowerUpMessageEffect,
+            "power_ups_gigantified_emote" => ChatMessageType::PowerUpGigantifiedEmote,
+            other => ChatMessageType::Unknown(other.to_string()),
+        };
+
+        let fragments = e
+            .message
+            .fragments
+            .into_iter()
+            .map(|f| ChatFragment {
+                text: f.text.clone(),
+                kind: match f.r#type.as_str() {
+                    "emote" => FragmentKind::Emote {
+                        id: f.emote.as_ref().map(|x| x.id.clone()).unwrap_or_default(),
+                        emote_set_id: f.emote.as_ref().map(|x| x.emote_set_id.clone()),
+                        owner_id: f.emote.as_ref().map(|x| x.owner_id.clone()),
+                        formats: f.emote.map(|x| x.format).unwrap_or_default(),
+                    },
+                    "mention" => FragmentKind::Mention {
+                        user_id: f
+                            .mention
+                            .as_ref()
+                            .map(|x| x.user_id.clone())
+                            .unwrap_or_default(),
+                        username: f
+                            .mention
+                            .as_ref()
+                            .map(|x| x.user_name.clone())
+                            .unwrap_or_default(),
+                        login: f.mention.map(|x| x.user_login).unwrap_or_default(),
+                    },
+                    "cheermote" => FragmentKind::Cheermote {
+                        prefix: f
+                            .cheermote
+                            .as_ref()
+                            .map(|x| x.prefix.clone())
+                            .unwrap_or_default(),
+                        bits: f.cheermote.as_ref().map(|x| x.bits).unwrap_or(0),
+                        tier: f.cheermote.map(|x| x.tier).unwrap_or(0),
+                    },
+                    _ => FragmentKind::Text,
+                },
+            })
+            .collect();
+
+        let badges = e
+            .badges
+            .iter()
+            .map(|b| UnifiedBadge {
+                id: b.id.clone(),
+                set_id: b.set_id.clone(),
+                label: Some(b.info.clone()).filter(|i| !i.is_empty()),
+            })
+            .collect();
+
+        Self {
+            id: e.message_id,
+            platform: Platform::Twitch,
+            channel_id: e.broadcaster_user_id,
+            channel_name: e.broadcaster_user_login,
+            created_at,
+
+            sender: UnifiedSender {
+                id: e.chatter_user_id,
+                username: e.chatter_user_name,
+                login: e.chatter_user_login,
+                color: Some(e.color).filter(|c| !c.is_empty()),
+                avatar_url: None,
+                channel_url: None,
+                is_verified: None,
+                badges,
+                roles: SenderRoles {
+                    is_broadcaster,
+                    is_moderator,
+                    is_subscriber,
+                    is_verified: false,
+                },
+            },
+
+            content: UnifiedContent {
+                text: e.message.text,
+                fragments,
+                message_type,
+                reply: e.reply.map(|r| ReplyInfo {
+                    parent_message_id: r.parent_message_id,
+                    parent_message_body: r.parent_message_body,
+                    parent_user_id: r.parent_user_id,
+                    parent_username: r.parent_user_name,
+                    thread_message_id: Some(r.thread_message_id),
+                    thread_user_id: Some(r.thread_user_id),
+                }),
+                cheer_bits,
+                donation: None,
+            },
+
+            metadata: UnifiedMetadata {
+                raw_message_ref: None,
+                channel_points_reward_id: e.channel_points_custom_reward_id,
+                source_channel_id: e.source_broadcaster_user_id,
+                source_channel_login: e.source_broadcaster_user_login,
+                source_message_id: e.source_message_id,
+                is_source_only: e.is_source_only,
+                live_chat_id: None,
+                has_display_content: None,
+            },
+        }
+    }
+}
+
+impl From<ChannelChatMessageDeleteEvent> for UnifiedChatMessageDeleteEvent {
+    fn from(e: ChannelChatMessageDeleteEvent) -> Self {
+        Self {
+            platform: Platform::Twitch,
+            channel_id: Some(e.broadcaster_user_id),
+            message_id: e.message_id,
+            target_user: Some(DeletedMessageUser {
+                id: e.target_user_id,
+                username: e.target_user_name,
+                login: e.target_user_login,
+            }),
+        }
     }
 }

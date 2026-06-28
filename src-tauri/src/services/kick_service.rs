@@ -30,8 +30,11 @@ use uuid::Uuid;
 
 use crate::{
     repositories::{RewardsRepository, ServicesRepository},
-    services::{DatabaseService, GrantType},
-    utils::{on_new_donation, on_new_raid, on_new_redemption, on_new_subscription},
+    services::{
+        ChatMessageType, DatabaseService, EventsService, GrantType, SenderRoles, UnifiedBadge,
+        UnifiedChatMessage, UnifiedChatMessageDeleteEvent, UnifiedContent, UnifiedMetadata,
+        UnifiedSender,
+    },
 };
 
 #[derive(Debug, Serialize)]
@@ -118,8 +121,8 @@ struct ChatMessageData {
     pub content: String,
     pub r#type: String,
     pub created_at: String,
-    pub sender: Sender,
-    pub metadata: Metadata,
+    pub sender: MessageSender,
+    pub metadata: MessageMetadata,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -214,7 +217,7 @@ struct StreamerIsLiveLivestream {
 #[derive(Debug, Clone, Deserialize)]
 #[allow(dead_code)]
 
-struct Sender {
+struct MessageSender {
     pub id: u64,
     pub username: String,
     pub slug: String,
@@ -243,7 +246,7 @@ struct BadgeMetadata {
 #[derive(Debug, Clone, Deserialize)]
 #[allow(dead_code)]
 
-struct Metadata {
+struct MessageMetadata {
     pub message_ref: String,
 }
 
@@ -335,12 +338,13 @@ impl KickService {
         kick_redirect_uri: String,
         app_token: String,
     ) -> Self {
+        let scopes = "user:read events:subscribe channel:rewards:write chat:write".to_string();
         Self {
             is_close_connection: Arc::new(AtomicBool::new(false)),
             kick_client_id,
             kick_token_endpoint,
             kick_redirect_uri,
-            scopes: "user:read events:subscribe channel:rewards:write".to_string(),
+            scopes,
             app_token,
             auth_session: Mutex::new(None),
         }
@@ -448,7 +452,7 @@ impl KickService {
                             delay: reward.delay,
                             message_id: message_id,
                         };
-                        let _ = on_new_redemption(redemption, reward.r#type, &app).await;
+                        let _ = EventsService::redemption(redemption, reward.r#type, &app).await;
                     }
                 }
             }
@@ -473,7 +477,8 @@ impl KickService {
                         total: data.gifted_total,
                     };
                     let _ =
-                        on_new_subscription(subscription, GoalType::KickSubscription, &app).await;
+                        EventsService::subscription(subscription, GoalType::KickSubscription, &app)
+                            .await;
                 }
             }
             Event::SubscriptionEvent => {
@@ -497,7 +502,8 @@ impl KickService {
                         total: 1,
                     };
                     let _ =
-                        on_new_subscription(subscription, GoalType::KickSubscription, &app).await;
+                        EventsService::subscription(subscription, GoalType::KickSubscription, &app)
+                            .await;
                 }
             }
             Event::StreamHostEvent => {
@@ -517,13 +523,13 @@ impl KickService {
                         from_broadcaster_user_name: data.host_username,
                         created_at,
                     };
-                    let _ = on_new_raid(raid, &app).await;
+                    let _ = EventsService::raid(raid, &app).await;
                 }
             }
             Event::KicksGifted => {
                 let event_data = serde_json::from_str::<KicksGiftedData>(&payload.data);
                 if let Ok(data) = event_data {
-                    let _ = on_new_donation(
+                    let _ = EventsService::donation(
                         data.gift_transaction_id,
                         ServiceType::Kick,
                         Some(data.sender.username),
@@ -533,6 +539,20 @@ impl KickService {
                         &app,
                     )
                     .await;
+                }
+            }
+            Event::ChatMessageEvent => {
+                let event_data = serde_json::from_str::<ChatMessageData>(&payload.data);
+                if let Ok(data) = event_data {
+                    let _ = EventsService::chat_message(UnifiedChatMessage::from(data), app).await;
+                }
+            }
+            Event::MessageDeletedEvent => {
+                let event_data = serde_json::from_str::<MessageDeletedData>(&payload.data);
+                if let Ok(data) = event_data {
+                    let _ =
+                        EventsService::chat_message_delete(data.into_unified(payload.chanel), app)
+                            .await;
                 }
             }
             _ => {}
@@ -876,5 +896,98 @@ impl KickService {
         let database_service = app.state::<DatabaseService>();
         self.set_authorized(&database_service, None, false, true)
             .await
+    }
+}
+
+impl From<ChatMessageData> for UnifiedChatMessage {
+    fn from(k: ChatMessageData) -> Self {
+        let is_broadcaster = k
+            .sender
+            .identity
+            .badges_v2
+            .iter()
+            .any(|b| b.name == "broadcaster");
+        let is_moderator = k
+            .sender
+            .identity
+            .badges_v2
+            .iter()
+            .any(|b| b.name == "moderator");
+        let is_subscriber = k
+            .sender
+            .identity
+            .badges_v2
+            .iter()
+            .any(|b| b.name == "subscriber");
+
+        let badges: Vec<UnifiedBadge> = k
+            .sender
+            .identity
+            .badges_v2
+            .iter()
+            .map(|b| UnifiedBadge {
+                id: b.name.clone(),
+                set_id: b.badge_type.clone(),
+                label: b.metadata.level.map(|l| format!("Level {}", l)),
+            })
+            .collect();
+
+        let fragments = EventsService::parse_kick_content(&k.content);
+
+        Self {
+            id: k.id,
+            platform: Platform::Kick,
+            channel_id: k.chatroom_id.to_string(),
+            channel_name: k.sender.slug.clone(),
+            created_at: k.created_at,
+
+            sender: UnifiedSender {
+                id: k.sender.id.to_string(),
+                username: k.sender.username,
+                login: k.sender.slug,
+                color: Some(k.sender.identity.color),
+                avatar_url: None,
+                channel_url: None,
+                is_verified: None,
+                badges,
+                roles: SenderRoles {
+                    is_broadcaster,
+                    is_moderator,
+                    is_subscriber,
+                    is_verified: false,
+                },
+            },
+
+            content: UnifiedContent {
+                text: EventsService::strip_kick_emotes(&k.content),
+                fragments,
+                message_type: ChatMessageType::Text,
+                reply: None,
+                cheer_bits: None,
+                donation: None,
+            },
+
+            metadata: UnifiedMetadata {
+                raw_message_ref: Some(k.metadata.message_ref),
+                channel_points_reward_id: None,
+                source_channel_id: None,
+                source_channel_login: None,
+                source_message_id: None,
+                is_source_only: None,
+                live_chat_id: None,
+                has_display_content: None,
+            },
+        }
+    }
+}
+
+impl MessageDeletedData {
+    pub fn into_unified(self, channel_id: Option<String>) -> UnifiedChatMessageDeleteEvent {
+        UnifiedChatMessageDeleteEvent {
+            platform: Platform::Kick,
+            channel_id,
+            message_id: self.message.id,
+            target_user: None,
+        }
     }
 }

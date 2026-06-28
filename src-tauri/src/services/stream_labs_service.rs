@@ -8,7 +8,10 @@ use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
 use tokio::sync::broadcast;
 
-use crate::{repositories::ServicesRepository, services::DatabaseService, utils::on_new_donation};
+use crate::{
+    repositories::ServicesRepository,
+    services::{DatabaseService, EventsService},
+};
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 struct DonationMessage {
@@ -120,7 +123,7 @@ impl StreamLabsService {
                                         if donation.is_test {
                                             return;
                                         }
-                                        let _ = on_new_donation(
+                                        let _ = EventsService::donation(
                                             donation._id,
                                             ServiceType::StreamLabs,
                                             donation.from,

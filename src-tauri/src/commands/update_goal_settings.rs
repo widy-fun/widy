@@ -2,9 +2,8 @@ use entity::goals::*;
 use tauri::{AppHandle, Manager, State};
 
 use crate::{
-    enums::AppEvent,
     repositories::GoalsRepository,
-    services::{DatabaseService, EventMessage, WebSocketBroadcaster},
+    services::{AppEvent, DatabaseService, EventMessage, WebSocketBroadcaster},
 };
 
 #[tauri::command]

@@ -1,11 +1,10 @@
 use crate::constants::HTTP_WIDGET_PORT;
-use crate::enums::AppEvent;
 use crate::repositories::{
     AlertsRepository, AucFighterSettingsRepository, GoalsRepository, MediaSettingsRepository,
     MessagesRepository, NsfwRepository, ServicesRepository, SettingsRepository, WidgetsRepository,
 };
 use crate::services::{
-    ConfigService, DatabaseService, EventMessage, KickService, WebSocketBroadcaster,
+    AppEvent, ConfigService, DatabaseService, EventMessage, KickService, WebSocketBroadcaster,
 };
 use axum::extract::ws::{Message, WebSocket};
 use axum::extract::{Path, Query};

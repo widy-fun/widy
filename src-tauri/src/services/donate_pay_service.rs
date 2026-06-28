@@ -10,7 +10,10 @@ use serde_json::json;
 use tauri::{AppHandle, Manager};
 use tokio_tungstenite::{connect_async, tungstenite::Message};
 
-use crate::{repositories::ServicesRepository, services::DatabaseService, utils::on_new_donation};
+use crate::{
+    repositories::ServicesRepository,
+    services::{DatabaseService, EventsService},
+};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct WidgetEvent {
@@ -174,7 +177,7 @@ impl DonatePayService {
                                                 serde_json::from_str::<EventVars>(&vars)
                                             {
                                                 let service_id = uuid::Uuid::new_v4().to_string();
-                                                let _ = on_new_donation(
+                                                let _ = EventsService::donation(
                                                     service_id,
                                                     ServiceType::DonatePay,
                                                     Some(event_vars.name),

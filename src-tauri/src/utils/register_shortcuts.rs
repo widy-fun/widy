@@ -1,7 +1,4 @@
-use crate::{
-    enums::AppEvent,
-    services::{EventMessage, WebSocketBroadcaster},
-};
+use crate::services::{AppEvent, EventMessage, WebSocketBroadcaster};
 use tauri::{AppHandle, Manager};
 
 pub fn register_shortcuts(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {

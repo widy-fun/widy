@@ -1,12 +1,10 @@
 use crate::{
     constants::USDT_MULTIPLICATION,
-    enums::AppEvent,
     repositories::ServicesRepository,
     services::{
-        DatabaseService, DeepLinkHandler, DeepLinkQueryParams, EventMessage, WebSocketBroadcaster,
-        WidyNetwork,
+        AppEvent, DatabaseService, DeepLinkHandler, DeepLinkQueryParams, EventMessage,
+        EventsService, WebSocketBroadcaster, WidyNetwork,
     },
-    utils::on_new_donation,
 };
 use entity::services::{ServiceAuth, ServiceType, WidyAuth};
 use eventsource_client::{self as es, Client};
@@ -239,7 +237,7 @@ impl WidyTonService {
                                     if let Ok(event) =
                                         widy_ton_service.parse_donation_event(&message.raw_body)
                                     {
-                                        let _ = on_new_donation(
+                                        let _ = EventsService::donation(
                                             transaction.hash,
                                             ServiceType::WidyTon,
                                             Some(event.name),

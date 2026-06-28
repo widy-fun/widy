@@ -1,7 +1,6 @@
 use crate::{
-    enums::AppEvent,
     repositories::SettingsRepository,
-    services::{DatabaseService, EventMessage, WebSocketBroadcaster},
+    services::{AppEvent, DatabaseService, EventMessage, WebSocketBroadcaster},
 };
 use entity::settings::*;
 use tauri::{AppHandle, Manager, State};

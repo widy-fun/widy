@@ -12,7 +12,10 @@ use std::sync::{
 use tauri::{AppHandle, Manager};
 use tokio_tungstenite::{connect_async, tungstenite::Message};
 
-use crate::{repositories::ServicesRepository, services::DatabaseService, utils::on_new_donation};
+use crate::{
+    repositories::ServicesRepository,
+    services::{DatabaseService, EventsService},
+};
 
 #[derive(Debug, Clone, Deserialize)]
 #[allow(dead_code)]
@@ -154,7 +157,7 @@ impl DestreamService {
                                             }
                                         };
                                         for donation in donations {
-                                            let _ = on_new_donation(
+                                            let _ = EventsService::donation(
                                                 donation.id,
                                                 ServiceType::Destream,
                                                 donation.username,

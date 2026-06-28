@@ -1,4 +1,7 @@
-use crate::{repositories::ServicesRepository, services::DatabaseService, utils::on_new_donation};
+use crate::{
+    repositories::ServicesRepository,
+    services::{DatabaseService, EventsService},
+};
 use entity::{
     services::{ServiceAuth, ServiceType, TributeAuth},
     settings::Currency,
@@ -112,7 +115,7 @@ impl TributeService {
                 match sse {
                     es::SSE::Event(ev) => {
                         if let Ok(tribute_event) = serde_json::from_str::<TributeEvent>(&ev.data) {
-                            let _ = on_new_donation(
+                            let _ = EventsService::donation(
                                 tribute_event.id,
                                 ServiceType::Tribute,
                                 tribute_event.data.display_name,

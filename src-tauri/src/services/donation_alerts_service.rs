@@ -1,4 +1,7 @@
-use crate::{repositories::ServicesRepository, services::DatabaseService, utils::on_new_donation};
+use crate::{
+    repositories::ServicesRepository,
+    services::{DatabaseService, EventsService},
+};
 use entity::{
     services::{DonationAlertsAuth, ServiceAuth, ServiceType},
     settings::Currency,
@@ -216,7 +219,7 @@ impl DonationAlertsService {
                                                 if donation.payin_system.is_none() {
                                                     continue;
                                                 }
-                                                let _ = on_new_donation(
+                                                let _ = EventsService::donation(
                                                     donation.id.to_string(),
                                                     ServiceType::DonationAlerts,
                                                     donation.username,

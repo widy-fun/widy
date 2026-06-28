@@ -13,10 +13,11 @@ use tokio::sync::broadcast;
 
 use crate::{
     constants::USDT_MULTIPLICATION,
-    enums::AppEvent,
     repositories::ServicesRepository,
-    services::{DatabaseService, DeepLinkHandler, EventMessage, WebSocketBroadcaster},
-    utils::on_new_donation,
+    services::{
+        AppEvent, DatabaseService, DeepLinkHandler, EventMessage, EventsService,
+        WebSocketBroadcaster,
+    },
 };
 
 #[derive(Debug, Clone)]
@@ -193,7 +194,7 @@ impl WidySolService {
                     let message = event.message.clone();
                     if user == event_user.to_string() {
                         tauri::async_runtime::spawn(async move {
-                            let _ = on_new_donation(
+                            let _ = EventsService::donation(
                                 signature,
                                 ServiceType::WidySol,
                                 event.name.clone(),

@@ -1,7 +1,8 @@
-use crate::utils::on_new_donation;
 use entity::{services::ServiceType, settings::Currency};
 use serde::{Deserialize, Serialize};
 use tauri::AppHandle;
+
+use crate::services::EventsService;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct StreamElementsEvent<T> {
@@ -48,7 +49,7 @@ impl StreamElementsService {
         app: AppHandle,
         event: StreamElementsEvent<StreamElementsTip>,
     ) -> Result<(), String> {
-        on_new_donation(
+        EventsService::donation(
             event._id,
             ServiceType::Streamelements,
             event.data.username,
