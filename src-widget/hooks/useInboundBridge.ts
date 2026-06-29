@@ -11,6 +11,8 @@ import {
 	IMessagesFilter,
 	IPageParm,
 	ISettings,
+	IUnifiedChatMessage,
+	IUnifiedChatMessageDeleteEvent,
 	IWidget,
 	IWidgetRequest,
 	MatchId,
@@ -82,14 +84,26 @@ const useInboundBridge = (widget?: IWidget) => {
 						});
 						break;
 					case "widgets:chat-message.subscription":
-						eventsService.subscribe(AppEvent.ChatMessage, (data) => {
-							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
-						});
+						eventsService.subscribe<IUnifiedChatMessage>(
+							AppEvent.ChatMessage,
+							(data) => {
+								iframeRef.current?.contentWindow?.postMessage(
+									{ id, data },
+									"*",
+								);
+							},
+						);
 						break;
 					case "widgets:chat-message-delete.subscription":
-						eventsService.subscribe(AppEvent.ChatMessageDelete, (data) => {
-							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
-						});
+						eventsService.subscribe<IUnifiedChatMessageDeleteEvent>(
+							AppEvent.ChatMessageDelete,
+							(data) => {
+								iframeRef.current?.contentWindow?.postMessage(
+									{ id, data },
+									"*",
+								);
+							},
+						);
 						break;
 					case "widgets:goal.subscription":
 						eventsService.subscribe<IGoal>(AppEvent.Goal, (data) => {

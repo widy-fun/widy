@@ -617,7 +617,7 @@ impl KickService {
         let code_challenge = self.generate_challenge(&code_verifier);
         let mut auth_session = self.auth_session.lock().await;
         *auth_session = Some(KickAuthSession {
-            state,
+            state: state.clone(),
             code_verifier,
         });
         let _ = app.opener().open_url(

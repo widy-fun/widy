@@ -149,11 +149,9 @@ pub struct UnifiedChatMessage {
     pub platform: Platform,
     pub channel_id: String,
     pub channel_name: String,
-
     pub sender: UnifiedSender,
     pub content: UnifiedContent,
     pub metadata: UnifiedMetadata,
-
     pub created_at: String,
 }
 
