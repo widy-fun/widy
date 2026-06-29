@@ -612,12 +612,12 @@ impl KickService {
     }
 
     pub async fn authorize(&self, app: &AppHandle) -> Result<(), String> {
-        let state = "state";
+        let state = Uuid::new_v4().to_string();
         let code_verifier = self.generate_verifier();
         let code_challenge = self.generate_challenge(&code_verifier);
         let mut auth_session = self.auth_session.lock().await;
         *auth_session = Some(KickAuthSession {
-            state: state.to_string(),
+            state,
             code_verifier,
         });
         let _ = app.opener().open_url(
