@@ -1,11 +1,11 @@
 import DownloadIcon from "@mui/icons-material/Download";
 import { Box, Button, Card } from "@mui/material";
 import type { SerializedError } from "@reduxjs/toolkit";
+import { showSnackBar } from "@widy/react";
 import { AlertSeverity, type IManifest, type IWidget } from "@widy/sdk";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
-import { showSnackBar } from "../../../../../../shared/slices/snackBarSlice";
 import {
 	useInstallWidgetMutation,
 	useUpdateWidgetMutation,

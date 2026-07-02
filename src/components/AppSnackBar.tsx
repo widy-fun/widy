@@ -1,6 +1,6 @@
 import { Alert, Snackbar } from "@mui/material";
+import { hideSnackBar } from "@widy/react";
 import { useDispatch, useSelector } from "react-redux";
-import { hideSnackBar } from "../../shared/slices/snackBarSlice";
 import type { AppDispatch, AppState } from "../store";
 
 export const AppSnackBar = () => {

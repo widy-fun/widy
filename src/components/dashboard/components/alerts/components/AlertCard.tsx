@@ -8,6 +8,7 @@ import {
 	useTheme,
 } from "@mui/material";
 import type { SerializedError } from "@reduxjs/toolkit";
+import { showSnackBar } from "@widy/react";
 import type { AlertId, IAlert } from "@widy/sdk";
 import { AlertSeverity, AppEvent } from "@widy/sdk";
 import { useState } from "react";
@@ -15,7 +16,6 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import useAppEvents from "../../../../../../shared/hooks/useAppEvents";
-import { showSnackBar } from "../../../../../../shared/slices/snackBarSlice";
 import getColorByMessageType from "../../../../../../shared/utils/getColorByMessageType";
 import {
 	useDeleteAlertByIdMutation,

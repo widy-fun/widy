@@ -1,5 +1,6 @@
 import { Button, MenuItem, Select, Typography } from "@mui/material";
 import type { SerializedError } from "@reduxjs/toolkit";
+import { showSnackBar } from "@widy/react";
 import {
 	AlertSeverity,
 	AppEvent,
@@ -10,7 +11,6 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import useAppEvents from "../../../../../../shared/hooks/useAppEvents";
-import { showSnackBar } from "../../../../../../shared/slices/snackBarSlice";
 import {
 	useGetWindowsQuery,
 	useStartNsfwMutation,

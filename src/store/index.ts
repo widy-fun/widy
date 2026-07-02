@@ -1,9 +1,9 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { snackBarSlice } from "@widy/react";
 import { alertsSlice } from "../../shared/slices/alertsSlice";
 import { mediaSlice } from "../../shared/slices/mediaSlice";
 import { messagesSlice } from "../../shared/slices/messagesSlice.ts";
 import { servicesSlice } from "../../shared/slices/servicesSlice.ts";
-import { snackBarSlice } from "../../shared/slices/snackBarSlice";
 import {
 	auctionTimerSlice,
 	maptionTimerSlice,

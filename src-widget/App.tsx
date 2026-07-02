@@ -1,10 +1,10 @@
-import { createTheme, ThemeProvider, Typography } from "@mui/material";
+import { ThemeProvider, Typography } from "@mui/material";
+import { dark } from "@widy/react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Route, Routes } from "react-router";
 import Widget from "../shared/components/Widget";
 import useAppEvents from "../shared/hooks/useAppEvents";
-import { dark } from "../src/theme/default";
 import Alert from "./components/alert/Alert";
 import Goal from "./components/goal/Goal";
 import Media from "./components/media/Media";
@@ -56,7 +56,7 @@ const App = () => {
 				<Route
 					path="/obs-dock-messages"
 					element={
-						<ThemeProvider theme={createTheme(dark)}>
+						<ThemeProvider theme={dark}>
 							<ObsDockMessages />
 						</ThemeProvider>
 					}

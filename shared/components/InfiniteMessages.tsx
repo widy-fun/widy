@@ -1,5 +1,6 @@
 import { Skeleton } from "@mui/material";
 import type { TypedUseInfiniteQuery } from "@reduxjs/toolkit/query/react";
+import { showSnackBar } from "@widy/react";
 import type { IClientMessage, IMessagesFilter } from "@widy/sdk";
 import { AlertSeverity } from "@widy/sdk";
 import { Fragment, useEffect } from "react";
@@ -8,7 +9,6 @@ import InfiniteScroll from "react-infinite-scroller";
 import { useDispatch, useSelector } from "react-redux";
 import getMessageComponentByMessageType from "../../src/helpers/getMessageComponentByMessageType";
 import type { AppState } from "../../src/store";
-import { showSnackBar } from "../slices/snackBarSlice";
 import MessagesFilter from "./MessagesFilter";
 
 const InfiniteMessages = ({

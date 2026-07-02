@@ -123,7 +123,7 @@ impl AppEvent {
 }
 
 #[derive(Debug, Clone, Serialize)]
-pub struct UnifiedChatMessageDeleteEvent {
+pub struct UnifiedChatMessageDelete {
     pub platform: Platform,
     pub channel_id: Option<String>,
     pub message_id: String,
@@ -243,6 +243,7 @@ pub struct UnifiedBadge {
     pub id: String,
     pub set_id: String,
     pub label: Option<String>, // Twitch: info
+    pub image_url: Option<String>,
 }
 
 #[derive(Debug, Clone, Default, Serialize)]
@@ -251,6 +252,7 @@ pub struct SenderRoles {
     pub is_moderator: bool,   // Twitch: moderator badge / YouTube: isChatModerator
     pub is_subscriber: bool,  // Twitch: subscriber badge / YouTube: isChatSponsor
     pub is_verified: bool,    // YouTube: isVerified
+    pub is_bot: bool,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -278,6 +280,7 @@ pub struct ChatFragment {
     pub text: String,
 }
 #[derive(Debug, Clone, Serialize)]
+#[serde(tag = "kind")]
 pub enum FragmentKind {
     Text,
     Emote {
@@ -692,7 +695,7 @@ impl EventsService {
     }
 
     pub async fn chat_message_delete(
-        event: UnifiedChatMessageDeleteEvent,
+        event: UnifiedChatMessageDelete,
         app: &AppHandle,
     ) -> Result<(), String> {
         let websocket_broadcaster = app.state::<WebSocketBroadcaster>();

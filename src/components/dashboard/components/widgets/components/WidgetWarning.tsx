@@ -5,6 +5,10 @@ import { useTranslation } from "react-i18next";
 
 const WidgetWarning = ({ manifest }: { manifest: IManifest }) => {
 	const { t } = useTranslation();
+	const connection_src = manifest.csp?.connect_src ?? [];
+	const img_src = manifest.csp?.img_src ?? [];
+	const media_src = manifest.csp?.media_src ?? [];
+	const connection = connection_src.concat(img_src).concat(media_src);
 
 	return (
 		<Box sx={{ display: "grid", gap: 1 }}>
@@ -26,10 +30,10 @@ const WidgetWarning = ({ manifest }: { manifest: IManifest }) => {
 					</Box>
 				))}
 			</Box>
-			{!!manifest.connect_src.length && (
+			{!!connection.length && (
 				<Box>
 					{t("widgets.widget_connection")}
-					{manifest.connect_src.map((src) => (
+					{connection.map((src) => (
 						<Box sx={{ color: "red", fontSize: 14 }} key={src}>
 							{src}
 						</Box>

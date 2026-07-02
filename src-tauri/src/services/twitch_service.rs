@@ -3,7 +3,7 @@ use crate::{
     services::{
         ChatFragment, ChatMessageType, DatabaseService, DeletedMessageUser, EventsService,
         FragmentKind, ReplyInfo, SenderRoles, UnifiedBadge, UnifiedChatMessage,
-        UnifiedChatMessageDeleteEvent, UnifiedContent, UnifiedMetadata, UnifiedSender,
+        UnifiedChatMessageDelete, UnifiedContent, UnifiedMetadata, UnifiedSender,
     },
 };
 use chrono::Utc;
@@ -31,6 +31,26 @@ use tauri::{AppHandle, Manager};
 use tokio_tungstenite::{connect_async, tungstenite::Message};
 use uuid::Uuid;
 
+#[derive(Debug, Clone, Deserialize, Serialize)]
+struct BadgeInfoResponse {
+    pub data: Vec<BadgeInfo>,
+}
+#[derive(Debug, Clone, Deserialize, Serialize)]
+struct BadgeInfo {
+    pub set_id: String,
+    pub versions: Vec<BadgeVersion>,
+}
+#[derive(Debug, Clone, Deserialize, Serialize)]
+struct BadgeVersion {
+    pub id: String,
+    pub image_url_1x: String,
+    pub image_url_2x: String,
+    pub image_url_4x: String,
+    pub title: String,
+    pub description: String,
+    pub click_action: Option<String>,
+    pub click_url: Option<String>,
+}
 enum WebSocketInstruction {
     SessionWelcome(String),
     Continue,
@@ -520,6 +540,8 @@ pub struct TwitchService {
     eventsub_endpoint: String,
     http_client: reqwest::Client,
     pub session_id: Arc<Mutex<Option<String>>>,
+    chanel_badges: Arc<Mutex<BadgeInfoResponse>>,
+    global_badges: Arc<Mutex<BadgeInfoResponse>>,
 }
 
 impl TwitchService {
@@ -558,11 +580,24 @@ impl TwitchService {
                 .build()
                 .expect("http_client build error"),
             session_id: Arc::new(Mutex::new(None)),
+            chanel_badges: Arc::new(Mutex::new(BadgeInfoResponse { data: vec![] })),
+            global_badges: Arc::new(Mutex::new(BadgeInfoResponse { data: vec![] })),
         }
     }
 
     pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
         let auth = self.check_auth(&app).await?;
+        let mut chanel_badges_guard = self.chanel_badges.lock().await;
+        let mut global_badges_guard = self.global_badges.lock().await;
+        let chanel_badges = self
+            .get_chanel_badges(&auth.access_token.clone(), &auth.user_id.clone())
+            .await?;
+        *chanel_badges_guard = chanel_badges;
+        let global_badges = self.get_global_badges(&auth.access_token.clone()).await?;
+        *global_badges_guard = global_badges;
+        drop(global_badges_guard);
+        drop(chanel_badges_guard);
+
         self.run_websocket_client(app.clone(), auth).await;
         Ok(())
     }
@@ -825,8 +860,19 @@ impl TwitchService {
             }
             SubscriptionType::ChannelChatMessage => {
                 if let Event::ChannelChatMessage(event) = payload.event {
+                    let chanel_badges_guard = self.chanel_badges.lock().await;
+                    let global_badges_guard = self.global_badges.lock().await;
+                    let all_badges_info = [
+                        chanel_badges_guard.data.clone(),
+                        global_badges_guard.data.clone(),
+                    ]
+                    .concat();
                     let _ = EventsService::chat_message(
-                        UnifiedChatMessage::from_twitch(event, payload.subscription.created_at),
+                        UnifiedChatMessage::from_twitch(
+                            event,
+                            payload.subscription.created_at,
+                            all_badges_info,
+                        ),
                         app,
                     )
                     .await;
@@ -835,7 +881,7 @@ impl TwitchService {
             SubscriptionType::ChannelChatMessageDelete => {
                 if let Event::ChannelChatMessageDelete(event) = payload.event {
                     let _ = EventsService::chat_message_delete(
-                        UnifiedChatMessageDeleteEvent::from(event),
+                        UnifiedChatMessageDelete::from(event),
                         app,
                     )
                     .await;
@@ -935,6 +981,56 @@ impl TwitchService {
                 e.to_string()
             })?;
         Ok(device_code_response)
+    }
+    async fn get_chanel_badges(
+        &self,
+        access_token: &String,
+        broadcaster_id: &String,
+    ) -> Result<BadgeInfoResponse, String> {
+        let response = self
+            .http_client
+            .get(format!("{}/chat/badges", self.api_endpoint))
+            .bearer_auth(access_token)
+            .header(
+                "Client-Id",
+                std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap_or(self.client_id.clone()),
+            )
+            .query(&[("broadcaster_id", broadcaster_id)])
+            .send()
+            .await
+            .map_err(|e| {
+                log::error!("{}", e.to_string());
+                e.to_string()
+            })?;
+
+        let chanel_badges: BadgeInfoResponse = response.json().await.map_err(|e| {
+            log::error!("{}", e.to_string());
+            e.to_string()
+        })?;
+        Ok(chanel_badges)
+    }
+
+    async fn get_global_badges(&self, access_token: &String) -> Result<BadgeInfoResponse, String> {
+        let response = self
+            .http_client
+            .get(format!("{}/chat/badges/global", self.api_endpoint))
+            .bearer_auth(access_token)
+            .header(
+                "Client-Id",
+                std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap_or(self.client_id.clone()),
+            )
+            .send()
+            .await
+            .map_err(|e| {
+                log::error!("{}", e.to_string());
+                e.to_string()
+            })?;
+
+        let global_badges: BadgeInfoResponse = response.json().await.map_err(|e| {
+            log::error!("{}", e.to_string());
+            e.to_string()
+        })?;
+        Ok(global_badges)
     }
 
     pub async fn get_token(&self, device_code: String) -> Result<TwitchAuth, String> {
@@ -1517,7 +1613,11 @@ impl TwitchService {
 }
 
 impl UnifiedChatMessage {
-    fn from_twitch(e: ChannelChatMessageEvent, created_at: String) -> Self {
+    fn from_twitch(
+        e: ChannelChatMessageEvent,
+        created_at: String,
+        all_badges_info: Vec<BadgeInfo>,
+    ) -> Self {
         let is_broadcaster = e.badges.iter().any(|b| b.set_id == "broadcaster");
         let is_moderator = e.badges.iter().any(|b| b.set_id == "moderator");
         let is_subscriber = e.badges.iter().any(|b| b.set_id == "subscriber");
@@ -1572,14 +1672,26 @@ impl UnifiedChatMessage {
                 },
             })
             .collect();
-
+        let mut is_bot = false;
         let badges = e
             .badges
             .iter()
-            .map(|b| UnifiedBadge {
-                id: b.id.clone(),
-                set_id: b.set_id.clone(),
-                label: Some(b.info.clone()).filter(|i| !i.is_empty()),
+            .map(|b| {
+                is_bot = is_bot || b.set_id == "bot-badge";
+                UnifiedBadge {
+                    id: b.id.clone(),
+                    set_id: b.set_id.clone(),
+                    label: Some(b.info.clone()).filter(|i| !i.is_empty()),
+                    image_url: all_badges_info
+                        .iter()
+                        .find(|a| a.set_id == b.set_id)
+                        .and_then(|badge| {
+                            badge
+                                .versions
+                                .first()
+                                .map(|version| version.image_url_1x.clone())
+                        }),
+                }
             })
             .collect();
 
@@ -1604,6 +1716,7 @@ impl UnifiedChatMessage {
                     is_moderator,
                     is_subscriber,
                     is_verified: false,
+                    is_bot,
                 },
             },
 
@@ -1637,7 +1750,7 @@ impl UnifiedChatMessage {
     }
 }
 
-impl From<ChannelChatMessageDeleteEvent> for UnifiedChatMessageDeleteEvent {
+impl From<ChannelChatMessageDeleteEvent> for UnifiedChatMessageDelete {
     fn from(e: ChannelChatMessageDeleteEvent) -> Self {
         Self {
             platform: Platform::Twitch,

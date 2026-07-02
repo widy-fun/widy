@@ -1,11 +1,11 @@
 import { Button, InputAdornment, TextField, Typography } from "@mui/material";
 import type { SerializedError } from "@reduxjs/toolkit";
+import { showSnackBar } from "@widy/react";
 import { AlertSeverity, type INsfwSettings } from "@widy/sdk";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NumericFormat } from "react-number-format";
 import { useDispatch } from "react-redux";
-import { showSnackBar } from "../../../../../../shared/slices/snackBarSlice";
 import {
 	useGetNsfwSettingsQuery,
 	useUpdateNsfwSettingsMutation,

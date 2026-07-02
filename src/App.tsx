@@ -1,11 +1,11 @@
 import { CircularProgress } from "@mui/material";
+import { showSnackBar } from "@widy/react";
 import { AlertSeverity } from "@widy/sdk";
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Route, Routes, useNavigate } from "react-router";
 import useAppEvents from "../shared/hooks/useAppEvents";
-import { showSnackBar } from "../shared/slices/snackBarSlice";
 import { useInitMutation } from "./api";
 import { useGetSettingsQuery } from "./api/settingsApi";
 import { AppSnackBar } from "./components/AppSnackBar";

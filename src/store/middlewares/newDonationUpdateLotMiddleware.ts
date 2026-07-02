@@ -1,6 +1,6 @@
 import type { Middleware, Action as UnknownAction } from "@reduxjs/toolkit";
+import { showSnackBar } from "@widy/react";
 import { AlertSeverity } from "@widy/sdk";
-import { showSnackBar } from "../../../shared/slices/snackBarSlice";
 import type { AppState } from "..";
 import { auctionDonationsSlice } from "../slices/donationsSlice.ts";
 import { updateLot } from "../slices/lotsSlice";

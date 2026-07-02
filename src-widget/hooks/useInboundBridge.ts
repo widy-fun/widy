@@ -12,7 +12,7 @@ import {
 	IPageParm,
 	ISettings,
 	IUnifiedChatMessage,
-	IUnifiedChatMessageDeleteEvent,
+	IUnifiedChatMessageDelete,
 	IWidget,
 	IWidgetRequest,
 	MatchId,
@@ -21,6 +21,7 @@ import {
 import { useLayoutEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import useAppEvents from "../../shared/hooks/useAppEvents";
+import appSettingsToWidgetSettings from "../../src/helpers/appSettingsToWidgetSettings";
 import { AppDispatch } from "../../src/store";
 import { alertsApi } from "../api/alertsApi";
 import { aucFighterApi } from "../api/aucFighterApi";
@@ -95,7 +96,7 @@ const useInboundBridge = (widget?: IWidget) => {
 						);
 						break;
 					case "widgets:chat-message-delete.subscription":
-						eventsService.subscribe<IUnifiedChatMessageDeleteEvent>(
+						eventsService.subscribe<IUnifiedChatMessageDelete>(
 							AppEvent.ChatMessageDelete,
 							(data) => {
 								iframeRef.current?.contentWindow?.postMessage(
@@ -112,8 +113,10 @@ const useInboundBridge = (widget?: IWidget) => {
 						break;
 					case "widgets:settings.subscription":
 						eventsService.subscribe<ISettings>(AppEvent.Settings, (data) => {
-							data.widget_token = "";
-							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
+							iframeRef.current?.contentWindow?.postMessage(
+								{ id, data: appSettingsToWidgetSettings(data) },
+								"*",
+							);
 						});
 						break;
 
@@ -290,12 +293,9 @@ const useInboundBridge = (widget?: IWidget) => {
 								forceRefetch: true,
 							}),
 						);
-						if (data) {
-							data.widget_token = "";
-						}
 
 						iframeRef.current?.contentWindow?.postMessage(
-							{ id, data, error },
+							{ id, data: appSettingsToWidgetSettings(data), error },
 							"*",
 						);
 						break;
@@ -533,4 +533,5 @@ const useInboundBridge = (widget?: IWidget) => {
 
 	return iframeRef;
 };
+
 export default useInboundBridge;

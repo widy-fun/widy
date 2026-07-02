@@ -9,6 +9,7 @@ import {
 	Typography,
 } from "@mui/material";
 import type { SerializedError } from "@reduxjs/toolkit";
+import { showSnackBar } from "@widy/react";
 import {
 	AlertSeverity,
 	AppEvent,
@@ -22,7 +23,6 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import useAppEvents from "../../../../../../shared/hooks/useAppEvents";
-import { showSnackBar } from "../../../../../../shared/slices/snackBarSlice";
 import getRewardIconByRewardType from "../../../../../helpers/getRewardIconByRewardType";
 import useRemoveReward from "../../../../../hooks/useRemoveReward";
 import type { AppState } from "../../../../../store";

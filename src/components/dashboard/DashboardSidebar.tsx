@@ -8,12 +8,12 @@ import {
 	useMediaQuery,
 	useTheme,
 } from "@mui/material";
+import type { AppTheme } from "@widy/react";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink, useLocation } from "react-router";
 import { MENU_WIDTH, MENU_WIDTH_MD, SCROLLBAR_STYLES } from "../../constants";
 import { dashboardRouts } from "../../routes/dashboardRouts";
-import type { AppTheme } from "../../theme/default";
 
 const SideBar = styled("div")(({ theme }: { theme?: AppTheme }) => ({
 	top: 0,

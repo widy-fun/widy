@@ -10,12 +10,12 @@ import {
 	Switch,
 	Typography,
 } from "@mui/material";
+import { showSnackBar } from "@widy/react";
 import { AlertSeverity } from "@widy/sdk";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { setServiceActive } from "../../../../../../shared/slices/servicesSlice";
-import { showSnackBar } from "../../../../../../shared/slices/snackBarSlice";
 import { useGetServicesQuery } from "../../../../../api/servicesApi";
 import type { AppState } from "../../../../../store";
 

@@ -1,4 +1,5 @@
 import { Button, MenuItem, Select, TextField } from "@mui/material";
+import { showSnackBar } from "@widy/react";
 import {
 	AlertSeverity,
 	type IReward,
@@ -12,7 +13,6 @@ import { useTranslation } from "react-i18next";
 import { NumericFormat } from "react-number-format";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { showSnackBar } from "../../../../../../shared/slices/snackBarSlice";
 import { useGetServiceByIdQuery } from "../../../../../api/servicesApi";
 import { DEFAULT_REWARD } from "../../../../../constants";
 import type { AppState } from "../../../../../store";
@@ -40,7 +40,6 @@ const RewardSettings = ({ onSave }: { onSave: () => Promise<void> }) => {
 	}, [reward, reset]);
 
 	const onSubmit = async (data: IReward) => {
-		console.log("data:", data);
 		const platformAuthMap = {
 			[Platform.Twitch]: twitch?.authorized,
 			[Platform.Kick]: kick?.authorized,

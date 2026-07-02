@@ -10,13 +10,13 @@ import {
 	Typography,
 } from "@mui/material";
 import type { SerializedError } from "@reduxjs/toolkit";
+import { showSnackBar } from "@widy/react";
 import { AlertSeverity, type IGoal } from "@widy/sdk";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import dayjs from "../../../../../../shared/dayjs";
-import { showSnackBar } from "../../../../../../shared/slices/snackBarSlice";
 import { useFinishGoalMutation } from "../../../../../api/goalsApi";
 import WarningDialog from "../../../../WarningDialog";
 import WidgetUrl from "../../alerts/components/WidgetUrl";

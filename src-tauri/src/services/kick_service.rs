@@ -32,7 +32,7 @@ use crate::{
     repositories::{RewardsRepository, ServicesRepository},
     services::{
         ChatMessageType, DatabaseService, EventsService, GrantType, SenderRoles, UnifiedBadge,
-        UnifiedChatMessage, UnifiedChatMessageDeleteEvent, UnifiedContent, UnifiedMetadata,
+        UnifiedChatMessage, UnifiedChatMessageDelete, UnifiedContent, UnifiedMetadata,
         UnifiedSender,
     },
 };
@@ -234,7 +234,13 @@ struct Identity {
 }
 
 #[derive(Debug, Clone, Deserialize)]
-struct Badge {}
+#[allow(dead_code)]
+struct Badge {
+    pub r#type: String,
+    pub text: String,
+    pub sort_order: u64,
+    pub count: Option<u64>,
+}
 
 #[derive(Debug, Clone, Deserialize)]
 #[allow(dead_code)]
@@ -268,9 +274,25 @@ struct ChanelInfoResponse {
     pub id: u64,
     pub user_id: u64,
     pub slug: String,
+    pub subscriber_badges: Vec<SubscriberBadge>,
     pub is_banned: bool,
     pub user: User,
     pub chatroom: Chatroom,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[allow(dead_code)]
+struct SubscriberBadge {
+    pub id: u64,
+    pub channel_id: u64,
+    pub months: u64,
+    pub badge_image: BadgeImage,
+}
+#[derive(Debug, Clone, Deserialize)]
+#[allow(dead_code)]
+struct BadgeImage {
+    pub srcset: String,
+    pub src: String,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -329,6 +351,7 @@ pub struct KickService {
     pub scopes: String,
     pub app_token: String,
     pub auth_session: Mutex<Option<KickAuthSession>>,
+    subscriber_badges: Arc<Mutex<Vec<SubscriberBadge>>>,
 }
 
 impl KickService {
@@ -339,6 +362,7 @@ impl KickService {
         app_token: String,
     ) -> Self {
         let scopes = "user:read events:subscribe channel:rewards:write chat:write".to_string();
+
         Self {
             is_close_connection: Arc::new(AtomicBool::new(false)),
             kick_client_id,
@@ -347,6 +371,7 @@ impl KickService {
             scopes,
             app_token,
             auth_session: Mutex::new(None),
+            subscriber_badges: Arc::new(Mutex::new(vec![])),
         }
     }
 
@@ -359,6 +384,10 @@ impl KickService {
         let chanel_info_response = self
             .get_chanel_info(&reqwest_client, &user_info.name)
             .await?;
+        let mut subscriber_badges_guard = self.subscriber_badges.lock().await;
+        *subscriber_badges_guard = chanel_info_response.subscriber_badges;
+        drop(subscriber_badges_guard);
+
         let app_clone = app.clone();
         self.run_websocket_client(app_clone, chanel_info_response.chatroom)
             .await;
@@ -919,8 +948,31 @@ impl From<ChatMessageData> for UnifiedChatMessage {
             .badges_v2
             .iter()
             .any(|b| b.name == "subscriber");
-
-        let badges: Vec<UnifiedBadge> = k
+        let badges_v1: Vec<UnifiedBadge> = k
+            .sender
+            .identity
+            .badges
+            .iter()
+            .map(|b| {
+                let image_url = {
+                    if b.r#type == "sub_gifter".to_string() {
+                        Some("https://www.kickdatabase.com/kickBadges/subGifter.svg".to_string())
+                    } else {
+                        Some(format!(
+                            "https://www.kickdatabase.com/kickBadges/{}.svg",
+                            b.r#type.clone()
+                        ))
+                    }
+                };
+                UnifiedBadge {
+                    id: b.r#type.clone(),
+                    set_id: b.r#type.clone(),
+                    label: None,
+                    image_url,
+                }
+            })
+            .collect();
+        let badges_v2: Vec<UnifiedBadge> = k
             .sender
             .identity
             .badges_v2
@@ -929,11 +981,12 @@ impl From<ChatMessageData> for UnifiedChatMessage {
                 id: b.name.clone(),
                 set_id: b.badge_type.clone(),
                 label: b.metadata.level.map(|l| format!("Level {}", l)),
+                image_url: Some(b.image_url.clone()),
             })
             .collect();
-
+        let badges = [badges_v1, badges_v2].concat();
         let fragments = EventsService::parse_kick_content(&k.content);
-
+        let is_bot = k.sender.slug == "botrix";
         Self {
             id: k.id,
             platform: Platform::Kick,
@@ -955,6 +1008,7 @@ impl From<ChatMessageData> for UnifiedChatMessage {
                     is_moderator,
                     is_subscriber,
                     is_verified: false,
+                    is_bot,
                 },
             },
 
@@ -982,8 +1036,8 @@ impl From<ChatMessageData> for UnifiedChatMessage {
 }
 
 impl MessageDeletedData {
-    pub fn into_unified(self, channel_id: Option<String>) -> UnifiedChatMessageDeleteEvent {
-        UnifiedChatMessageDeleteEvent {
+    pub fn into_unified(self, channel_id: Option<String>) -> UnifiedChatMessageDelete {
+        UnifiedChatMessageDelete {
             platform: Platform::Kick,
             channel_id,
             message_id: self.message.id,

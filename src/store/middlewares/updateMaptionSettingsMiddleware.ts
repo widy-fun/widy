@@ -3,8 +3,8 @@ import type {
 	SerializedError,
 	UnknownAction,
 } from "@reduxjs/toolkit";
+import { showSnackBar } from "@widy/react";
 import { AlertSeverity } from "@widy/sdk";
-import { showSnackBar } from "../../../shared/slices/snackBarSlice";
 import { maptionApi } from "../../api/maptionApi";
 import type { AppDispatch, AppState } from "..";
 import { maptionSlice } from "../slices/maptionSlice";

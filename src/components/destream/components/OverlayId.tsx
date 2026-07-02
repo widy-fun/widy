@@ -1,11 +1,11 @@
 import { Button, TextField } from "@mui/material";
 import type { SerializedError } from "@reduxjs/toolkit";
+import { showSnackBar } from "@widy/react";
 import { AlertSeverity, type IDestreamAuth, ServiceType } from "@widy/sdk";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { showSnackBar } from "../../../../shared/slices/snackBarSlice";
 import { useDestreamConnectMutation } from "../../../api/destreamApi";
 import {
 	useGetServiceByIdQuery,

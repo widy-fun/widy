@@ -6,6 +6,7 @@ use crate::repositories::{
 use crate::services::{
     AppEvent, ConfigService, DatabaseService, EventMessage, KickService, WebSocketBroadcaster,
 };
+use crate::utils::validate_csp;
 use axum::extract::ws::{Message, WebSocket};
 use axum::extract::{Path, Query};
 use axum::http::HeaderValue;
@@ -186,6 +187,7 @@ impl AxumService {
         let database_service = state.app.state::<DatabaseService>();
         if let Ok(Some(widget)) = database_service.get_widget_by_id(id).await {
             let config_service = state.app.state::<ConfigService>();
+            let is_dev = widget.dev_path.clone().is_some();
             let widget_path = match widget.dev_path.clone() {
                 Some(dev_path) => PathBuf::new().join(&dev_path),
                 None => config_service
@@ -214,13 +216,9 @@ impl AxumService {
 
             let mime = mime_guess::from_path(&canonical).first_or_octet_stream();
 
-            let csp_value = match widget.dev_path {
-                Some(_) => &format!(
-                    "default-src 'self' 'unsafe-inline'; connect-src {};",
-                    widget.manifest.connect_src.join(" ")
-                ),
-                None => "default-src 'self' 'unsafe-inline'; connect-src 'none';",
-            };
+            let csp_value = validate_csp(widget.manifest.csp, is_dev).unwrap_or_else(|_| {
+                "default-src 'self'; style-src 'self' 'unsafe-inline';".to_string()
+            });
 
             let response = Response::builder()
                 .status(StatusCode::OK)

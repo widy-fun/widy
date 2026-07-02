@@ -1,7 +1,7 @@
 import ImageIcon from "@mui/icons-material/Image";
 import NotesIcon from "@mui/icons-material/Notes";
 import { Box } from "@mui/material";
-import type { AppTheme } from "../../../../../theme/default";
+import type { AppTheme } from "@widy/react";
 
 const View = ({
 	gridTemplateAreas,

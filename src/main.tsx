@@ -4,9 +4,9 @@ import { Provider } from "react-redux";
 import App from "./App";
 import { type AppState, store } from "./store";
 import "../shared/i18n/i18n";
-import { CssBaseline, createTheme, ThemeProvider } from "@mui/material";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 import { appLocalDataDir } from "@tauri-apps/api/path";
-import { BridgeContext } from "@widy/react";
+import { BridgeContext, dark } from "@widy/react";
 import type { IAucFighterMatchWinner, IClientMessage } from "@widy/sdk";
 import { AppEvent, RewardType, WidgetOutboundBridge } from "@widy/sdk";
 import { BrowserRouter } from "react-router";
@@ -36,7 +36,6 @@ import {
 	maptionDonationsSlice,
 } from "./store/slices/donationsSlice";
 import { setAppDataDir } from "./store/slices/mainSlice";
-import { dark } from "./theme/default";
 
 appLocalDataDir().then((path) => store.dispatch(setAppDataDir(path)));
 
@@ -180,7 +179,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
 			<EventsProvider context={EventsContext} eventsService={eventsService}>
 				<BridgeContext.Provider value={bridge}>
 					<BrowserRouter>
-						<ThemeProvider theme={createTheme(dark)}>
+						<ThemeProvider theme={dark}>
 							<Provider store={store}>
 								<CssBaseline />
 								<App />

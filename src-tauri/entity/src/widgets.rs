@@ -26,5 +26,12 @@ pub struct Manifest {
     pub description: String,
     pub repository: String,
     pub scopes: Vec<String>,
-    pub connect_src: Vec<String>,
+    pub csp: Option<Csp>,
+}
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Eq, FromJsonQueryResult)]
+
+pub struct Csp {
+    pub connect_src: Option<Vec<String>>,
+    pub img_src: Option<Vec<String>>,
+    pub media_src: Option<Vec<String>>,
 }

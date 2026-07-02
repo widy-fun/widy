@@ -4,7 +4,7 @@ use tauri::State;
 use crate::{
     repositories::WidgetsRepository,
     services::{ConfigService, DatabaseService},
-    utils::download_widget,
+    utils::{download_widget, validate_csp},
 };
 
 #[tauri::command]
@@ -15,6 +15,7 @@ pub async fn update_widget(
     manifest: Manifest,
     id: String,
 ) -> Result<(), String> {
+    validate_csp(manifest.csp.clone(), false)?;
     download_widget(&reqwest_client, &config_service, &manifest, &id).await?;
     database_service.update_widget(manifest, id).await?;
     Ok(())

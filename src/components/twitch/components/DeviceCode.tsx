@@ -1,11 +1,11 @@
 import { Button, CircularProgress } from "@mui/material";
 import { openUrl } from "@tauri-apps/plugin-opener";
+import { showSnackBar } from "@widy/react";
 import { AlertSeverity } from "@widy/sdk";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { showSnackBar } from "../../../../shared/slices/snackBarSlice";
 import {
 	useGetDeviceCodeQuery,
 	useGetTokenMutation,
