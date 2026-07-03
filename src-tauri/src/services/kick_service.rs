@@ -948,12 +948,14 @@ impl From<ChatMessageData> for UnifiedChatMessage {
             .badges_v2
             .iter()
             .any(|b| b.name == "subscriber");
+        let mut is_bot = k.sender.slug == "botrix";
         let badges_v1: Vec<UnifiedBadge> = k
             .sender
             .identity
             .badges
             .iter()
             .map(|b| {
+                is_bot = is_bot || b.r#type == "bot".to_string();
                 let image_url = {
                     if b.r#type == "sub_gifter".to_string() {
                         Some("https://www.kickdatabase.com/kickBadges/subGifter.svg".to_string())
@@ -986,7 +988,7 @@ impl From<ChatMessageData> for UnifiedChatMessage {
             .collect();
         let badges = [badges_v1, badges_v2].concat();
         let fragments = EventsService::parse_kick_content(&k.content);
-        let is_bot = k.sender.slug == "botrix";
+
         Self {
             id: k.id,
             platform: Platform::Kick,
