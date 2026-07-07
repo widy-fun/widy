@@ -98,8 +98,11 @@ jobs:
           VITE_WIDY_BASE_DOMAINE: ${{ secrets.VITE_WIDY_BASE_DOMAINE }}
           WIDY_SOL_PROGRAM_ID: ${{ secrets.WIDY_SOL_PROGRAM_ID }}
           KICK_CLIENT_ID: ${{ secrets.KICK_CLIENT_ID }}
+          KICK_BOT_CLIENT_ID: ${{ secrets.KICK_BOT_CLIENT_ID }}
           KICK_TOKEN_ENDPOINT: ${{ secrets.KICK_TOKEN_ENDPOINT }}
+          KICK_BOT_TOKEN_ENDPOINT: ${{ secrets.KICK_BOT_TOKEN_ENDPOINT }}
           KICK_REDIRECT_URI: ${{ secrets.KICK_REDIRECT_URI }}
+          KICK_BOT_REDIRECT_URI: ${{ secrets.KICK_BOT_REDIRECT_URI }}
           APP_TOKEN: ${{ secrets.APP_TOKEN }}
         with:
           tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
@@ -121,8 +124,11 @@ jobs:
           VITE_WIDY_BASE_DOMAINE: ${{ secrets.VITE_WIDY_BASE_DOMAINE }}
           WIDY_SOL_PROGRAM_ID: ${{ secrets.WIDY_SOL_PROGRAM_ID }}
           KICK_CLIENT_ID: ${{ secrets.KICK_CLIENT_ID }}
+          KICK_BOT_CLIENT_ID: ${{ secrets.KICK_BOT_CLIENT_ID }}
           KICK_TOKEN_ENDPOINT: ${{ secrets.KICK_TOKEN_ENDPOINT }}
+          KICK_BOT_TOKEN_ENDPOINT: ${{ secrets.KICK_BOT_TOKEN_ENDPOINT }}
           KICK_REDIRECT_URI: ${{ secrets.KICK_REDIRECT_URI }}
+          KICK_BOT_REDIRECT_URI: ${{ secrets.KICK_BOT_REDIRECT_URI }}
           APP_TOKEN: ${{ secrets.APP_TOKEN }}
         with:
           tagName: latest # the action automatically replaces \_\_VERSION\_\_ with the app version.

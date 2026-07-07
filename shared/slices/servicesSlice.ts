@@ -75,6 +75,16 @@ const initialState: ServicesState = {
 			color: "#53fc18",
 			authPath: "/kick/authorize",
 		},
+		[ServiceType.KickBot]: {
+			active: false,
+			color: "#53fc18",
+			authPath: "/kick-bot/authorize",
+		},
+		[ServiceType.TwitchBot]: {
+			active: false,
+			color: "#9147ff",
+			authPath: "/twitch-bot/device-code",
+		},
 	},
 };
 

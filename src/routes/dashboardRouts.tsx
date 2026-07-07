@@ -5,12 +5,14 @@ import MapIcon from "@mui/icons-material/Map";
 import MessageIcon from "@mui/icons-material/Message";
 import MovieIcon from "@mui/icons-material/Movie";
 import NoAdultContentIcon from "@mui/icons-material/NoAdultContent";
+import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SportsMartialArtsIcon from "@mui/icons-material/SportsMartialArts";
 import WidgetsIcon from "@mui/icons-material/Widgets";
 import Alerts from "../components/dashboard/components/alerts/Alerts";
 import Auction from "../components/dashboard/components/auction/Auction";
 import AuctionIcon from "../components/dashboard/components/auction/components/AuctionIcon";
+import Commands from "../components/dashboard/components/commands/Commands";
 import AucFighter from "../components/dashboard/components/fighter/AucFighter";
 import GoalIcon from "../components/dashboard/components/goals/components/GoalIcon";
 import Goals from "../components/dashboard/components/goals/Goals";
@@ -97,6 +99,12 @@ export const dashboardRouts = [
 		element: <Nsfw />,
 		icon: <NoAdultContentIcon />,
 		name: "nsfw",
+	},
+	{
+		path: "commands",
+		element: <Commands />,
+		icon: <PriorityHighIcon />,
+		name: "commands",
 	},
 	{
 		path: "info",

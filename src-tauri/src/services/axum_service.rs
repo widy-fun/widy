@@ -3,8 +3,10 @@ use crate::repositories::{
     AlertsRepository, AucFighterSettingsRepository, GoalsRepository, MediaSettingsRepository,
     MessagesRepository, NsfwRepository, ServicesRepository, SettingsRepository, WidgetsRepository,
 };
+use crate::services::kick::traits::KickApi;
+use crate::services::kick::{KickBotService, KickService};
 use crate::services::{
-    AppEvent, ConfigService, DatabaseService, EventMessage, KickService, WebSocketBroadcaster,
+    AppEvent, ConfigService, DatabaseService, EventMessage, WebSocketBroadcaster,
 };
 use crate::utils::validate_csp;
 use axum::extract::ws::{Message, WebSocket};
@@ -22,7 +24,7 @@ use axum::{
 };
 use entity::goals::GoalType;
 use entity::messages::ClientMessage;
-use entity::services::{KickAuth, ServiceAuth, ServiceType};
+use entity::services::{ServiceAuth, ServiceType};
 use futures::{sink::SinkExt, stream::StreamExt};
 use http::header;
 use serde::{Deserialize, Serialize};
@@ -67,18 +69,9 @@ struct GoalsQuery {
 }
 
 #[derive(Debug, Deserialize)]
-struct KickAuthCallbackQuery {
+pub struct KickAuthCallbackQuery {
     pub code: String,
     pub state: String,
-}
-
-#[derive(Debug, Serialize)]
-struct KickTokenExchangeBody {
-    pub code: String,
-    pub code_verifier: String,
-    pub redirect_uri: String,
-    pub app_token: String,
-    pub grant_type: GrantType,
 }
 
 #[derive(Clone)]
@@ -122,6 +115,10 @@ impl AxumService {
         let axum_router: Router = Router::new()
             .route("/ws", get(AxumService::websocket_handler))
             .route("/kick/auth/callback", get(AxumService::kick_auth_callback))
+            .route(
+                "/kick-bot/auth/callback",
+                get(AxumService::kick_bot_auth_callback),
+            )
             .route("/api/alerts", get(AxumService::get_alerts))
             .route("/api/settings", get(AxumService::get_settings))
             .route("/api/messages", get(AxumService::get_messages))
@@ -164,7 +161,7 @@ impl AxumService {
         let listener = match tokio::net::TcpListener::bind(("127.0.0.1", HTTP_WIDGET_PORT)).await {
             Ok(listener) => listener,
             Err(e) => {
-                log::error!("{}", e.to_string());
+                log::error!("Axum tcp listener error: {}", e.to_string());
                 return Err(e.to_string());
             }
         };
@@ -355,41 +352,26 @@ impl AxumService {
         let reqwest_client = state.app.state::<reqwest::Client>();
         let kick_service = state.app.state::<KickService>();
         let database_service = state.app.state::<DatabaseService>();
-
-        let mut auth_session_guard = kick_service.auth_session.lock().await;
-        let auth_session = auth_session_guard.clone();
-        *auth_session_guard = None;
-        let auth_session = auth_session.ok_or(StatusCode::UNAUTHORIZED)?;
-
-        if auth_session.state != params.state {
-            return Err(StatusCode::BAD_REQUEST);
-        }
-
-        let response = reqwest_client
-            .post(&kick_service.kick_token_endpoint)
-            .json(&KickTokenExchangeBody {
-                code: params.code,
-                code_verifier: auth_session.code_verifier.clone(),
-                redirect_uri: kick_service.kick_redirect_uri.clone(),
-                app_token: kick_service.app_token.clone(),
-                grant_type: GrantType::AuthorizationCode,
-            })
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("{}", e.to_string());
-                StatusCode::INTERNAL_SERVER_ERROR
-            })?;
-
-        let auth: KickAuth = response.json().await.map_err(|e| {
-            log::error!("{}", e.to_string());
-            StatusCode::INTERNAL_SERVER_ERROR
-        })?;
-
+        let auth = kick_service.tokens(&reqwest_client, params).await?;
         let _ = database_service
             .update_service_auth(ServiceType::Kick, Some(ServiceAuth::Kick(auth)), true)
             .await;
         let _ = kick_service.connect(&state.app.clone()).await;
+        Ok(Redirect::to("https://kick.com"))
+    }
+
+    async fn kick_bot_auth_callback(
+        Query(params): Query<KickAuthCallbackQuery>,
+        State(state): State<AxumState>,
+    ) -> Result<Redirect, StatusCode> {
+        let reqwest_client = state.app.state::<reqwest::Client>();
+        let kick_bot_service = state.app.state::<KickBotService>();
+        let database_service = state.app.state::<DatabaseService>();
+        let auth = kick_bot_service.tokens(&reqwest_client, params).await?;
+        let _ = database_service
+            .update_service_auth(ServiceType::KickBot, Some(ServiceAuth::Kick(auth)), true)
+            .await;
+        let _ = kick_bot_service.connect(&state.app.clone()).await;
         Ok(Redirect::to("https://kick.com"))
     }
 

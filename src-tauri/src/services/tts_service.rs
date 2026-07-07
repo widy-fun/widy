@@ -38,7 +38,7 @@ impl TtsService {
             .ok_or_else(|| "Settings not found".to_string())?;
 
         fs::create_dir_all(&self.audio_path).map_err(|e| {
-            log::error!("{}", e.to_string());
+            log::error!("Create audio dir error: {}", e.to_string());
             e.to_string()
         })?;
 

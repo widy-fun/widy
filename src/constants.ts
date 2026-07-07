@@ -1,5 +1,7 @@
 import {
 	AlertVariant,
+	CommandSourceType,
+	ICommand,
 	IReward,
 	ITextStyle,
 	Platform,
@@ -90,3 +92,27 @@ export const DEFAULT_REWARD: IReward = {
 	global_cooldown_seconds: 0,
 	is_global_cooldown_enabled: false,
 };
+
+export const DEFAULT_COMMAND: ICommand = {
+	id: crypto.randomUUID(),
+	name: "command",
+	description: "",
+	source: {
+		trigger: "!command",
+	},
+	action: {},
+	source_type: CommandSourceType.None,
+};
+
+export const COMMAND_ACTION = [
+	{
+		source_type: CommandSourceType.Chat,
+		description: "",
+		path: "commands/action/chat-bot",
+	},
+	{
+		source_type: CommandSourceType.Custom,
+		description: "",
+		path: "commands/action/alert",
+	},
+];

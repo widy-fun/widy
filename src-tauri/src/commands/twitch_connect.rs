@@ -1,6 +1,6 @@
 use tauri::{AppHandle, State};
 
-use crate::services::TwitchService;
+use crate::services::twitch::TwitchService;
 
 #[tauri::command]
 pub async fn twitch_connect(

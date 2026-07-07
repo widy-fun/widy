@@ -1,8 +1,11 @@
+use crate::services::kick::{KickBotService, KickService};
+use crate::services::twitch::traits::TwitchApi;
+use crate::services::twitch::{TwitchBotService, TwitchService};
 use crate::services::{
     AxumService, ConfigService, DatabaseService, DeepLinkDispatcherService, DestreamService,
-    DonatePayService, DonationAlertsService, ExchangeRatesService, KickService, MediaService,
-    NsfwService, StreamElementsService, StreamLabsService, TributeService, TtsService,
-    TwitchService, WebSocketBroadcaster, WidySolService, WidyTonService,
+    DonatePayService, DonationAlertsService, ExchangeRatesService, MediaService, NsfwService,
+    StreamElementsService, StreamLabsService, TributeService, TtsService, WebSocketBroadcaster,
+    WidySolService, WidyTonService,
 };
 use crate::utils::copy_assets_to_static;
 use lingua::Language::{
@@ -10,6 +13,7 @@ use lingua::Language::{
 };
 use lingua::LanguageDetectorBuilder;
 use std::sync::Arc;
+use std::time::Duration;
 use tauri::{AppHandle, Manager, State};
 use tokio::sync::Mutex;
 pub struct ExecutionFlag(pub Mutex<bool>);
@@ -41,6 +45,8 @@ pub async fn init(app: AppHandle, flag: State<'_, ExecutionFlag>) -> Result<(), 
     let user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36";
     let reqwest_client = reqwest::Client::builder()
         .user_agent(user_agent)
+        .connect_timeout(Duration::from_secs(10))
+        .timeout(Duration::from_secs(30))
         .build()
         .map_err(|e| format!("reqwest build error: {}", e))?;
     app.manage(reqwest_client);
@@ -75,19 +81,39 @@ pub async fn init(app: AppHandle, flag: State<'_, ExecutionFlag>) -> Result<(), 
     app.manage(media_service);
 
     //twitch
-    let twitch_service = TwitchService::new(config_service.twitch_client_id);
+    let twitch_service = TwitchService::new(config_service.twitch_client_id.clone());
     let _ = twitch_service.connect(&app).await;
-    app.manage(twitch_service);
+    app.manage(twitch_service.clone());
+
+    //twitch bot
+    let twitch_bot_service = TwitchBotService::new(
+        config_service.twitch_client_id,
+        twitch_service.auth_endpoint(),
+        twitch_service.api_endpoint(),
+        twitch_service.eventsub_endpoint(),
+    );
+    let _ = twitch_bot_service.connect(&app).await;
+    app.manage(twitch_bot_service);
 
     //kick
     let kick_service = KickService::new(
         config_service.kick_client_id,
         config_service.kick_token_endpoint,
         config_service.kick_redirect_uri,
-        config_service.app_token,
+        config_service.app_token.clone(),
     );
     let _ = kick_service.connect(&app).await;
     app.manage(kick_service);
+
+    //kick bot
+    let kick_bot_service = KickBotService::new(
+        config_service.kick_bot_client_id,
+        config_service.kick_bot_token_endpoint,
+        config_service.kick_bot_redirect_uri,
+        config_service.app_token,
+    );
+    let _ = kick_bot_service.connect(&app).await;
+    app.manage(kick_bot_service);
 
     //stream elements
     let stream_elements_service = StreamElementsService::new();
@@ -137,5 +163,6 @@ pub async fn init(app: AppHandle, flag: State<'_, ExecutionFlag>) -> Result<(), 
     //nsfw
     let nsfw_service = NsfwService::new()?;
     app.manage(nsfw_service);
+
     Ok(())
 }

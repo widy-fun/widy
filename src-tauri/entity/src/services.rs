@@ -47,6 +47,10 @@ pub enum ServiceType {
     Tribute,
     #[sea_orm(string_value = "Kick")]
     Kick,
+    #[sea_orm(string_value = "TwitchBot")]
+    TwitchBot,
+    #[sea_orm(string_value = "KickBot")]
+    KickBot,
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
 #[serde(untagged)]
@@ -68,6 +72,8 @@ pub enum ServiceAuth {
     DonatePay(DonatePayAuth),
     Destream(DestreamAuth),
     Tribute(TributeAuth),
+    KickBot(KickAuth),
+    TwitchBot(TwitchAuth),
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

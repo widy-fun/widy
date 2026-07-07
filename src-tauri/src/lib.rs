@@ -122,6 +122,17 @@ pub fn run() {
             kick_add_custom_reward,
             kick_remove_custom_reward,
             get_reward_by_title,
+            create_command,
+            get_commands,
+            delete_command_by_id,
+            get_command_by_id,
+            update_command,
+            kick_bot_authorize,
+            get_twitch_bot_device_code,
+            get_twitch_bot_token,
+            twitch_bot_connect,
+            twitch_bot_sign_out,
+            kick_bot_sign_out,
             init
         ])
         .run(tauri::generate_context!())

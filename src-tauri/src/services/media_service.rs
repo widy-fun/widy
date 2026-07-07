@@ -153,7 +153,7 @@ impl MediaService {
                 ) {
                     Ok(token) => token,
                     Err(e) => {
-                        log::error!("{}", e.to_string());
+                        log::error!("Parse twitch clip token error: {}", e.to_string());
                         return None;
                     }
                 };
@@ -255,7 +255,7 @@ impl MediaService {
         let json_data: Value = match serde_json::from_str(json_str.as_str()) {
             Ok(json_data) => json_data,
             Err(e) => {
-                log::error!("{}", e.to_string());
+                log::error!("Parse tiktok page error: {}", e.to_string());
                 return None;
             }
         };
@@ -354,7 +354,7 @@ impl MediaService {
         match response.json::<Vec<TwitchClipInfo>>().await {
             Ok(vec_response) => return vec_response.first().cloned(),
             Err(e) => {
-                log::error!("{}", e.to_string());
+                log::error!("Parse twitch clip info error: {}", e.to_string());
                 return None;
             }
         }

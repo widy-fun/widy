@@ -4,6 +4,11 @@ import { MENU_WIDTH, MENU_WIDTH_MD } from "../../constants";
 import { dashboardRouts } from "../../routes/dashboardRouts";
 import CreateAlert from "./components/alerts/components/CreateAlert";
 import UpdateAlertSettings from "./components/alerts/UpdateAlertSettings";
+import ChatBotAction from "./components/commands/components/ChatBotAction";
+import ChatSource from "./components/commands/components/ChatSource";
+import CreateCommand from "./components/commands/components/CreateCommand";
+import CustomSource from "./components/commands/components/CustomSource";
+import UpdateCommandSettings from "./components/commands/UpdateCommandSettings";
 import CreateGoal from "./components/goals/components/CreateGoal";
 import UpdateGoalSettings from "./components/goals/components/UpdateGoalSettings";
 import CreateReward from "./components/rewards/components/CreateReward";
@@ -35,6 +40,11 @@ const DashboardArticle = () => {
 				<Route path="goals/:id" element={<UpdateGoalSettings />} />
 				<Route path="rewards/new/reward" element={<CreateReward />} />
 				<Route path="rewards/:id" element={<UpdateRewardSettings />} />
+				<Route path="commands/new/command" element={<CreateCommand />} />
+				<Route path="commands/:id" element={<UpdateCommandSettings />} />
+				<Route path="commands/source/chat" element={<ChatSource />} />
+				<Route path="commands/source/custom" element={<CustomSource />} />
+				<Route path="commands/action/chat-bot" element={<ChatBotAction />} />
 			</Routes>
 		</article>
 	);

@@ -160,7 +160,6 @@ impl DeepLinkHandler for WidyTonService {
 }
 
 pub struct WidyTonService {
-    http_client: reqwest::Client,
     pub nonce: Arc<Mutex<Option<String>>>,
     sign_out_sender: broadcast::Sender<()>,
 }
@@ -171,10 +170,6 @@ impl WidyTonService {
         Self {
             nonce: Arc::new(Mutex::new(None)),
             sign_out_sender: tx,
-            http_client: reqwest::Client::builder()
-                .timeout(Duration::from_secs(5))
-                .build()
-                .expect("http_client build error"),
         }
     }
 
@@ -203,6 +198,7 @@ impl WidyTonService {
     ) {
         tauri::async_runtime::spawn(async move {
             let widy_ton_service = app.state::<Arc<WidyTonService>>();
+            let reqwest_client = app.state::<reqwest::Client>();
             let mut sign_out_receiver = widy_ton_service.sign_out_sender.subscribe();
             let client = es::ClientBuilder::for_url(&format!(
                 "https://tonapi.io/v2/sse/accounts/traces?accounts={}&operations=0x05a73567",
@@ -230,8 +226,9 @@ impl WidyTonService {
                 match sse {
                     es::SSE::Event(ev) => {
                         if let Ok(trace) = serde_json::from_str::<TonTraceAccounts>(&ev.data) {
-                            if let Some(transaction) =
-                                widy_ton_service.get_donation_transaction(trace.hash).await
+                            if let Some(transaction) = widy_ton_service
+                                .get_donation_transaction(trace.hash, &reqwest_client)
+                                .await
                             {
                                 if let Some(message) = transaction.out_msgs.first() {
                                     if let Ok(event) =
@@ -291,9 +288,12 @@ impl WidyTonService {
         })
     }
 
-    async fn get_donation_transaction(&self, hash: String) -> Option<Transaction> {
-        let result = self
-            .http_client
+    async fn get_donation_transaction(
+        &self,
+        hash: String,
+        reqwest_client: &reqwest::Client,
+    ) -> Option<Transaction> {
+        let result = reqwest_client
             .get(format!("https://tonapi.io/v2/traces/{hash}"))
             .send()
             .await;

@@ -9,6 +9,7 @@
 	"skip_media": "Shortcut skip media",
 	"skip_alert": "Shortcut skip alert",
 	"none": "None",
+	"next": "Next",
 	"start": "Start",
 	"stop": "Stop",
 	"delay": "Delay",
@@ -85,7 +86,8 @@
 		"widgets": "Widgets",
 		"info": "Info",
 		"nsfw": "NSFW",
-		"rewards": "Rewards"
+		"rewards": "Rewards",
+		"commands": "Commands"
 	},
 	"messages": {
 		"title": "Last messages"
@@ -438,5 +440,27 @@
 	},
 	"validation": {
 		"required": "Required"
+	},
+	"commands": {
+		"title": "Commands",
+		"create": "Create command"
+	},
+	"command": {
+		"name": "Name",
+		"description": "Description",
+		"source": "Source",
+		"action": "Action"
+	},
+	"chat_source": {
+		"title": "Chat",
+		"trigger": "Trigger"
+	},
+	"custom_source": {
+		"title": "Custom",
+		"text": "Text"
+	},
+	"chat_bot_action": {
+		"title": "Chat bot",
+		"text": "Text"
 	}
 }

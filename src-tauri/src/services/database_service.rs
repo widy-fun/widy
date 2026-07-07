@@ -38,7 +38,8 @@ impl DatabaseService {
         options
             .max_connections(100)
             .min_connections(5)
-            .sqlx_logging(true)
+            .sqlx_logging(false)
+            // .sqlx_logging(true)
             .sqlx_logging_level(if is_dev() {
                 log::LevelFilter::Info
             } else {
@@ -48,7 +49,7 @@ impl DatabaseService {
     }
     async fn establish_connection(options: ConnectOptions) -> Result<DatabaseConnection, String> {
         Database::connect(options).await.map_err(|e| {
-            log::error!("{}", e.to_string());
+            log::error!("Database connect error: {}", e.to_string());
             e.to_string()
         })
     }
@@ -59,7 +60,7 @@ impl DatabaseService {
                 Ok(())
             }
             Err(e) => {
-                log::error!("{}", e.to_string());
+                log::error!("Migration error: {}", e.to_string());
                 Err(e.to_string())
             }
         }

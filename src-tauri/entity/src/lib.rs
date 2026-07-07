@@ -1,6 +1,7 @@
 pub mod alerts;
 pub mod auc_fighter_settings;
 pub mod auction_settings;
+pub mod commands;
 pub mod donations;
 pub mod followers;
 pub mod goals;

@@ -417,7 +417,7 @@ impl EventsService {
             {
                 Ok(audio) => Some(audio),
                 Err(e) => {
-                    log::error!("{}", e.to_string());
+                    log::error!("Make audio error: {}", e.to_string());
                     let ws_message = EventMessage {
                         event: AppEvent::MakeAudioError,
                         data: e,

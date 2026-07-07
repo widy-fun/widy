@@ -1,6 +1,6 @@
 use tauri::{AppHandle, State};
 
-use crate::services::KickService;
+use crate::services::kick::{traits::KickApi, KickService};
 
 #[tauri::command]
 pub async fn kick_authorize(

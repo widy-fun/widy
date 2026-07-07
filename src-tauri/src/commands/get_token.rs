@@ -3,28 +3,24 @@ use tauri::State;
 
 use crate::{
     repositories::ServicesRepository,
-    services::{DatabaseService, TwitchService},
+    services::{
+        twitch::{traits::TwitchApi, TwitchService},
+        DatabaseService,
+    },
 };
 
 #[tauri::command]
 pub async fn get_token(
     twitch_service: State<'_, TwitchService>,
     database_service: State<'_, DatabaseService>,
+    reqwest_client: State<'_, reqwest::Client>,
     device_code: String,
 ) -> Result<(), String> {
-    match twitch_service.get_token(device_code).await {
-        Ok(auth) => {
-            database_service
-                .update_service_auth(ServiceType::Twitch, Some(ServiceAuth::Twitch(auth)), true)
-                .await
-                .map_err(|e| {
-                    log::error!("{}", e.to_string());
-                    e.to_string()
-                })?;
-        }
-        Err(e) => {
-            return Err(e);
-        }
-    }
+    let auth = twitch_service
+        .get_token(device_code, &reqwest_client)
+        .await?;
+    database_service
+        .update_service_auth(ServiceType::Twitch, Some(ServiceAuth::Twitch(auth)), true)
+        .await?;
     Ok(())
 }

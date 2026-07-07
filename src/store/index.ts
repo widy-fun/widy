@@ -20,6 +20,7 @@ import newLotAddAuctionTimeMiddleware from "./middlewares/newLotAddAuctionTimeMi
 import updateMaptionSettingsMiddleware from "./middlewares/updateMaptionSettingsMiddleware";
 import { aucFighterSlice } from "./slices/aucFighterSlice";
 import { auctionSlice } from "./slices/auctionSlice";
+import { commandsSlice } from "./slices/commandsSlice.ts";
 import {
 	auctionDonationsSlice,
 	maptionDonationsSlice,
@@ -49,6 +50,7 @@ export const rootReducer = combineReducers({
 	aucFighterState: aucFighterSlice.reducer,
 	goalsState: goalsSlice.reducer,
 	servicesState: servicesSlice.reducer,
+	commandsState: commandsSlice.reducer,
 	[api.reducerPath]: api.reducer,
 	[widgetApi.reducerPath]: widgetApi.reducer,
 });

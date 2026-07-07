@@ -20,6 +20,9 @@ pub struct ConfigService {
     pub kick_client_id: String,
     pub kick_token_endpoint: String,
     pub kick_redirect_uri: String,
+    pub kick_bot_client_id: String,
+    pub kick_bot_token_endpoint: String,
+    pub kick_bot_redirect_uri: String,
     pub app_token: String,
 }
 
@@ -35,6 +38,12 @@ impl ConfigService {
         let kick_token_endpoint: String = env!("KICK_TOKEN_ENDPOINT").to_string();
         #[cfg(not(debug_assertions))]
         let kick_redirect_uri: String = env!("KICK_REDIRECT_URI").to_string();
+        #[cfg(not(debug_assertions))]
+        let kick_bot_client_id: String = env!("KICK_BOT_CLIENT_ID").to_string();
+        #[cfg(not(debug_assertions))]
+        let kick_bot_token_endpoint: String = env!("KICK_BOT_TOKEN_ENDPOINT").to_string();
+        #[cfg(not(debug_assertions))]
+        let kick_bot_redirect_uri: String = env!("KICK_BOT_REDIRECT_URI").to_string();
         #[cfg(not(debug_assertions))]
         let app_token: String = env!("APP_TOKEN").to_string();
 
@@ -53,6 +62,15 @@ impl ConfigService {
         #[cfg(debug_assertions)]
         let kick_redirect_uri: String =
             std::env::var("KICK_REDIRECT_URI").expect("KICK_REDIRECT_URI must be set");
+        #[cfg(debug_assertions)]
+        let kick_bot_client_id: String =
+            std::env::var("KICK_BOT_CLIENT_ID").expect("KICK_BOT_CLIENT_ID must be set");
+        #[cfg(debug_assertions)]
+        let kick_bot_token_endpoint: String =
+            std::env::var("KICK_BOT_TOKEN_ENDPOINT").expect("KICK_BOT_TOKEN_ENDPOINT must be set");
+        #[cfg(debug_assertions)]
+        let kick_bot_redirect_uri: String =
+            std::env::var("KICK_BOT_REDIRECT_URI").expect("KICK_BOT_REDIRECT_URI must be set");
         #[cfg(debug_assertions)]
         let app_token: String = std::env::var("APP_TOKEN").expect("APP_TOKEN must be set");
 
@@ -109,6 +127,9 @@ impl ConfigService {
             kick_token_endpoint,
             kick_redirect_uri,
             app_token,
+            kick_bot_client_id,
+            kick_bot_redirect_uri,
+            kick_bot_token_endpoint,
         })
     }
 }

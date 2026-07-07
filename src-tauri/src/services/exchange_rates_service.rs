@@ -49,7 +49,7 @@ impl ExchangeRatesService {
         let response = match reqwest::get(url).await {
             Ok(res) => res,
             Err(e) => {
-                log::error!("{}", e.to_string());
+                log::error!("Exchange rates reqwest error: {}", e.to_string());
                 return None;
             }
         };
@@ -57,7 +57,7 @@ impl ExchangeRatesService {
         let exchange_rates: ExchangeRatesResponse = match response.json().await {
             Ok(rates) => rates,
             Err(e) => {
-                log::error!("{}", e.to_string());
+                log::error!("Exchange rates parse response error: {}", e.to_string());
                 return None;
             }
         };

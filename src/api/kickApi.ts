@@ -7,7 +7,7 @@ export const kickApi = api.injectEndpoints({
 			query: () => ({
 				command: "kick_authorize",
 			}),
-			invalidatesTags: ["Settings"],
+			invalidatesTags: ["Services"],
 		}),
 		kickAddCustomReward: builder.mutation<void, { reward: IReward }>({
 			query: (args) => ({

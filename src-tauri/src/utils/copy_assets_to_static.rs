@@ -2,20 +2,20 @@ use std::{fs, path::PathBuf};
 
 pub fn copy_assets_to_static(assets_patch: &PathBuf, static_path: &PathBuf) -> Result<(), String> {
     fs::create_dir_all(&static_path).map_err(|e| {
-        log::error!("{}", e.to_string());
+        log::error!("Crate static dir error: {}", e.to_string());
         e.to_string()
     })?;
     let dir = fs::read_dir(assets_patch).map_err(|e| {
-        log::error!("{}", e.to_string());
+        log::error!("Read static dir error: {}", e.to_string());
         e.to_string()
     })?;
     for entry in dir {
         let entry = entry.map_err(|e| {
-            log::error!("{}", e.to_string());
+            log::error!("Entry error: {}", e.to_string());
             e.to_string()
         })?;
         fs::copy(entry.path(), static_path.join(entry.file_name())).map_err(|e| {
-            log::error!("{}", e.to_string());
+            log::error!("Copy error: {}", e.to_string());
             e.to_string()
         })?;
     }

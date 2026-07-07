@@ -37,6 +37,7 @@ export const api = createApi({
 		"Widgets",
 		"Nsfw-Settings",
 		"Rewards",
+		"Commands",
 	],
 	endpoints: (builder) => ({
 		init: builder.mutation<void, void>({
@@ -98,6 +99,18 @@ export const api = createApi({
 			}),
 			invalidatesTags: ["Services"],
 		}),
+		kickBotSignOut: builder.mutation<void, void>({
+			query: () => ({
+				command: "kick_bot_sign_out",
+			}),
+			invalidatesTags: ["Services"],
+		}),
+		twitchBotSignOut: builder.mutation<void, void>({
+			query: () => ({
+				command: "twitch_bot_sign_out",
+			}),
+			invalidatesTags: ["Services"],
+		}),
 	}),
 });
 
@@ -112,4 +125,6 @@ export const {
 	useDestreamSignOutMutation,
 	useTributeSignOutMutation,
 	useKickSignOutMutation,
+	useKickBotSignOutMutation,
+	useTwitchBotSignOutMutation,
 } = api;

@@ -55,13 +55,13 @@ pub fn register_shortcuts(app: &AppHandle) -> Result<(), Box<dyn std::error::Err
             .global_shortcut()
             .register(ctrl_f1_shortcut)
             .map_err(|e| {
-                log::error!("{}", e.to_string());
+                log::error!("Register ctrl_f1 shortcut error: {}", e.to_string());
             });
         let _ = app
             .global_shortcut()
             .register(ctrl_f2_shortcut)
             .map_err(|e| {
-                log::error!("{}", e.to_string());
+                log::error!("Register ctrl_f2 shortcut error: {}", e.to_string());
             });
         Ok(())
     }

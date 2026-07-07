@@ -167,7 +167,12 @@ impl DonationAlertsService {
                                 .to_string(),
                             )))
                             .await
-                            .map_err(|e| log::error!("{}", e.to_string()));
+                            .map_err(|e| {
+                                log::error!(
+                                    "DonationAlerts send connection message error: {}",
+                                    e.to_string()
+                                )
+                            });
                         while let Some(msg_result) = socket.next().await {
                             let is_close_connection = donation_alerts_service
                                 .is_close_connection
@@ -210,7 +215,7 @@ impl DonationAlertsService {
                                                             "id": 2
                                                         }).to_string())))
                                                         .await
-                                                        .map_err(|e| log::error!("{}", e.to_string()));
+                                                        .map_err(|e| log::error!("DonationAlerts subscription error: {}", e.to_string()));
                                                 }
                                             }
                                             WebsocketMessage::Donation(donation_message) => {

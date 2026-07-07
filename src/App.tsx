@@ -17,10 +17,12 @@ import DonatePay from "./components/donatepay/DonatePay";
 import Donatik from "./components/donatik/Donatik";
 import DonationAlerts from "./components/donationalerts/DonationAlerts";
 import Kick from "./components/kick/Kick";
+import KickBot from "./components/kick-bot/KickBot";
 import StreamElements from "./components/streamelements/StreamElements";
 import StreamLabs from "./components/streamlabs/StreamLabs";
 import Tribute from "./components/tribute/Tribute";
 import Twitch from "./components/twitch/Twitch";
+import TwitchBot from "./components/twitch-bot/TwitchBot";
 import UpdaterDialog from "./components/UpdaterDialog";
 import Widy from "./components/widy/Widy";
 import { setSettings } from "./store/slices/settingsSlice";
@@ -102,7 +104,9 @@ function App() {
 					<Route path="/streamelements/*" element={<StreamElements />} />
 					<Route path="/streamlabs/*" element={<StreamLabs />} />
 					<Route path="/twitch/*" element={<Twitch />} />
+					<Route path="/twitch-bot/*" element={<TwitchBot />} />
 					<Route path="/kick/*" element={<Kick />} />
+					<Route path="/kick-bot/*" element={<KickBot />} />
 					<Route path="/widy/*" element={<Widy />} />
 					<Route path="/donationalerts/*" element={<DonationAlerts />} />
 					<Route path="/donatepay/*" element={<DonatePay />} />
