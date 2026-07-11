@@ -46,16 +46,8 @@ impl RewardsRepository for DatabaseService {
             .set_description(reward.description)
             .set_cost(reward.cost)
             .set_background_color(reward.background_color)
-            .set_image(reward.image)
-            .set_audio(reward.audio)
             .set_is_user_input_required(reward.is_user_input_required)
             .set_points_currency_ratio(reward.points_currency_ratio)
-            .set_video(reward.video)
-            .set_video_volume(reward.video_volume)
-            .set_audio_volume(reward.audio_volume)
-            .set_alert_variant(reward.alert_variant)
-            .set_duration(reward.duration)
-            .set_delay(reward.delay)
             .set_is_enabled(reward.is_enabled)
             .set_is_max_per_stream_enabled(reward.is_max_per_stream_enabled)
             .set_max_per_stream(reward.max_per_stream)
@@ -166,16 +158,8 @@ impl RewardsRepository for DatabaseService {
             description: Set(reward.description),
             cost: Set(reward.cost),
             background_color: Set(reward.background_color),
-            image: Set(reward.image),
-            audio: Set(reward.audio),
             is_user_input_required: Set(reward.is_user_input_required),
             points_currency_ratio: Set(reward.points_currency_ratio),
-            video: Set(reward.video),
-            video_volume: Set(reward.video_volume),
-            audio_volume: Set(reward.audio_volume),
-            alert_variant: Set(reward.alert_variant),
-            duration: Set(reward.duration),
-            delay: Set(reward.delay),
             is_enabled: Set(reward.is_enabled),
             is_max_per_stream_enabled: Set(reward.is_max_per_stream_enabled),
             max_per_stream: Set(reward.max_per_stream),

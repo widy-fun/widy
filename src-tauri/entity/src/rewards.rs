@@ -3,8 +3,6 @@
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::alerts::AlertVariant;
-
 #[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "rewards")]
@@ -19,15 +17,7 @@ pub struct Model {
     pub cost: i64,
     pub background_color: String,
     pub is_user_input_required: bool,
-    pub image: Option<String>,
-    pub audio: Option<String>,
     pub points_currency_ratio: f32,
-    pub video: Option<String>,
-    pub alert_variant: AlertVariant,
-    pub audio_volume: u32,
-    pub video_volume: u32,
-    pub duration: u32,
-    pub delay: u32,
     pub is_enabled: bool,
     pub is_max_per_stream_enabled: Option<bool>,
     pub max_per_stream: Option<i64>,
@@ -52,15 +42,7 @@ pub struct Reward {
     pub cost: i64,
     pub background_color: String,
     pub is_user_input_required: bool,
-    pub image: Option<String>,
-    pub audio: Option<String>,
     pub points_currency_ratio: f32,
-    pub video: Option<String>,
-    pub alert_variant: AlertVariant,
-    pub audio_volume: u32,
-    pub video_volume: u32,
-    pub duration: u32,
-    pub delay: u32,
     pub is_enabled: bool,
     pub is_max_per_stream_enabled: Option<bool>,
     pub max_per_stream: Option<i64>,

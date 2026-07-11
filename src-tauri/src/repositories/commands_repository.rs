@@ -58,7 +58,7 @@ impl CommandsRepository for DatabaseService {
     async fn get_command_by_chat_trigger(&self, trigger: &String) -> Result<Option<Model>, String> {
         Entity::find()
             .filter(Expr::cust_with_values(
-                "json_extract(source, '$.trigger') = ?",
+                "json_extract(chat, '$.trigger') = ?",
                 [trigger],
             ))
             .one(&self.connection)

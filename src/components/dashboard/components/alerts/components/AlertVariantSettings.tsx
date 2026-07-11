@@ -9,7 +9,7 @@ import {
 	TextField,
 } from "@mui/material";
 import { convertFileSrc } from "@tauri-apps/api/core";
-import { AlertVariant, type IAlert, type IReward } from "@widy/sdk";
+import { AlertVariant, type IAlert } from "@widy/sdk";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NumericFormat } from "react-number-format";
@@ -24,8 +24,8 @@ const AlertVariantSettings = ({
 	value,
 	setValue,
 }: {
-	value: IAlert | IReward;
-	setValue: (updated: IAlert | IReward) => void;
+	value: IAlert;
+	setValue: (updated: IAlert) => void;
 }) => {
 	const [isPlaying, setIsPlaying] = useState(false);
 	const { appDataDir } = useSelector((state: AppState) => state.mainState);

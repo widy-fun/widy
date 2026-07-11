@@ -19,7 +19,6 @@ import type { AppState } from "../../../../../store";
 import { setReward } from "../../../../../store/slices/rewardsSlice";
 import ColorPicker from "../../../../ColorPicker";
 import OnOffSwitch from "../../../../OnOffSwitch";
-import AlertVariantSettings from "../../alerts/components/AlertVariantSettings";
 import styles from "../../settings/Settings.module.css";
 
 const RewardSettings = ({ onSave }: { onSave: () => Promise<void> }) => {
@@ -234,15 +233,6 @@ const RewardSettings = ({ onSave }: { onSave: () => Promise<void> }) => {
 								value={reward.points_currency_ratio}
 							/>
 						</div>
-					)}
-
-					{reward.type === RewardType.Alert && (
-						<AlertVariantSettings
-							value={reward}
-							setValue={(updated) => {
-								dispatch(setReward(updated as IReward));
-							}}
-						/>
 					)}
 					<div className={styles.settings}>
 						<div className={styles.label}>

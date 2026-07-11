@@ -4,7 +4,6 @@ use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    alerts::AlertVariant,
     donations::Media,
     rewards::{Platform, RewardType},
 };
@@ -27,14 +26,6 @@ pub struct Model {
     pub r#type: RewardType,
     pub points_currency_ratio: f32,
     pub media: Option<Media>,
-    pub image: Option<String>,
-    pub audio: Option<String>,
-    pub video: Option<String>,
-    pub alert_variant: AlertVariant,
-    pub audio_volume: u32,
-    pub video_volume: u32,
-    pub duration: u32,
-    pub delay: u32,
     #[sea_orm(uniq)]
     pub message_id: String,
     #[sea_orm(belongs_to, from = "message_id", to = "id")]
@@ -60,14 +51,6 @@ pub struct Redemption {
     pub r#type: RewardType,
     pub points_currency_ratio: f32,
     pub media: Option<Media>,
-    pub image: Option<String>,
-    pub audio: Option<String>,
-    pub video: Option<String>,
-    pub alert_variant: AlertVariant,
-    pub audio_volume: u32,
-    pub video_volume: u32,
-    pub duration: u32,
-    pub delay: u32,
     pub alert: Option<super::alerts::Alert>,
 }
 
