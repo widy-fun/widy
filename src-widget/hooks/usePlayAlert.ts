@@ -1,20 +1,16 @@
 import type { IAlert, IClientMessage, ISettings, MessageId } from "@widy/sdk";
 import { AlertVariant, AppEvent, RewardType } from "@widy/sdk";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
 import useAppEvents from "../../shared/hooks/useAppEvents";
-import getTestAlertMessage from "../../shared/utils/getTestAlertMessage";
 import getAlert from "../utils/getAlert";
 
 const usePlayAlert = () => {
-	const { t } = useTranslation();
 	const eventsService = useAppEvents();
 	const alertAudioRef = useRef<HTMLAudioElement>(new Audio());
 	const messageAudioRef = useRef<HTMLAudioElement>(new Audio());
 	const alertVideoRef = useRef<HTMLVideoElement>(
 		document.createElement("video"),
 	);
-	const alertsRef = useRef<IAlert[]>([]);
 	const settingsRef = useRef<ISettings | null>(null);
 	const messagesRef = useRef<IClientMessage[]>([]);
 	const [currentMessage, setCurrentMessage] = useState<IClientMessage>();
@@ -49,7 +45,6 @@ const usePlayAlert = () => {
 				if (newCurrentMessage) {
 					const newAlert = getAlert({
 						message: newCurrentMessage,
-						alerts: alertsRef.current,
 					});
 					if (newAlert) {
 						playMessage({ message: newCurrentMessage, alert: newAlert });
@@ -111,26 +106,6 @@ const usePlayAlert = () => {
 		[],
 	);
 
-	const testAlert = useCallback((id: string) => {
-		const urlParams = new URLSearchParams(window.location.search);
-		const group_id = urlParams.get("group_id");
-		const alert = alertsRef.current.find(
-			(alert) => alert.id === id && alert.group_id === group_id,
-		);
-		if (!alert) return;
-		const testMessage = getTestAlertMessage({
-			alert,
-			userName: t("alert.test_name"),
-			text: t("alert.test_text"),
-			type: alert.type,
-		});
-		if (!testMessage) return;
-
-		if (!messagesRef.current.length && settingsRef.current) {
-			setAlertAndMessage({ message: testMessage, alert });
-		}
-	}, []);
-
 	const skipMessage = useCallback(
 		(id: string) => {
 			if (currentMessage?.id === id) {
@@ -151,7 +126,7 @@ const usePlayAlert = () => {
 
 	const handleNewMessage = useCallback(
 		(message: IClientMessage) => {
-			const alert = getAlert({ message, alerts: alertsRef.current });
+			const alert = getAlert({ message });
 			if (alert) {
 				messagesRef.current = [...messagesRef.current, message];
 				if (messagesRef.current.length === 1) {
@@ -163,7 +138,7 @@ const usePlayAlert = () => {
 	);
 	const handleReplayMessage = useCallback(
 		(message: IClientMessage) => {
-			const alert = getAlert({ message, alerts: alertsRef.current });
+			const alert = getAlert({ message });
 			if (alert) {
 				replaysIdRef.current.add(message.id);
 				messagesRef.current = [message, ...messagesRef.current];
@@ -294,17 +269,6 @@ const usePlayAlert = () => {
 	}, [skipMessage]);
 
 	useEffect(() => {
-		const unsubscribe = eventsService.subscribe<string>(
-			AppEvent.TestAlert,
-			(id) => {
-				testAlert(id);
-			},
-		);
-
-		return () => unsubscribe();
-	}, [testAlert]);
-
-	useEffect(() => {
 		const unsubscribe = eventsService.subscribe<null>(
 			AppEvent.SkipPlayingAlert,
 			skipPlayingMessage,
@@ -312,17 +276,6 @@ const usePlayAlert = () => {
 
 		return () => unsubscribe();
 	}, [skipPlayingMessage]);
-
-	useEffect(() => {
-		const unsubscribe = eventsService.subscribe<IAlert[]>(
-			AppEvent.Alerts,
-			(alerts) => {
-				alertsRef.current = alerts;
-			},
-		);
-
-		return () => unsubscribe();
-	}, []);
 
 	useEffect(() => {
 		const unsubscribe = eventsService.subscribe<ISettings>(
@@ -333,7 +286,7 @@ const usePlayAlert = () => {
 					const message = messagesRef.current.at(0);
 
 					if (message) {
-						const alert = getAlert({ message, alerts: alertsRef.current });
+						const alert = getAlert({ message });
 						if (alert) {
 							playMessage({ message, alert });
 						}

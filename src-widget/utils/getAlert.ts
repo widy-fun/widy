@@ -1,29 +1,16 @@
-import { IAlert, IClientMessage, MessageType } from "@widy/sdk";
-import alertFromRedemption from "../../src/helpers/alertFromRedemption";
-import alertFromMessage from "./alertFromMessage";
+import { IClientMessage } from "@widy/sdk";
 
-const getAlert = ({
-	alerts,
-	message,
-}: {
-	alerts: IAlert[];
-	message: IClientMessage;
-}) => {
-	let alert: IAlert | undefined;
-	switch (message.type) {
-		case MessageType.Redemption:
-			if (message.redemption) {
-				alert = alertFromRedemption({
-					redemption: message.redemption,
-				});
-			}
-			break;
-
-		default:
-			alert = alertFromMessage({
-				alerts,
-				message: message,
-			});
+const getAlert = ({ message }: { message: IClientMessage }) => {
+	const urlParams = new URLSearchParams(window.location.search);
+	const group_id = urlParams.get("group_id");
+	let alert =
+		message.donation?.alert ||
+		message.follow?.alert ||
+		message.subscription?.alert ||
+		message.raid?.alert ||
+		message.redemption?.alert;
+	if (group_id !== alert?.group_id) {
+		return;
 	}
 	return alert;
 };

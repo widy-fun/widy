@@ -39,6 +39,7 @@ impl RedemptionsRepository for DatabaseService {
                 .set_audio_volume(redemption.audio_volume)
                 .set_duration(redemption.duration)
                 .set_delay(redemption.delay)
+                .set_alert(redemption.alert)
                 .set_message(
                     entity::messages::ActiveModel::builder()
                         .set_id(client_message.id)

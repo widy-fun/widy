@@ -7,6 +7,6 @@ pub async fn get_reward_by_title(
     database_service: State<'_, DatabaseService>,
     title: String,
     platform: Platform,
-) -> Result<Option<Model>, String> {
+) -> Result<Option<Reward>, String> {
     database_service.get_reward_by_title(&title, platform).await
 }

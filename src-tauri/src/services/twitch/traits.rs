@@ -368,7 +368,7 @@ pub trait TwitchApi: Send + Sync {
         &self,
         app: &AppHandle,
         auth: &TwitchAuth,
-        reward: &entity::rewards::Model,
+        reward: &entity::rewards::Reward,
     ) -> Result<(), String> {
         let database_service = app.state::<DatabaseService>();
         let reqwest_client = app.state::<reqwest::Client>();
@@ -427,7 +427,7 @@ pub trait TwitchApi: Send + Sync {
             .ok_or("Twitch reward create error".to_string())?;
 
         let _ = database_service
-            .create_reward(entity::rewards::Model {
+            .create_reward(entity::rewards::Reward {
                 external_id: Some(reward_id),
                 ..reward.clone()
             })

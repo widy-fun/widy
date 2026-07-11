@@ -28,6 +28,7 @@ impl SubscriptionsRepository for DatabaseService {
                 .set_tier(subscription.tier)
                 .set_total(subscription.total)
                 .set_cumulative_total(subscription.cumulative_total)
+                .set_alert(subscription.alert)
                 .set_message(
                     messages::ActiveModel::builder()
                         .set_id(client_message.id)

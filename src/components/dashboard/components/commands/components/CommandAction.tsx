@@ -1,10 +1,17 @@
+import CampaignIcon from "@mui/icons-material/Campaign";
+import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { Box } from "@mui/material";
-import { useSelector } from "react-redux";
+import { MessageType } from "@widy/sdk";
+import { useDispatch, useSelector } from "react-redux";
+import { setAlert } from "../../../../../../shared/slices/alertsSlice";
+import getDefaultAlert from "../../../../../helpers/getDefaultAlert";
 import type { AppState } from "../../../../../store";
-import CommandSourceCard from "./CommandSourceCard";
+import CommandSourceActionCard from "./CommandSourceActionCard";
 
 const CommandAction = () => {
 	const { command } = useSelector((state: AppState) => state.commandsState);
+	const dispatch = useDispatch();
+
 	return (
 		<Box
 			sx={{
@@ -14,17 +21,29 @@ const CommandAction = () => {
 				placeContent: "center",
 			}}
 		>
-			<CommandSourceCard
+			<CommandSourceActionCard
 				title="ChatBot"
 				description=""
-				path="commands/action/chat-bot"
-				isActive={!!command.action.chat_bot}
+				path="/dashboard/commands/action/chat-bot"
+				icon={<SmartToyIcon sx={{ width: 40, height: 40 }} />}
+				selected={!!command.chat_bot}
 			/>
-			<CommandSourceCard
+			<CommandSourceActionCard
 				title="Alert"
 				description=""
-				path="commands/action/alert"
-				isActive={!!command.action.alert}
+				path="/dashboard/alerts/new/alert"
+				onNavigate={() => {
+					dispatch(
+						setAlert({
+							...getDefaultAlert(),
+							command_id: command.id,
+							name: command.name,
+							type: MessageType.Command,
+						}),
+					);
+				}}
+				icon={<CampaignIcon sx={{ width: 40, height: 40 }} />}
+				selected={!!command.alert}
 			/>
 		</Box>
 	);

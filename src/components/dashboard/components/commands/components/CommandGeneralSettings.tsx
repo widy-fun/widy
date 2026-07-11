@@ -5,7 +5,7 @@ import type { AppState } from "../../../../../store";
 import { setCommand } from "../../../../../store/slices/commandsSlice";
 import styles from "../../settings/Settings.module.css";
 
-const CommandSettings = () => {
+const CommandGeneralSettings = () => {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const { command } = useSelector((state: AppState) => state.commandsState);
@@ -44,4 +44,4 @@ const CommandSettings = () => {
 		</div>
 	);
 };
-export default CommandSettings;
+export default CommandGeneralSettings;

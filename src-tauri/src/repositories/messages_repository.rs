@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use entity::{donations, followers, messages::*, raids, redemptions, subscriptions};
+use entity::{commands, donations, followers, messages::*, raids, redemptions, subscriptions};
 
 use crate::services::DatabaseService;
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter, QueryOrder, QuerySelect};
@@ -36,6 +36,7 @@ impl MessagesRepository for DatabaseService {
             .left_join(subscriptions::Entity)
             .left_join(redemptions::Entity)
             .left_join(raids::Entity);
+        // .left_join(commands::Entity);
 
         if *exclude_donations {
             query = query.filter(donations::Column::Id.is_null());

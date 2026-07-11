@@ -26,7 +26,7 @@ const CreateCommand = () => {
 							alertSeverity: AlertSeverity.success,
 						}),
 					);
-					navigate(-1);
+					navigate("/dashboard/commands");
 				} catch (error) {
 					const err = error as SerializedError;
 					dispatch(

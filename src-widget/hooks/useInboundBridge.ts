@@ -272,18 +272,13 @@ const useInboundBridge = (widget?: IWidget) => {
 							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
 						});
 						break;
-					case "widgets:alert:test.subscription":
-						eventsService.subscribe<string>(AppEvent.TestAlert, (data) => {
-							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
-						});
-						break;
 					case "widgets:alert:skip-playing.subscription":
 						eventsService.subscribe<null>(AppEvent.SkipPlayingAlert, (data) => {
 							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
 						});
 						break;
-					case "widgets:alert:alerts.subscription":
-						eventsService.subscribe<IAlert[]>(AppEvent.Alerts, (data) => {
+					case "widgets:alert:update.subscription":
+						eventsService.subscribe<IAlert>(AppEvent.UpdateAlert, (data) => {
 							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
 						});
 						break;

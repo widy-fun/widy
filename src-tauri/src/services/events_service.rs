@@ -25,7 +25,7 @@ use crate::{
         DatabaseService, EventMessage, ExchangeRatesService, MediaService, TtsService,
         WebSocketBroadcaster,
     },
-    utils::{remove_black_listed_words, remove_links},
+    utils::{get_alert_by_amount, remove_black_listed_words, remove_links},
 };
 
 #[derive(Serialize, Clone, Debug)]
@@ -48,7 +48,7 @@ pub enum AppEvent {
     PlayMedia,
     SkipMedia,
     ReplayMedia,
-    Alerts,
+    UpdateAlert,
     MakeAudioError,
     Settings,
     MediaSettings,
@@ -61,7 +61,6 @@ pub enum AppEvent {
     UpdateAucFighterMatch,
     CancelAucFighterMatch,
     AucFighterSettings,
-    TestAlert,
     Goal,
     CreateDonationAccount,
     WidgetViewStorage,
@@ -93,7 +92,7 @@ impl AppEvent {
             AppEvent::MediaPlayed => "MediaPlayed",
             AppEvent::AlertPlayed => "AlertPlayed",
             AppEvent::MakeAudioError => "MakeAudioError",
-            AppEvent::Alerts => "Alerts",
+            AppEvent::UpdateAlert => "UpdateAlert",
             AppEvent::ReplayAlert => "AlertsSettings",
             AppEvent::Settings => "Settings",
             AppEvent::MediaSettings => "MediaSettings",
@@ -106,7 +105,6 @@ impl AppEvent {
             AppEvent::UpdateAucFighterMatch => "UpdateAucFighterMatch",
             AppEvent::CancelAucFighterMatch => "CancelAucFighterMatch",
             AppEvent::AucFighterSettings => "AucFighterSettings",
-            AppEvent::TestAlert => "TestAlert",
             AppEvent::Goal => "Goal",
             AppEvent::CreateDonationAccount => "CreateDonationAccount",
             AppEvent::WidgetViewStorage => "WidgetViewStorage",
@@ -455,10 +453,13 @@ impl EventsService {
                 service,
                 service_id,
                 played: false,
-                exchanged_amount: Some(exchanged_amount),
+                exchanged_amount: Some(exchanged_amount.clone()),
                 exchanged_currency: Some(settings.currency.clone()),
                 created_at,
                 media: media.clone(),
+                alert: get_alert_by_amount(app, exchanged_amount, MessageType::Donation)
+                    .await
+                    .unwrap_or(None),
             }),
         };
 

@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { IReward } from "@widy/sdk";
-import { DEFAULT_REWARD } from "../../constants";
+import getDefaultReward from "../../helpers/getDefaultReward";
 
 interface RewardsState {
 	reward: IReward;
 }
 
 const initialState: RewardsState = {
-	reward: DEFAULT_REWARD,
+	reward: getDefaultReward(),
 };
 
 export const rewardsSlice = createSlice({

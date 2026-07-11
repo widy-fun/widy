@@ -6,6 +6,6 @@ use tauri::State;
 pub async fn get_alert_by_id(
     database_service: State<'_, DatabaseService>,
     id: String,
-) -> Result<Option<Model>, String> {
+) -> Result<Option<Alert>, String> {
     database_service.get_alert_by_id(id).await
 }

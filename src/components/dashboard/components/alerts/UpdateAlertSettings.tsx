@@ -42,31 +42,29 @@ const UpdateAlertSettings = () => {
 	}, [data, dispatch]);
 
 	return (
-		alert && (
-			<AlertSettings
-				name={alert.name.toUpperCase()}
-				isDefault={alert.id === "default"}
-				onSave={async () => {
-					try {
-						await updateAlertSettings({ alert }).unwrap();
-						dispatch(
-							showSnackBar({
-								message: t("success"),
-								alertSeverity: AlertSeverity.success,
-							}),
-						);
-					} catch (error) {
-						const err = error as SerializedError;
-						dispatch(
-							showSnackBar({
-								message: err.message as string,
-								alertSeverity: AlertSeverity.error,
-							}),
-						);
-					}
-				}}
-			></AlertSettings>
-		)
+		<AlertSettings
+			name={alert.name.toUpperCase()}
+			isDefault={alert.id === "default"}
+			onSave={async () => {
+				try {
+					await updateAlertSettings({ alert }).unwrap();
+					dispatch(
+						showSnackBar({
+							message: t("success"),
+							alertSeverity: AlertSeverity.success,
+						}),
+					);
+				} catch (error) {
+					const err = error as SerializedError;
+					dispatch(
+						showSnackBar({
+							message: err.message as string,
+							alertSeverity: AlertSeverity.error,
+						}),
+					);
+				}
+			}}
+		></AlertSettings>
 	);
 };
 export default UpdateAlertSettings;

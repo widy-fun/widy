@@ -1,11 +1,15 @@
 pub mod copy_assets_to_static;
 pub mod download_widget;
+pub mod get_alert_by_amount;
+pub mod get_random_alert;
 pub mod register_shortcuts;
 pub mod remove_black_listed_words;
 pub mod remove_links;
 pub mod validate_csp;
 pub use copy_assets_to_static::*;
 pub use download_widget::*;
+pub use get_alert_by_amount::*;
+pub use get_random_alert::*;
 pub use register_shortcuts::*;
 pub use remove_black_listed_words::*;
 pub use remove_links::*;

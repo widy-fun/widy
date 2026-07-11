@@ -39,6 +39,8 @@ pub struct Model {
     pub message_id: String,
     #[sea_orm(belongs_to, from = "message_id", to = "id")]
     pub message: HasOne<super::messages::Entity>,
+    #[sea_orm(column_type = "Json")]
+    pub alert: Option<super::alerts::Alert>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, DerivePartialModel)]
@@ -66,6 +68,7 @@ pub struct Redemption {
     pub video_volume: u32,
     pub duration: u32,
     pub delay: u32,
+    pub alert: Option<super::alerts::Alert>,
 }
 
 impl ActiveModelBehavior for ActiveModel {}

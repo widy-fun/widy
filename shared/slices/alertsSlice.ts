@@ -1,13 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { IAlert, ITextStyle } from "@widy/sdk";
+import getDefaultAlert from "../../src/helpers/getDefaultAlert";
 
 interface AlertsState {
-	alert: IAlert | null;
+	alert: IAlert;
 	playingAlertId: string;
 }
 
 const initialState: AlertsState = {
-	alert: null,
+	alert: getDefaultAlert(),
 	playingAlertId: "",
 };
 

@@ -5,6 +5,6 @@ use tauri::State;
 #[tauri::command]
 pub async fn get_rewards(
     database_service: State<'_, DatabaseService>,
-) -> Result<Vec<Model>, String> {
+) -> Result<Vec<Reward>, String> {
     database_service.get_rewards().await
 }

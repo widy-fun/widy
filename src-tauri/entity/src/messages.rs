@@ -36,6 +36,8 @@ pub enum MessageType {
     Raid,
     #[sea_orm(string_value = "Redemption")]
     Redemption,
+    #[sea_orm(string_value = "Command")]
+    Command,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, DerivePartialModel)]

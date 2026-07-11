@@ -3,6 +3,8 @@
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
+use crate::rewards::Platform;
+
 #[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "commands")]
@@ -12,9 +14,13 @@ pub struct Model {
     pub name: String,
     pub description: Option<String>,
     #[sea_orm(column_type = "JsonBinary")]
-    pub source: Source,
+    pub chat: Option<ChatSource>,
     #[sea_orm(column_type = "JsonBinary")]
-    pub action: Action,
+    pub timer: Option<TimerSource>,
+    #[sea_orm(column_type = "JsonBinary")]
+    pub chat_bot: Option<ChatBotAction>,
+    #[sea_orm(column_type = "JsonBinary")]
+    pub alert: Option<super::alerts::Alert>,
     pub source_type: CommandSourceType,
 }
 
@@ -24,26 +30,22 @@ pub struct Command {
     pub id: String,
     pub name: String,
     pub description: Option<String>,
-    pub source: Source,
-    pub action: Action,
+    pub chat: Option<ChatSource>,
+    pub timer: Option<TimerSource>,
+    pub chat_bot: Option<ChatBotAction>,
+    pub alert: Option<super::alerts::Alert>,
     pub source_type: CommandSourceType,
 }
 
 impl ActiveModelBehavior for ActiveModel {}
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
-#[serde(untagged)]
-pub enum Source {
-    Chat(ChatSource),
-    Custom(CustomSource),
-}
 #[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Serialize, Deserialize, Eq)]
 #[sea_orm(rs_type = "String", db_type = "Text")]
 pub enum CommandSourceType {
     #[sea_orm(string_value = "Chat")]
     Chat,
-    #[sea_orm(string_value = "Custom")]
-    Custom,
+    #[sea_orm(string_value = "Timer")]
+    Timer,
     #[sea_orm(string_value = "None")]
     None,
 }
@@ -51,23 +53,35 @@ pub enum CommandSourceType {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Eq, FromJsonQueryResult)]
 pub struct ChatSource {
     pub trigger: String,
+    pub platforms: Vec<Platform>,
+    pub user_levels: Vec<UserLevel>,
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Eq, FromJsonQueryResult)]
-pub struct CustomSource {
-    pub text: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Eq, FromJsonQueryResult)]
-pub struct Action {
-    pub chat_bot: Option<ChatBotAction>,
-    pub alert: Option<AlertAction>,
+pub struct TimerSource {
+    pub message: String,
+    pub interval: u32,
+    pub lines: u32,
+    pub alias: Option<String>,
+    pub post_type: PostType,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Eq, FromJsonQueryResult)]
 pub struct ChatBotAction {
     pub message: String,
+    pub replay: bool,
 }
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Eq, FromJsonQueryResult)]
-pub struct AlertAction {
-    pub message: String,
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
+pub enum UserLevel {
+    Streamer,
+    Moderator,
+    Vip,
+    Subscriber,
+    Follower,
+    Anyone,
+}
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
+pub enum PostType {
+    Normal,
+    Announcement,
 }

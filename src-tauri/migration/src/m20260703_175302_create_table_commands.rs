@@ -14,8 +14,10 @@ impl MigrationTrait for Migration {
                     .col(pk_uuid("id"))
                     .col(string("name"))
                     .col(string_null("description"))
-                    .col(json_binary("source"))
-                    .col(json_binary("action"))
+                    .col(json_binary_null("chat"))
+                    .col(json_binary_null("timer"))
+                    .col(json_binary_null("chat_bot"))
+                    .col(json_binary_null("alert"))
                     .col(string("source_type"))
                     .to_owned(),
             )

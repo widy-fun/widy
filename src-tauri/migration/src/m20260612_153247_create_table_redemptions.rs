@@ -33,6 +33,7 @@ impl MigrationTrait for Migration {
                     .col(integer("video_volume"))
                     .col(integer("duration"))
                     .col(integer("delay"))
+                    .col(json_null("alert"))
                     .to_owned(),
             )
             .await

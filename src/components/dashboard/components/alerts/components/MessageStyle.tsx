@@ -7,12 +7,7 @@ const MessageStyle = () => {
 	const { alert } = useSelector((state: AppState) => state.alertsState);
 
 	return (
-		alert && (
-			<TextStyle
-				textStyle={alert.message_style}
-				setTextStyle={setMessageStyle}
-			/>
-		)
+		<TextStyle textStyle={alert.message_style} setTextStyle={setMessageStyle} />
 	);
 };
 export default MessageStyle;

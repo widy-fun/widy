@@ -20,6 +20,7 @@ impl MigrationTrait for Migration {
                     .col(integer("viewers"))
                     .col(boolean("played"))
                     .col(integer("created_at"))
+                    .col(json_null("alert"))
                     .to_owned(),
             )
             .await

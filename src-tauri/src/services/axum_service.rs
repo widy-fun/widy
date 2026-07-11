@@ -335,7 +335,7 @@ impl AxumService {
 
     async fn get_alerts(
         State(state): State<AxumState>,
-    ) -> Result<Json<Vec<entity::alerts::Model>>, StatusCode> {
+    ) -> Result<Json<Vec<entity::alerts::Alert>>, StatusCode> {
         let database_service = state.app.state::<DatabaseService>();
         let alerts = database_service
             .get_alerts()
@@ -483,16 +483,6 @@ impl AxumService {
             tx.send(Message::Text(json.into()))
                 .map_err(|e| e.to_string())?;
         }
-
-        let alerts = database_service.get_alerts().await?;
-        let json = serde_json::to_string(&EventMessage {
-            event: AppEvent::Alerts,
-            data: alerts,
-        })
-        .map_err(|e| e.to_string())?;
-
-        tx.send(Message::Text(json.into()))
-            .map_err(|e| e.to_string())?;
 
         let auc_fighter_settings = database_service.get_auc_fighter_settings().await?;
         if let Some(auc_fighter_settings) = auc_fighter_settings {

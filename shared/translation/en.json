@@ -19,6 +19,10 @@
 	"api_key": "Api key",
 	"disconnected": "Disconnected",
 	"documentation": "Documentation",
+	"configure": "Configure",
+	"delete": "Delete",
+	"test": "Test",
+	"sure_delete": "Are you sure you want to delete this variation?",
 	"authorization": {
 		"title": "Authorization",
 		"code": "Request code",
@@ -218,7 +222,6 @@
 		"message": "Message",
 		"test_name": "Test",
 		"test_text": "This is a test alert!",
-		"configure": "Configure",
 		"test": "Test",
 		"add_new_variant": "Add new variant",
 		"new_variant": "New variant",
@@ -230,8 +233,6 @@
 		"Random": "Random",
 		"AmountIsGreater": "Amount is greater",
 		"AmountIsEqual": "Amount is equal",
-		"delete": "Delete",
-		"sure_delete": "Are you sure you want to delete this variation?",
 		"type": "Type",
 		"Donation": "Donation",
 		"Subscription": "Subscription",
@@ -242,7 +243,9 @@
 		"video_volume": "Video volume",
 		"video": "Video",
 		"duration": "Duration",
-		"delay": "Delay"
+		"delay": "Delay",
+		"Redemption": "Redemption",
+		"Command": "Command"
 	},
 	"alert_variant": {
 		"Image": "Image",
@@ -449,18 +452,28 @@
 		"name": "Name",
 		"description": "Description",
 		"source": "Source",
-		"action": "Action"
+		"action": "Action",
+		"delete": "Delete",
+		"confirm_delete": "Are you sure you want to delete this command?"
 	},
 	"chat_source": {
 		"title": "Chat",
-		"trigger": "Trigger"
+		"trigger": "Trigger",
+		"platforms": "Platforms",
+		"user_levels": "Users levels"
 	},
-	"custom_source": {
-		"title": "Custom",
-		"text": "Text"
+	"timer_source": {
+		"title": "Timer",
+		"message": "Message",
+		"post_type": "Post type",
+		"alias": "Alias",
+		"Normal": "Normal",
+		"interval": "Interval",
+		"Announcement": "Announcement"
 	},
 	"chat_bot_action": {
 		"title": "Chat bot",
-		"text": "Text"
+		"text": "Text",
+		"replay": "Should replay"
 	}
 }

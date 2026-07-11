@@ -24,6 +24,7 @@ impl MigrationTrait for Migration {
                     .col(double_null("exchanged_amount"))
                     .col(string_null("exchanged_currency"))
                     .col(big_integer("created_at"))
+                    .col(json_null("alert"))
                     .to_owned(),
             )
             .await

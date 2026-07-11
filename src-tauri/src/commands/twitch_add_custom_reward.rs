@@ -7,7 +7,7 @@ use crate::services::twitch::{traits::TwitchApi, TwitchService};
 pub async fn twitch_add_custom_reward(
     app: AppHandle,
     twitch_service: State<'_, TwitchService>,
-    reward: entity::rewards::Model,
+    reward: entity::rewards::Reward,
 ) -> Result<(), String> {
     let auth = twitch_service.check_auth(&app, ServiceType::Twitch).await?;
     twitch_service

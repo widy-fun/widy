@@ -14,7 +14,7 @@ import { NumericFormat } from "react-number-format";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { useGetServiceByIdQuery } from "../../../../../api/servicesApi";
-import { DEFAULT_REWARD } from "../../../../../constants";
+import getDefaultReward from "../../../../../helpers/getDefaultReward";
 import type { AppState } from "../../../../../store";
 import { setReward } from "../../../../../store/slices/rewardsSlice";
 import ColorPicker from "../../../../ColorPicker";
@@ -255,7 +255,7 @@ const RewardSettings = ({ onSave }: { onSave: () => Promise<void> }) => {
 									setReward({
 										...reward,
 										background_color: reward.external_id
-											? DEFAULT_REWARD.background_color
+											? getDefaultReward().background_color
 											: hex,
 									}),
 								);
@@ -321,7 +321,7 @@ const RewardSettings = ({ onSave }: { onSave: () => Promise<void> }) => {
 						onClick={handleSubmit(onSubmit)}
 						disabled={isPending}
 					>
-						{t("save")}
+						{reward.type === RewardType.Alert ? t("next") : t("save")}
 					</Button>
 					<Button onClick={() => navigate(-1)}>{t("back")}</Button>
 				</div>

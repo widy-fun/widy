@@ -1,8 +1,8 @@
 use async_trait::async_trait;
 use chrono::Utc;
 use entity::{
-    goals::GoalType, raids, redemptions::Redemption, rewards::Platform, services::ServiceType,
-    settings::Currency, subscriptions::Subscription,
+    goals::GoalType, messages::MessageType, raids, redemptions::Redemption, rewards::Platform,
+    services::ServiceType, settings::Currency, subscriptions::Subscription,
 };
 use futures::{SinkExt, StreamExt};
 use serde_json::json;
@@ -37,6 +37,7 @@ use crate::{
         UnifiedBadge, UnifiedChatMessage, UnifiedChatMessageDelete, UnifiedContent,
         UnifiedMetadata, UnifiedSender,
     },
+    utils::get_random_alert,
 };
 
 pub struct KickService {
@@ -182,6 +183,7 @@ impl KickService {
                             duration: reward.duration,
                             delay: reward.delay,
                             message_id: message_id,
+                            alert: reward.alert,
                         };
                         let _ = EventsService::redemption(redemption, reward.r#type, &app).await;
                     }
@@ -206,6 +208,9 @@ impl KickService {
                         tier: "1".to_string(),
                         cumulative_total: None,
                         total: data.gifted_total,
+                        alert: get_random_alert(app, MessageType::Subscription)
+                            .await
+                            .unwrap_or(None),
                     };
                     let _ =
                         EventsService::subscription(subscription, GoalType::KickSubscription, &app)
@@ -231,6 +236,9 @@ impl KickService {
                         tier: data.months.to_string(),
                         cumulative_total: None,
                         total: 1,
+                        alert: get_random_alert(app, MessageType::Subscription)
+                            .await
+                            .unwrap_or(None),
                     };
                     let _ =
                         EventsService::subscription(subscription, GoalType::KickSubscription, &app)
@@ -253,6 +261,9 @@ impl KickService {
                         from_broadcaster_user_id: data.host_username.clone(),
                         from_broadcaster_user_name: data.host_username,
                         created_at,
+                        alert: get_random_alert(app, MessageType::Raid)
+                            .await
+                            .unwrap_or(None),
                     };
                     let _ = EventsService::raid(raid, &app).await;
                 }
@@ -282,6 +293,7 @@ impl KickService {
                         &data.content,
                         app,
                         chanel_info_response.user_id.clone(),
+                        Some(data.id),
                     )
                     .await;
                 }

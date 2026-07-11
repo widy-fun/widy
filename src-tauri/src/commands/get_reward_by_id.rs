@@ -6,6 +6,6 @@ use tauri::State;
 pub async fn get_reward_by_id(
     database_service: State<'_, DatabaseService>,
     id: String,
-) -> Result<Option<Model>, String> {
+) -> Result<Option<Reward>, String> {
     database_service.get_reward_by_id(&id).await
 }

@@ -36,6 +36,8 @@ pub struct Model {
     pub is_global_cooldown_enabled: Option<bool>,
     pub global_cooldown_seconds: Option<i64>,
     pub should_redemptions_skip_request_queue: Option<bool>,
+    #[sea_orm(has_one)]
+    pub alert: HasOne<super::alerts::Entity>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, DerivePartialModel)]
@@ -67,6 +69,9 @@ pub struct Reward {
     pub is_global_cooldown_enabled: Option<bool>,
     pub global_cooldown_seconds: Option<i64>,
     pub should_redemptions_skip_request_queue: Option<bool>,
+    #[sea_orm(nested)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub alert: Option<super::alerts::Alert>,
 }
 
 impl ActiveModelBehavior for ActiveModel {}

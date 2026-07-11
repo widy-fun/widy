@@ -21,6 +21,8 @@ pub struct Model {
     pub followed_at: i64,
     #[sea_orm(belongs_to, from = "message_id", to = "id")]
     pub message: HasOne<super::messages::Entity>,
+    #[sea_orm(column_type = "Json")]
+    pub alert: Option<super::alerts::Alert>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, DerivePartialModel)]
@@ -34,6 +36,7 @@ pub struct Follow {
     pub played: bool,
     pub service: ServiceType,
     pub followed_at: i64,
+    pub alert: Option<super::alerts::Alert>,
 }
 
 impl ActiveModelBehavior for ActiveModel {}

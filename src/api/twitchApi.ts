@@ -26,14 +26,14 @@ export const twitchApi = api.injectEndpoints({
 				command: "twitch_add_custom_reward",
 				args,
 			}),
-			invalidatesTags: ["Rewards"],
+			invalidatesTags: ["Rewards", "Alerts"],
 		}),
 		twitchRemoveCustomReward: builder.mutation<void, { id: string }>({
 			query: (args) => ({
 				command: "twitch_remove_custom_reward",
 				args,
 			}),
-			invalidatesTags: ["Rewards"],
+			invalidatesTags: ["Rewards", "Alerts"],
 		}),
 	}),
 });

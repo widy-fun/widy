@@ -24,6 +24,7 @@ impl RaidsRepository for DatabaseService {
                 .set_from_broadcaster_user_id(raid.from_broadcaster_user_id)
                 .set_from_broadcaster_user_name(raid.from_broadcaster_user_name)
                 .set_viewers(raid.viewers)
+                .set_alert(raid.alert)
                 .set_message(
                     messages::ActiveModel::builder()
                         .set_id(client_message.id)

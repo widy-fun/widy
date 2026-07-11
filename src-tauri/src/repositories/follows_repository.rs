@@ -23,6 +23,7 @@ impl FollowsRepository for DatabaseService {
                 .set_service_id(follow.service_id)
                 .set_user_name(follow.user_name)
                 .set_user_id(follow.user_id)
+                .set_alert(follow.alert)
                 .set_message(
                     messages::ActiveModel::builder()
                         .set_id(client_message.id)

@@ -235,7 +235,7 @@ pub trait KickApi: Send + Sync {
         &self,
         app: &AppHandle,
         auth: &KickAuth,
-        reward: &entity::rewards::Model,
+        reward: &entity::rewards::Reward,
     ) -> Result<(), String> {
         let database_service = app.state::<DatabaseService>();
         let reqwest_client = app.state::<reqwest::Client>();
@@ -279,7 +279,7 @@ pub trait KickApi: Send + Sync {
             .ok_or("Kick reward create error".to_string())?;
 
         let _ = database_service
-            .create_reward(entity::rewards::Model {
+            .create_reward(entity::rewards::Reward {
                 external_id: Some(reward_id),
                 ..reward.clone()
             })
@@ -333,6 +333,7 @@ pub trait KickApi: Send + Sync {
         access_token: String,
         content: String,
         broadcaster_user_id: u64,
+        reply_to_message_id: Option<String>,
     ) -> Result<(), String> {
         let response = reqwest_client
             .post("https://api.kick.com/public/v1/chat")
@@ -340,7 +341,7 @@ pub trait KickApi: Send + Sync {
             .json(&PostChatMessageBody {
                 broadcaster_user_id,
                 content,
-                reply_to_message_id: None,
+                reply_to_message_id,
                 r#type: PostChatMessageType::Bot,
             })
             .send()

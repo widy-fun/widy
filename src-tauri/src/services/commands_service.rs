@@ -17,6 +17,7 @@ impl CommandsService {
         trigger: &String,
         app: &AppHandle,
         broadcaster_user_id: u64,
+        reply_to_message_id: Option<String>,
     ) -> Result<(), String> {
         let database_service = app.state::<DatabaseService>();
         let kick_bot_service = app.state::<KickBotService>();
@@ -36,11 +37,11 @@ impl CommandsService {
                     &reqwest_client,
                     auth.access_token,
                     command
-                        .action
                         .chat_bot
                         .ok_or("ChatBot message empty".to_string())?
                         .message,
                     broadcaster_user_id,
+                    reply_to_message_id,
                 )
                 .await;
         }
@@ -52,6 +53,7 @@ impl CommandsService {
         trigger: &String,
         app: &AppHandle,
         broadcaster_id: String,
+        reply_parent_message_id: Option<String>,
     ) -> Result<(), String> {
         let database_service = app.state::<DatabaseService>();
         let twitch_bot_service = app.state::<TwitchBotService>();
@@ -71,7 +73,6 @@ impl CommandsService {
                     &reqwest_client,
                     auth.access_token,
                     command
-                        .action
                         .chat_bot
                         .ok_or("ChatBot message empty".to_string())?
                         .message,

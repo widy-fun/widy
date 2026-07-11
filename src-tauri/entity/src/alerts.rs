@@ -1,10 +1,10 @@
-use sea_orm::{entity::prelude::*, FromJsonQueryResult};
+use sea_orm::{entity::prelude::*, ActiveValue::Set, FromJsonQueryResult, HasOneModel::NotSet};
 use serde::{Deserialize, Serialize};
 
 use crate::messages::MessageType;
 
 #[sea_orm::model]
-#[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "alerts")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
@@ -28,9 +28,44 @@ pub struct Model {
     pub title_style: TextStyle,
     #[sea_orm(column_type = "Text")]
     pub message_style: TextStyle,
+    #[sea_orm(uniq)]
+    pub reward_id: Option<String>,
+    #[sea_orm(belongs_to, from = "reward_id", to = "id")]
+    pub reward: HasOne<super::rewards::Entity>,
+    #[sea_orm(uniq)]
+    pub command_id: Option<String>,
+    #[sea_orm(belongs_to, from = "command_id", to = "id")]
+    pub command: HasOne<super::commands::Entity>,
 }
 
 impl ActiveModelBehavior for ActiveModel {}
+
+#[derive(
+    Debug, Clone, Serialize, Deserialize, PartialEq, DerivePartialModel, FromJsonQueryResult,
+)]
+#[sea_orm(entity = "Entity")]
+pub struct Alert {
+    pub id: String,
+    pub r#type: MessageType,
+    pub audio: Option<String>,
+    pub audio_volume: u32,
+    pub image: Option<String>,
+    pub alert_variant: AlertVariant,
+    pub video: Option<String>,
+    pub video_volume: u32,
+    pub group_id: String,
+    pub name: String,
+    pub view_type: ViewType,
+    pub status: bool,
+    pub amount: u32,
+    pub delay: u32,
+    pub duration: u32,
+    pub variation_conditions: AlertVariationConditions,
+    pub title_style: TextStyle,
+    pub message_style: TextStyle,
+    pub reward_id: Option<String>,
+    pub command_id: Option<String>,
+}
 
 #[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Eq, Deserialize, Serialize)]
 #[sea_orm(rs_type = "String", db_type = "Text")]
@@ -91,4 +126,33 @@ pub enum TextAnimation {
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 pub enum TextAnimationVariant {
     AllText,
+}
+
+impl From<Alert> for ActiveModelEx {
+    fn from(value: Alert) -> Self {
+        ActiveModelEx {
+            id: Set(value.id),
+            r#type: Set(value.r#type),
+            audio: Set(value.audio),
+            audio_volume: Set(value.audio_volume),
+            image: Set(value.image),
+            alert_variant: Set(value.alert_variant),
+            video: Set(value.video),
+            video_volume: Set(value.video_volume),
+            group_id: Set(value.group_id),
+            name: Set(value.name),
+            view_type: Set(value.view_type),
+            status: Set(value.status),
+            amount: Set(value.amount),
+            delay: Set(value.delay),
+            duration: Set(value.duration),
+            variation_conditions: Set(value.variation_conditions),
+            title_style: Set(value.title_style),
+            message_style: Set(value.message_style),
+            reward_id: Set(value.reward_id),
+            reward: NotSet,
+            command_id: Set(value.command_id),
+            command: NotSet,
+        }
+    }
 }

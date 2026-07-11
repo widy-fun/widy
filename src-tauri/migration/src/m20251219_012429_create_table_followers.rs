@@ -19,6 +19,7 @@ impl MigrationTrait for Migration {
                     .col(string("service"))
                     .col(boolean("played"))
                     .col(integer("followed_at"))
+                    .col(json_null("alert"))
                     .to_owned(),
             )
             .await

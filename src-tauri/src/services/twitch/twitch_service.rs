@@ -12,12 +12,14 @@ use crate::{
         EventsService, FragmentKind, ReplyInfo, SenderRoles, UnifiedBadge, UnifiedChatMessage,
         UnifiedChatMessageDelete, UnifiedContent, UnifiedMetadata, UnifiedSender,
     },
+    utils::get_random_alert,
 };
 use async_trait::async_trait;
 use chrono::Utc;
 use entity::{
     followers::Follow,
     goals::GoalType,
+    messages::MessageType,
     raids,
     redemptions::Redemption,
     rewards::Platform,
@@ -236,6 +238,7 @@ impl TwitchService {
                                 duration: reward.duration,
                                 delay: reward.delay,
                                 message_id: message_id,
+                                alert: reward.alert,
                             };
                             let _ =
                                 EventsService::redemption(redemption, reward.r#type, &app).await;
@@ -256,6 +259,9 @@ impl TwitchService {
                         played: false,
                         service: ServiceType::Twitch,
                         followed_at: created_at,
+                        alert: get_random_alert(app, MessageType::Follow)
+                            .await
+                            .unwrap_or(None),
                     };
 
                     let _ = EventsService::follow(follow, GoalType::TwitchFollow, app).await;
@@ -279,6 +285,9 @@ impl TwitchService {
                         tier: event.tier,
                         cumulative_total: None,
                         total: 1,
+                        alert: get_random_alert(app, MessageType::Subscription)
+                            .await
+                            .unwrap_or(None),
                     };
                     let _ = EventsService::subscription(
                         subscription,
@@ -306,6 +315,9 @@ impl TwitchService {
                         tier: event.tier,
                         cumulative_total: event.cumulative_total,
                         total: event.total,
+                        alert: get_random_alert(app, MessageType::Subscription)
+                            .await
+                            .unwrap_or(None),
                     };
                     let _ = EventsService::subscription(
                         subscription,
@@ -333,6 +345,9 @@ impl TwitchService {
                         tier: event.tier,
                         cumulative_total: Some(event.cumulative_months),
                         total: 1,
+                        alert: get_random_alert(app, MessageType::Subscription)
+                            .await
+                            .unwrap_or(None),
                     };
                     let _ = EventsService::subscription(
                         subscription,
@@ -356,6 +371,9 @@ impl TwitchService {
                         from_broadcaster_user_id: event.from_broadcaster_user_id,
                         from_broadcaster_user_name: event.from_broadcaster_user_name,
                         created_at,
+                        alert: get_random_alert(app, MessageType::Raid)
+                            .await
+                            .unwrap_or(None),
                     };
                     let _ = EventsService::raid(raid, &app).await;
                 }
@@ -389,6 +407,7 @@ impl TwitchService {
                         &event.message.text,
                         app,
                         event.broadcaster_user_id,
+                        Some(event.message_id),
                     )
                     .await;
                 }

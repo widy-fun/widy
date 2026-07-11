@@ -1,15 +1,16 @@
 import {
-	AlertVariant,
 	CommandSourceType,
+	IChatBotAction,
+	IChatSource,
 	ICommand,
-	IReward,
 	ITextStyle,
+	ITimerSource,
 	Platform,
-	RewardType,
+	PostType,
 	TextAnimation,
 	TextAnimationVariant,
+	UserLevel,
 } from "@widy/sdk";
-import i18n from "../shared/i18n/i18n";
 
 export const MENU_WIDTH = 260;
 export const MENU_WIDTH_MD = 64;
@@ -70,37 +71,31 @@ export const FILE_FILTERS = {
 	},
 };
 
-export const DEFAULT_REWARD: IReward = {
-	id: crypto.randomUUID(),
-	platform: Platform.Twitch,
-	type: RewardType.Alert,
-	title: i18n.t("reward.new"),
-	description: "",
-	cost: 100,
-	background_color: "#1976d2",
-	is_user_input_required: false,
-	alert_variant: AlertVariant.ImageAndAudio,
-	audio_volume: 50,
-	video_volume: 50,
-	duration: 3000,
-	delay: 0,
-	is_enabled: true,
-	points_currency_ratio: 1,
-	audio: "alert.mp3",
-	video: "video.mp4",
-	image: "image.gif",
-	global_cooldown_seconds: 0,
-	is_global_cooldown_enabled: false,
+export const DEFAULT_TIMER_SOURCE: ITimerSource = {
+	message: "Hello",
+	interval: 300,
+	lines: 2,
+	post_type: PostType.Normal,
+};
+
+export const DEFAULT_CHAT_SOURCE: IChatSource = {
+	trigger: "!command",
+	platforms: [Platform.Kick, Platform.Twitch],
+	user_levels: [
+		UserLevel.Follower,
+		UserLevel.Moderator,
+		UserLevel.Streamer,
+		UserLevel.Subscriber,
+		UserLevel.Vip,
+		UserLevel.Anyone,
+	],
 };
 
 export const DEFAULT_COMMAND: ICommand = {
 	id: crypto.randomUUID(),
 	name: "command",
 	description: "",
-	source: {
-		trigger: "!command",
-	},
-	action: {},
+	chat: DEFAULT_CHAT_SOURCE,
 	source_type: CommandSourceType.None,
 };
 
@@ -111,8 +106,13 @@ export const COMMAND_ACTION = [
 		path: "commands/action/chat-bot",
 	},
 	{
-		source_type: CommandSourceType.Custom,
+		source_type: CommandSourceType.Timer,
 		description: "",
 		path: "commands/action/alert",
 	},
 ];
+
+export const DEFAULT_CHAT_BOT_ACTION: IChatBotAction = {
+	message: "hello",
+	replay: false,
+};

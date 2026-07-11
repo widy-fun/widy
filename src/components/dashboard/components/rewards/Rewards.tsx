@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { useGetRewardsQuery } from "../../../../api/rewardsApi";
-import { DEFAULT_REWARD } from "../../../../constants";
+import getDefaultReward from "../../../../helpers/getDefaultReward";
 import { setReward } from "../../../../store/slices/rewardsSlice";
 import RewardCard from "./components/RewardCard";
 
@@ -28,7 +28,7 @@ const Rewards = () => {
 					variant="contained"
 					startIcon={<AddIcon />}
 					onClick={() => {
-						dispatch(setReward({ ...DEFAULT_REWARD, id: crypto.randomUUID() }));
+						dispatch(setReward(getDefaultReward()));
 						navigate("/dashboard/rewards/new/reward");
 					}}
 				>

@@ -14,14 +14,14 @@ export const kickApi = api.injectEndpoints({
 				command: "kick_add_custom_reward",
 				args,
 			}),
-			invalidatesTags: ["Rewards"],
+			invalidatesTags: ["Rewards", "Alerts"],
 		}),
 		kickRemoveCustomReward: builder.mutation<void, { id: string }>({
 			query: (args) => ({
 				command: "kick_remove_custom_reward",
 				args,
 			}),
-			invalidatesTags: ["Rewards"],
+			invalidatesTags: ["Rewards", "Alerts"],
 		}),
 	}),
 });

@@ -28,6 +28,8 @@ impl MigrationTrait for Migration {
                     .col(text("variation_conditions"))
                     .col(text("title_style"))
                     .col(text("message_style"))
+                    .col(text_null("reward_id"))
+                    .col(text_null("command_id"))
                     .to_owned(),
             )
             .await

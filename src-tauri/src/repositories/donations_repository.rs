@@ -47,6 +47,7 @@ impl DonationsRepository for DatabaseService {
                 .set_service_id(donation.service_id)
                 .set_text(donation.text)
                 .set_user_name(donation.user_name)
+                .set_alert(donation.alert)
                 .set_message(
                     messages::ActiveModel::builder()
                         .set_id(client_message.id)

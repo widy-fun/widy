@@ -1,12 +1,24 @@
-use entity::alerts::*;
-
 use crate::services::DatabaseService;
 use async_trait::async_trait;
-use sea_orm::{ActiveValue::Set, EntityTrait};
+use entity::{alerts::*, messages::MessageType};
+use rand::seq::IndexedRandom;
+
+use sea_orm::{ActiveValue::Set, ColumnTrait, EntityTrait, QueryFilter};
 #[async_trait]
 pub trait AlertsRepository: Send + Sync {
-    async fn get_alerts(&self) -> Result<Vec<Model>, String>;
-    async fn get_alert_by_id(&self, id: String) -> Result<Option<Model>, String>;
+    async fn get_alerts(&self) -> Result<Vec<Alert>, String>;
+    async fn get_grater_amount_alert(
+        &self,
+        amount: f64,
+        r#type: MessageType,
+    ) -> Result<Option<Alert>, String>;
+    async fn get_equal_amount_alert(
+        &self,
+        amount: f64,
+        r#type: MessageType,
+    ) -> Result<Option<Alert>, String>;
+    async fn get_random_alert(&self, r#type: MessageType) -> Result<Option<Alert>, String>;
+    async fn get_alert_by_id(&self, id: String) -> Result<Option<Alert>, String>;
     async fn update_alert_settings(&self, alert: Model) -> Result<(), String>;
     async fn create_alert(&self, alert: Model) -> Result<(), String>;
     async fn delete_alert_by_id(&self, id: String) -> Result<(), String>;
@@ -14,14 +26,69 @@ pub trait AlertsRepository: Send + Sync {
 
 #[async_trait]
 impl AlertsRepository for DatabaseService {
-    async fn get_alerts(&self) -> Result<Vec<Model>, String> {
-        Entity::find().all(&self.connection).await.map_err(|e| {
-            log::error!("Get alerts settings error: {}", e);
-            e.to_string()
-        })
+    async fn get_grater_amount_alert(
+        &self,
+        amount: f64,
+        r#type: MessageType,
+    ) -> Result<Option<Alert>, String> {
+        Entity::find()
+            .filter(Column::Type.eq(r#type))
+            .filter(Column::Amount.lt(amount))
+            .filter(Column::VariationConditions.eq(AlertVariationConditions::AmountIsGreater))
+            .into_partial_model()
+            .one(&self.connection)
+            .await
+            .map_err(|e| {
+                log::error!("Get grater amount alert error: {}", e);
+                e.to_string()
+            })
     }
-    async fn get_alert_by_id(&self, id: String) -> Result<Option<Model>, String> {
+    async fn get_equal_amount_alert(
+        &self,
+        amount: f64,
+        r#type: MessageType,
+    ) -> Result<Option<Alert>, String> {
+        Entity::find()
+            .filter(Column::Type.eq(r#type))
+            .filter(Column::Amount.eq(amount))
+            .filter(Column::VariationConditions.eq(AlertVariationConditions::AmountIsEqual))
+            .into_partial_model()
+            .one(&self.connection)
+            .await
+            .map_err(|e| {
+                log::error!("Get equal amount alert error: {}", e);
+                e.to_string()
+            })
+    }
+    async fn get_random_alert(&self, r#type: MessageType) -> Result<Option<Alert>, String> {
+        let alerts: Vec<Alert> = Entity::find()
+            .filter(Column::Type.eq(r#type))
+            .filter(Column::VariationConditions.eq(AlertVariationConditions::Random))
+            .into_partial_model()
+            .all(&self.connection)
+            .await
+            .map_err(|e| {
+                log::error!("Get alerts by type error: {}", e);
+                e.to_string()
+            })?;
+        let mut rng = rand::rng();
+        let random_alert = alerts.choose(&mut rng).cloned();
+
+        Ok(random_alert)
+    }
+    async fn get_alerts(&self) -> Result<Vec<Alert>, String> {
+        Entity::find()
+            .into_partial_model()
+            .all(&self.connection)
+            .await
+            .map_err(|e| {
+                log::error!("Get alerts settings error: {}", e);
+                e.to_string()
+            })
+    }
+    async fn get_alert_by_id(&self, id: String) -> Result<Option<Alert>, String> {
         Entity::find_by_id(id)
+            .into_partial_model()
             .one(&self.connection)
             .await
             .map_err(|e| {
@@ -49,6 +116,8 @@ impl AlertsRepository for DatabaseService {
             alert_variant: Set(alert.alert_variant),
             delay: Set(alert.delay),
             duration: Set(alert.duration),
+            reward_id: Set(alert.reward_id),
+            command_id: Set(alert.command_id),
         })
         .exec(&self.connection)
         .await
@@ -78,6 +147,8 @@ impl AlertsRepository for DatabaseService {
             alert_variant: Set(alert.alert_variant),
             delay: Set(alert.delay),
             duration: Set(alert.duration),
+            reward_id: Set(alert.reward_id),
+            command_id: Set(alert.command_id),
         })
         .exec(&self.connection)
         .await

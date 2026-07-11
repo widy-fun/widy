@@ -28,8 +28,10 @@ impl CommandsRepository for DatabaseService {
             id: Set(command.id),
             name: Set(command.name),
             description: Set(command.description),
-            source: Set(command.source),
-            action: Set(command.action),
+            chat: Set(command.chat),
+            chat_bot: Set(command.chat_bot),
+            timer: Set(command.timer),
+            alert: Set(command.alert),
             source_type: Set(command.source_type),
         })
         .exec(&self.connection)
@@ -83,8 +85,10 @@ impl CommandsRepository for DatabaseService {
             id: Set(command.id),
             name: Set(command.name),
             description: Set(command.description),
-            source: Set(command.source),
-            action: Set(command.action),
+            chat: Set(command.chat),
+            chat_bot: Set(command.chat_bot),
+            timer: Set(command.timer),
+            alert: Set(command.alert),
             source_type: Set(command.source_type),
         })
         .exec(&self.connection)
