@@ -1,14 +1,16 @@
 import {
 	AlertVariant,
 	AlertVariationConditions,
+	Gender,
 	IAlert,
 	MessageType,
+	TtsType,
 	ViewType,
 } from "@widy/sdk";
 import i18n from "../../shared/i18n/i18n";
 import { TEXT_STYLE } from "../constants";
 
-const getDefaultAlert = (): IAlert => {
+const getDefaultAlert = (group_id = "1"): IAlert => {
 	return {
 		id: crypto.randomUUID(),
 		audio_volume: 50,
@@ -16,7 +18,7 @@ const getDefaultAlert = (): IAlert => {
 		audio: "alert.mp3",
 		video: "video.mp4",
 		image: "image.gif",
-		group_id: "1",
+		group_id,
 		name: i18n.t("alert.new_variant"),
 		title_style: TEXT_STYLE,
 		message_style: TEXT_STYLE,
@@ -28,6 +30,9 @@ const getDefaultAlert = (): IAlert => {
 		delay: 0,
 		duration: 3000,
 		alert_variant: AlertVariant.ImageAndAudio,
+		tts_type: TtsType.Edge,
+		tts_volume: 50,
+		tts_settings: { gender: Gender.Male },
 	};
 };
 export default getDefaultAlert;

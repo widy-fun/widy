@@ -1,4 +1,4 @@
-use entity::settings::TtsType;
+use entity::alerts::TtsType;
 use lingua::{Language, LanguageDetector};
 use msedge_tts::{
     tts::{client::connect_async, SpeechConfig},
@@ -7,8 +7,6 @@ use msedge_tts::{
 use std::{fs, path::PathBuf};
 use tauri::{AppHandle, Manager};
 use tokio::{fs::File, io::AsyncWriteExt};
-
-use crate::{repositories::SettingsRepository, services::DatabaseService};
 
 #[derive(Clone, Debug)]
 pub struct TtsService {
@@ -25,24 +23,19 @@ impl TtsService {
         text: &str,
         file_name: &str,
         app: &AppHandle,
+        tts_type: TtsType,
     ) -> Result<String, String> {
         let language = self
             .detect_language(text, app.clone())
             .map(|lang| lang)
             .unwrap_or_else(|| Language::English);
 
-        let settings = app
-            .state::<DatabaseService>()
-            .get_settings()
-            .await?
-            .ok_or_else(|| "Settings not found".to_string())?;
-
         fs::create_dir_all(&self.audio_path).map_err(|e| {
             log::error!("Create audio dir error: {}", e.to_string());
             e.to_string()
         })?;
 
-        match settings.tts_type {
+        match tts_type {
             TtsType::Google => self.make_google_audio(text, file_name, &language).await,
             TtsType::Edge => match self.make_edge_audio(text, file_name, &language).await {
                 Ok(result) => Ok(result),

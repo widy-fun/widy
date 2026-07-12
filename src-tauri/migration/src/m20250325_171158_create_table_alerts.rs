@@ -30,6 +30,9 @@ impl MigrationTrait for Migration {
                     .col(text("message_style"))
                     .col(text_null("reward_id"))
                     .col(text_null("command_id"))
+                    .col(integer("tts_volume"))
+                    .col(string("tts_type"))
+                    .col(text_null("tts_settings"))
                     .to_owned(),
             )
             .await

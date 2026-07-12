@@ -1,5 +1,5 @@
 use entity::{
-    alerts::{AlertVariant, AlertVariationConditions, ViewType},
+    alerts::{AlertVariant, AlertVariationConditions, TtsType, ViewType},
     messages::MessageType,
 };
 use sea_orm_migration::prelude::*;
@@ -10,6 +10,7 @@ pub struct Migration;
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        let tts_settings = String::from(r#"{"gender":"Male"}"#);
         let text_style = String::from(
             r#"{"bold":true,"font_size":60,"italics":false,"letter_spacing":0,"text_color":"rgb(255,255,255,1)","underline":false,"word_spacing":0,"animation":"No","animation_variant":"AllText"}"#,
         );
@@ -36,6 +37,9 @@ impl MigrationTrait for Migration {
                         "title_style",
                         "message_style",
                         "video",
+                        "tts_volume",
+                        "tts_type",
+                        "tts_settings",
                     ])
                     .values_panic([
                         "default".into(),
@@ -56,6 +60,9 @@ impl MigrationTrait for Migration {
                         text_style.clone().into(),
                         text_style.into(),
                         "video.mp4".into(),
+                        50.into(),
+                        TtsType::Edge.into(),
+                        tts_settings.into(),
                     ])
                     .to_owned(),
             )

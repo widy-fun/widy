@@ -55,47 +55,45 @@ const ViewSettings = () => {
 	];
 
 	return (
-		alert && (
-			<RadioGroup
-				row
-				name="image-selection"
-				value={alert.view_type}
-				onChange={(event) => {
-					dispatch(
-						setAlert({ ...alert, view_type: event.target.value as ViewType }),
-					);
-				}}
-				style={{ justifyContent: "center" }}
-			>
-				{imageOptions.map((option) => (
-					<FormControlLabel
-						key={option.value}
-						value={option.value}
-						control={<Radio sx={{ display: "none" }} />}
-						label={
-							<Box
-								sx={(theme) => ({
-									border: 4,
-									borderRadius: 1,
-									borderColor:
-										alert.view_type === option.value
-											? theme.palette.primary.main
-											: "transparent",
-									padding: "4px",
-									margin: "8px",
-									cursor: "pointer",
-									"&:hover": {
-										opacity: 0.8,
-									},
-								})}
-							>
-								{option.element}
-							</Box>
-						}
-					/>
-				))}
-			</RadioGroup>
-		)
+		<RadioGroup
+			row
+			name="image-selection"
+			value={alert.view_type}
+			onChange={(event) => {
+				dispatch(
+					setAlert({ ...alert, view_type: event.target.value as ViewType }),
+				);
+			}}
+			style={{ justifyContent: "center" }}
+		>
+			{imageOptions.map((option) => (
+				<FormControlLabel
+					key={option.value}
+					value={option.value}
+					control={<Radio sx={{ display: "none" }} />}
+					label={
+						<Box
+							sx={(theme) => ({
+								border: 4,
+								borderRadius: 1,
+								borderColor:
+									alert.view_type === option.value
+										? theme.palette.primary.main
+										: "transparent",
+								padding: "4px",
+								margin: "8px",
+								cursor: "pointer",
+								"&:hover": {
+									opacity: 0.8,
+								},
+							})}
+						>
+							{option.element}
+						</Box>
+					}
+				/>
+			))}
+		</RadioGroup>
 	);
 };
 export default ViewSettings;

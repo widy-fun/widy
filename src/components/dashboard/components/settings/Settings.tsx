@@ -1,7 +1,7 @@
 import { Button, MenuItem, Select, TextField } from "@mui/material";
 import type { SerializedError } from "@reduxjs/toolkit";
 import { showSnackBar } from "@widy/react";
-import { AlertSeverity, Currency, TtsType } from "@widy/sdk";
+import { AlertSeverity, Currency } from "@widy/sdk";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { languages } from "../../../../../shared/i18n/languages";
@@ -73,29 +73,6 @@ const Settings = () => {
 						</div>
 						<div className={styles.settings}>
 							<div className={styles.label}>
-								<span>{t("settings.tts_type")}:</span>
-							</div>
-							<Select sx={{ width: 150 }} value={settings.tts_type}>
-								{Object.values(TtsType).map((tts_type) => (
-									<MenuItem
-										value={tts_type}
-										key={tts_type}
-										onClick={() => {
-											dispatch(
-												setSettings({
-													...settings,
-													tts_type,
-												}),
-											);
-										}}
-									>
-										{tts_type}
-									</MenuItem>
-								))}
-							</Select>
-						</div>
-						<div className={styles.settings}>
-							<div className={styles.label}>
 								<span>{t("settings.pause")}:</span>
 							</div>
 
@@ -111,27 +88,7 @@ const Settings = () => {
 								}
 							/>
 						</div>
-						<div className={styles.settings}>
-							<div className={styles.label}>
-								<span>{t("sound_volume")}:</span>
-							</div>
-							<InputSlider
-								sliderValue={settings.tts_volume}
-								inputValue={settings.tts_volume}
-								onChange={(value) => {
-									dispatch(
-										setSettings({
-											...settings,
-											tts_volume: value,
-										}),
-									);
-								}}
-								min={0}
-								sliderMax={100}
-								inputMax={100}
-								adornmentText={"%"}
-							/>
-						</div>
+
 						<div className={styles.settings}>
 							<div className={styles.label}>
 								<span>{t("settings.moderation_duration")}:</span>

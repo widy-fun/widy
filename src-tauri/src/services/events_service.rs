@@ -1,5 +1,6 @@
 use chrono::Utc;
 use entity::{
+    alerts::TtsType,
     donations::Donation,
     followers::Follow,
     goals::GoalType,
@@ -408,9 +409,18 @@ impl EventsService {
             None => None,
         };
 
+        let alert = get_alert_by_amount(app, exchanged_amount, MessageType::Donation)
+            .await
+            .unwrap_or(None);
+
+        let tts_type = match alert.clone() {
+            Some(alert) => alert.tts_type,
+            _ => TtsType::Edge,
+        };
+
         let audio = if let Some(text) = text.clone() {
             match tts_service
-                .make_audio(&remove_links(&text), &id, &app)
+                .make_audio(&remove_links(&text), &id, &app, tts_type)
                 .await
             {
                 Ok(audio) => Some(audio),
@@ -457,9 +467,7 @@ impl EventsService {
                 exchanged_currency: Some(settings.currency.clone()),
                 created_at,
                 media: media.clone(),
-                alert: get_alert_by_amount(app, exchanged_amount, MessageType::Donation)
-                    .await
-                    .unwrap_or(None),
+                alert: alert,
             }),
         };
 

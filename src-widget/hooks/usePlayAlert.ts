@@ -158,10 +158,11 @@ const usePlayAlert = () => {
 				if (
 					audio &&
 					settingsRef.current &&
-					currentAlert?.alert_variant !== AlertVariant.Image
+					currentAlert &&
+					currentAlert.alert_variant !== AlertVariant.Image
 				) {
 					messageAudioRef.current.src = `static/audio/${audio}`;
-					messageAudioRef.current.volume = settingsRef.current.tts_volume / 100;
+					messageAudioRef.current.volume = currentAlert.tts_volume / 100;
 					messageAudioRef.current.play();
 				} else {
 					handleMessageAudioEnd({

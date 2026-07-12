@@ -24,6 +24,9 @@ pub struct Model {
     pub delay: u32,
     pub duration: u32,
     pub variation_conditions: AlertVariationConditions,
+    pub tts_volume: u32,
+    pub tts_type: TtsType,
+    pub tts_settings: Option<TtsSettings>,
     #[sea_orm(column_type = "Text")]
     pub title_style: TextStyle,
     #[sea_orm(column_type = "Text")]
@@ -61,6 +64,9 @@ pub struct Alert {
     pub delay: u32,
     pub duration: u32,
     pub variation_conditions: AlertVariationConditions,
+    pub tts_volume: u32,
+    pub tts_type: TtsType,
+    pub tts_settings: Option<TtsSettings>,
     pub title_style: TextStyle,
     pub message_style: TextStyle,
     pub reward_id: Option<String>,
@@ -147,6 +153,9 @@ impl From<Alert> for ActiveModelEx {
             delay: Set(value.delay),
             duration: Set(value.duration),
             variation_conditions: Set(value.variation_conditions),
+            tts_settings: Set(value.tts_settings),
+            tts_type: Set(value.tts_type),
+            tts_volume: Set(value.tts_volume),
             title_style: Set(value.title_style),
             message_style: Set(value.message_style),
             reward_id: Set(value.reward_id),
@@ -155,4 +164,31 @@ impl From<Alert> for ActiveModelEx {
             command: NotSet,
         }
     }
+}
+
+#[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
+#[sea_orm(rs_type = "String", db_type = "Text")]
+pub enum TtsType {
+    #[sea_orm(string_value = "Google")]
+    Google,
+    #[sea_orm(string_value = "Edge")]
+    Edge,
+}
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
+#[serde(untagged)]
+
+pub enum TtsSettings {
+    Edge(EdgeTtsSettings),
+}
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct EdgeTtsSettings {
+    pub gender: Gender,
+}
+#[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
+#[sea_orm(rs_type = "String", db_type = "Text")]
+pub enum Gender {
+    #[sea_orm(string_value = "Male")]
+    Male,
+    #[sea_orm(string_value = "Female")]
+    Female,
 }

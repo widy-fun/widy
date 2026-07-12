@@ -27,12 +27,9 @@ impl SettingsRepository for DatabaseService {
             alert_paused: Set(settings.alert_paused),
             remove_links: Set(settings.remove_links),
             black_list: Set(settings.black_list),
-            tts_volume: Set(settings.tts_volume),
             language: Set(settings.language),
             currency: Set(settings.currency),
             id: Set(1),
-            tts_type: Set(settings.tts_type),
-            tts_settings: Set(settings.tts_settings),
             widget_token: Set(settings.widget_token),
         })
         .exec(&self.connection)

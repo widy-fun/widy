@@ -22,71 +22,67 @@ const CommandSettings = ({ onSave }: { onSave: () => void }) => {
 
 	return (
 		<>
-			{command && (
-				<>
-					<h3 style={{ height: 20 }}>{command.name.toUpperCase()}</h3>
-					<Box
-						sx={{
-							borderBottom: 1,
-							borderColor: "divider",
-							background: "wh",
-							display: "grid",
-							placeContent: "center",
-						}}
-					>
-						<Tabs
-							value={tabIndex}
-							variant="scrollable"
-							allowScrollButtonsMobile
-							onChange={(_, value) => dispatch(setTabIndex(value))}
-							slotProps={{
-								indicator: { style: { transition: "none" } },
-							}}
-						>
-							<Tab
-								icon={<SettingsIcon />}
-								iconPosition="start"
-								label={t("general")}
-							/>
-							<Tab
-								icon={<DeviceHubIcon />}
-								iconPosition="start"
-								label={t("command.source")}
-							/>
-							<Tab
-								icon={<ElectricBoltIcon />}
-								iconPosition="start"
-								label={t("command.action")}
-							/>
-						</Tabs>
-					</Box>
-					<div style={{ marginTop: 20 }}>
-						<TabPanel index={0} value={tabIndex}>
-							<CommandGeneralSettings />
-						</TabPanel>
-						<TabPanel index={1} value={tabIndex}>
-							<CommandSource />
-						</TabPanel>
-						<TabPanel index={2} value={tabIndex}>
-							<CommandAction />
-						</TabPanel>
-					</div>
+			<h3 style={{ height: 20 }}>{command.name.toUpperCase()}</h3>
+			<Box
+				sx={{
+					borderBottom: 1,
+					borderColor: "divider",
+					background: "wh",
+					display: "grid",
+					placeContent: "center",
+				}}
+			>
+				<Tabs
+					value={tabIndex}
+					variant="scrollable"
+					allowScrollButtonsMobile
+					onChange={(_, value) => dispatch(setTabIndex(value))}
+					slotProps={{
+						indicator: { style: { transition: "none" } },
+					}}
+				>
+					<Tab
+						icon={<SettingsIcon />}
+						iconPosition="start"
+						label={t("general")}
+					/>
+					<Tab
+						icon={<DeviceHubIcon />}
+						iconPosition="start"
+						label={t("command.source")}
+					/>
+					<Tab
+						icon={<ElectricBoltIcon />}
+						iconPosition="start"
+						label={t("command.action")}
+					/>
+				</Tabs>
+			</Box>
+			<div style={{ marginTop: 20 }}>
+				<TabPanel index={0} value={tabIndex}>
+					<CommandGeneralSettings />
+				</TabPanel>
+				<TabPanel index={1} value={tabIndex}>
+					<CommandSource />
+				</TabPanel>
+				<TabPanel index={2} value={tabIndex}>
+					<CommandAction />
+				</TabPanel>
+			</div>
 
-					<div
-						style={{
-							display: "flex",
-							gap: 20,
-							justifyContent: "center",
-							marginTop: 20,
-						}}
-					>
-						<Button variant="contained" onClick={onSave}>
-							{t("save")}
-						</Button>
-						<Button onClick={() => navigate(-1)}>{t("back")}</Button>
-					</div>
-				</>
-			)}
+			<div
+				style={{
+					display: "flex",
+					gap: 20,
+					justifyContent: "center",
+					marginTop: 20,
+				}}
+			>
+				<Button variant="contained" onClick={onSave}>
+					{t("save")}
+				</Button>
+				<Button onClick={() => navigate(-1)}>{t("back")}</Button>
+			</div>
 		</>
 	);
 };

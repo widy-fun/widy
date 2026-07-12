@@ -118,6 +118,9 @@ impl AlertsRepository for DatabaseService {
             duration: Set(alert.duration),
             reward_id: Set(alert.reward_id),
             command_id: Set(alert.command_id),
+            tts_volume: Set(alert.tts_volume),
+            tts_type: Set(alert.tts_type),
+            tts_settings: Set(alert.tts_settings),
         })
         .exec(&self.connection)
         .await
@@ -149,6 +152,9 @@ impl AlertsRepository for DatabaseService {
             duration: Set(alert.duration),
             reward_id: Set(alert.reward_id),
             command_id: Set(alert.command_id),
+            tts_volume: Set(alert.tts_volume),
+            tts_type: Set(alert.tts_type),
+            tts_settings: Set(alert.tts_settings),
         })
         .exec(&self.connection)
         .await
