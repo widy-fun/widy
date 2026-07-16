@@ -159,13 +159,13 @@ impl KickService {
                         .get_reward_by_title(&data.reward_title, Platform::Kick)
                         .await
                     {
-                        let message_id = Uuid::new_v4().to_string();
+                        let message_id = Uuid::new_v4();
                         let redemption = Redemption {
-                            id: Uuid::new_v4().to_string(),
+                            id: Uuid::new_v4(),
                             user_id: data.user_id.to_string(),
                             user_name: data.username,
                             user_input: data.user_input,
-                            external_id: message_id.clone(),
+                            external_id: message_id.to_string(),
                             reward_id: reward.id,
                             description: None,
                             title: data.reward_title,
@@ -184,12 +184,12 @@ impl KickService {
             Event::GiftedSubscriptionsEvent => {
                 let event_data = serde_json::from_str::<GiftedSubscriptionsData>(&payload.data);
                 if let Ok(data) = event_data {
-                    let message_id = Uuid::new_v4().to_string();
+                    let message_id = Uuid::new_v4();
                     let created_at = Utc::now().timestamp();
                     let subscription = Subscription {
-                        id: Uuid::new_v4().to_string(),
+                        id: Uuid::new_v4(),
                         user_id: data.gifter_username.clone(),
-                        service_id: message_id.clone(),
+                        service_id: message_id.to_string(),
                         user_name: data.gifter_username,
                         message_id: message_id,
                         played: false,
@@ -212,12 +212,12 @@ impl KickService {
             Event::SubscriptionEvent => {
                 let event_data = serde_json::from_str::<SubscriptionData>(&payload.data);
                 if let Ok(data) = event_data {
-                    let message_id = Uuid::new_v4().to_string();
+                    let message_id = Uuid::new_v4();
                     let created_at = Utc::now().timestamp();
                     let subscription = Subscription {
-                        id: Uuid::new_v4().to_string(),
+                        id: Uuid::new_v4(),
                         user_id: data.username.clone(),
-                        service_id: message_id.clone(),
+                        service_id: message_id.to_string(),
                         user_name: data.username,
                         message_id: message_id,
                         played: false,
@@ -241,11 +241,11 @@ impl KickService {
                 let event_data = serde_json::from_str::<StreamHostData>(&payload.data);
                 if let Ok(data) = event_data {
                     let created_at = Utc::now().timestamp();
-                    let message_id = Uuid::new_v4().to_string();
+                    let message_id = Uuid::new_v4();
 
                     let raid = raids::Raid {
-                        id: Uuid::new_v4().to_string(),
-                        service_id: message_id.clone(),
+                        id: Uuid::new_v4(),
+                        service_id: message_id.to_string(),
                         message_id: message_id,
                         played: false,
                         service: ServiceType::Kick,
@@ -278,16 +278,9 @@ impl KickService {
             Event::ChatMessageEvent => {
                 let event_data = serde_json::from_str::<ChatMessageData>(&payload.data);
                 if let Ok(data) = event_data {
-                    let _ =
-                        EventsService::chat_message(UnifiedChatMessage::from(data.clone()), app)
-                            .await;
-                    let _ = CommandsService::kick_chat_message_trigger(
-                        &data.content,
-                        app,
-                        chanel_info_response.user_id.clone(),
-                        Some(data.id),
-                    )
-                    .await;
+                    let message = UnifiedChatMessage::from(data.clone());
+                    let _ = EventsService::chat_message(message.clone(), app).await;
+                    let _ = CommandsService::kick_chat_message_trigger(message, app).await;
                 }
             }
             Event::MessageDeletedEvent => {
@@ -405,6 +398,7 @@ impl From<ChatMessageData> for UnifiedChatMessage {
             .badges
             .iter()
             .any(|b| b.r#type == "subscriber");
+        let is_vip = k.sender.identity.badges.iter().any(|b| b.r#type == "vip");
         let mut is_bot = k.sender.identity.badges.iter().any(|b| b.r#type == "bot");
         is_bot = is_bot || k.sender.slug == "botrix";
         let badges_v1: Vec<UnifiedBadge> = k
@@ -468,6 +462,7 @@ impl From<ChatMessageData> for UnifiedChatMessage {
                     is_subscriber,
                     is_verified: false,
                     is_bot,
+                    is_vip,
                 },
             },
 

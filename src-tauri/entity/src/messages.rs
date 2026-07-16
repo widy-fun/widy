@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "messages")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    pub id: String,
+    pub id: Uuid,
     pub r#type: MessageType,
     pub created_at: i64,
     #[sea_orm(has_one)]
@@ -19,6 +19,8 @@ pub struct Model {
     pub raid: HasOne<super::raids::Entity>,
     #[sea_orm(has_one)]
     pub redemption: HasOne<super::redemptions::Entity>,
+    #[sea_orm(has_one)]
+    pub command_action: HasOne<super::commands_actions::Entity>,
 }
 
 impl ActiveModelBehavior for ActiveModel {}
@@ -36,15 +38,15 @@ pub enum MessageType {
     Raid,
     #[sea_orm(string_value = "Redemption")]
     Redemption,
-    #[sea_orm(string_value = "Command")]
-    Command,
+    #[sea_orm(string_value = "CommandAction")]
+    CommandAction,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, DerivePartialModel)]
 #[sea_orm(entity = "Entity")]
 
 pub struct ClientMessage {
-    pub id: String,
+    pub id: Uuid,
     pub r#type: MessageType,
     pub created_at: i64,
     #[sea_orm(nested)]
@@ -62,6 +64,9 @@ pub struct ClientMessage {
     #[sea_orm(nested)]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redemption: Option<super::redemptions::Redemption>,
+    #[sea_orm(nested)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub command_action: Option<super::commands_actions::CommandAction>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -72,4 +77,5 @@ pub struct MessagesFilter {
     pub exclude_donations: bool,
     pub exclude_raids: bool,
     pub exclude_redemptions: bool,
+    pub exclude_commands_actions: bool,
 }

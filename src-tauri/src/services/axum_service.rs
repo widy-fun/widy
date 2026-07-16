@@ -35,6 +35,7 @@ use tokio::sync::mpsc;
 use tower_http::cors::Any;
 use tower_http::cors::CorsLayer;
 use tower_http::services::{ServeDir, ServeFile};
+use uuid::Uuid;
 type Tx = mpsc::UnboundedSender<Message>;
 
 #[derive(Debug, Clone, Serialize)]
@@ -62,6 +63,7 @@ struct DonationsQuery {
     pub exclude_follows: bool,
     pub exclude_raids: bool,
     pub exclude_redemptions: bool,
+    pub exclude_commands_actions: bool,
 }
 #[derive(Debug, Deserialize)]
 struct GoalsQuery {
@@ -178,7 +180,7 @@ impl AxumService {
     }
 
     async fn widgets_handler(
-        Path((id, widget_type, file_path)): Path<(String, String, String)>,
+        Path((id, widget_type, file_path)): Path<(Uuid, String, String)>,
         State(state): State<AxumState>,
     ) -> Result<Response, StatusCode> {
         let database_service = state.app.state::<DatabaseService>();
@@ -190,8 +192,8 @@ impl AxumService {
                 None => config_service
                     .widgets_path
                     .clone()
-                    .join(&widget.manifest.id)
-                    .join(widget.id),
+                    .join(widget.manifest.id.to_string())
+                    .join(widget.id.to_string()),
             };
             let base_path = widget_path.join(&widget_type).join(file_path);
 
@@ -243,6 +245,7 @@ impl AxumService {
                 &params.exclude_follows,
                 &params.exclude_raids,
                 &params.exclude_redemptions,
+                &params.exclude_commands_actions,
             )
             .await
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
@@ -264,7 +267,7 @@ impl AxumService {
     }
 
     async fn get_widget_by_id(
-        Path(id): Path<String>,
+        Path(id): Path<Uuid>,
         State(state): State<AxumState>,
     ) -> Result<Json<Option<entity::widgets::Model>>, StatusCode> {
         let database_service = state.app.state::<DatabaseService>();
@@ -277,7 +280,7 @@ impl AxumService {
     }
     async fn update_widget_view_storage(
         State(state): State<AxumState>,
-        Path(id): Path<String>,
+        Path(id): Path<Uuid>,
         body: String,
     ) -> Result<StatusCode, StatusCode> {
         let database_service = state.app.state::<DatabaseService>();
@@ -300,7 +303,7 @@ impl AxumService {
 
     async fn update_widget_control_storage(
         State(state): State<AxumState>,
-        Path(id): Path<String>,
+        Path(id): Path<Uuid>,
         body: String,
     ) -> Result<StatusCode, StatusCode> {
         let database_service = state.app.state::<DatabaseService>();

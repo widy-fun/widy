@@ -4,6 +4,7 @@ use entity::{alerts::*, messages::MessageType};
 use rand::seq::IndexedRandom;
 
 use sea_orm::{ActiveValue::Set, ColumnTrait, EntityTrait, QueryFilter};
+use uuid::Uuid;
 #[async_trait]
 pub trait AlertsRepository: Send + Sync {
     async fn get_alerts(&self) -> Result<Vec<Alert>, String>;
@@ -18,10 +19,10 @@ pub trait AlertsRepository: Send + Sync {
         r#type: MessageType,
     ) -> Result<Option<Alert>, String>;
     async fn get_random_alert(&self, r#type: MessageType) -> Result<Option<Alert>, String>;
-    async fn get_alert_by_id(&self, id: String) -> Result<Option<Alert>, String>;
+    async fn get_alert_by_id(&self, id: Uuid) -> Result<Option<Alert>, String>;
     async fn update_alert_settings(&self, alert: Model) -> Result<(), String>;
     async fn create_alert(&self, alert: Model) -> Result<(), String>;
-    async fn delete_alert_by_id(&self, id: String) -> Result<(), String>;
+    async fn delete_alert_by_id(&self, id: Uuid) -> Result<(), String>;
 }
 
 #[async_trait]
@@ -86,7 +87,7 @@ impl AlertsRepository for DatabaseService {
                 e.to_string()
             })
     }
-    async fn get_alert_by_id(&self, id: String) -> Result<Option<Alert>, String> {
+    async fn get_alert_by_id(&self, id: Uuid) -> Result<Option<Alert>, String> {
         Entity::find_by_id(id)
             .into_partial_model()
             .one(&self.connection)
@@ -164,7 +165,7 @@ impl AlertsRepository for DatabaseService {
         })?;
         Ok(())
     }
-    async fn delete_alert_by_id(&self, id: String) -> Result<(), String> {
+    async fn delete_alert_by_id(&self, id: Uuid) -> Result<(), String> {
         Entity::delete_by_id(id)
             .exec(&self.connection)
             .await

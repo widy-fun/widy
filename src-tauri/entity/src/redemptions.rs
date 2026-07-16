@@ -13,12 +13,12 @@ use crate::{
 #[sea_orm(table_name = "redemptions")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    pub id: String,
+    pub id: Uuid,
     pub user_id: String,
     pub user_name: String,
     pub user_input: Option<String>,
     pub external_id: String,
-    pub reward_id: String,
+    pub reward_id: Uuid,
     pub title: String,
     pub description: Option<String>,
     pub cost: i64,
@@ -27,24 +27,24 @@ pub struct Model {
     pub points_currency_ratio: f32,
     pub media: Option<Media>,
     #[sea_orm(uniq)]
-    pub message_id: String,
+    pub message_id: Uuid,
     #[sea_orm(belongs_to, from = "message_id", to = "id")]
     pub message: HasOne<super::messages::Entity>,
-    #[sea_orm(column_type = "Json")]
+    #[sea_orm(column_type = "JsonBinary")]
     pub alert: Option<super::alerts::Alert>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, DerivePartialModel)]
 #[sea_orm(entity = "Entity")]
 pub struct Redemption {
-    pub id: String,
+    pub id: Uuid,
     pub user_id: String,
     pub user_name: String,
     pub user_input: Option<String>,
     pub external_id: String,
-    pub reward_id: String,
+    pub reward_id: Uuid,
     pub title: String,
-    pub message_id: String,
+    pub message_id: Uuid,
     pub description: Option<String>,
     pub cost: i64,
     pub platform: Platform,

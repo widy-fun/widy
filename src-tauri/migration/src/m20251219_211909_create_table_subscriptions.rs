@@ -24,7 +24,7 @@ impl MigrationTrait for Migration {
                     .col(integer("total"))
                     .col(integer_null("cumulative_total"))
                     .col(integer("subscribed_at"))
-                    .col(json_null("alert"))
+                    .col(json_binary_null("alert"))
                     .to_owned(),
             )
             .await

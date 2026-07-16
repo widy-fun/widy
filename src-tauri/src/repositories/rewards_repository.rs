@@ -1,6 +1,7 @@
 use async_trait::async_trait;
 use entity::rewards::*;
 use sea_orm::{ActiveValue::Set, ColumnTrait, EntityTrait, QueryFilter};
+use uuid::Uuid;
 
 use crate::services::DatabaseService;
 
@@ -11,7 +12,7 @@ pub trait RewardsRepository: Send + Sync {
         external_id: &String,
         platform: Platform,
     ) -> Result<Option<Reward>, String>;
-    async fn get_reward_by_id(&self, external_id: &String) -> Result<Option<Reward>, String>;
+    async fn get_reward_by_id(&self, external_id: Uuid) -> Result<Option<Reward>, String>;
     async fn get_reward_by_title(
         &self,
         external_id: &String,
@@ -20,7 +21,7 @@ pub trait RewardsRepository: Send + Sync {
     async fn get_rewards(&self) -> Result<Vec<Reward>, String>;
     async fn create_reward(&self, reward: Reward) -> Result<(), String>;
     async fn update_reward_settings(&self, reward: Model) -> Result<(), String>;
-    async fn delete_reward_by_id(&self, id: &String) -> Result<(), String>;
+    async fn delete_reward_by_id(&self, id: Uuid) -> Result<(), String>;
 }
 
 #[async_trait]
@@ -116,7 +117,7 @@ impl RewardsRepository for DatabaseService {
             })
     }
 
-    async fn get_reward_by_id(&self, id: &String) -> Result<Option<Reward>, String> {
+    async fn get_reward_by_id(&self, id: Uuid) -> Result<Option<Reward>, String> {
         Entity::find()
             .filter(Column::Id.eq(id))
             .left_join(entity::alerts::Entity)
@@ -129,7 +130,7 @@ impl RewardsRepository for DatabaseService {
             })
     }
 
-    async fn delete_reward_by_id(&self, id: &String) -> Result<(), String> {
+    async fn delete_reward_by_id(&self, id: Uuid) -> Result<(), String> {
         Entity::delete_by_id(id)
             .exec(&self.connection)
             .await

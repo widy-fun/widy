@@ -6,7 +6,7 @@ use crate::alerts::TextStyle;
 #[sea_orm(table_name = "goals")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    pub id: String,
+    pub id: Uuid,
     pub title: String,
     pub amount_raise: u32,
     pub start_raising: u32,
@@ -27,11 +27,11 @@ pub struct Model {
     pub goal_progress_bar: GoalTextPosition,
     pub remaining_time: GoalTextPosition,
     pub progress_bar_layout: GoalProgressLayout,
-    #[sea_orm(column_type = "Text")]
+    #[sea_orm(column_type = "JsonBinary")]
     pub title_style: TextStyle,
-    #[sea_orm(column_type = "Text")]
+    #[sea_orm(column_type = "JsonBinary")]
     pub progress_style: TextStyle,
-    #[sea_orm(column_type = "Text")]
+    #[sea_orm(column_type = "JsonBinary")]
     pub limits_style: TextStyle,
 }
 

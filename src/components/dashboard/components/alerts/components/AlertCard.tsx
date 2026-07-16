@@ -1,7 +1,6 @@
 import { Card, Switch, useTheme } from "@mui/material";
 import type { IAlert, IClientMessage } from "@widy/sdk";
 import { AppEvent } from "@widy/sdk";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import useAppEvents from "../../../../../../shared/hooks/useAppEvents";
 import getColorByMessageType from "../../../../../../shared/utils/getColorByMessageType";
@@ -13,9 +12,8 @@ import {
 import ConfigurationMenu from "../../../../ConfigurationMenu";
 
 const AlertCard = ({ alert }: { alert: IAlert }) => {
-	const [status, setStatus] = useState(alert.status);
 	const [updateAlertSettings] = useUpdateAlertSettingsMutation();
-	const isDefault = alert.id === "default";
+	const isDefault = alert.id === "ba234e82-7a86-4f77-850b-f2d739902595";
 	const eventsService = useAppEvents();
 	const { t } = useTranslation();
 	const theme = useTheme();
@@ -68,14 +66,13 @@ const AlertCard = ({ alert }: { alert: IAlert }) => {
 				>
 					{!isDefault && (
 						<Switch
-							checked={status}
+							checked={alert.status}
 							onChange={async (_, value) => {
-								setStatus(value);
 								await updateAlertSettings({
 									alert: { ...alert, status: value },
 								}).unwrap();
 							}}
-						></Switch>
+						/>
 					)}
 					<ConfigurationMenu
 						onConfirm={async () => {

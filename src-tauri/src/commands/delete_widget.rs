@@ -20,8 +20,8 @@ pub async fn delete_widget(
         fs::remove_dir_all(
             config_service
                 .widgets_path
-                .join(widget.manifest.id)
-                .join(widget.id),
+                .join(widget.manifest.id.to_string())
+                .join(widget.id.to_string()),
         )
         .await
         .map_err(|e| e.to_string())?;

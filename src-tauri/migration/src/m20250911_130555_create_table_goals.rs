@@ -31,9 +31,9 @@ impl MigrationTrait for Migration {
                     .col(string("goal_progress_bar"))
                     .col(string("remaining_time"))
                     .col(string("progress_bar_layout"))
-                    .col(text("title_style"))
-                    .col(text("progress_style"))
-                    .col(text("limits_style"))
+                    .col(json_binary("title_style"))
+                    .col(json_binary("progress_style"))
+                    .col(json_binary("limits_style"))
                     .to_owned(),
             )
             .await

@@ -2,10 +2,10 @@ use crate::services::kick::{KickBotService, KickService};
 use crate::services::twitch::traits::TwitchApi;
 use crate::services::twitch::{TwitchBotService, TwitchService};
 use crate::services::{
-    AxumService, ConfigService, DatabaseService, DeepLinkDispatcherService, DestreamService,
-    DonatePayService, DonationAlertsService, ExchangeRatesService, MediaService, NsfwService,
-    StreamElementsService, StreamLabsService, TributeService, TtsService, WebSocketBroadcaster,
-    WidySolService, WidyTonService,
+    AxumService, CommandsService, ConfigService, DatabaseService, DeepLinkDispatcherService,
+    DestreamService, DonatePayService, DonationAlertsService, ExchangeRatesService, MediaService,
+    NsfwService, StreamElementsService, StreamLabsService, TributeService, TtsService,
+    WebSocketBroadcaster, WidySolService, WidyTonService,
 };
 use crate::utils::copy_assets_to_static;
 use lingua::Language::{
@@ -163,6 +163,11 @@ pub async fn init(app: AppHandle, flag: State<'_, ExecutionFlag>) -> Result<(), 
     //nsfw
     let nsfw_service = NsfwService::new()?;
     app.manage(nsfw_service);
+
+    //commands
+    let commands_service = CommandsService::new();
+    commands_service.start_timers(&app).await?;
+    app.manage(commands_service);
 
     Ok(())
 }

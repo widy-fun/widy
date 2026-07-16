@@ -1,5 +1,6 @@
 use entity::widgets::Manifest;
 use tauri::State;
+use uuid::Uuid;
 
 use crate::{
     repositories::WidgetsRepository,
@@ -13,10 +14,10 @@ pub async fn update_widget(
     config_service: State<'_, ConfigService>,
     database_service: State<'_, DatabaseService>,
     manifest: Manifest,
-    id: String,
+    id: Uuid,
 ) -> Result<(), String> {
     validate_csp(manifest.csp.clone(), false)?;
-    download_widget(&reqwest_client, &config_service, &manifest, &id).await?;
+    download_widget(&reqwest_client, &config_service, &manifest, id).await?;
     database_service.update_widget(manifest, id).await?;
     Ok(())
 }

@@ -12,6 +12,8 @@ const getColorByMessageType = (type: MessageType) => {
 			return "#00ffbfff";
 		case MessageType.Redemption:
 			return "#5C7E8C";
+		case MessageType.CommandAction:
+			return "#00fc86";
 	}
 };
 export default getColorByMessageType;

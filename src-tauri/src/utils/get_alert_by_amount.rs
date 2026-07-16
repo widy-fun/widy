@@ -1,4 +1,5 @@
 use tauri::{AppHandle, Manager};
+use uuid::Uuid;
 
 use crate::{repositories::AlertsRepository, services::DatabaseService};
 
@@ -9,7 +10,7 @@ pub async fn get_alert_by_amount(
 ) -> Result<Option<entity::alerts::Alert>, String> {
     let database_service = app.state::<DatabaseService>();
     let default_alert = database_service
-        .get_alert_by_id("default".to_string())
+        .get_alert_by_id(Uuid::parse_str("ba234e82-7a86-4f77-850b-f2d739902595").unwrap())
         .await?;
     let alert = database_service
         .get_equal_amount_alert(amount, r#type.clone())

@@ -21,6 +21,7 @@
 	"documentation": "Documentation",
 	"configure": "Configure",
 	"delete": "Delete",
+	"create": "Create",
 	"test": "Test",
 	"sure_delete": "Are you sure you want to delete this variation?",
 	"authorization": {
@@ -104,7 +105,8 @@
 		"followed": "{{user_name}} followed",
 		"subscribed": "{{user_name}} subscribed",
 		"gifted_subscriptions": "{{user_name}} gift {{total}} subscriptions",
-		"raided_with": "{{user_name}} raided with {{viewers}} viewers"
+		"raided_with": "{{user_name}} raided with {{viewers}} viewers",
+		"command_action": "{{user_name}} used command {{command_name}}"
 	},
 	"filter": {
 		"title": "Filter messages",
@@ -112,7 +114,8 @@
 		"exclude_follows": "Exclude follows",
 		"exclude_subscriptions": "Exclude subscriptions",
 		"exclude_raids": "Exclude raids",
-		"exclude_redemptions": "Exclude redemptions"
+		"exclude_redemptions": "Exclude redemptions",
+		"exclude_commands_actions": "Exclude commands actions"
 	},
 	"settings": {
 		"title": "Settings",
@@ -469,11 +472,16 @@
 		"alias": "Alias",
 		"Normal": "Normal",
 		"interval": "Interval",
-		"Announcement": "Announcement"
+		"Announcement": "Announcement",
+		"mins_passed": "Minutes passed before posting",
+		"lines_passed": "Chat lines passed before posting"
 	},
 	"chat_bot_action": {
 		"title": "Chat bot",
-		"text": "Text",
+		"message": "Message",
 		"replay": "Should replay"
+	},
+	"alert_action": {
+		"title": "Alert"
 	}
 }

@@ -12,7 +12,13 @@ import CommandAction from "./CommandAction";
 import CommandGeneralSettings from "./CommandGeneralSettings";
 import CommandSource from "./CommandSource";
 
-const CommandSettings = ({ onSave }: { onSave: () => void }) => {
+const CommandSettings = ({
+	onSave,
+	isUpdate,
+}: {
+	onSave: () => void;
+	isUpdate: boolean;
+}) => {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 	const { command, tabIndex } = useSelector(
@@ -66,7 +72,7 @@ const CommandSettings = ({ onSave }: { onSave: () => void }) => {
 					<CommandSource />
 				</TabPanel>
 				<TabPanel index={2} value={tabIndex}>
-					<CommandAction />
+					<CommandAction isUpdate={isUpdate} />
 				</TabPanel>
 			</div>
 

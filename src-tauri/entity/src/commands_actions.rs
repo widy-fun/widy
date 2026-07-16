@@ -3,22 +3,23 @@
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::services::ServiceType;
+use crate::{donations::Media, rewards::Platform};
 
 #[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
-#[sea_orm(table_name = "followers")]
+#[sea_orm(table_name = "commands_actions")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
-    pub service_id: String,
     pub user_name: String,
-    pub user_id: String,
+    pub user_input: Option<String>,
+    pub command_id: Uuid,
+    pub command_name: String,
+    pub platform: Platform,
+    #[sea_orm(column_type = "JsonBinary")]
+    pub media: Option<Media>,
     #[sea_orm(uniq)]
     pub message_id: Uuid,
-    pub played: bool,
-    pub service: ServiceType,
-    pub followed_at: i64,
     #[sea_orm(belongs_to, from = "message_id", to = "id")]
     pub message: HasOne<super::messages::Entity>,
     #[sea_orm(column_type = "JsonBinary")]
@@ -27,15 +28,15 @@ pub struct Model {
 
 #[derive(Debug, Clone, Serialize, Deserialize, DerivePartialModel)]
 #[sea_orm(entity = "Entity")]
-pub struct Follow {
+pub struct CommandAction {
     pub id: Uuid,
-    pub service_id: String,
     pub user_name: String,
-    pub user_id: String,
+    pub user_input: Option<String>,
+    pub command_id: Uuid,
+    pub command_name: String,
     pub message_id: Uuid,
-    pub played: bool,
-    pub service: ServiceType,
-    pub followed_at: i64,
+    pub platform: Platform,
+    pub media: Option<Media>,
     pub alert: Option<super::alerts::Alert>,
 }
 

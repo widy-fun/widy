@@ -10,7 +10,7 @@ use crate::rewards::Platform;
 #[sea_orm(table_name = "commands")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    pub id: String,
+    pub id: Uuid,
     pub name: String,
     pub description: Option<String>,
     #[sea_orm(column_type = "JsonBinary")]
@@ -19,22 +19,26 @@ pub struct Model {
     pub timer: Option<TimerSource>,
     #[sea_orm(column_type = "JsonBinary")]
     pub chat_bot: Option<ChatBotAction>,
-    #[sea_orm(column_type = "JsonBinary")]
-    pub alert: Option<super::alerts::Alert>,
+    #[sea_orm(has_one)]
+    pub alert: HasOne<super::alerts::Entity>,
     pub source_type: CommandSourceType,
+    pub is_enabled: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, DerivePartialModel)]
 #[sea_orm(entity = "Entity")]
 pub struct Command {
-    pub id: String,
+    pub id: Uuid,
     pub name: String,
     pub description: Option<String>,
     pub chat: Option<ChatSource>,
     pub timer: Option<TimerSource>,
     pub chat_bot: Option<ChatBotAction>,
-    pub alert: Option<super::alerts::Alert>,
     pub source_type: CommandSourceType,
+    pub is_enabled: bool,
+    #[sea_orm(nested)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub alert: Option<super::alerts::Alert>,
 }
 
 impl ActiveModelBehavior for ActiveModel {}
@@ -59,9 +63,8 @@ pub struct ChatSource {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Eq, FromJsonQueryResult)]
 pub struct TimerSource {
     pub message: String,
-    pub interval: u32,
-    pub lines: u32,
-    pub alias: Option<String>,
+    pub mins_passed: u64,
+    pub lines_passed: u64,
     pub post_type: PostType,
 }
 
@@ -69,6 +72,7 @@ pub struct TimerSource {
 pub struct ChatBotAction {
     pub message: String,
     pub replay: bool,
+    pub platforms: Vec<Platform>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
@@ -77,7 +81,6 @@ pub enum UserLevel {
     Moderator,
     Vip,
     Subscriber,
-    Follower,
     Anyone,
 }
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]

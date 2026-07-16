@@ -214,14 +214,14 @@ impl TwitchService {
                             .get_reward_by_external_id(&event.reward.id, Platform::Twitch)
                             .await
                         {
-                            let message_id = Uuid::new_v4().to_string();
+                            let message_id = Uuid::new_v4();
                             let redemption = Redemption {
-                                id: Uuid::new_v4().to_string(),
+                                id: Uuid::new_v4(),
                                 user_id: event.user_id,
                                 user_name: event.user_name,
                                 user_input: event.user_input,
                                 external_id: event.id,
-                                reward_id: event.reward.id,
+                                reward_id: reward.id,
                                 description: event.reward.prompt,
                                 title: event.reward.title,
                                 cost: event.reward.cost,
@@ -241,9 +241,9 @@ impl TwitchService {
             SubscriptionType::ChannelFollow => {
                 if let Event::Follow(event) = payload.event {
                     let created_at = Utc::now().timestamp();
-                    let message_id = Uuid::new_v4().to_string();
+                    let message_id = Uuid::new_v4();
                     let follow = Follow {
-                        id: Uuid::new_v4().to_string(),
+                        id: Uuid::new_v4(),
                         user_id: event.user_id,
                         service_id: payload.subscription.id,
                         user_name: event.user_name,
@@ -262,9 +262,9 @@ impl TwitchService {
             SubscriptionType::ChannelSubscribe => {
                 if let Event::Subscribe(event) = payload.event {
                     let created_at = Utc::now().timestamp();
-                    let message_id = Uuid::new_v4().to_string();
+                    let message_id = Uuid::new_v4();
                     let subscription = subscriptions::Subscription {
-                        id: Uuid::new_v4().to_string(),
+                        id: Uuid::new_v4(),
                         user_id: event.user_id,
                         service_id: payload.subscription.id,
                         user_name: event.user_name,
@@ -292,9 +292,9 @@ impl TwitchService {
             SubscriptionType::ChannelSubscriptionGift => {
                 if let Event::SubscriptionGift(event) = payload.event {
                     let created_at = Utc::now().timestamp();
-                    let message_id = Uuid::new_v4().to_string();
+                    let message_id = Uuid::new_v4();
                     let subscription = subscriptions::Subscription {
-                        id: Uuid::new_v4().to_string(),
+                        id: Uuid::new_v4(),
                         user_id: event.user_id,
                         service_id: payload.subscription.id,
                         user_name: event.user_name,
@@ -322,9 +322,9 @@ impl TwitchService {
             SubscriptionType::ChannelSubscriptionMessage => {
                 if let Event::SubscriptionMessage(event) = payload.event {
                     let created_at = Utc::now().timestamp();
-                    let message_id = Uuid::new_v4().to_string();
+                    let message_id = Uuid::new_v4();
                     let subscription = subscriptions::Subscription {
-                        id: Uuid::new_v4().to_string(),
+                        id: Uuid::new_v4(),
                         user_id: event.user_id,
                         service_id: payload.subscription.id,
                         user_name: event.user_name,
@@ -352,9 +352,9 @@ impl TwitchService {
             SubscriptionType::ChannelRaid => {
                 if let Event::Raid(event) = payload.event {
                     let created_at = Utc::now().timestamp();
-                    let message_id = Uuid::new_v4().to_string();
+                    let message_id = Uuid::new_v4();
                     let raid = raids::Raid {
-                        id: Uuid::new_v4().to_string(),
+                        id: Uuid::new_v4(),
                         service_id: payload.subscription.id,
                         message_id: message_id,
                         played: false,
@@ -386,22 +386,13 @@ impl TwitchService {
             }
             SubscriptionType::ChannelChatMessage => {
                 if let Event::ChannelChatMessage(event) = payload.event {
-                    let _ = EventsService::chat_message(
-                        UnifiedChatMessage::from_twitch(
-                            event.clone(),
-                            payload.subscription.created_at,
-                            all_badges_info,
-                        ),
-                        app,
-                    )
-                    .await;
-                    let _ = CommandsService::twitch_chat_message_trigger(
-                        &event.message.text,
-                        app,
-                        event.broadcaster_user_id,
-                        Some(event.message_id),
-                    )
-                    .await;
+                    let message = UnifiedChatMessage::from_twitch(
+                        event.clone(),
+                        payload.subscription.created_at,
+                        all_badges_info,
+                    );
+                    let _ = EventsService::chat_message(message.clone(), app).await;
+                    let _ = CommandsService::twitch_chat_message_trigger(message, app).await;
                 }
             }
             SubscriptionType::ChannelChatMessageDelete => {
@@ -505,6 +496,7 @@ impl UnifiedChatMessage {
         let is_broadcaster = e.badges.iter().any(|b| b.set_id == "broadcaster");
         let is_moderator = e.badges.iter().any(|b| b.set_id == "moderator");
         let is_subscriber = e.badges.iter().any(|b| b.set_id == "subscriber");
+        let is_vip = e.badges.iter().any(|b| b.set_id == "vip");
 
         let cheer_bits = e.cheer.as_ref().map(|c| c.bits);
 
@@ -601,6 +593,7 @@ impl UnifiedChatMessage {
                     is_subscriber,
                     is_verified: false,
                     is_bot,
+                    is_vip,
                 },
             },
 

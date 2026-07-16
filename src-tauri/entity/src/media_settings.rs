@@ -6,11 +6,11 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: u8,
-    #[sea_orm(column_type = "Text")]
+    #[sea_orm(column_type = "JsonBinary")]
     pub youtube: MediaPlatformSettings,
-    #[sea_orm(column_type = "Text")]
+    #[sea_orm(column_type = "JsonBinary")]
     pub twitch: MediaPlatformSettings,
-    #[sea_orm(column_type = "Text")]
+    #[sea_orm(column_type = "JsonBinary")]
     pub tiktok: MediaPlatformSettings,
 }
 

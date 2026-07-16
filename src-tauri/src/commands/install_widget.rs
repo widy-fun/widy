@@ -16,8 +16,8 @@ pub async fn install_widget(
     manifest: Manifest,
 ) -> Result<(), String> {
     validate_csp(manifest.csp.clone(), false)?;
-    let id = Uuid::new_v4().to_string();
-    download_widget(&reqwest_client, &config_service, &manifest, &id).await?;
+    let id = Uuid::new_v4();
+    download_widget(&reqwest_client, &config_service, &manifest, id).await?;
     database_service.add_widget(None, manifest, id).await?;
     Ok(())
 }

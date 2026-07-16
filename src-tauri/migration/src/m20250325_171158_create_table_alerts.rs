@@ -26,13 +26,13 @@ impl MigrationTrait for Migration {
                     .col(integer("delay"))
                     .col(integer("duration"))
                     .col(text("variation_conditions"))
-                    .col(text("title_style"))
-                    .col(text("message_style"))
-                    .col(text_null("reward_id"))
-                    .col(text_null("command_id"))
+                    .col(json_binary("title_style"))
+                    .col(json_binary("message_style"))
+                    .col(uuid_null("reward_id"))
+                    .col(uuid_null("command_id"))
                     .col(integer("tts_volume"))
                     .col(string("tts_type"))
-                    .col(text_null("tts_settings"))
+                    .col(json_binary_null("tts_settings"))
                     .to_owned(),
             )
             .await

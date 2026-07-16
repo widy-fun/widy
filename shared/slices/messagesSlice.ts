@@ -12,6 +12,7 @@ const initialState: MessagesState = {
 		exclude_subscriptions: false,
 		exclude_raids: false,
 		exclude_redemptions: false,
+		exclude_commands_actions: false,
 	},
 };
 

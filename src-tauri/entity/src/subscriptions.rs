@@ -10,12 +10,12 @@ use crate::services::ServiceType;
 #[sea_orm(table_name = "subscriptions")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    pub id: String,
+    pub id: Uuid,
     pub service_id: String,
     pub user_name: String,
     pub user_id: String,
     #[sea_orm(uniq)]
-    pub message_id: String,
+    pub message_id: Uuid,
     pub played: bool,
     pub is_gift: bool,
     pub is_anonymous: bool,
@@ -26,18 +26,18 @@ pub struct Model {
     pub subscribed_at: i64,
     #[sea_orm(belongs_to, from = "message_id", to = "id")]
     pub message: HasOne<super::messages::Entity>,
-    #[sea_orm(column_type = "Json")]
+    #[sea_orm(column_type = "JsonBinary")]
     pub alert: Option<super::alerts::Alert>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, DerivePartialModel)]
 #[sea_orm(entity = "Entity")]
 pub struct Subscription {
-    pub id: String,
+    pub id: Uuid,
     pub service_id: String,
     pub user_name: String,
     pub user_id: String,
-    pub message_id: String,
+    pub message_id: Uuid,
     pub played: bool,
     pub is_gift: bool,
     pub is_anonymous: bool,

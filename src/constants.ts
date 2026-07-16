@@ -73,8 +73,8 @@ export const FILE_FILTERS = {
 
 export const DEFAULT_TIMER_SOURCE: ITimerSource = {
 	message: "Hello",
-	interval: 300,
-	lines: 2,
+	mins_passed: 5,
+	lines_passed: 10,
 	post_type: PostType.Normal,
 };
 
@@ -82,7 +82,6 @@ export const DEFAULT_CHAT_SOURCE: IChatSource = {
 	trigger: "!command",
 	platforms: [Platform.Kick, Platform.Twitch],
 	user_levels: [
-		UserLevel.Follower,
 		UserLevel.Moderator,
 		UserLevel.Streamer,
 		UserLevel.Subscriber,
@@ -95,8 +94,8 @@ export const DEFAULT_COMMAND: ICommand = {
 	id: crypto.randomUUID(),
 	name: "command",
 	description: "",
-	chat: DEFAULT_CHAT_SOURCE,
 	source_type: CommandSourceType.None,
+	is_enabled: true,
 };
 
 export const COMMAND_ACTION = [
@@ -113,6 +112,7 @@ export const COMMAND_ACTION = [
 ];
 
 export const DEFAULT_CHAT_BOT_ACTION: IChatBotAction = {
-	message: "hello",
+	message: "",
 	replay: false,
+	platforms: [Platform.Kick, Platform.Twitch],
 };

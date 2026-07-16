@@ -4,13 +4,12 @@ import TitleIcon from "@mui/icons-material/Title";
 import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
 import { Box, Button, Tab, Tabs } from "@mui/material";
 import { convertFileSrc } from "@tauri-apps/api/core";
-import type { IAlert, IClientMessage } from "@widy/sdk";
+import type { IAlert } from "@widy/sdk";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import AlertView from "../../../../../shared/components/AlertView";
-import { setAlert } from "../../../../../shared/slices/alertsSlice";
 import getTestAlertMessage from "../../../../../shared/utils/getTestAlertMessage";
 import type { AppState } from "../../../../store";
 import TabPanel from "../../../TabPanel";
@@ -34,7 +33,6 @@ const AlertSettings = ({
 	const { t } = useTranslation();
 	const { alert } = useSelector((state: AppState) => state.alertsState);
 	const { appDataDir } = useSelector((state: AppState) => state.mainState);
-	const dispatch = useDispatch();
 	const base = convertFileSrc(`${appDataDir}/static`);
 
 	return (
@@ -92,12 +90,7 @@ const AlertSettings = ({
 					<ViewSettings />
 				</TabPanel>
 				<TabPanel index={1} value={value}>
-					<AlertVariantSettings
-						value={alert}
-						setValue={(updated) => {
-							dispatch(setAlert(updated as IAlert));
-						}}
-					/>
+					<AlertVariantSettings />
 				</TabPanel>
 				<TabPanel index={2} value={value}>
 					<TitleStyle />
@@ -116,13 +109,11 @@ const AlertSettings = ({
 					alert={alert as IAlert}
 					isShowVideoElement={true}
 					backgroundColor="green"
-					message={
-						getTestAlertMessage({
-							alert,
-							userName: t("text.name"),
-							text: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis",
-						}) as IClientMessage
-					}
+					message={getTestAlertMessage({
+						alert,
+						userName: t("text.name"),
+						text: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis",
+					})}
 					base={base}
 				/>
 			</div>

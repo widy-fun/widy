@@ -17,6 +17,7 @@ const CreateCommand = () => {
 
 	return (
 		<CommandSettings
+			isUpdate={false}
 			onSave={async () => {
 				try {
 					await createCommand({ command }).unwrap();

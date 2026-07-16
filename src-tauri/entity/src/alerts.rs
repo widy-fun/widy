@@ -8,7 +8,7 @@ use crate::messages::MessageType;
 #[sea_orm(table_name = "alerts")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    pub id: String,
+    pub id: Uuid,
     pub r#type: MessageType,
     pub audio: Option<String>,
     pub audio_volume: u32,
@@ -26,17 +26,18 @@ pub struct Model {
     pub variation_conditions: AlertVariationConditions,
     pub tts_volume: u32,
     pub tts_type: TtsType,
+    #[sea_orm(column_type = "JsonBinary")]
     pub tts_settings: Option<TtsSettings>,
-    #[sea_orm(column_type = "Text")]
+    #[sea_orm(column_type = "JsonBinary")]
     pub title_style: TextStyle,
-    #[sea_orm(column_type = "Text")]
+    #[sea_orm(column_type = "JsonBinary")]
     pub message_style: TextStyle,
     #[sea_orm(uniq)]
-    pub reward_id: Option<String>,
+    pub reward_id: Option<Uuid>,
     #[sea_orm(belongs_to, from = "reward_id", to = "id")]
     pub reward: HasOne<super::rewards::Entity>,
     #[sea_orm(uniq)]
-    pub command_id: Option<String>,
+    pub command_id: Option<Uuid>,
     #[sea_orm(belongs_to, from = "command_id", to = "id")]
     pub command: HasOne<super::commands::Entity>,
 }
@@ -48,7 +49,7 @@ impl ActiveModelBehavior for ActiveModel {}
 )]
 #[sea_orm(entity = "Entity")]
 pub struct Alert {
-    pub id: String,
+    pub id: Uuid,
     pub r#type: MessageType,
     pub audio: Option<String>,
     pub audio_volume: u32,
@@ -69,8 +70,8 @@ pub struct Alert {
     pub tts_settings: Option<TtsSettings>,
     pub title_style: TextStyle,
     pub message_style: TextStyle,
-    pub reward_id: Option<String>,
-    pub command_id: Option<String>,
+    pub reward_id: Option<Uuid>,
+    pub command_id: Option<Uuid>,
 }
 
 #[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Eq, Deserialize, Serialize)]
@@ -162,6 +163,15 @@ impl From<Alert> for ActiveModelEx {
             reward: NotSet,
             command_id: Set(value.command_id),
             command: NotSet,
+        }
+    }
+}
+
+impl From<Option<Alert>> for ActiveModelEx {
+    fn from(value: Option<Alert>) -> Self {
+        match value {
+            Some(alert) => alert.into(),
+            None => Default::default(),
         }
     }
 }

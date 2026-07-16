@@ -8,7 +8,8 @@ const getAlert = ({ message }: { message: IClientMessage }) => {
 		message.follow?.alert ||
 		message.subscription?.alert ||
 		message.raid?.alert ||
-		message.redemption?.alert;
+		message.redemption?.alert ||
+		message.command_action?.alert;
 	if (group_id !== alert?.group_id) {
 		return;
 	}

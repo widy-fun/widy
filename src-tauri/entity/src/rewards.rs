@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "rewards")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    pub id: String,
+    pub id: Uuid,
     pub platform: Platform,
     pub r#type: RewardType,
     pub external_id: Option<String>,
@@ -33,7 +33,7 @@ pub struct Model {
 #[derive(Debug, Clone, Serialize, Deserialize, DerivePartialModel)]
 #[sea_orm(entity = "Entity")]
 pub struct Reward {
-    pub id: String,
+    pub id: Uuid,
     pub platform: Platform,
     pub r#type: RewardType,
     pub external_id: Option<String>,

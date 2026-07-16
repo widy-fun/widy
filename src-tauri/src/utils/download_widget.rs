@@ -2,6 +2,7 @@ use entity::widgets::Manifest;
 use futures::StreamExt;
 use tauri::State;
 use tokio::{fs, io::AsyncWriteExt};
+use uuid::Uuid;
 
 use crate::services::ConfigService;
 
@@ -9,7 +10,7 @@ pub async fn download_widget(
     reqwest_client: &State<'_, reqwest::Client>,
     config_service: &State<'_, ConfigService>,
     manifest: &Manifest,
-    id: &str,
+    id: Uuid,
 ) -> Result<(), String> {
     let widget = format!("{}-v{}", manifest.id, manifest.version);
     let widget_url = format!(
@@ -50,7 +51,10 @@ pub async fn download_widget(
         })?;
     }
 
-    let extract_path = config_service.widgets_path.join(&manifest.id).join(&id);
+    let extract_path = config_service
+        .widgets_path
+        .join(&manifest.id.to_string())
+        .join(&id.to_string());
     let zip_path_clone = zip_path.clone();
     tokio::task::spawn_blocking(move || -> Result<(), String> {
         let file = std::fs::File::open(&zip_path_clone).map_err(|e| {

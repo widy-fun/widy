@@ -2,35 +2,36 @@ use crate::services::DatabaseService;
 use async_trait::async_trait;
 use entity::widgets::*;
 use sea_orm::{ActiveModelTrait, ActiveValue::Set, ColumnTrait, EntityTrait, QueryFilter};
+use uuid::Uuid;
 
 #[async_trait]
 pub trait WidgetsRepository: Send + Sync {
-    async fn get_widget_by_id(&self, id: String) -> Result<Option<Model>, String>;
+    async fn get_widget_by_id(&self, id: Uuid) -> Result<Option<Model>, String>;
     async fn get_widget_by_dev_path(&self, dev_path: String) -> Result<Option<Model>, String>;
     async fn get_widgets(&self) -> Result<Vec<Model>, String>;
     async fn add_widget(
         &self,
         dev_path: Option<String>,
         manifest: Manifest,
-        id: String,
+        id: Uuid,
     ) -> Result<(), String>;
-    async fn delete_widget_by_id(&self, id: String) -> Result<(), String>;
-    async fn update_widget(&self, manifest: Manifest, id: String) -> Result<(), String>;
+    async fn delete_widget_by_id(&self, id: Uuid) -> Result<(), String>;
+    async fn update_widget(&self, manifest: Manifest, id: Uuid) -> Result<(), String>;
     async fn update_view_storage(
         &self,
         view_storage: String,
-        id: String,
+        id: Uuid,
     ) -> Result<Option<Model>, String>;
     async fn update_control_storage(
         &self,
         control_storage: String,
-        id: String,
+        id: Uuid,
     ) -> Result<Option<Model>, String>;
 }
 
 #[async_trait]
 impl WidgetsRepository for DatabaseService {
-    async fn get_widget_by_id(&self, id: String) -> Result<Option<Model>, String> {
+    async fn get_widget_by_id(&self, id: Uuid) -> Result<Option<Model>, String> {
         Entity::find()
             .filter(Column::Id.eq(id))
             .one(&self.connection)
@@ -62,7 +63,7 @@ impl WidgetsRepository for DatabaseService {
         &self,
         dev_path: Option<String>,
         manifest: Manifest,
-        id: String,
+        id: Uuid,
     ) -> Result<(), String> {
         ActiveModel::builder()
             .set_id(id)
@@ -77,7 +78,7 @@ impl WidgetsRepository for DatabaseService {
 
         Ok(())
     }
-    async fn delete_widget_by_id(&self, id: String) -> Result<(), String> {
+    async fn delete_widget_by_id(&self, id: Uuid) -> Result<(), String> {
         Entity::delete_by_id(id)
             .exec(&self.connection)
             .await
@@ -88,7 +89,7 @@ impl WidgetsRepository for DatabaseService {
         Ok(())
     }
 
-    async fn update_widget(&self, manifest: Manifest, id: String) -> Result<(), String> {
+    async fn update_widget(&self, manifest: Manifest, id: Uuid) -> Result<(), String> {
         if let Some(widget) = self.get_widget_by_id(id).await? {
             let mut pear: ActiveModel = widget.into();
             pear.manifest = Set(manifest);
@@ -103,7 +104,7 @@ impl WidgetsRepository for DatabaseService {
     async fn update_view_storage(
         &self,
         view_storage: String,
-        id: String,
+        id: Uuid,
     ) -> Result<Option<Model>, String> {
         if let Some(widget) = self.get_widget_by_id(id).await? {
             let mut pear: ActiveModel = widget.into();
@@ -119,7 +120,7 @@ impl WidgetsRepository for DatabaseService {
     async fn update_control_storage(
         &self,
         control_storage: String,
-        id: String,
+        id: Uuid,
     ) -> Result<Option<Model>, String> {
         if let Some(widget) = self.get_widget_by_id(id).await? {
             let mut pear: ActiveModel = widget.into();

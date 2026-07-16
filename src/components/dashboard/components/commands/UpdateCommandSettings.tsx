@@ -18,6 +18,7 @@ const UpdateCommandSettings = () => {
 	const { id } = useParams();
 	const dispatch = useDispatch();
 	const { command } = useSelector((state: AppState) => state.commandsState);
+	console.log("command:", command);
 	const { data, error: getCommandByIdError } = useGetCommandByIdQuery(
 		{ id },
 		{ skip: !id },
@@ -36,13 +37,14 @@ const UpdateCommandSettings = () => {
 	}, [getCommandByIdError, dispatch]);
 
 	useEffect(() => {
-		if (data) {
+		if (data && data.id !== command.id) {
 			dispatch(setCommand(data));
 		}
-	}, [data, dispatch]);
+	}, [data, dispatch, command.id]);
 
 	return (
 		<CommandSettings
+			isUpdate={true}
 			onSave={async () => {
 				try {
 					await updateCommand({ command }).unwrap();

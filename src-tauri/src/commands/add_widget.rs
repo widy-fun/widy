@@ -20,6 +20,6 @@ pub async fn add_widget(
         }
     }
 
-    let id = Uuid::new_v4().to_string();
+    let id = Uuid::new_v4();
     database_service.add_widget(dev_path, manifest, id).await
 }

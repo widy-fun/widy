@@ -22,21 +22,21 @@ export const commandsApi = api.injectEndpoints({
 				command: "delete_command_by_id",
 				args,
 			}),
-			invalidatesTags: ["Commands"],
+			invalidatesTags: ["Commands", "Alerts"],
 		}),
 		updateCommand: builder.mutation<void, { command: ICommand }>({
 			query: (args) => ({
 				command: "update_command",
 				args,
 			}),
-			invalidatesTags: ["Commands"],
+			invalidatesTags: ["Commands", "Alerts"],
 		}),
 		createCommand: builder.mutation<void, { command: ICommand }>({
 			query: (args) => ({
 				command: "create_command",
 				args,
 			}),
-			invalidatesTags: ["Commands"],
+			invalidatesTags: ["Commands", "Alerts"],
 		}),
 	}),
 });

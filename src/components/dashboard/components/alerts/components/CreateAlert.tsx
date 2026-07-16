@@ -67,13 +67,7 @@ const CreateAlert = () => {
 						navigate("/dashboard/rewards");
 					} else if (command.id === alert.command_id) {
 						dispatch(setCommand({ ...command, alert }));
-						dispatch(
-							showSnackBar({
-								message: t("success"),
-								alertSeverity: AlertSeverity.success,
-							}),
-						);
-						navigate("/dashboard/commands/new/command");
+						navigate(-2);
 					} else {
 						await createAlert({ alert }).unwrap();
 						dispatch(

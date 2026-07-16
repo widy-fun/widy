@@ -1,16 +1,14 @@
 import CampaignIcon from "@mui/icons-material/Campaign";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { Box } from "@mui/material";
-import { MessageType } from "@widy/sdk";
-import { useDispatch, useSelector } from "react-redux";
-import { setAlert } from "../../../../../../shared/slices/alertsSlice";
-import getDefaultAlert from "../../../../../helpers/getDefaultAlert";
+import { useSelector } from "react-redux";
+import { useGetAlertByIdQuery } from "../../../../../api/alertsApi";
 import type { AppState } from "../../../../../store";
 import CommandSourceActionCard from "./CommandSourceActionCard";
 
-const CommandAction = () => {
+const CommandAction = ({ isUpdate }: { isUpdate: boolean }) => {
 	const { command } = useSelector((state: AppState) => state.commandsState);
-	const dispatch = useDispatch();
+	const { data } = useGetAlertByIdQuery({ id: command.alert?.id });
 
 	return (
 		<Box
@@ -31,17 +29,11 @@ const CommandAction = () => {
 			<CommandSourceActionCard
 				title="Alert"
 				description=""
-				path="/dashboard/alerts/new/alert"
-				onNavigate={() => {
-					dispatch(
-						setAlert({
-							...getDefaultAlert(),
-							command_id: command.id,
-							name: command.name,
-							type: MessageType.Command,
-						}),
-					);
-				}}
+				path={
+					isUpdate && data
+						? "/dashboard/commands/action/alert/update"
+						: "/dashboard/commands/action/alert/create"
+				}
 				icon={<CampaignIcon sx={{ width: 40, height: 40 }} />}
 				selected={!!command.alert}
 			/>

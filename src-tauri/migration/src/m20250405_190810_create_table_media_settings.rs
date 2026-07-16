@@ -12,9 +12,9 @@ impl MigrationTrait for Migration {
                     .table("media_settings")
                     .if_not_exists()
                     .col(pk_auto("id"))
-                    .col(text("youtube"))
-                    .col(text("twitch"))
-                    .col(text("tiktok"))
+                    .col(json_binary("youtube"))
+                    .col(json_binary("twitch"))
+                    .col(json_binary("tiktok"))
                     .to_owned(),
             )
             .await

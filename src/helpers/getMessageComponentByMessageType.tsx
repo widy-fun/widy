@@ -1,5 +1,6 @@
 import type { IClientMessage } from "@widy/sdk";
 import { MessageType } from "@widy/sdk";
+import CommandActionMessageCard from "../../shared/components/CommandActionMessageCard";
 import DonationMessageCard from "../../shared/components/DonationMessageCard";
 import FollowMessageCard from "../../shared/components/FollowMessageCard";
 import RaidMessageCard from "../../shared/components/RaidMessageCard";
@@ -42,6 +43,14 @@ const getMessageComponentByMessageType = ({
 		case MessageType.Redemption:
 			return (
 				<RedemptionMessageCard
+					message={message}
+					isAlertPlaying={isAlertPlaying}
+					isMediaPlaying={isMediaPlaying}
+				/>
+			);
+		case MessageType.CommandAction:
+			return (
+				<CommandActionMessageCard
 					message={message}
 					isAlertPlaying={isAlertPlaying}
 					isMediaPlaying={isMediaPlaying}

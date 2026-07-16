@@ -1,12 +1,6 @@
-import {
-	Button,
-	InputAdornment,
-	MenuItem,
-	Select,
-	TextField,
-} from "@mui/material";
+import { MenuItem, Select, TextField } from "@mui/material";
 import { CommandSourceType, PostType } from "@widy/sdk";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NumericFormat } from "react-number-format";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,6 +8,7 @@ import { useNavigate } from "react-router";
 import { DEFAULT_TIMER_SOURCE } from "../../../../../constants";
 import type { AppState } from "../../../../../store";
 import { setCommand } from "../../../../../store/slices/commandsSlice";
+import LeftRightButtons from "../../../../LeftRightButtons";
 import styles from "../../settings/Settings.module.css";
 
 const TimerSource = () => {
@@ -22,6 +17,12 @@ const TimerSource = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [timerSource, setTimerSource] = useState(DEFAULT_TIMER_SOURCE);
+
+	useEffect(() => {
+		if (command.timer) {
+			setTimerSource(command.timer);
+		}
+	}, [command.timer]);
 
 	return (
 		<>
@@ -36,17 +37,6 @@ const TimerSource = () => {
 							value={timerSource.message}
 							onChange={(e) => {
 								setTimerSource({ ...timerSource, message: e.target.value });
-							}}
-						/>
-					</div>
-					<div className={styles.settings}>
-						<div className={styles.label}>
-							<span>{t("timer_source.alias")}:</span>
-						</div>
-						<TextField
-							value={timerSource.alias}
-							onChange={(e) => {
-								setTimerSource({ ...timerSource, alias: e.target.value });
 							}}
 						/>
 					</div>
@@ -70,7 +60,7 @@ const TimerSource = () => {
 					</div>
 					<div className={styles.settings}>
 						<div className={styles.label}>
-							<span>{t("timer_source.interval")}:</span>
+							<span>{t("timer_source.mins_passed")}:</span>
 						</div>
 						<NumericFormat
 							style={{ width: 100 }}
@@ -80,47 +70,68 @@ const TimerSource = () => {
 							valueIsNumericString
 							decimalScale={0}
 							min={1}
+							max={120}
 							isAllowed={({ floatValue }) =>
-								floatValue === undefined || floatValue <= 3000000000
+								floatValue === undefined || floatValue <= 120
 							}
 							customInput={TextField}
-							slotProps={{
-								input: {
-									inputProps: {
-										step: 1,
-									},
-									endAdornment: (
-										<InputAdornment position="end">
-											{t("settings.sec")}
-										</InputAdornment>
-									),
-								},
-							}}
 							onChange={(e) => {
 								const value = Number(e.target.value);
-								setTimerSource({ ...timerSource, interval: value });
+								if (value < 1) return;
+								setTimerSource({ ...timerSource, mins_passed: value });
 							}}
-							value={timerSource.interval}
+							value={timerSource.mins_passed}
 						/>
 					</div>
-					<div style={{ display: "flex", placeContent: "center" }}>
-						<Button
-							variant="contained"
-							onClick={() => {
-								dispatch(
-									setCommand({
-										...command,
-										timer: timerSource,
-										chat: undefined,
-										source_type: CommandSourceType.Timer,
-									}),
-								);
-								navigate(-1);
+					<div className={styles.settings}>
+						<div className={styles.label}>
+							<span>{t("timer_source.lines_passed")}:</span>
+						</div>
+						<NumericFormat
+							style={{ width: 100 }}
+							inputMode="decimal"
+							autoComplete="off"
+							allowNegative={false}
+							valueIsNumericString
+							decimalScale={0}
+							min={1}
+							max={1000}
+							isAllowed={({ floatValue }) =>
+								floatValue === undefined || floatValue <= 1000
+							}
+							customInput={TextField}
+							onChange={(e) => {
+								const value = Number(e.target.value);
+								if (value < 1) return;
+								setTimerSource({ ...timerSource, lines_passed: value });
 							}}
-						>
-							{t("ok")}
-						</Button>
+							value={timerSource.lines_passed}
+						/>
 					</div>
+					<LeftRightButtons
+						onLeft={() => {
+							dispatch(
+								setCommand({
+									...command,
+									timer: timerSource,
+									chat: undefined,
+									source_type: CommandSourceType.Timer,
+								}),
+							);
+							navigate(-1);
+						}}
+						OnRight={() => {
+							dispatch(
+								setCommand({
+									...command,
+									timer: undefined,
+								}),
+							);
+							navigate(-1);
+						}}
+						leftText={t("ok")}
+						rightText={t("cancel")}
+					/>
 				</div>
 			</div>
 		</>

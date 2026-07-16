@@ -1,5 +1,4 @@
 import {
-	Button,
 	Checkbox,
 	ListItemText,
 	MenuItem,
@@ -7,13 +6,14 @@ import {
 	TextField,
 } from "@mui/material";
 import { CommandSourceType, Platform, UserLevel } from "@widy/sdk";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { DEFAULT_CHAT_SOURCE } from "../../../../../constants";
 import type { AppState } from "../../../../../store";
 import { setCommand } from "../../../../../store/slices/commandsSlice";
+import LeftRightButtons from "../../../../LeftRightButtons";
 import styles from "../../settings/Settings.module.css";
 
 const ChatSource = () => {
@@ -22,6 +22,12 @@ const ChatSource = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [chatSource, setChatSource] = useState(DEFAULT_CHAT_SOURCE);
+
+	useEffect(() => {
+		if (command.chat) {
+			setChatSource(command.chat);
+		}
+	}, [command.chat]);
 
 	return (
 		<>
@@ -91,25 +97,30 @@ const ChatSource = () => {
 							))}
 						</Select>
 					</div>
-
-					<div style={{ display: "flex", placeContent: "center" }}>
-						<Button
-							variant="contained"
-							onClick={() => {
-								dispatch(
-									setCommand({
-										...command,
-										chat: chatSource,
-										timer: undefined,
-										source_type: CommandSourceType.Chat,
-									}),
-								);
-								navigate(-1);
-							}}
-						>
-							{t("ok")}
-						</Button>
-					</div>
+					<LeftRightButtons
+						onLeft={() => {
+							dispatch(
+								setCommand({
+									...command,
+									chat: chatSource,
+									timer: undefined,
+									source_type: CommandSourceType.Chat,
+								}),
+							);
+							navigate(-1);
+						}}
+						OnRight={() => {
+							dispatch(
+								setCommand({
+									...command,
+									chat: undefined,
+								}),
+							);
+							navigate(-1);
+						}}
+						leftText={t("ok")}
+						rightText={t("cancel")}
+					/>
 				</div>
 			</div>
 		</>

@@ -1,52 +1,74 @@
 use async_trait::async_trait;
-use entity::commands::*;
-use migration::Expr;
-use sea_orm::{ActiveValue::Set, ColumnTrait, EntityTrait, QueryFilter};
+use entity::{alerts, commands::*};
+use migration::{Expr, OnConflict};
+use sea_orm::{ActiveModelTrait, ActiveValue::Set, ColumnTrait, EntityTrait, QueryFilter};
+use uuid::Uuid;
 
-use crate::services::DatabaseService;
+use crate::{repositories::AlertsRepository, services::DatabaseService};
 
 #[async_trait]
 pub trait CommandsRepository: Send + Sync {
-    async fn get_command_by_id(&self, external_id: &String) -> Result<Option<Model>, String>;
-    async fn get_command_by_chat_trigger(&self, trigger: &String) -> Result<Option<Model>, String>;
-    async fn get_commands(&self) -> Result<Vec<Model>, String>;
-    async fn create_command(&self, command: Model) -> Result<(), String>;
-    async fn update_command(&self, command: Model) -> Result<(), String>;
-    async fn delete_command_by_id(&self, id: &String) -> Result<(), String>;
+    async fn get_command_by_id(&self, id: Uuid) -> Result<Option<Command>, String>;
+    async fn get_command_by_chat_trigger(
+        &self,
+        trigger: &String,
+    ) -> Result<Option<Command>, String>;
+    async fn get_commands(&self) -> Result<Vec<Command>, String>;
+    async fn create_command(&self, command: Command) -> Result<(), String>;
+    async fn update_command(&self, command: Command) -> Result<(), String>;
+    async fn delete_command_by_id(&self, id: Uuid) -> Result<(), String>;
 }
 
 #[async_trait]
 impl CommandsRepository for DatabaseService {
-    async fn get_commands(&self) -> Result<Vec<Model>, String> {
-        Entity::find().all(&self.connection).await.map_err(|e| {
-            log::error!("Get commands error: {}", e.to_string());
-            e.to_string()
-        })
+    async fn get_commands(&self) -> Result<Vec<Command>, String> {
+        Entity::find()
+            .left_join(entity::alerts::Entity)
+            .into_partial_model()
+            .all(&self.connection)
+            .await
+            .map_err(|e| {
+                log::error!("Get commands error: {}", e.to_string());
+                e.to_string()
+            })
     }
-    async fn create_command(&self, command: Model) -> Result<(), String> {
-        Entity::insert(ActiveModel {
-            id: Set(command.id),
-            name: Set(command.name),
-            description: Set(command.description),
-            chat: Set(command.chat),
-            chat_bot: Set(command.chat_bot),
-            timer: Set(command.timer),
-            alert: Set(command.alert),
-            source_type: Set(command.source_type),
-        })
-        .exec(&self.connection)
-        .await
-        .map_err(|e| {
-            log::error!("Create reward error: {}", e);
+    async fn create_command(&self, command: Command) -> Result<(), String> {
+        let query_builder = ActiveModel::builder()
+            .set_id(command.id)
+            .set_name(command.name)
+            .set_chat(command.chat)
+            .set_chat_bot(command.chat_bot)
+            .set_description(command.description)
+            .set_source_type(command.source_type)
+            .set_timer(command.timer)
+            .set_is_enabled(command.is_enabled);
+
+        let query_builder_clone = query_builder.clone();
+
+        if let Some(alert) = command.alert {
+            query_builder_clone
+                .set_alert(alert)
+                .insert(&self.connection)
+                .await
+                .map_err(|e| {
+                    log::error!("Save command error: {}", e.to_string());
+                    e.to_string()
+                })?;
+            return Ok(());
+        }
+        query_builder.insert(&self.connection).await.map_err(|e| {
+            log::error!("Save command error: {}", e.to_string());
             e.to_string()
         })?;
 
         Ok(())
     }
 
-    async fn get_command_by_id(&self, id: &String) -> Result<Option<Model>, String> {
+    async fn get_command_by_id(&self, id: Uuid) -> Result<Option<Command>, String> {
         Entity::find()
+            .left_join(entity::alerts::Entity)
             .filter(Column::Id.eq(id))
+            .into_partial_model()
             .one(&self.connection)
             .await
             .map_err(|e| {
@@ -55,12 +77,17 @@ impl CommandsRepository for DatabaseService {
             })
     }
 
-    async fn get_command_by_chat_trigger(&self, trigger: &String) -> Result<Option<Model>, String> {
+    async fn get_command_by_chat_trigger(
+        &self,
+        trigger: &String,
+    ) -> Result<Option<Command>, String> {
         Entity::find()
+            .left_join(entity::alerts::Entity)
             .filter(Expr::cust_with_values(
                 "json_extract(chat, '$.trigger') = ?",
                 [trigger],
             ))
+            .into_partial_model()
             .one(&self.connection)
             .await
             .map_err(|e| {
@@ -69,7 +96,7 @@ impl CommandsRepository for DatabaseService {
             })
     }
 
-    async fn delete_command_by_id(&self, id: &String) -> Result<(), String> {
+    async fn delete_command_by_id(&self, id: Uuid) -> Result<(), String> {
         Entity::delete_by_id(id)
             .exec(&self.connection)
             .await
@@ -77,24 +104,78 @@ impl CommandsRepository for DatabaseService {
                 log::error!("Delete command by id error: {}", e);
                 e.to_string()
             })?;
+        entity::alerts::Entity::delete_many()
+            .filter(entity::alerts::Column::CommandId.eq(id))
+            .exec(&self.connection)
+            .await
+            .map_err(|e| {
+                log::error!("Delete alert by command_id error: {}", e);
+                e.to_string()
+            })?;
         Ok(())
     }
 
-    async fn update_command(&self, command: Model) -> Result<(), String> {
-        Entity::update(ActiveModel {
+    async fn update_command(&self, command: Command) -> Result<(), String> {
+        if let Some(alert) = command.alert {
+            let active_model = alerts::ActiveModel {
+                id: Set(alert.id),
+                audio: Set(alert.audio),
+                image: Set(alert.image),
+                name: Set(alert.name),
+                r#type: Set(alert.r#type),
+                status: Set(alert.status),
+                amount: Set(alert.amount),
+                variation_conditions: Set(alert.variation_conditions),
+                group_id: Set(alert.group_id),
+                audio_volume: Set(alert.audio_volume),
+                view_type: Set(alert.view_type),
+                title_style: Set(alert.title_style),
+                message_style: Set(alert.message_style),
+                video_volume: Set(alert.video_volume),
+                video: Set(alert.video),
+                alert_variant: Set(alert.alert_variant),
+                delay: Set(alert.delay),
+                duration: Set(alert.duration),
+                reward_id: Set(alert.reward_id),
+                command_id: Set(alert.command_id),
+                tts_volume: Set(alert.tts_volume),
+                tts_type: Set(alert.tts_type),
+                tts_settings: Set(alert.tts_settings),
+            };
+            let old_alert = self.get_alert_by_id(alert.id).await?;
+            if old_alert.is_none() {
+                alerts::Entity::insert(active_model)
+                    .exec(&self.connection)
+                    .await
+                    .map_err(|e| {
+                        log::error!("Insert alert error: {}", e.to_string());
+                        e.to_string()
+                    })?;
+            } else {
+                alerts::Entity::update(active_model)
+                    .exec(&self.connection)
+                    .await
+                    .map_err(|e| {
+                        log::error!("Update alert error: {}", e.to_string());
+                        e.to_string()
+                    })?;
+            }
+        }
+
+        ActiveModel {
             id: Set(command.id),
             name: Set(command.name),
             description: Set(command.description),
             chat: Set(command.chat),
-            chat_bot: Set(command.chat_bot),
             timer: Set(command.timer),
-            alert: Set(command.alert),
+            chat_bot: Set(command.chat_bot),
             source_type: Set(command.source_type),
-        })
-        .exec(&self.connection)
+            is_enabled: Set(command.is_enabled),
+        }
+        .save(&self.connection)
         .await
         .map_err(|e| {
-            log::error!("Update command settings error: {}", e);
+            log::error!("Update command error: {}", e.to_string());
             e.to_string()
         })?;
 

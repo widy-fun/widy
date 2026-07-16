@@ -1,5 +1,6 @@
 use entity::services::ServiceType;
 use tauri::{AppHandle, State};
+use uuid::Uuid;
 
 use crate::services::kick::{traits::KickApi, KickService};
 
@@ -7,9 +8,9 @@ use crate::services::kick::{traits::KickApi, KickService};
 pub async fn kick_remove_custom_reward(
     app: AppHandle,
     kick_service: State<'_, KickService>,
-    id: String,
+    id: Uuid,
 ) -> Result<(), String> {
     let auth = kick_service.check_auth(&app, ServiceType::Kick).await?;
-    kick_service.remove_custom_reward(&app, &auth, &id).await?;
+    kick_service.remove_custom_reward(&app, &auth, id).await?;
     return Ok(());
 }

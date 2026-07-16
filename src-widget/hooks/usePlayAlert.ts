@@ -251,6 +251,19 @@ const usePlayAlert = () => {
 
 	useEffect(() => {
 		const unsubscribe = eventsService.subscribe<IClientMessage>(
+			AppEvent.CommandAction,
+			(message) => {
+				if (message.command_action?.alert) {
+					handleNewMessage(message);
+				}
+			},
+		);
+
+		return () => unsubscribe();
+	}, [handleNewMessage]);
+
+	useEffect(() => {
+		const unsubscribe = eventsService.subscribe<IClientMessage>(
 			AppEvent.ReplayAlert,
 			handleReplayMessage,
 		);

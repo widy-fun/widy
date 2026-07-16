@@ -1,11 +1,10 @@
 import { MenuItem, Select, TextField } from "@mui/material";
-import { AlertVariationConditions, MessageType, TtsType } from "@widy/sdk";
+import { AlertVariationConditions, MessageType } from "@widy/sdk";
 import { useTranslation } from "react-i18next";
 import { NumericFormat } from "react-number-format";
 import { useDispatch, useSelector } from "react-redux";
 import { setAlert } from "../../../../../../shared/slices/alertsSlice";
 import type { AppState } from "../../../../../store";
-import InputSlider from "../../../../InputSlider";
 import OnOffSwitch from "../../../../OnOffSwitch";
 import styles from "../../settings/Settings.module.css";
 
@@ -66,50 +65,7 @@ const GeneralSettings = () => {
 						}
 					/>
 				</div>
-				<div className={styles.settings}>
-					<div className={styles.label}>
-						<span>{t("settings.tts_type")}:</span>
-					</div>
-					<Select sx={{ width: 150 }} value={alert.tts_type}>
-						{Object.values(TtsType).map((tts_type) => (
-							<MenuItem
-								value={tts_type}
-								key={tts_type}
-								onClick={() => {
-									dispatch(
-										setAlert({
-											...alert,
-											tts_type,
-										}),
-									);
-								}}
-							>
-								{tts_type}
-							</MenuItem>
-						))}
-					</Select>
-				</div>
-				<div className={styles.settings}>
-					<div className={styles.label}>
-						<span>{t("sound_volume")}:</span>
-					</div>
-					<InputSlider
-						sliderValue={alert.tts_volume}
-						inputValue={alert.tts_volume}
-						onChange={(value) => {
-							dispatch(
-								setAlert({
-									...alert,
-									tts_volume: value,
-								}),
-							);
-						}}
-						min={0}
-						sliderMax={100}
-						inputMax={100}
-						adornmentText={"%"}
-					/>
-				</div>
+
 				<div className={styles.settings}>
 					<div className={styles.label}>
 						<span>{t("alert.type")}:</span>

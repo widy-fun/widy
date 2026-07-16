@@ -1,6 +1,8 @@
 use chrono::Utc;
 use entity::{
     alerts::TtsType,
+    commands::UserLevel,
+    commands_actions::CommandAction,
     donations::Donation,
     followers::Follow,
     goals::GoalType,
@@ -19,8 +21,8 @@ use uuid::Uuid;
 
 use crate::{
     repositories::{
-        DonationsRepository, FollowsRepository, GoalsRepository, RaidsRepository,
-        RedemptionsRepository, SettingsRepository, SubscriptionsRepository,
+        CommandsActionsRepository, DonationsRepository, FollowsRepository, GoalsRepository,
+        RaidsRepository, RedemptionsRepository, SettingsRepository, SubscriptionsRepository,
     },
     services::{
         DatabaseService, EventMessage, ExchangeRatesService, MediaService, TtsService,
@@ -72,6 +74,7 @@ pub enum AppEvent {
     Redemption,
     ChatMessage,
     ChatMessageDelete,
+    CommandAction,
 }
 impl AppEvent {
     pub fn as_str(e: AppEvent) -> &'static str {
@@ -117,6 +120,7 @@ impl AppEvent {
             AppEvent::Redemption => "Redemption",
             AppEvent::ChatMessage => "ChatMessage",
             AppEvent::ChatMessageDelete => "ChatMessageDelete",
+            AppEvent::CommandAction => "CommandAction",
         }
     }
 }
@@ -252,6 +256,7 @@ pub struct SenderRoles {
     pub is_subscriber: bool,  // Twitch: subscriber badge / YouTube: isChatSponsor
     pub is_verified: bool,    // YouTube: isVerified
     pub is_bot: bool,
+    pub is_vip: bool,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -380,7 +385,7 @@ impl EventsService {
             }
         };
 
-        let id = Uuid::new_v4().to_string();
+        let id = Uuid::new_v4();
 
         let mut exchange_rates_service = exchange_rates_service_mutex.lock().await;
         let exchanged_amount = exchange_rates_service
@@ -420,7 +425,7 @@ impl EventsService {
 
         let audio = if let Some(text) = text.clone() {
             match tts_service
-                .make_audio(&remove_links(&text), &id, &app, tts_type)
+                .make_audio(&remove_links(&text), &id.to_string(), &app, tts_type)
                 .await
             {
                 Ok(audio) => Some(audio),
@@ -442,20 +447,21 @@ impl EventsService {
         };
 
         let created_at = Utc::now().timestamp();
-        let message_id = Uuid::new_v4().to_string();
+        let message_id = Uuid::new_v4();
 
         let client_message = ClientMessage {
-            id: message_id.clone(),
+            id: message_id,
             r#type: MessageType::Donation,
             created_at: created_at.clone(),
             follow: None,
             subscription: None,
             raid: None,
             redemption: None,
+            command_action: None,
             donation: Some(Donation {
                 id,
                 user_name,
-                message_id: message_id.clone(),
+                message_id: message_id,
                 amount: target_amount.clone(),
                 text,
                 audio,
@@ -538,6 +544,7 @@ impl EventsService {
             follow: None,
             raid: None,
             redemption: None,
+            command_action: None,
             subscription: Some(subscription.clone()),
         };
         let event_message = EventMessage {
@@ -586,12 +593,13 @@ impl EventsService {
         let database_service = app.state::<DatabaseService>();
         let created_at = Utc::now().timestamp();
         let client_message = ClientMessage {
-            id: redemption.message_id.clone(),
+            id: redemption.message_id,
             r#type: MessageType::Redemption,
             created_at,
             donation: None,
             follow: None,
             subscription: None,
+            command_action: None,
             redemption: Some(Redemption {
                 media,
                 ..redemption
@@ -619,6 +627,48 @@ impl EventsService {
         Ok(())
     }
 
+    pub async fn command_action(
+        command_action: CommandAction,
+        app: &AppHandle,
+    ) -> Result<(), String> {
+        let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
+        let database_service = app.state::<DatabaseService>();
+        let created_at = Utc::now().timestamp();
+        let client_message = ClientMessage {
+            id: command_action.message_id,
+            r#type: MessageType::CommandAction,
+            created_at,
+            donation: None,
+            follow: None,
+            subscription: None,
+            redemption: None,
+            raid: None,
+            command_action: Some(command_action),
+        };
+        let _ = database_service
+            .save_command_action_message(client_message.clone())
+            .await;
+        let event_message = EventMessage {
+            event: AppEvent::Message,
+            data: client_message.clone(),
+        };
+        websocket_broadcaster
+            .broadcast_event_message(&event_message)
+            .await;
+        let event_message = EventMessage {
+            event: AppEvent::CommandAction,
+            data: client_message.clone(),
+        };
+        websocket_broadcaster
+            .broadcast_event_message(&event_message)
+            .await;
+        let _ = database_service
+            .save_command_action_message(client_message)
+            .await;
+
+        Ok(())
+    }
+
     pub async fn follow(
         follow: Follow,
         goal_type: GoalType,
@@ -634,6 +684,7 @@ impl EventsService {
             subscription: None,
             raid: None,
             redemption: None,
+            command_action: None,
             follow: Some(follow),
         };
         let event_message = EventMessage {
@@ -666,6 +717,7 @@ impl EventsService {
             follow: None,
             subscription: None,
             redemption: None,
+            command_action: None,
             raid: Some(raid),
         };
         let event_message = EventMessage {
@@ -791,5 +843,17 @@ impl EventsService {
         }
 
         result.trim().to_string()
+    }
+}
+
+impl SenderRoles {
+    pub fn has_any_level(&self, levels: &[UserLevel]) -> bool {
+        levels.iter().any(|level| match level {
+            UserLevel::Streamer => self.is_broadcaster,
+            UserLevel::Moderator => self.is_moderator,
+            UserLevel::Vip => self.is_vip,
+            UserLevel::Subscriber => self.is_subscriber,
+            UserLevel::Anyone => true,
+        })
     }
 }

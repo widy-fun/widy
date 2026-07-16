@@ -1,12 +1,16 @@
-import { Box, Card, CardContent, Typography } from "@mui/material";
+import { Box, Card, CardContent, Switch, Typography } from "@mui/material";
 import type { ICommand } from "@widy/sdk";
 import { useTranslation } from "react-i18next";
-import { useDeleteCommandByIdMutation } from "../../../../../api/commandsApi";
+import {
+	useDeleteCommandByIdMutation,
+	useUpdateCommandMutation,
+} from "../../../../../api/commandsApi";
 import ConfigurationMenu from "../../../../ConfigurationMenu";
 
 const CommandCard = ({ command }: { command: ICommand }) => {
 	const { t } = useTranslation();
 	const [deleteCommandById] = useDeleteCommandByIdMutation();
+	const [updateCommand] = useUpdateCommandMutation();
 
 	return (
 		<Card
@@ -22,7 +26,14 @@ const CommandCard = ({ command }: { command: ICommand }) => {
 					{command.name}
 				</Typography>
 				<Typography>{command.description}</Typography>
-
+				<Switch
+					checked={command.is_enabled}
+					onChange={async (_, value) => {
+						await updateCommand({
+							command: { ...command, is_enabled: value },
+						}).unwrap();
+					}}
+				/>
 				<Box
 					sx={{
 						display: "flex",

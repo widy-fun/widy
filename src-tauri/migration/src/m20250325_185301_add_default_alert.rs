@@ -2,7 +2,7 @@ use entity::{
     alerts::{AlertVariant, AlertVariationConditions, TtsType, ViewType},
     messages::MessageType,
 };
-use sea_orm_migration::prelude::*;
+use sea_orm_migration::{prelude::*, sea_orm::sqlx::types::Uuid};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -42,7 +42,9 @@ impl MigrationTrait for Migration {
                         "tts_settings",
                     ])
                     .values_panic([
-                        "default".into(),
+                        Uuid::parse_str("ba234e82-7a86-4f77-850b-f2d739902595")
+                            .unwrap()
+                            .into(),
                         MessageType::Donation.into(),
                         "alert.mp3".into(),
                         50.into(),

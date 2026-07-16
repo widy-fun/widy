@@ -37,6 +37,7 @@ mod m20260625_110014_add_kick_service;
 mod m20260703_175302_create_table_commands;
 mod m20260704_230414_add_kick_bot_service;
 mod m20260704_230421_add_twitch_bot_service;
+mod m20260712_151607_create_table_commands_actions;
 
 pub struct Migrator;
 
@@ -82,6 +83,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20260703_175302_create_table_commands::Migration),
             Box::new(m20260704_230414_add_kick_bot_service::Migration),
             Box::new(m20260704_230421_add_twitch_bot_service::Migration),
+            Box::new(m20260712_151607_create_table_commands_actions::Migration),
         ]
     }
 }

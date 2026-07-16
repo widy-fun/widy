@@ -1,5 +1,6 @@
 use entity::goals::*;
 use migration::Expr;
+use uuid::Uuid;
 
 use crate::services::DatabaseService;
 use async_trait::async_trait;
@@ -7,18 +8,18 @@ use sea_orm::{ActiveValue::Set, EntityTrait, ExprTrait, QueryFilter, QueryOrder,
 #[async_trait]
 pub trait GoalsRepository: Send + Sync {
     async fn get_goals(&self, limit: u64, offset: u64) -> Result<Vec<Model>, String>;
-    async fn get_goal_by_id(&self, id: String) -> Result<Option<Model>, String>;
+    async fn get_goal_by_id(&self, id: Uuid) -> Result<Option<Model>, String>;
     async fn update_goal_settings(&self, goal: Model) -> Result<Model, String>;
     async fn update_goal_amount(&self, amount: u32, r#type: GoalType) -> Result<(), String>;
     async fn create_goal(&self, goal: Model) -> Result<(), String>;
     async fn get_not_ended_goal(&self, r#type: GoalType) -> Result<Option<Model>, String>;
     async fn get_not_ended_goals(&self) -> Result<Vec<Model>, String>;
-    async fn finish_goal(&self, id: String) -> Result<(), String>;
+    async fn finish_goal(&self, id: Uuid) -> Result<(), String>;
 }
 
 #[async_trait]
 impl GoalsRepository for DatabaseService {
-    async fn finish_goal(&self, id: String) -> Result<(), String> {
+    async fn finish_goal(&self, id: Uuid) -> Result<(), String> {
         Entity::update(ActiveModel {
             id: Set(id),
             ended: Set(true),
@@ -83,7 +84,7 @@ impl GoalsRepository for DatabaseService {
                 e.to_string()
             })
     }
-    async fn get_goal_by_id(&self, id: String) -> Result<Option<Model>, String> {
+    async fn get_goal_by_id(&self, id: Uuid) -> Result<Option<Model>, String> {
         Entity::find_by_id(id)
             .one(&self.connection)
             .await

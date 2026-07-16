@@ -292,7 +292,7 @@ pub trait KickApi: Send + Sync {
         &self,
         app: &AppHandle,
         auth: &KickAuth,
-        id: &String,
+        id: Uuid,
     ) -> Result<(), String> {
         let database_service = app.state::<DatabaseService>();
         let reqwest_client = app.state::<reqwest::Client>();
@@ -300,7 +300,7 @@ pub trait KickApi: Send + Sync {
             .get_reward_by_id(id)
             .await?
             .ok_or("Reward not found".to_string())?;
-        database_service.delete_reward_by_id(id).await?;
+
         let response = reqwest_client
             .delete(format!(
                 "https://api.kick.com/public/v1/channels/rewards/{}",
@@ -323,6 +323,8 @@ pub trait KickApi: Send + Sync {
             log::error!("Kick error response: {}", err_text);
             return Err(err_text);
         }
+
+        database_service.delete_reward_by_id(id).await?;
 
         Ok(())
     }

@@ -4,6 +4,7 @@ use async_trait::async_trait;
 use entity::services::{ServiceAuth, ServiceType, TwitchAuth};
 use tauri::{AppHandle, Manager};
 use tokio::sync::MutexGuard;
+use uuid::Uuid;
 
 use crate::{
     repositories::{RewardsRepository, ServicesRepository},
@@ -440,7 +441,7 @@ pub trait TwitchApi: Send + Sync {
         &self,
         app: &AppHandle,
         auth: &TwitchAuth,
-        id: &String,
+        id: Uuid,
     ) -> Result<(), String> {
         let database_service = app.state::<DatabaseService>();
         let reqwest_client = app.state::<reqwest::Client>();
@@ -448,7 +449,6 @@ pub trait TwitchApi: Send + Sync {
             .get_reward_by_id(id)
             .await?
             .ok_or("Reward not found".to_string())?;
-        database_service.delete_reward_by_id(id).await?;
         let response = reqwest_client
             .delete(format!(
                 "{}/channel_points/custom_rewards",
@@ -482,6 +482,8 @@ pub trait TwitchApi: Send + Sync {
             log::error!("Twitch subscription error response: {}", err_text);
             return Err(err_text);
         }
+
+        database_service.delete_reward_by_id(id).await?;
 
         Ok(())
     }

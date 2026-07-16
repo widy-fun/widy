@@ -4,6 +4,7 @@ import { MENU_WIDTH, MENU_WIDTH_MD } from "../../constants";
 import { dashboardRouts } from "../../routes/dashboardRouts";
 import CreateAlert from "./components/alerts/components/CreateAlert";
 import UpdateAlertSettings from "./components/alerts/UpdateAlertSettings";
+import AlertAction from "./components/commands/components/AlertAction";
 import ChatBotAction from "./components/commands/components/ChatBotAction";
 import ChatSource from "./components/commands/components/ChatSource";
 import CreateCommand from "./components/commands/components/CreateCommand";
@@ -45,6 +46,14 @@ const DashboardArticle = () => {
 				<Route path="commands/source/chat" element={<ChatSource />} />
 				<Route path="commands/source/timer" element={<TimerSource />} />
 				<Route path="commands/action/chat-bot" element={<ChatBotAction />} />
+				<Route
+					path="commands/action/alert/create"
+					element={<AlertAction isUpdate={false} />}
+				/>
+				<Route
+					path="commands/action/alert/update"
+					element={<AlertAction isUpdate={true} />}
+				/>
 			</Routes>
 		</article>
 	);
