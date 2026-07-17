@@ -59,7 +59,7 @@ impl KickService {
         kick_redirect_uri: String,
         app_token: String,
     ) -> Self {
-        let scopes = "user:read events:subscribe channel:rewards:write chat:write".to_string();
+        let scopes = "user:read channel:read channel:write channel:rewards:read channel:rewards:write chat:write events:subscribe moderation:ban moderation:chat_message:manage kicks:read".to_string();
 
         Self {
             is_close_connection: Arc::new(AtomicBool::new(false)),
