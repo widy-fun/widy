@@ -17,7 +17,7 @@ impl MigrationTrait for Migration {
                     .col(uuid("command_id"))
                     .col(string("command_name"))
                     .col(uuid_uniq("message_id"))
-                    .col(string("platform"))
+                    .col(string_null("platform"))
                     .col(json_binary_null("media"))
                     .col(json_binary_null("alert"))
                     .to_owned(),

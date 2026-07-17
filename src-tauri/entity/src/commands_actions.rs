@@ -15,7 +15,7 @@ pub struct Model {
     pub user_input: Option<String>,
     pub command_id: Uuid,
     pub command_name: String,
-    pub platform: Platform,
+    pub platform: Option<Platform>,
     #[sea_orm(column_type = "JsonBinary")]
     pub media: Option<Media>,
     #[sea_orm(uniq)]
@@ -35,7 +35,7 @@ pub struct CommandAction {
     pub command_id: Uuid,
     pub command_name: String,
     pub message_id: Uuid,
-    pub platform: Platform,
+    pub platform: Option<Platform>,
     pub media: Option<Media>,
     pub alert: Option<super::alerts::Alert>,
 }

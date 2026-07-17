@@ -144,7 +144,9 @@ const CommandActionMessageCard = ({
 							width: "3rem",
 							display: "grid",
 							placeItems: "center",
-							background: services[commandAction.platform].color,
+							background: commandAction.platform
+								? services[commandAction.platform].color
+								: undefined,
 							minHeight: "100%",
 						}}
 					/>

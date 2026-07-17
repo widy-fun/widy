@@ -116,7 +116,7 @@ impl CommandsService {
                 command_id: command.id,
                 command_name: command.name,
                 message_id: Uuid::new_v4(),
-                platform: Platform::Kick,
+                platform: Some(Platform::Kick),
                 media: None,
                 alert: Some(alert),
             };
@@ -191,7 +191,7 @@ impl CommandsService {
                 command_id: command.id,
                 command_name: command.name,
                 message_id: Uuid::new_v4(),
-                platform: Platform::Twitch,
+                platform: Some(Platform::Twitch),
                 media: None,
                 alert: Some(alert),
             };
@@ -243,7 +243,7 @@ impl CommandsService {
                 command_id: id,
                 command_name: name,
                 message_id: Uuid::new_v4(),
-                platform: Platform::None,
+                platform: None,
                 media: None,
                 alert: Some(alert),
             };

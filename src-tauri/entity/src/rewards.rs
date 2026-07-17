@@ -65,8 +65,6 @@ pub enum Platform {
     Twitch,
     #[sea_orm(string_value = "Kick")]
     Kick,
-    #[sea_orm(string_value = "None")]
-    None,
 }
 
 #[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Serialize, Deserialize, Eq)]
