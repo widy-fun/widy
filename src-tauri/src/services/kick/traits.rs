@@ -1,5 +1,13 @@
+use std::{
+    sync::{
+        Arc,
+        atomic::{AtomicU64, Ordering},
+    },
+    time::{SystemTime, UNIX_EPOCH},
+};
+
 use async_trait::async_trait;
-use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine};
+use base64::{Engine, engine::general_purpose::URL_SAFE_NO_PAD};
 use entity::services::{KickAuth, ServiceAuth, ServiceType};
 use http::StatusCode;
 use rand::Rng;
@@ -12,34 +20,42 @@ use uuid::Uuid;
 use crate::{
     repositories::{RewardsRepository, ServicesRepository},
     services::{
+        DatabaseService, GrantType, KickAuthCallbackQuery,
         kick::{
+            KickAuthSession,
             models::{
                 AddKickRewardBody, ChanelInfoResponse, KickTokenExchangeBody, PostChatMessageBody,
                 PostChatMessageType, RefreshTokenBody, UserInfo, UserInfoResponse,
             },
-            KickAuthSession,
         },
-        DatabaseService, GrantType, KickAuthCallbackQuery,
     },
 };
 
 #[async_trait]
 pub trait KickApi: Send + Sync {
     fn kick_token_endpoint(&self) -> String;
+
     fn kick_client_id(&self) -> String;
+
     fn kick_redirect_uri(&self) -> String;
+
     fn scopes(&self) -> String;
+
     fn app_token(&self) -> String;
+
     async fn auth_session(&self) -> MutexGuard<'_, Option<KickAuthSession>>;
+
     fn set_is_close_connection(&self, is_close_connection: bool);
 
-    async fn check_auth(
+    fn expire_at(&self) -> Arc<AtomicU64>;
+
+    async fn get_database_auth(
         &self,
         app: &AppHandle,
         service_type: ServiceType,
     ) -> Result<KickAuth, String> {
         let database_service = app.state::<DatabaseService>();
-        let reqwest_client = app.state::<reqwest::Client>();
+
         let service = database_service
             .get_service_with_auth_by_id(service_type.clone())
             .await?;
@@ -48,26 +64,48 @@ pub trait KickApi: Send + Sync {
 
         let auth = match service.auth {
             Some(ServiceAuth::Kick(auth)) => auth,
-            _ => return Err("No Kick authentication found".to_string()),
+            _ => return Err("No Twitch authentication found".to_string()),
         };
-        self.refresh_and_update_auth(&reqwest_client, &database_service, &auth, service_type)
-            .await
+        Ok(auth)
+    }
+
+    async fn get_auth(
+        &self,
+        app: &AppHandle,
+        service_type: ServiceType,
+    ) -> Result<KickAuth, String> {
+        let auth = self.get_database_auth(app, service_type.clone()).await?;
+        let expire_at = self.expire_at().load(Ordering::Relaxed);
+        let now = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .map_err(|e| e.to_string())?;
+
+        if expire_at > now.as_secs() {
+            return Ok(auth);
+        }
+        self.refresh_and_update_auth(app, &auth, service_type).await
     }
 
     async fn refresh_and_update_auth(
         &self,
-        reqwest_client: &reqwest::Client,
-        database_service: &DatabaseService,
+        app: &AppHandle,
         old_auth: &KickAuth,
         service_type: ServiceType,
     ) -> Result<KickAuth, String> {
+        let reqwest_client = app.state::<reqwest::Client>();
+        let database_service = app.state::<DatabaseService>();
         match self
-            .refresh_token(reqwest_client, old_auth.refresh_token.clone())
+            .refresh_token(&reqwest_client, old_auth.refresh_token.clone())
             .await
         {
             Ok(new_auth) => {
+                let now = SystemTime::now()
+                    .duration_since(UNIX_EPOCH)
+                    .map_err(|e| e.to_string())?;
+                self.expire_at()
+                    .store(now.as_secs() + (new_auth.expires_in / 2), Ordering::Relaxed);
                 self.set_authorized(
-                    database_service,
+                    &database_service,
                     Some(ServiceAuth::Kick(new_auth.clone())),
                     true,
                     false,
@@ -77,7 +115,7 @@ pub trait KickApi: Send + Sync {
                 Ok(new_auth)
             }
             Err(_) => {
-                self.set_authorized(database_service, None, false, true, service_type)
+                self.set_authorized(&database_service, None, false, true, service_type)
                     .await?;
                 Err("Token refresh failed".to_string())
             }

@@ -113,7 +113,7 @@ pub struct ChatMessageData {
     pub r#type: String,
     pub created_at: String,
     pub sender: MessageSender,
-    pub metadata: MessageMetadata,
+    pub metadata: Option<MessageMetadata>,
 }
 
 #[derive(Debug, Clone, Deserialize)]

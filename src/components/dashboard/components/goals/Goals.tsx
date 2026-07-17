@@ -15,7 +15,8 @@ const Goals = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const theme = useTheme();
-	const { data, isSuccess } = useGetNotEndedGoalsQuery();
+	const { data, isSuccess, error } = useGetNotEndedGoalsQuery();
+	console.log("error:", error);
 
 	return (
 		<>

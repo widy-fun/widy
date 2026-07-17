@@ -72,8 +72,6 @@ pub enum ServiceAuth {
     DonatePay(DonatePayAuth),
     Destream(DestreamAuth),
     Tribute(TributeAuth),
-    KickBot(KickAuth),
-    TwitchBot(TwitchAuth),
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -107,7 +105,7 @@ pub struct TwitchAuth {
     pub access_token: String,
     pub refresh_token: String,
     pub token_type: String,
-    pub expires_in: u32,
+    pub expires_in: u64,
     pub user_id: String,
 }
 
@@ -116,7 +114,7 @@ pub struct KickAuth {
     pub access_token: String,
     pub token_type: String,
     pub refresh_token: String,
-    pub expires_in: u32,
+    pub expires_in: u64,
     pub scope: String,
 }
 

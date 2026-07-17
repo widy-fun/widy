@@ -1,3 +1,5 @@
+use std::sync::{Arc, atomic::AtomicU64};
+
 use async_trait::async_trait;
 use entity::services::ServiceType;
 use tauri::AppHandle;
@@ -12,6 +14,7 @@ pub struct KickBotService {
     pub scopes: String,
     pub app_token: String,
     pub auth_session: Mutex<Option<KickAuthSession>>,
+    expire_at: Arc<AtomicU64>,
 }
 
 impl KickBotService {
@@ -30,11 +33,15 @@ impl KickBotService {
             scopes,
             app_token,
             auth_session: Mutex::new(None),
+            expire_at: Arc::new(AtomicU64::new(0)),
         }
     }
 
     pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
-        self.check_auth(app, ServiceType::KickBot).await?;
+        let auth = self.get_database_auth(app, ServiceType::Kick).await?;
+        let _ = self
+            .refresh_and_update_auth(&app, &auth, ServiceType::Kick)
+            .await?;
         Ok(())
     }
 }
@@ -63,5 +70,9 @@ impl KickApi for KickBotService {
 
     fn app_token(&self) -> String {
         self.app_token.clone()
+    }
+
+    fn expire_at(&self) -> Arc<AtomicU64> {
+        self.expire_at.clone()
     }
 }

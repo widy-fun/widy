@@ -1,7 +1,7 @@
 use crate::services::twitch::traits::TwitchApi;
 use async_trait::async_trait;
 use entity::services::ServiceType;
-use std::sync::Arc;
+use std::sync::{Arc, atomic::AtomicU64};
 use tauri::AppHandle;
 use tokio::sync::{Mutex, MutexGuard};
 
@@ -13,6 +13,7 @@ pub struct TwitchBotService {
     auth_endpoint: String,
     eventsub_endpoint: String,
     pub session_id: Arc<Mutex<Option<String>>>,
+    expire_at: Arc<AtomicU64>,
 }
 
 impl TwitchBotService {
@@ -32,11 +33,15 @@ impl TwitchBotService {
             auth_endpoint,
             eventsub_endpoint,
             session_id: Arc::new(Mutex::new(None)),
+            expire_at: Arc::new(AtomicU64::new(0)),
         }
     }
 
     pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
-        self.check_auth(&app, ServiceType::TwitchBot).await?;
+        let auth = self.get_database_auth(app, ServiceType::TwitchBot).await?;
+        let _ = self
+            .refresh_and_update_auth(&app, &auth, ServiceType::TwitchBot)
+            .await?;
         Ok(())
     }
 }
@@ -45,6 +50,10 @@ impl TwitchBotService {
 impl TwitchApi for TwitchBotService {
     fn client_id(&self) -> String {
         self.client_id.clone()
+    }
+
+    fn expire_at(&self) -> Arc<AtomicU64> {
+        self.expire_at.clone()
     }
 
     async fn session_id(&self) -> MutexGuard<'_, Option<String>> {

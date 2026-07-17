@@ -7,8 +7,8 @@ use entity::{
 use futures::{SinkExt, StreamExt};
 use serde_json::json;
 use std::sync::{
-    atomic::{AtomicBool, Ordering},
     Arc,
+    atomic::{AtomicBool, AtomicU64, Ordering},
 };
 use tauri::{AppHandle, Manager};
 use tokio::{
@@ -16,15 +16,17 @@ use tokio::{
     sync::{Mutex, MutexGuard},
 };
 use tokio_tungstenite::{
-    connect_async,
+    MaybeTlsStream, WebSocketStream, connect_async,
     tungstenite::{Message, Utf8Bytes},
-    MaybeTlsStream, WebSocketStream,
 };
 use uuid::Uuid;
 
 use crate::{
     repositories::RewardsRepository,
     services::{
+        ChatMessageType, CommandsService, DatabaseService, EventsService, SenderRoles,
+        UnifiedBadge, UnifiedChatMessage, UnifiedChatMessageDelete, UnifiedContent,
+        UnifiedMetadata, UnifiedSender,
         kick::{
             models::{
                 ChanelInfoResponse, ChatMessageData, Chatroom, Event, EventPayload,
@@ -33,10 +35,8 @@ use crate::{
             },
             traits::KickApi,
         },
-        ChatMessageType, CommandsService, DatabaseService, EventsService, SenderRoles,
-        UnifiedBadge, UnifiedChatMessage, UnifiedChatMessageDelete, UnifiedContent,
-        UnifiedMetadata, UnifiedSender,
     },
+    traits::ChatMessageBuffer,
     utils::get_random_alert,
 };
 
@@ -48,6 +48,8 @@ pub struct KickService {
     pub scopes: String,
     pub app_token: String,
     pub auth_session: Mutex<Option<KickAuthSession>>,
+    pub chat_messages_buffer: Arc<Mutex<ChatMessageBuffer>>,
+    expire_at: Arc<AtomicU64>,
 }
 
 impl KickService {
@@ -67,11 +69,16 @@ impl KickService {
             scopes,
             app_token,
             auth_session: Mutex::new(None),
+            chat_messages_buffer: Arc::new(Mutex::new(ChatMessageBuffer::new(1001))),
+            expire_at: Arc::new(AtomicU64::new(0)),
         }
     }
 
     pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
-        let auth = self.check_auth(app, ServiceType::Kick).await?;
+        let auth = self.get_database_auth(app, ServiceType::Kick).await?;
+        let auth = self
+            .refresh_and_update_auth(&app, &auth, ServiceType::Kick)
+            .await?;
         let reqwest_client = app.state::<reqwest::Client>();
         let user_info = self
             .get_user_info(&reqwest_client, &auth.access_token)
@@ -113,13 +120,7 @@ impl KickService {
                                 Ok(Message::Text(text)) => {
                                     if let Ok(payload) = serde_json::from_str::<EventPayload>(&text)
                                     {
-                                        kick_service
-                                            .handle_subscriptions(
-                                                payload,
-                                                &app,
-                                                &chanel_info_response,
-                                            )
-                                            .await;
+                                        kick_service.handle_subscriptions(payload, &app).await;
                                     }
                                 }
 
@@ -144,12 +145,7 @@ impl KickService {
         });
     }
 
-    async fn handle_subscriptions(
-        &self,
-        payload: EventPayload,
-        app: &AppHandle,
-        chanel_info_response: &ChanelInfoResponse,
-    ) {
+    async fn handle_subscriptions(&self, payload: EventPayload, app: &AppHandle) {
         let database_service = app.state::<DatabaseService>();
         match payload.event {
             Event::RewardRedeemedEvent => {
@@ -279,6 +275,9 @@ impl KickService {
                 let event_data = serde_json::from_str::<ChatMessageData>(&payload.data);
                 if let Ok(data) = event_data {
                     let message = UnifiedChatMessage::from(data.clone());
+                    let mut chat_messages_buffer = self.chat_messages_buffer.lock().await;
+                    chat_messages_buffer.push(message.clone().content.text);
+                    drop(chat_messages_buffer);
                     let _ = EventsService::chat_message(message.clone(), app).await;
                     let _ = CommandsService::kick_chat_message_trigger(message, app).await;
                 }
@@ -376,6 +375,10 @@ impl KickApi for KickService {
         self.is_close_connection
             .store(is_close_connection, Ordering::Relaxed);
     }
+
+    fn expire_at(&self) -> Arc<AtomicU64> {
+        self.expire_at.clone()
+    }
 }
 
 impl From<ChatMessageData> for UnifiedChatMessage {
@@ -439,7 +442,10 @@ impl From<ChatMessageData> for UnifiedChatMessage {
             .collect();
         let badges = [badges_v1, badges_v2].concat();
         let fragments = EventsService::parse_kick_content(&k.content);
-
+        let raw_message_ref: Option<String> = match k.metadata {
+            Some(m) => Some(m.message_ref),
+            _ => None,
+        };
         Self {
             id: k.id,
             platform: Platform::Kick,
@@ -476,7 +482,7 @@ impl From<ChatMessageData> for UnifiedChatMessage {
             },
 
             metadata: UnifiedMetadata {
-                raw_message_ref: Some(k.metadata.message_ref),
+                raw_message_ref: raw_message_ref,
                 channel_points_reward_id: None,
                 source_channel_id: None,
                 source_channel_login: None,

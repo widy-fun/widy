@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 use entity::{alerts, commands::*};
-use migration::{Expr, OnConflict};
+use migration::Expr;
 use sea_orm::{ActiveModelTrait, ActiveValue::Set, ColumnTrait, EntityTrait, QueryFilter};
 use uuid::Uuid;
 

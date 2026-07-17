@@ -1,6 +1,9 @@
 use crate::{
     repositories::{RedemptionsRepository, RewardsRepository},
     services::{
+        ChatFragment, ChatMessageType, CommandsService, DatabaseService, DeletedMessageUser,
+        EventsService, FragmentKind, ReplyInfo, SenderRoles, UnifiedBadge, UnifiedChatMessage,
+        UnifiedChatMessageDelete, UnifiedContent, UnifiedMetadata, UnifiedSender,
         twitch::{
             models::{
                 BadgeInfo, ChannelChatMessageDeleteEvent, ChannelChatMessageEvent, Event,
@@ -8,9 +11,6 @@ use crate::{
             },
             traits::TwitchApi,
         },
-        ChatFragment, ChatMessageType, CommandsService, DatabaseService, DeletedMessageUser,
-        EventsService, FragmentKind, ReplyInfo, SenderRoles, UnifiedBadge, UnifiedChatMessage,
-        UnifiedChatMessageDelete, UnifiedContent, UnifiedMetadata, UnifiedSender,
     },
     utils::get_random_alert,
 };
@@ -29,8 +29,8 @@ use entity::{
 };
 use futures::StreamExt;
 use std::sync::{
-    atomic::{AtomicBool, Ordering},
     Arc,
+    atomic::{AtomicBool, AtomicU64, Ordering},
 };
 use tauri::{AppHandle, Manager};
 use tokio::sync::{Mutex, MutexGuard};
@@ -47,6 +47,7 @@ pub struct TwitchService {
     auth_endpoint: String,
     eventsub_endpoint: String,
     pub session_id: Arc<Mutex<Option<String>>>,
+    expire_at: Arc<AtomicU64>,
 }
 
 impl TwitchService {
@@ -81,12 +82,16 @@ impl TwitchService {
             auth_endpoint,
             eventsub_endpoint,
             session_id: Arc::new(Mutex::new(None)),
+            expire_at: Arc::new(AtomicU64::new(0)),
         }
     }
 
     pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
         let reqwest_client = app.state::<reqwest::Client>();
-        let auth = self.check_auth(&app, ServiceType::Twitch).await?;
+        let auth = self.get_database_auth(app, ServiceType::Twitch).await?;
+        let auth = self
+            .refresh_and_update_auth(&app, &auth, ServiceType::Twitch)
+            .await?;
 
         let chanel_badges = self
             .get_chanel_badges(
@@ -459,6 +464,10 @@ impl TwitchService {
 impl TwitchApi for TwitchService {
     fn client_id(&self) -> String {
         self.client_id.clone()
+    }
+
+    fn expire_at(&self) -> Arc<AtomicU64> {
+        self.expire_at.clone()
     }
 
     async fn session_id(&self) -> MutexGuard<'_, Option<String>> {

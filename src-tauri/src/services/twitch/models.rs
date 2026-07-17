@@ -127,7 +127,7 @@ pub struct TwitchBadResponse {
 pub struct TwitchTokenResponse {
     pub access_token: String,
     pub refresh_token: String,
-    pub expires_in: u32,
+    pub expires_in: u64,
     pub scope: Vec<String>,
     pub token_type: String,
 }

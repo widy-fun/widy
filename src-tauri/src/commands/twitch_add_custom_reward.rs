@@ -9,7 +9,7 @@ pub async fn twitch_add_custom_reward(
     twitch_service: State<'_, TwitchService>,
     reward: entity::rewards::Reward,
 ) -> Result<(), String> {
-    let auth = twitch_service.check_auth(&app, ServiceType::Twitch).await?;
+    let auth = twitch_service.get_auth(&app, ServiceType::Twitch).await?;
     twitch_service
         .add_custom_reward(&app, &auth, &reward)
         .await?;

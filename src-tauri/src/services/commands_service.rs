@@ -1,25 +1,22 @@
+use entity::{
+    commands::Command, commands_actions::CommandAction, rewards::Platform, services::ServiceType,
+};
 use std::{
     collections::HashMap,
     future::Future,
     sync::{Arc, Mutex},
     time::Duration,
 };
-
-use entity::{
-    commands::Command, commands_actions::CommandAction, messages::ClientMessage, rewards::Platform,
-    services::ServiceAuth,
-};
 use tauri::{AppHandle, Manager};
 use tokio::{task::AbortHandle, time::interval};
 use uuid::Uuid;
 
 use crate::{
-    repositories::{CommandsRepository, ServicesRepository},
+    repositories::CommandsRepository,
     services::{
-        kick::{traits::KickApi, KickBotService, KickService},
-        twitch::{traits::TwitchApi, TwitchBotService, TwitchService},
-        websocket_broadcaster, DatabaseService, EventsService, UnifiedChatMessage,
-        WebSocketBroadcaster,
+        DatabaseService, EventsService, UnifiedChatMessage,
+        kick::{KickBotService, KickService, traits::KickApi},
+        twitch::{TwitchBotService, TwitchService, traits::TwitchApi},
     },
 };
 
@@ -61,6 +58,7 @@ impl CommandsService {
     ) -> Result<(), String> {
         let database_service = app.state::<DatabaseService>();
         let kick_bot_service = app.state::<KickBotService>();
+        let kick_service = app.state::<KickService>();
         let reqwest_client = app.state::<reqwest::Client>();
         let trigger = message.content.text;
         let command = database_service
@@ -93,21 +91,16 @@ impl CommandsService {
                 }
                 None => None,
             };
-            let service = database_service
-                .get_service_with_auth_by_id(entity::services::ServiceType::KickBot)
-                .await?
-                .ok_or("KickBot service not found".to_string())?;
-            if let Some(ServiceAuth::Kick(auth)) = service.clone().auth {
-                let _ = kick_bot_service
-                    .post_chat_message(
-                        &reqwest_client,
-                        auth.access_token,
-                        chat_bot.message,
-                        broadcaster_user_id,
-                        reply_to_message_id,
-                    )
-                    .await;
-            }
+            let auth = kick_service.get_auth(app, ServiceType::Kick).await?;
+            let _ = kick_bot_service
+                .post_chat_message(
+                    &reqwest_client,
+                    auth.access_token,
+                    chat_bot.message,
+                    broadcaster_user_id,
+                    reply_to_message_id,
+                )
+                .await;
         }
 
         if let Command {
@@ -139,6 +132,7 @@ impl CommandsService {
     ) -> Result<(), String> {
         let database_service = app.state::<DatabaseService>();
         let twitch_bot_service = app.state::<TwitchBotService>();
+        let twitch_service = app.state::<TwitchService>();
         let reqwest_client = app.state::<reqwest::Client>();
         let trigger = message.content.text;
         let command = database_service
@@ -167,24 +161,19 @@ impl CommandsService {
                 }
                 None => None,
             };
-            let service = database_service
-                .get_service_with_auth_by_id(entity::services::ServiceType::TwitchBot)
-                .await?
-                .ok_or("TwitchBot service not found".to_string())?;
+            let auth = twitch_service.get_auth(app, ServiceType::Twitch).await?;
 
-            if let Some(ServiceAuth::Twitch(auth)) = service.clone().auth {
-                let _ = twitch_bot_service
-                    .send_chat_message(
-                        &reqwest_client,
-                        auth.access_token,
-                        chat_bot.message,
-                        broadcaster_id,
-                        auth.user_id,
-                        reply_to_message_id,
-                        twitch_bot_service.client_id(),
-                    )
-                    .await;
-            }
+            let _ = twitch_bot_service
+                .send_chat_message(
+                    &reqwest_client,
+                    auth.access_token,
+                    chat_bot.message,
+                    broadcaster_id,
+                    auth.user_id,
+                    reply_to_message_id,
+                    twitch_bot_service.client_id(),
+                )
+                .await;
         }
 
         if let Command {
@@ -220,7 +209,12 @@ impl CommandsService {
         })) = command.clone()
         {
             if chat_bot.platforms.contains(&Platform::Kick) {
-                let _ = Self::kick_timer_chat_message(&app, timer.message).await;
+                let _ = Self::kick_timer_chat_message(
+                    &app,
+                    timer.clone().message,
+                    timer.clone().lines_passed,
+                )
+                .await;
             }
             if chat_bot.platforms.contains(&Platform::Twitch) {
                 let _ = Self::twitch_timer_chat_message(&app, timer.message).await;
@@ -250,69 +244,57 @@ impl CommandsService {
         }
     }
 
-    pub async fn kick_timer_chat_message(app: &AppHandle, message: String) -> Result<(), String> {
-        let database_service = app.state::<DatabaseService>();
+    pub async fn kick_timer_chat_message(
+        app: &AppHandle,
+        message: String,
+        lines_passed: u64,
+    ) -> Result<(), String> {
         let kick_bot_service = app.state::<KickBotService>();
         let kick_service = app.state::<KickService>();
-        let reqwest_client = app.state::<reqwest::Client>();
-        let service = database_service
-            .get_service_with_auth_by_id(entity::services::ServiceType::KickBot)
-            .await?;
-
-        if let Some(entity::services::Model {
-            auth: Some(ServiceAuth::Kick(auth)),
-            ..
-        }) = service
+        let chat_messages_buffer = kick_service.chat_messages_buffer.lock().await;
+        if chat_messages_buffer.is_message_not_lines_passed(message.clone(), lines_passed as usize)
         {
-            let user_info = kick_service
-                .get_user_info(&reqwest_client, &auth.access_token)
-                .await?;
-            kick_bot_service
-                .post_chat_message(
-                    &reqwest_client,
-                    auth.access_token,
-                    message,
-                    user_info.user_id,
-                    None,
-                )
-                .await?;
+            return Err("Bot message not passed lines".to_string());
         }
+        drop(chat_messages_buffer);
+        let reqwest_client = app.state::<reqwest::Client>();
+        let auth = kick_service.get_auth(app, ServiceType::Kick).await?;
+        let user_info = kick_service
+            .get_user_info(&reqwest_client, &auth.access_token)
+            .await?;
+        kick_bot_service
+            .post_chat_message(
+                &reqwest_client,
+                auth.access_token,
+                message,
+                user_info.user_id,
+                None,
+            )
+            .await?;
 
         Ok(())
     }
 
     pub async fn twitch_timer_chat_message(app: &AppHandle, message: String) -> Result<(), String> {
-        let database_service = app.state::<DatabaseService>();
         let twitch_bot_service = app.state::<TwitchBotService>();
         let twitch_service = app.state::<TwitchService>();
         let reqwest_client = app.state::<reqwest::Client>();
-        let bot_service = database_service
-            .get_service_with_auth_by_id(entity::services::ServiceType::TwitchBot)
+        let bot_auth = twitch_bot_service
+            .get_auth(app, ServiceType::TwitchBot)
             .await?;
-        let service = database_service
-            .get_service_with_auth_by_id(entity::services::ServiceType::Twitch)
+        let auth = twitch_service.get_auth(app, ServiceType::Twitch).await?;
+
+        twitch_bot_service
+            .send_chat_message(
+                &reqwest_client,
+                auth.access_token,
+                message,
+                auth.user_id,
+                bot_auth.user_id,
+                None,
+                twitch_bot_service.client_id(),
+            )
             .await?;
-       
-        if let Some(entity::services::Model {
-            auth: Some(ServiceAuth::Twitch(auth)),
-            ..
-        }) = bot_service  && let Some(entity::services::Model {
-        auth: Some(ServiceAuth::Twitch(twitch_auth)),
-        ..
-    }) = service
-        {
-            twitch_bot_service
-                .send_chat_message(
-                    &reqwest_client,
-                    auth.access_token,
-                    message,
-                    broadcaster_id,
-                    auth.user_id,
-                    None,
-                    twitch_bot_service.client_id(),
-                )
-                .await?
-        }
 
         Ok(())
     }

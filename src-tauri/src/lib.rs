@@ -9,6 +9,8 @@ use tauri::Manager;
 use tauri_plugin_deep_link::DeepLinkExt;
 use tokio::sync::Mutex;
 use utils::register_shortcuts;
+pub mod error;
+pub mod traits;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {

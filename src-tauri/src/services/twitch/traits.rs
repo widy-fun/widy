@@ -1,4 +1,11 @@
-use std::collections::HashMap;
+use std::{
+    collections::HashMap,
+    sync::{
+        Arc,
+        atomic::{AtomicU64, Ordering},
+    },
+    time::{SystemTime, UNIX_EPOCH},
+};
 
 use async_trait::async_trait;
 use entity::services::{ServiceAuth, ServiceType, TwitchAuth};
@@ -9,6 +16,7 @@ use uuid::Uuid;
 use crate::{
     repositories::{RewardsRepository, ServicesRepository},
     services::{
+        DatabaseService,
         twitch::models::{
             AddTwitchRewardBody, BadgeInfoResponse, ChatMessageCondition, CheerCondition,
             Condition, FollowCondition, RaidCondition, RedemptionCondition, SendChatMessageBody,
@@ -16,7 +24,6 @@ use crate::{
             TwitchDeviceCodeResponse, TwitchRefreshTokenResponse, TwitchTokenInfo,
             TwitchTokenResponse,
         },
-        DatabaseService,
     },
 };
 
@@ -36,12 +43,13 @@ pub trait TwitchApi: Send + Sync {
 
     fn set_is_close_connection(&self, is_close_connection: bool);
 
-    async fn check_auth(
+    fn expire_at(&self) -> Arc<AtomicU64>;
+
+    async fn get_database_auth(
         &self,
         app: &AppHandle,
         service_type: ServiceType,
     ) -> Result<TwitchAuth, String> {
-        let reqwest_client = app.state::<reqwest::Client>();
         let database_service = app.state::<DatabaseService>();
 
         let service = database_service
@@ -54,24 +62,42 @@ pub trait TwitchApi: Send + Sync {
             Some(ServiceAuth::Twitch(auth)) => auth,
             _ => return Err("No Twitch authentication found".to_string()),
         };
+        Ok(auth)
+    }
+
+    async fn get_auth(
+        &self,
+        app: &AppHandle,
+        service_type: ServiceType,
+    ) -> Result<TwitchAuth, String> {
+        let reqwest_client = app.state::<reqwest::Client>();
+        let auth = self.get_database_auth(app, service_type.clone()).await?;
+        let expire_at = self.expire_at().load(Ordering::Relaxed);
+        let now = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .map_err(|e| e.to_string())?;
+
+        if expire_at > now.as_secs() {
+            return Ok(auth);
+        }
 
         if cfg!(debug_assertions) {
             return self.get_token_mock(&reqwest_client).await;
         }
 
-        self.refresh_and_update_auth(&database_service, &auth, service_type, &reqwest_client)
-            .await
+        self.refresh_and_update_auth(app, &auth, service_type).await
     }
 
     async fn refresh_and_update_auth(
         &self,
-        database_service: &DatabaseService,
+        app: &AppHandle,
         old_auth: &TwitchAuth,
         service_type: ServiceType,
-        reqwest_client: &reqwest::Client,
     ) -> Result<TwitchAuth, String> {
+        let reqwest_client = app.state::<reqwest::Client>();
+        let database_service = app.state::<DatabaseService>();
         match self
-            .refresh_token(&self.client_id(), &old_auth.refresh_token, reqwest_client)
+            .refresh_token(&self.client_id(), &old_auth.refresh_token, &reqwest_client)
             .await
         {
             Ok(response) => {
@@ -82,8 +108,13 @@ pub trait TwitchApi: Send + Sync {
                     expires_in: old_auth.expires_in,
                     user_id: old_auth.user_id.clone(),
                 };
+                let now = SystemTime::now()
+                    .duration_since(UNIX_EPOCH)
+                    .map_err(|e| e.to_string())?;
+                self.expire_at()
+                    .store(now.as_secs() + (new_auth.expires_in / 2), Ordering::Relaxed);
                 self.set_authorized(
-                    database_service,
+                    &database_service,
                     Some(ServiceAuth::Twitch(new_auth.clone())),
                     true,
                     false,
@@ -93,7 +124,7 @@ pub trait TwitchApi: Send + Sync {
                 Ok(new_auth)
             }
             Err(_) => {
-                self.set_authorized(database_service, None, false, true, service_type)
+                self.set_authorized(&database_service, None, false, true, service_type)
                     .await?;
 
                 Err("Token refresh failed".to_string())

@@ -26,14 +26,7 @@ const CommandCard = ({ command }: { command: ICommand }) => {
 					{command.name}
 				</Typography>
 				<Typography>{command.description}</Typography>
-				<Switch
-					checked={command.is_enabled}
-					onChange={async (_, value) => {
-						await updateCommand({
-							command: { ...command, is_enabled: value },
-						}).unwrap();
-					}}
-				/>
+
 				<Box
 					sx={{
 						display: "flex",
@@ -43,6 +36,14 @@ const CommandCard = ({ command }: { command: ICommand }) => {
 						right: 0,
 					}}
 				>
+					<Switch
+						checked={command.is_enabled}
+						onChange={async (_, value) => {
+							await updateCommand({
+								command: { ...command, is_enabled: value },
+							}).unwrap();
+						}}
+					/>
 					<ConfigurationMenu
 						onConfirm={async () => {
 							await deleteCommandById({ id: command.id }).unwrap();
