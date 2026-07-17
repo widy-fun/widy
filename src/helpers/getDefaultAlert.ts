@@ -21,6 +21,7 @@ const getDefaultAlert = (group_id = "1"): IAlert => {
 		group_id,
 		name: i18n.t("alert.new_variant"),
 		title_style: TEXT_STYLE,
+		title_template: "{{user_name}} donated {{amount}} {{currency}}",
 		message_style: TEXT_STYLE,
 		variation_conditions: AlertVariationConditions.Random,
 		status: true,

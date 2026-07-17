@@ -30,6 +30,7 @@ pub struct Model {
     pub tts_settings: Option<TtsSettings>,
     #[sea_orm(column_type = "JsonBinary")]
     pub title_style: TextStyle,
+    pub title_template: String,
     #[sea_orm(column_type = "JsonBinary")]
     pub message_style: TextStyle,
     #[sea_orm(uniq)]
@@ -69,6 +70,7 @@ pub struct Alert {
     pub tts_type: TtsType,
     pub tts_settings: Option<TtsSettings>,
     pub title_style: TextStyle,
+    pub title_template: String,
     pub message_style: TextStyle,
     pub reward_id: Option<Uuid>,
     pub command_id: Option<Uuid>,
@@ -158,6 +160,7 @@ impl From<Alert> for ActiveModelEx {
             tts_type: Set(value.tts_type),
             tts_volume: Set(value.tts_volume),
             title_style: Set(value.title_style),
+            title_template: Set(value.title_template),
             message_style: Set(value.message_style),
             reward_id: Set(value.reward_id),
             reward: NotSet,

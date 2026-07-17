@@ -130,6 +130,7 @@ impl CommandsRepository for DatabaseService {
                 audio_volume: Set(alert.audio_volume),
                 view_type: Set(alert.view_type),
                 title_style: Set(alert.title_style),
+                title_template: Set(alert.title_template),
                 message_style: Set(alert.message_style),
                 video_volume: Set(alert.video_volume),
                 video: Set(alert.video),

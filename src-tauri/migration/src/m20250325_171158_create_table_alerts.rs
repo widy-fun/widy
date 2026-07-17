@@ -27,6 +27,7 @@ impl MigrationTrait for Migration {
                     .col(integer("duration"))
                     .col(text("variation_conditions"))
                     .col(json_binary("title_style"))
+                    .col(string("title_template"))
                     .col(json_binary("message_style"))
                     .col(uuid_null("reward_id"))
                     .col(uuid_null("command_id"))

@@ -40,6 +40,7 @@ impl MigrationTrait for Migration {
                         "tts_volume",
                         "tts_type",
                         "tts_settings",
+                        "title_template",
                     ])
                     .values_panic([
                         Uuid::parse_str("ba234e82-7a86-4f77-850b-f2d739902595")
@@ -65,6 +66,7 @@ impl MigrationTrait for Migration {
                         50.into(),
                         TtsType::Edge.into(),
                         tts_settings.into(),
+                        "{{user_name}} donated {{amount}} {{currency}}".into(),
                     ])
                     .to_owned(),
             )
