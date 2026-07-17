@@ -24,7 +24,7 @@ impl TwitchBotService {
         eventsub_endpoint: String,
     ) -> Self {
         let scopes =
-            "user:read:email user:read:chat user:write:chat user:bot channel:bot".to_string();
+            "user:read:email user:read:chat user:write:chat user:bot channel:bot moderator:manage:announcements".to_string();
 
         Self {
             client_id,

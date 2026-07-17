@@ -19,10 +19,10 @@ use crate::{
         DatabaseService,
         twitch::models::{
             AddTwitchRewardBody, BadgeInfoResponse, ChatMessageCondition, CheerCondition,
-            Condition, FollowCondition, RaidCondition, RedemptionCondition, SendChatMessageBody,
-            SubscriptionCondition, SubscriptionRequestBody, SubscriptionType, Transport,
-            TwitchDeviceCodeResponse, TwitchRefreshTokenResponse, TwitchTokenInfo,
-            TwitchTokenResponse,
+            Condition, FollowCondition, RaidCondition, RedemptionCondition,
+            SendChatAnnouncementBody, SendChatMessageBody, SubscriptionCondition,
+            SubscriptionRequestBody, SubscriptionType, Transport, TwitchDeviceCodeResponse,
+            TwitchRefreshTokenResponse, TwitchTokenInfo, TwitchTokenResponse,
         },
     },
 };
@@ -812,6 +812,51 @@ pub trait TwitchApi: Send + Sync {
                 e.to_string()
             })?;
             log::error!("Send chat message error response: {}", err_text);
+            return Err(err_text);
+        }
+
+        Ok(())
+    }
+
+    async fn send_chat_announcement(
+        &self,
+        reqwest_client: &reqwest::Client,
+        access_token: String,
+        message: String,
+        broadcaster_id: String,
+        moderator_id: String,
+        client_id: String,
+    ) -> Result<(), String> {
+        let response = reqwest_client
+            .post(format!("{}/chat/announcements", self.api_endpoint()))
+            .bearer_auth(access_token)
+            .query(&[
+                ("broadcaster_id", broadcaster_id),
+                ("moderator_id", moderator_id),
+            ])
+            .header("Client-Id", client_id)
+            .header("Content-Type", "application/json")
+            .json(&SendChatAnnouncementBody {
+                message,
+                color: None,
+                for_source_only: None,
+            })
+            .send()
+            .await
+            .map_err(|e| {
+                log::error!("Failed to send chat announcement: {}", e);
+                e.to_string()
+            })?;
+
+        if !response.status().is_success() {
+            let err_text = response.text().await.map_err(|e| {
+                log::error!(
+                    "Twitch: failed to read send chat announcement error response: {}",
+                    e
+                );
+                e.to_string()
+            })?;
+            log::error!("Send chat announcement error response: {}", err_text);
             return Err(err_text);
         }
 

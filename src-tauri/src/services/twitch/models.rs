@@ -9,6 +9,12 @@ pub struct SendChatMessageBody {
     pub for_source_only: Option<bool>,
     pub pin: Option<bool>,
 }
+#[derive(Debug, Clone, Serialize)]
+pub struct SendChatAnnouncementBody {
+    pub message: String,
+    pub color: Option<String>,
+    pub for_source_only: Option<bool>,
+}
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct BadgeInfoResponse {

@@ -91,9 +91,6 @@ const CommandActionMessageCard = ({
 								})}
 							</Typography>
 						</Box>
-						{/* <div>
-							<span>{commandAction.user_input}</span>
-						</div> */}
 
 						{!!commandAction.alert && (
 							<div
