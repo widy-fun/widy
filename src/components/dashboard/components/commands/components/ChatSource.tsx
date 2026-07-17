@@ -54,6 +54,7 @@ const ChatSource = () => {
 							<span>{t("chat_source.platforms")}:</span>
 						</div>
 						<Select
+							sx={{ width: 250 }}
 							multiple
 							value={chatSource.platforms}
 							onChange={(e) => {
@@ -77,6 +78,7 @@ const ChatSource = () => {
 							<span>{t("chat_source.user_levels")}:</span>
 						</div>
 						<Select
+							sx={{ width: 250 }}
 							multiple
 							value={chatSource.user_levels}
 							onChange={(e) => {

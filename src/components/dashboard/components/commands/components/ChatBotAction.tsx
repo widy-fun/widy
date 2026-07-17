@@ -69,6 +69,7 @@ const ChatBotAction = () => {
 							<span>{t("chat_source.platforms")}:</span>
 						</div>
 						<Select
+							sx={{ width: 250 }}
 							multiple
 							value={chatBotAction.platforms}
 							onChange={(e) => {
