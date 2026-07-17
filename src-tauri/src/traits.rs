@@ -1,5 +1,6 @@
 use std::collections::VecDeque;
 
+#[derive(Clone, Debug)]
 pub struct ChatMessageBuffer {
     capacity: usize,
     messages: VecDeque<String>,

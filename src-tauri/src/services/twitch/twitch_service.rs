@@ -12,6 +12,7 @@ use crate::{
             traits::TwitchApi,
         },
     },
+    traits::ChatMessageBuffer,
     utils::get_random_alert,
 };
 use async_trait::async_trait;
@@ -47,6 +48,7 @@ pub struct TwitchService {
     auth_endpoint: String,
     eventsub_endpoint: String,
     pub session_id: Arc<Mutex<Option<String>>>,
+    pub chat_messages_buffer: Arc<Mutex<ChatMessageBuffer>>,
     expire_at: Arc<AtomicU64>,
 }
 
@@ -83,6 +85,7 @@ impl TwitchService {
             eventsub_endpoint,
             session_id: Arc::new(Mutex::new(None)),
             expire_at: Arc::new(AtomicU64::new(0)),
+            chat_messages_buffer: Arc::new(Mutex::new(ChatMessageBuffer::new(1001))),
         }
     }
 
@@ -396,6 +399,9 @@ impl TwitchService {
                         payload.subscription.created_at,
                         all_badges_info,
                     );
+                    let mut chat_messages_buffer = self.chat_messages_buffer.lock().await;
+                    chat_messages_buffer.push(message.clone().content.text);
+                    drop(chat_messages_buffer);
                     let _ = EventsService::chat_message(message.clone(), app).await;
                     let _ = CommandsService::twitch_chat_message_trigger(message, app).await;
                 }

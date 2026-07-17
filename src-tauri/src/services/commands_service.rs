@@ -139,7 +139,6 @@ impl CommandsService {
             .get_command_by_chat_trigger(&trigger)
             .await?
             .ok_or("Command not found".to_string())?;
-        let broadcaster_id = message.channel_id;
         if let Command {
             is_enabled: true,
             chat: Some(chat),
@@ -162,14 +161,17 @@ impl CommandsService {
                 None => None,
             };
             let auth = twitch_service.get_auth(app, ServiceType::Twitch).await?;
+            let bot_auth = twitch_bot_service
+                .get_auth(app, ServiceType::TwitchBot)
+                .await?;
 
             let _ = twitch_bot_service
                 .send_chat_message(
                     &reqwest_client,
-                    auth.access_token,
+                    bot_auth.access_token,
                     chat_bot.message,
-                    broadcaster_id,
                     auth.user_id,
+                    bot_auth.user_id,
                     reply_to_message_id,
                     twitch_bot_service.client_id(),
                 )
@@ -217,7 +219,12 @@ impl CommandsService {
                 .await;
             }
             if chat_bot.platforms.contains(&Platform::Twitch) {
-                let _ = Self::twitch_timer_chat_message(&app, timer.message).await;
+                let _ = Self::twitch_timer_chat_message(
+                    &app,
+                    timer.clone().message,
+                    timer.clone().lines_passed,
+                )
+                .await;
             }
         }
         if let Ok(Some(Command {
@@ -236,7 +243,7 @@ impl CommandsService {
                 command_id: id,
                 command_name: name,
                 message_id: Uuid::new_v4(),
-                platform: Platform::Kick,
+                platform: Platform::None,
                 media: None,
                 alert: Some(alert),
             };
@@ -275,9 +282,19 @@ impl CommandsService {
         Ok(())
     }
 
-    pub async fn twitch_timer_chat_message(app: &AppHandle, message: String) -> Result<(), String> {
+    pub async fn twitch_timer_chat_message(
+        app: &AppHandle,
+        message: String,
+        lines_passed: u64,
+    ) -> Result<(), String> {
         let twitch_bot_service = app.state::<TwitchBotService>();
         let twitch_service = app.state::<TwitchService>();
+        let chat_messages_buffer = twitch_service.chat_messages_buffer.lock().await;
+        if chat_messages_buffer.is_message_not_lines_passed(message.clone(), lines_passed as usize)
+        {
+            return Err("Bot message not passed lines".to_string());
+        }
+        drop(chat_messages_buffer);
         let reqwest_client = app.state::<reqwest::Client>();
         let bot_auth = twitch_bot_service
             .get_auth(app, ServiceType::TwitchBot)
@@ -287,7 +304,7 @@ impl CommandsService {
         twitch_bot_service
             .send_chat_message(
                 &reqwest_client,
-                auth.access_token,
+                bot_auth.access_token,
                 message,
                 auth.user_id,
                 bot_auth.user_id,

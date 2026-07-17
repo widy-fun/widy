@@ -39,7 +39,7 @@ impl DatabaseService {
             .max_connections(100)
             .min_connections(5)
             .sqlx_logging(false)
-            .sqlx_logging(true)
+            // .sqlx_logging(true)
             .sqlx_logging_level(if is_dev() {
                 log::LevelFilter::Info
             } else {
