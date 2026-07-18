@@ -1,7 +1,4 @@
-use std::sync::{
-    atomic::{AtomicBool, Ordering},
-    Arc,
-};
+use std::sync::{Arc, Mutex};
 
 use entity::services::{DonatePayAuth, ServiceAuth, ServiceType};
 use futures::{SinkExt, StreamExt};
@@ -9,10 +6,12 @@ use serde::{Deserialize, Serialize};
 use serde_json::json;
 use tauri::{AppHandle, Manager};
 use tokio_tungstenite::{connect_async, tungstenite::Message};
+use tokio_util::sync::CancellationToken;
 
 use crate::{
     repositories::ServicesRepository,
     services::{DatabaseService, EventsService},
+    utils::send_request,
 };
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -85,17 +84,21 @@ struct UserInfo {
 }
 
 pub struct DonatePayService {
-    is_sign_out: Arc<AtomicBool>,
+    cancellation_token: Arc<Mutex<CancellationToken>>,
 }
 
 impl DonatePayService {
     pub fn new() -> Self {
         Self {
-            is_sign_out: Arc::new(AtomicBool::new(false)),
+            cancellation_token: Arc::new(Mutex::new(CancellationToken::new())),
         }
     }
 
     pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
+        {
+            let mut cancellation_token = self.cancellation_token.lock().unwrap();
+            *cancellation_token = CancellationToken::new();
+        }
         let database_service = app.state::<DatabaseService>();
         let service = database_service
             .get_service_with_auth_by_id(entity::services::ServiceType::DonatePay)
@@ -130,92 +133,104 @@ impl DonatePayService {
     async fn run_websocket_client(&self, app: AppHandle, user_info: UserInfo, token: String) {
         tauri::async_runtime::spawn(async move {
             let donate_pay_service = app.state::<DonatePayService>();
+            let cancellation_token = {
+                donate_pay_service
+                    .cancellation_token
+                    .lock()
+                    .unwrap()
+                    .clone()
+            };
             'connection_loop: loop {
                 log::info!("Connecting to DonatePay websocket");
-                match connect_async("wss://centrifugo.donatepay.ru:443/connection/websocket").await
+                let (mut socket, _) =
+                    match connect_async("wss://centrifugo.donatepay.ru:443/connection/websocket")
+                        .await
+                    {
+                        Ok(socket) => socket,
+                        Err(e) => {
+                            log::error!("Failed to connect: {}", e);
+                            tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+                            continue;
+                        }
+                    };
+
+                log::info!("DonatePay websocket connected.");
+
+                let auth_msg = json!({
+                    "params": { "token": token, "name": "js" },
+                    "id": 1,
+                });
+                let sub_msg = json!({
+                    "method": 1,
+                    "params": { "channel": format!("widgets:LastEvents#{}", user_info.id) },
+                    "id": 2,
+                });
+
+                if let Err(e) = socket
+                    .send(Message::Text(auth_msg.to_string().into()))
+                    .await
                 {
-                    Ok((mut socket, _)) => {
-                        log::info!("DonatePay websocket connected.");
+                    log::error!("Failed to send DonatePay auth: {e}");
+                    continue 'connection_loop;
+                }
+                if let Err(e) = socket.send(Message::Text(sub_msg.to_string().into())).await {
+                    log::error!("Failed to send subscription: {e}");
+                    continue 'connection_loop;
+                }
 
-                        let auth_msg = json!({
-                            "params": { "token": token, "name": "js" },
-                            "id": 1,
-                        });
-                        let sub_msg = json!({
-                            "method": 1,
-                            "params": { "channel": format!("widgets:LastEvents#{}", user_info.id) },
-                            "id": 2,
-                        });
-
-                        if let Err(e) = socket
-                            .send(Message::Text(auth_msg.to_string().into()))
-                            .await
-                        {
-                            log::error!("Failed to send DonatePay auth: {e}");
-                            continue 'connection_loop;
-                        }
-                        if let Err(e) = socket.send(Message::Text(sub_msg.to_string().into())).await
-                        {
-                            log::error!("Failed to send subscription: {e}");
-                            continue 'connection_loop;
-                        }
-                        while let Some(msg_result) = socket.next().await {
-                            if donate_pay_service.is_sign_out.load(Ordering::Relaxed) {
-                                donate_pay_service
-                                    .is_sign_out
-                                    .store(false, Ordering::Relaxed);
-                                break 'connection_loop;
-                            }
-                            match msg_result {
-                                Ok(Message::Text(text)) => {
-                                    if let Ok(event) = serde_json::from_str::<WidgetEvent>(&text) {
-                                        if let NotificationType::Donation =
-                                            event.result.data.data.notification.notification_type
+                loop {
+                    tokio::select! {
+                    _ = cancellation_token.cancelled() => {
+                        log::info!("Stopping DonatePay websocket.");
+                        let _ = socket.send(Message::Close(None)).await;
+                        break 'connection_loop;
+                    }
+                    msg = socket.next() => {
+                        let Some(msg_result) = msg else {
+                            log::warn!("DonatePay websocket ended.");
+                            break;
+                        };
+                        match msg_result {
+                            Ok(Message::Text(text)) => {
+                                if let Ok(event) = serde_json::from_str::<WidgetEvent>(&text) {
+                                    if let NotificationType::Donation =
+                                        event.result.data.data.notification.notification_type
+                                    {
+                                        let vars = event.result.data.data.notification.vars;
+                                        if let Ok(event_vars) =
+                                            serde_json::from_str::<EventVars>(&vars)
                                         {
-                                            let vars = event.result.data.data.notification.vars;
-                                            if let Ok(event_vars) =
-                                                serde_json::from_str::<EventVars>(&vars)
-                                            {
-                                                let service_id = uuid::Uuid::new_v4().to_string();
-                                                let _ = EventsService::donation(
-                                                    service_id,
-                                                    ServiceType::DonatePay,
-                                                    Some(event_vars.name),
-                                                    entity::settings::Currency::RUB,
-                                                    event_vars.sum,
-                                                    Some(event_vars.comment),
-                                                    &app,
-                                                )
-                                                .await;
-                                            } else {
-                                                log::error!(
-                                                    "Failed to parse event vars for message: {}",
-                                                    text
-                                                );
-                                            }
+                                            let service_id = uuid::Uuid::new_v4().to_string();
+                                            let _ = EventsService::donation(
+                                                service_id,
+                                                ServiceType::DonatePay,
+                                                Some(event_vars.name),
+                                                entity::settings::Currency::RUB,
+                                                event_vars.sum,
+                                                Some(event_vars.comment),
+                                                &app,
+                                            )
+                                            .await;
+                                        } else {
+                                            log::error!(
+                                                "Failed to parse event vars for message: {}",
+                                                text
+                                            );
                                         }
                                     }
                                 }
-
-                                Ok(Message::Close(_)) => {
-                                    log::warn!("DonatePay closed connection.");
-                                    break;
-                                }
-                                Err(e) => {
-                                    log::error!("DonatePay WebSocket error: {}", e);
-                                    break;
-                                }
-                                _ => {}
                             }
-                        }
-                    }
-                    Err(e) => {
-                        log::error!(
-                            "Failed to connect DonatePay WebSocket: {}. Retrying in 5s...",
-                            e
-                        );
-                        tokio::time::sleep(std::time::Duration::from_secs(5)).await;
-                    }
+
+                            Ok(Message::Close(_)) => {
+                                log::warn!("DonatePay closed connection.");
+                                break;
+                            }
+                            Err(e) => {
+                                log::error!("DonatePay WebSocket error: {}", e);
+                                break;
+                            }
+                            _ => {}
+                        }}}
                 }
             }
         });
@@ -226,22 +241,11 @@ impl DonatePayService {
         reqwest_client: &reqwest::Client,
         access_token: &str,
     ) -> Result<String, String> {
-        let resp: TokenResponse = reqwest_client
+        let request = reqwest_client
             .post("https://donatepay.ru/api/v2/socket/token")
-            .json(&serde_json::json!({ "access_token": access_token }))
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Failed to send get token request: {}", e);
-                e.to_string()
-            })?
-            .json()
-            .await
-            .map_err(|e| {
-                log::error!("Failed to parse token response: {}", e);
-                e.to_string()
-            })?;
-        Ok(resp.token)
+            .json(&serde_json::json!({ "access_token": access_token }));
+        let token_response: TokenResponse = send_request(request, "token", "DonatePay").await?;
+        Ok(token_response.token)
     }
 
     async fn get_user_info(
@@ -249,28 +253,13 @@ impl DonatePayService {
         reqwest_client: &reqwest::Client,
         access_token: &str,
     ) -> Result<UserInfo, String> {
-        let response = reqwest_client
-            .get(format!(
-                "https://donatepay.ru/api/v1/user?access_token={}",
-                access_token
-            ))
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Failed to send user info request: {}", e);
-                e.to_string()
-            })?;
-        if response.status().is_success() {
-            let json: UserInfoResponse = response.json().await.map_err(|e| {
-                log::error!("Failed to parse user info response: {}", e);
-                e.to_string()
-            })?;
-            Ok(json.data)
-        } else {
-            let error = format!("Failed to get user info: HTTP {}", response.status());
-            log::error!("{}", error);
-            Err(error)
-        }
+        let request = reqwest_client.get(format!(
+            "https://donatepay.ru/api/v1/user?access_token={}",
+            access_token
+        ));
+
+        let json: UserInfoResponse = send_request(request, "user info", "DonatePay").await?;
+        Ok(json.data)
     }
 
     pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), String> {
@@ -283,7 +272,9 @@ impl DonatePayService {
                 authorized: false,
             })
             .await?;
-        self.is_sign_out.store(true, Ordering::Relaxed);
+        {
+            self.cancellation_token.lock().unwrap().cancel();
+        }
         Ok(())
     }
 }
