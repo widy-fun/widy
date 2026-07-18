@@ -271,7 +271,7 @@ impl CommandsService {
         let kick_bot_service = app.state::<KickBotService>();
         let kick_service = app.state::<KickService>();
         let auth = kick_service.get_auth(app, ServiceType::Kick).await?;
-        let chat_messages_buffer = kick_service.chat_messages_buffer.lock().await;
+        let chat_messages_buffer = { kick_service.chat_messages_buffer.lock().unwrap().clone() };
         if chat_messages_buffer.is_message_not_lines_passed(message.clone(), lines_passed as usize)
         {
             return Err("Bot message not passed lines".to_string());

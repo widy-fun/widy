@@ -127,7 +127,7 @@ impl TwitchService {
             let cancellation_token = twitch_service.cancellation_token();
             let mut current_url = twitch_service.websocket_eventsub_url.clone();
 
-            'connection: loop {
+            'connection_loop: loop {
                 log::info!("Connecting to Twitch EventSub: {}", current_url);
 
                 let (mut socket, _) = match connect_async(&current_url).await {
@@ -146,7 +146,7 @@ impl TwitchService {
                         _ = cancellation_token.cancelled() => {
                             log::info!("Stopping Twitch websocket.");
                             let _ = socket.send(Message::Close(None)).await;
-                            break 'connection;
+                            break 'connection_loop;
                         }
 
                         msg = socket.next() => {

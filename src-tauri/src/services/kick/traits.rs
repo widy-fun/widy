@@ -1,6 +1,6 @@
 use std::{
     sync::{
-        Arc,
+        Arc, MutexGuard,
         atomic::{AtomicU64, Ordering},
     },
     time::{SystemTime, UNIX_EPOCH},
@@ -11,10 +11,11 @@ use base64::{Engine, engine::general_purpose::URL_SAFE_NO_PAD};
 use entity::services::{KickAuth, ServiceAuth, ServiceType};
 use http::StatusCode;
 use rand::Rng;
+use serde::de::DeserializeOwned;
 use sha2::{Digest, Sha256};
 use tauri::{AppHandle, Manager};
 use tauri_plugin_opener::OpenerExt;
-use tokio::sync::MutexGuard;
+use tokio_util::sync::CancellationToken;
 use uuid::Uuid;
 
 use crate::{
@@ -29,11 +30,14 @@ use crate::{
             },
         },
     },
+    utils::send_request,
 };
 
 #[async_trait]
 pub trait KickApi: Send + Sync {
     fn kick_token_endpoint(&self) -> String;
+
+    fn cancellation_token(&self) -> CancellationToken;
 
     fn kick_client_id(&self) -> String;
 
@@ -43,11 +47,17 @@ pub trait KickApi: Send + Sync {
 
     fn app_token(&self) -> String;
 
-    async fn auth_session(&self) -> MutexGuard<'_, Option<KickAuthSession>>;
-
-    fn set_is_close_connection(&self, is_close_connection: bool);
+    fn auth_session(&self) -> MutexGuard<'_, Option<KickAuthSession>>;
 
     fn expire_at(&self) -> Arc<AtomicU64>;
+
+    async fn send_kick_request<T: DeserializeOwned>(
+        &self,
+        request: reqwest::RequestBuilder,
+        context: &str,
+    ) -> Result<T, String> {
+        send_request(request, context, "Kick").await
+    }
 
     async fn get_database_auth(
         &self,
@@ -127,32 +137,17 @@ pub trait KickApi: Send + Sync {
         reqwest_client: &reqwest::Client,
         refresh_token: String,
     ) -> Result<KickAuth, String> {
-        let response = reqwest_client
+        let request = reqwest_client
             .post(self.kick_token_endpoint())
             .json(&RefreshTokenBody {
                 grant_type: GrantType::RefreshToken,
                 refresh_token,
                 app_token: self.app_token(),
-            })
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Failed to refresh token: {}", e);
-                e.to_string()
-            })?;
+            });
 
-        if !response.status().is_success() {
-            let bad_response = response.text().await.map_err(|e| {
-                log::error!("Kick: failed to read refresh token error response: {}", e);
-                e.to_string()
-            })?;
-            return Err(bad_response);
-        }
+        let refresh_token_response: KickAuth =
+            self.send_kick_request(request, "refresh token").await?;
 
-        let refresh_token_response: KickAuth = response.json().await.map_err(|e| {
-            log::error!("Kick: failed to parse refresh token response: {}", e);
-            e.to_string()
-        })?;
         Ok(refresh_token_response)
     }
 
@@ -164,7 +159,9 @@ pub trait KickApi: Send + Sync {
         is_close_connection: bool,
         service_type: ServiceType,
     ) -> Result<(), String> {
-        self.set_is_close_connection(is_close_connection);
+        if is_close_connection {
+            self.cancellation_token().cancel();
+        }
         database_service
             .update_service_auth(service_type, auth, authorized)
             .await
@@ -174,11 +171,13 @@ pub trait KickApi: Send + Sync {
         let state = Uuid::new_v4().to_string();
         let code_verifier = self.generate_verifier();
         let code_challenge = self.generate_challenge(&code_verifier);
-        let mut auth_session = self.auth_session().await;
-        *auth_session = Some(KickAuthSession {
-            state: state.clone(),
-            code_verifier,
-        });
+        {
+            let mut auth_session = self.auth_session();
+            *auth_session = Some(KickAuthSession {
+                state: state.clone(),
+                code_verifier,
+            });
+        }
         let _ = app.opener().open_url(
             format!(
                 "https://id.kick.com/oauth/authorize?client_id={}&response_type=code&redirect_uri={}&state={}&scope={}&code_challenge={}&code_challenge_method=S256",
@@ -209,27 +208,10 @@ pub trait KickApi: Send + Sync {
         reqwest_client: &reqwest::Client,
         name: &String,
     ) -> Result<ChanelInfoResponse, String> {
-        let response = reqwest_client
-            .get(format!("https://kick.com/api/v2/channels/{}", name))
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Failed to send chanel info request: {}", e);
-                e.to_string()
-            })?;
+        let request = reqwest_client.get(format!("https://kick.com/api/v2/channels/{}", name));
 
-        if !response.status().is_success() {
-            let bad_response = response.text().await.map_err(|e| {
-                log::error!("Kick: failed to read channel info error response: {}", e);
-                e.to_string()
-            })?;
-            return Err(bad_response);
-        }
-
-        let chanel_info_response: ChanelInfoResponse = response.json().await.map_err(|e| {
-            log::error!("Kick: failed to parse channel info: {}", e);
-            e.to_string()
-        })?;
+        let chanel_info_response: ChanelInfoResponse =
+            self.send_kick_request(request, "channel info").await?;
 
         Ok(chanel_info_response)
     }
@@ -239,28 +221,11 @@ pub trait KickApi: Send + Sync {
         reqwest_client: &reqwest::Client,
         access_token: &String,
     ) -> Result<UserInfo, String> {
-        let response = reqwest_client
+        let request = reqwest_client
             .get("https://api.kick.com/public/v1/users")
-            .bearer_auth(access_token)
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Failed to send user info request: {}", e);
-                e.to_string()
-            })?;
+            .bearer_auth(access_token);
 
-        if !response.status().is_success() {
-            let bad_response = response.text().await.map_err(|e| {
-                log::error!("Kick: failed to read channel info error response: {}", e);
-                e.to_string()
-            })?;
-            return Err(bad_response);
-        }
-
-        let user_info: UserInfoResponse = response.json().await.map_err(|e| {
-            log::error!("Failed parse user info: {}", e.to_string());
-            e.to_string()
-        })?;
+        let user_info: UserInfoResponse = self.send_kick_request(request, "user info").await?;
 
         Ok(user_info
             .data
@@ -287,29 +252,12 @@ pub trait KickApi: Send + Sync {
             should_redemptions_skip_request_queue: reward.should_redemptions_skip_request_queue,
         };
 
-        let response = reqwest_client
+        let request = reqwest_client
             .post("https://api.kick.com/public/v1/channels/rewards")
             .bearer_auth(&auth.access_token)
-            .json(&twitch_reward_body)
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Kick: failed to send reward create request: {}", e);
-                e.to_string()
-            })?;
-        if !response.status().is_success() {
-            let err_text = response.text().await.map_err(|e| {
-                log::error!("Kick: failed to read error response: {}", e);
-                e.to_string()
-            })?;
-            log::error!("Kick error response: {}", err_text);
-            return Err(err_text);
-        }
+            .json(&twitch_reward_body);
 
-        let json: serde_json::Value = response.json().await.map_err(|e| {
-            log::error!("Kick: failed to parse reward create response JSON: {}", e);
-            e.to_string()
-        })?;
+        let json: serde_json::Value = self.send_kick_request(request, "add custom reward").await?;
 
         let reward_id = json["data"]["id"]
             .as_str()
@@ -339,28 +287,18 @@ pub trait KickApi: Send + Sync {
             .await?
             .ok_or("Reward not found".to_string())?;
 
-        let response = reqwest_client
+        let request = reqwest_client
             .delete(format!(
                 "https://api.kick.com/public/v1/channels/rewards/{}",
                 reward
                     .external_id
                     .ok_or("Reward external_id not exist".to_string())?
             ))
-            .bearer_auth(&auth.access_token)
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Kick: failed to send reward delete request: {}", e);
-                e.to_string()
-            })?;
-        if !response.status().is_success() {
-            let err_text = response.text().await.map_err(|e| {
-                log::error!("Kick: failed to read delete error response: {}", e);
-                e.to_string()
-            })?;
-            log::error!("Kick error response: {}", err_text);
-            return Err(err_text);
-        }
+            .bearer_auth(&auth.access_token);
+
+        let _: serde_json::Value = self
+            .send_kick_request(request, "remove custom reward")
+            .await?;
 
         database_service.delete_reward_by_id(id).await?;
 
@@ -375,7 +313,7 @@ pub trait KickApi: Send + Sync {
         broadcaster_user_id: u64,
         reply_to_message_id: Option<String>,
     ) -> Result<(), String> {
-        let response = reqwest_client
+        let request = reqwest_client
             .post("https://api.kick.com/public/v1/chat")
             .bearer_auth(access_token)
             .json(&PostChatMessageBody {
@@ -383,22 +321,9 @@ pub trait KickApi: Send + Sync {
                 content,
                 reply_to_message_id,
                 r#type: PostChatMessageType::Bot,
-            })
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Failed to post chat message: {}", e);
-                e.to_string()
-            })?;
+            });
 
-        if !response.status().is_success() {
-            let err_text = response.text().await.map_err(|e| {
-                log::error!("Kick: failed to read chat send error response: {}", e);
-                e.to_string()
-            })?;
-            log::error!("Send chat message error response: {}", err_text);
-            return Err(err_text);
-        }
+        let _: serde_json::Value = self.send_kick_request(request, "chat message").await?;
 
         Ok(())
     }
@@ -408,10 +333,15 @@ pub trait KickApi: Send + Sync {
         reqwest_client: &reqwest::Client,
         params: KickAuthCallbackQuery,
     ) -> Result<KickAuth, StatusCode> {
-        let mut auth_session_guard = self.auth_session().await;
-        let auth_session = auth_session_guard.clone();
-        *auth_session_guard = None;
-        let auth_session = auth_session.ok_or(StatusCode::UNAUTHORIZED)?;
+        let auth_session = {
+            let mut auth_session_guard = self.auth_session();
+            let session = match auth_session_guard.clone() {
+                Some(s) => s,
+                _ => return Err(StatusCode::UNAUTHORIZED),
+            };
+            *auth_session_guard = None;
+            session
+        };
 
         if auth_session.state != params.state {
             return Err(StatusCode::BAD_REQUEST);

@@ -6,19 +6,14 @@ use entity::{
 };
 use futures::{SinkExt, StreamExt};
 use serde_json::json;
-use std::sync::{
-    Arc,
-    atomic::{AtomicBool, AtomicU64, Ordering},
-};
+use std::sync::{Arc, Mutex, MutexGuard, atomic::AtomicU64};
 use tauri::{AppHandle, Manager};
-use tokio::{
-    net::TcpStream,
-    sync::{Mutex, MutexGuard},
-};
+use tokio::net::TcpStream;
 use tokio_tungstenite::{
     MaybeTlsStream, WebSocketStream, connect_async,
     tungstenite::{Message, Utf8Bytes},
 };
+use tokio_util::sync::CancellationToken;
 use uuid::Uuid;
 
 use crate::{
@@ -41,7 +36,6 @@ use crate::{
 };
 
 pub struct KickService {
-    is_close_connection: Arc<AtomicBool>,
     pub kick_client_id: String,
     pub kick_token_endpoint: String,
     pub kick_redirect_uri: String,
@@ -50,6 +44,7 @@ pub struct KickService {
     pub auth_session: Mutex<Option<KickAuthSession>>,
     pub chat_messages_buffer: Arc<Mutex<ChatMessageBuffer>>,
     expire_at: Arc<AtomicU64>,
+    cancellation_token: Arc<Mutex<CancellationToken>>,
 }
 
 impl KickService {
@@ -62,7 +57,6 @@ impl KickService {
         let scopes = "user:read channel:read channel:write channel:rewards:read channel:rewards:write chat:write events:subscribe moderation:ban moderation:chat_message:manage kicks:read".to_string();
 
         Self {
-            is_close_connection: Arc::new(AtomicBool::new(false)),
             kick_client_id,
             kick_token_endpoint,
             kick_redirect_uri,
@@ -71,10 +65,15 @@ impl KickService {
             auth_session: Mutex::new(None),
             chat_messages_buffer: Arc::new(Mutex::new(ChatMessageBuffer::new(1001))),
             expire_at: Arc::new(AtomicU64::new(0)),
+            cancellation_token: Arc::new(Mutex::new(CancellationToken::new())),
         }
     }
 
     pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
+        {
+            let mut cancellation_token = self.cancellation_token.lock().unwrap();
+            *cancellation_token = CancellationToken::new();
+        }
         let auth = self.get_database_auth(app, ServiceType::Kick).await?;
         let auth = self
             .refresh_and_update_auth(&app, &auth, ServiceType::Kick)
@@ -96,27 +95,41 @@ impl KickService {
     async fn run_websocket_client(&self, app: AppHandle, chanel_info_response: ChanelInfoResponse) {
         tauri::async_runtime::spawn(async move {
             let kick_service = app.state::<KickService>();
+            let cancellation_token = kick_service.cancellation_token();
             let connect_url = "wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.5.0&flash=false";
             'connection_loop: loop {
                 log::info!("Connecting to Kick websocket: {}", connect_url);
-                match connect_async(connect_url).await {
-                    Ok((mut socket, _)) => {
-                        log::info!("Kick websocket connected.");
-                        kick_service
-                            .create_subscriptions(&mut socket, &chanel_info_response.chatroom)
-                            .await;
 
-                        while let Some(msg_result) = socket.next().await {
-                            let is_close_connection =
-                                kick_service.is_close_connection.load(Ordering::Relaxed);
-                            if is_close_connection {
-                                kick_service
-                                    .is_close_connection
-                                    .store(false, Ordering::Relaxed);
-                                break 'connection_loop;
-                            }
+                let (mut socket, _) = match connect_async(connect_url).await {
+                    Ok(socket) => socket,
+                    Err(e) => {
+                        log::error!("Failed to connect: {}", e);
+                        tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+                        continue;
+                    }
+                };
 
-                            match msg_result {
+                log::info!("Kick websocket connected.");
+
+                kick_service
+                    .create_subscriptions(&mut socket, &chanel_info_response.chatroom)
+                    .await;
+
+                loop {
+                    tokio::select! {
+                        _ = cancellation_token.cancelled() => {
+                            log::info!("Stopping Kick websocket.");
+                            let _ = socket.send(Message::Close(None)).await;
+                            break 'connection_loop;
+                        }
+
+                        msg = socket.next() => {
+                            let Some(msg_result) = msg else {
+                                log::warn!("Kick websocket ended.");
+                                break;
+                            };
+
+                           match msg_result {
                                 Ok(Message::Text(text)) => {
                                     if let Ok(payload) = serde_json::from_str::<EventPayload>(&text)
                                     {
@@ -132,13 +145,8 @@ impl KickService {
                                     log::error!("Kick websocket error: {}", e);
                                     break;
                                 }
-                                _ => {}
-                            }
+                                _ => {}}
                         }
-                    }
-                    Err(e) => {
-                        log::error!("Failed to connect: {}. Retrying in 5s...", e);
-                        tokio::time::sleep(std::time::Duration::from_secs(5)).await;
                     }
                 }
             }
@@ -275,9 +283,10 @@ impl KickService {
                 let event_data = serde_json::from_str::<ChatMessageData>(&payload.data);
                 if let Ok(data) = event_data {
                     let message = UnifiedChatMessage::from(data.clone());
-                    let mut chat_messages_buffer = self.chat_messages_buffer.lock().await;
-                    chat_messages_buffer.push(message.clone().content.text);
-                    drop(chat_messages_buffer);
+                    {
+                        let mut chat_messages_buffer = self.chat_messages_buffer.lock().unwrap();
+                        chat_messages_buffer.push(message.clone().content.text);
+                    }
                     let _ = EventsService::chat_message(message.clone(), app).await;
                     let _ = CommandsService::kick_chat_message_trigger(message, app).await;
                 }
@@ -349,9 +358,14 @@ impl KickService {
 
 #[async_trait]
 impl KickApi for KickService {
-    async fn auth_session(&self) -> MutexGuard<'_, Option<KickAuthSession>> {
-        self.auth_session.lock().await
+    fn auth_session(&self) -> MutexGuard<'_, Option<KickAuthSession>> {
+        self.auth_session.lock().unwrap()
     }
+
+    fn cancellation_token(&self) -> CancellationToken {
+        self.cancellation_token.lock().unwrap().clone()
+    }
+
     fn kick_token_endpoint(&self) -> String {
         self.kick_token_endpoint.clone()
     }
@@ -369,11 +383,6 @@ impl KickApi for KickService {
 
     fn app_token(&self) -> String {
         self.app_token.clone()
-    }
-
-    fn set_is_close_connection(&self, is_close_connection: bool) {
-        self.is_close_connection
-            .store(is_close_connection, Ordering::Relaxed);
     }
 
     fn expire_at(&self) -> Arc<AtomicU64> {

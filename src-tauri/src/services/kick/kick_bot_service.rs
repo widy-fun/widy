@@ -1,9 +1,8 @@
-use std::sync::{Arc, atomic::AtomicU64};
-
 use async_trait::async_trait;
 use entity::services::ServiceType;
+use std::sync::{Arc, Mutex, MutexGuard, atomic::AtomicU64};
 use tauri::AppHandle;
-use tokio::sync::{Mutex, MutexGuard};
+use tokio_util::sync::CancellationToken;
 
 use crate::services::kick::{models::KickAuthSession, traits::KickApi};
 
@@ -15,6 +14,7 @@ pub struct KickBotService {
     pub app_token: String,
     pub auth_session: Mutex<Option<KickAuthSession>>,
     expire_at: Arc<AtomicU64>,
+    cancellation_token: Arc<Mutex<CancellationToken>>,
 }
 
 impl KickBotService {
@@ -34,6 +34,7 @@ impl KickBotService {
             app_token,
             auth_session: Mutex::new(None),
             expire_at: Arc::new(AtomicU64::new(0)),
+            cancellation_token: Arc::new(Mutex::new(CancellationToken::new())),
         }
     }
 
@@ -48,9 +49,12 @@ impl KickBotService {
 
 #[async_trait]
 impl KickApi for KickBotService {
-    fn set_is_close_connection(&self, _: bool) {}
-    async fn auth_session(&self) -> MutexGuard<'_, Option<KickAuthSession>> {
-        self.auth_session.lock().await
+    fn auth_session(&self) -> MutexGuard<'_, Option<KickAuthSession>> {
+        self.auth_session.lock().unwrap()
+    }
+
+    fn cancellation_token(&self) -> CancellationToken {
+        self.cancellation_token.lock().unwrap().clone()
     }
 
     fn kick_token_endpoint(&self) -> String {

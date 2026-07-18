@@ -25,6 +25,7 @@ use crate::{
             TwitchRefreshTokenResponse, TwitchTokenInfo, TwitchTokenResponse,
         },
     },
+    utils::send_request,
 };
 
 #[async_trait]
@@ -50,26 +51,7 @@ pub trait TwitchApi: Send + Sync {
         request: reqwest::RequestBuilder,
         context: &str,
     ) -> Result<T, String> {
-        let response = request.send().await.map_err(|e| {
-            log::error!("Twitch: {context} request failed: {e}");
-            e.to_string()
-        })?;
-
-        let status = response.status();
-        let body = response.text().await.map_err(|e| {
-            log::error!("Twitch: {context} failed to read response body: {e}");
-            e.to_string()
-        })?;
-
-        if !status.is_success() {
-            log::error!("Twitch: {context} error ({status}): {body}");
-            return Err(body);
-        }
-
-        serde_json::from_str(&body).map_err(|e| {
-            log::error!("Twitch: {context} failed to parse response: {e}");
-            e.to_string()
-        })
+        send_request(request, context, "Twitch").await
     }
 
     async fn get_database_auth(
