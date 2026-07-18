@@ -1,7 +1,7 @@
 use entity::services::ServiceType;
 use tauri::{AppHandle, State};
 
-use crate::services::twitch::{traits::TwitchApi, TwitchService};
+use crate::services::twitch::{TwitchService, traits::TwitchApi};
 
 #[tauri::command]
 pub async fn twitch_sign_out(

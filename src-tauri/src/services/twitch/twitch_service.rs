@@ -28,19 +28,15 @@ use entity::{
     settings::Currency,
     subscriptions::{self},
 };
-use futures::StreamExt;
-use std::sync::{
-    Arc,
-    atomic::{AtomicBool, AtomicU64, Ordering},
-};
+use futures::{SinkExt, StreamExt};
+use std::sync::{Arc, Mutex, atomic::AtomicU64};
 use tauri::{AppHandle, Manager};
-use tokio::sync::{Mutex, MutexGuard};
 use tokio_tungstenite::{connect_async, tungstenite::Message};
+use tokio_util::sync::CancellationToken;
 use uuid::Uuid;
 
 #[derive(Clone, Debug)]
 pub struct TwitchService {
-    is_close_connection: Arc<AtomicBool>,
     client_id: String,
     scopes: String,
     websocket_eventsub_url: String,
@@ -50,6 +46,7 @@ pub struct TwitchService {
     pub session_id: Arc<Mutex<Option<String>>>,
     pub chat_messages_buffer: Arc<Mutex<ChatMessageBuffer>>,
     expire_at: Arc<AtomicU64>,
+    pub cancellation_token: Arc<Mutex<CancellationToken>>,
 }
 
 impl TwitchService {
@@ -76,7 +73,6 @@ impl TwitchService {
         let scopes = format!("{scopes} user:read:chat user:write:chat user:bot channel:bot");
 
         Self {
-            is_close_connection: Arc::new(AtomicBool::new(false)),
             client_id,
             scopes,
             websocket_eventsub_url,
@@ -86,10 +82,15 @@ impl TwitchService {
             session_id: Arc::new(Mutex::new(None)),
             expire_at: Arc::new(AtomicU64::new(0)),
             chat_messages_buffer: Arc::new(Mutex::new(ChatMessageBuffer::new(1001))),
+            cancellation_token: Arc::new(Mutex::new(CancellationToken::new())),
         }
     }
 
     pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
+        {
+            let mut cancellation_token = self.cancellation_token.lock().unwrap();
+            *cancellation_token = CancellationToken::new();
+        }
         let reqwest_client = app.state::<reqwest::Client>();
         let auth = self.get_database_auth(app, ServiceType::Twitch).await?;
         let auth = self
@@ -122,32 +123,51 @@ impl TwitchService {
         tauri::async_runtime::spawn(async move {
             let twitch_service = app.state::<TwitchService>();
             let reqwest_client = app.state::<reqwest::Client>();
-            let mut current_url = twitch_service.websocket_eventsub_url.clone();
-            'connection_loop: loop {
-                log::info!("Connecting to Twitch EventSub: {}", current_url);
-                match connect_async(&current_url).await {
-                    Ok((mut socket, _)) => {
-                        log::info!("Twitch websocket connected.");
 
-                        while let Some(msg_result) = socket.next().await {
-                            let is_close_connection =
-                                twitch_service.is_close_connection.load(Ordering::Relaxed);
-                            if is_close_connection {
-                                twitch_service
-                                    .is_close_connection
-                                    .store(false, Ordering::Relaxed);
-                                break 'connection_loop;
-                            }
+            let cancellation_token = twitch_service.cancellation_token();
+            let mut current_url = twitch_service.websocket_eventsub_url.clone();
+
+            'connection: loop {
+                log::info!("Connecting to Twitch EventSub: {}", current_url);
+
+                let (mut socket, _) = match connect_async(&current_url).await {
+                    Ok(socket) => socket,
+                    Err(e) => {
+                        log::error!("Failed to connect: {}", e);
+                        tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+                        continue;
+                    }
+                };
+
+                log::info!("Twitch websocket connected.");
+
+                loop {
+                    tokio::select! {
+                        _ = cancellation_token.cancelled() => {
+                            log::info!("Stopping Twitch websocket.");
+                            let _ = socket.send(Message::Close(None)).await;
+                            break 'connection;
+                        }
+
+                        msg = socket.next() => {
+                            let Some(msg_result) = msg else {
+                                log::warn!("Twitch websocket ended.");
+                                break;
+                            };
+
                             match msg_result {
                                 Ok(Message::Text(text)) => {
                                     let instruction =
                                         twitch_service.handle_text_message(&text).await;
                                     match instruction {
                                         WebSocketInstruction::SessionWelcome(session_id) => {
-                                            let mut session_id_guard =
-                                                twitch_service.session_id.lock().await;
-                                            *session_id_guard = Some(session_id.clone());
-                                            drop(session_id_guard);
+                                            {
+
+                                                let mut session_id_guard =
+                                                    twitch_service.session_id.lock().unwrap();
+                                                *session_id_guard = Some(session_id.clone());
+                                            }
+
                                             twitch_service
                                                 .create_subscriptions(
                                                     &session_id,
@@ -194,12 +214,10 @@ impl TwitchService {
                             }
                         }
                     }
-                    Err(e) => {
-                        log::error!("Failed to connect: {}. Retrying in 5s...", e);
-                        tokio::time::sleep(std::time::Duration::from_secs(5)).await;
-                    }
                 }
             }
+
+            log::info!("WebSocket task exited.");
         });
     }
 
@@ -399,9 +417,10 @@ impl TwitchService {
                         payload.subscription.created_at,
                         all_badges_info,
                     );
-                    let mut chat_messages_buffer = self.chat_messages_buffer.lock().await;
-                    chat_messages_buffer.push(message.clone().content.text);
-                    drop(chat_messages_buffer);
+                    {
+                        let mut chat_messages_buffer = self.chat_messages_buffer.lock().unwrap();
+                        chat_messages_buffer.push(message.clone().content.text);
+                    }
                     let _ = EventsService::chat_message(message.clone(), app).await;
                     let _ = CommandsService::twitch_chat_message_trigger(message, app).await;
                 }
@@ -476,8 +495,14 @@ impl TwitchApi for TwitchService {
         self.expire_at.clone()
     }
 
-    async fn session_id(&self) -> MutexGuard<'_, Option<String>> {
-        self.session_id.lock().await
+    fn cancellation_token(&self) -> CancellationToken {
+        let guard = self.cancellation_token.lock().unwrap();
+        guard.clone()
+    }
+
+    fn session_id(&self) -> Option<String> {
+        let guard = self.session_id.lock().unwrap();
+        guard.clone()
     }
 
     fn eventsub_endpoint(&self) -> String {
@@ -494,11 +519,6 @@ impl TwitchApi for TwitchService {
 
     fn api_endpoint(&self) -> String {
         self.api_endpoint.clone()
-    }
-
-    fn set_is_close_connection(&self, is_close_connection: bool) {
-        self.is_close_connection
-            .store(is_close_connection, Ordering::Relaxed);
     }
 }
 

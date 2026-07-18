@@ -1,5 +1,4 @@
 use std::{
-    collections::HashMap,
     sync::{
         Arc,
         atomic::{AtomicU64, Ordering},
@@ -9,8 +8,9 @@ use std::{
 
 use async_trait::async_trait;
 use entity::services::{ServiceAuth, ServiceType, TwitchAuth};
+use serde::de::DeserializeOwned;
 use tauri::{AppHandle, Manager};
-use tokio::sync::MutexGuard;
+use tokio_util::sync::CancellationToken;
 use uuid::Uuid;
 
 use crate::{
@@ -33,7 +33,9 @@ pub trait TwitchApi: Send + Sync {
 
     fn eventsub_endpoint(&self) -> String;
 
-    async fn session_id(&self) -> MutexGuard<'_, Option<String>>;
+    fn session_id(&self) -> Option<String>;
+
+    fn cancellation_token(&self) -> CancellationToken;
 
     fn auth_endpoint(&self) -> String;
 
@@ -41,9 +43,34 @@ pub trait TwitchApi: Send + Sync {
 
     fn api_endpoint(&self) -> String;
 
-    fn set_is_close_connection(&self, is_close_connection: bool);
-
     fn expire_at(&self) -> Arc<AtomicU64>;
+
+    async fn send_twitch_request<T: DeserializeOwned>(
+        &self,
+        request: reqwest::RequestBuilder,
+        context: &str,
+    ) -> Result<T, String> {
+        let response = request.send().await.map_err(|e| {
+            log::error!("Twitch: {context} request failed: {e}");
+            e.to_string()
+        })?;
+
+        let status = response.status();
+        let body = response.text().await.map_err(|e| {
+            log::error!("Twitch: {context} failed to read response body: {e}");
+            e.to_string()
+        })?;
+
+        if !status.is_success() {
+            log::error!("Twitch: {context} error ({status}): {body}");
+            return Err(body);
+        }
+
+        serde_json::from_str(&body).map_err(|e| {
+            log::error!("Twitch: {context} failed to parse response: {e}");
+            e.to_string()
+        })
+    }
 
     async fn get_database_auth(
         &self,
@@ -94,6 +121,9 @@ pub trait TwitchApi: Send + Sync {
         old_auth: &TwitchAuth,
         service_type: ServiceType,
     ) -> Result<TwitchAuth, String> {
+        if cfg!(debug_assertions) {
+            return Ok(old_auth.clone());
+        }
         let reqwest_client = app.state::<reqwest::Client>();
         let database_service = app.state::<DatabaseService>();
         match self
@@ -136,25 +166,13 @@ pub trait TwitchApi: Send + Sync {
         &self,
         reqwest_client: &reqwest::Client,
     ) -> Result<TwitchDeviceCodeResponse, String> {
-        let mut params = HashMap::new();
-
-        params.insert("client_id", self.client_id());
-        params.insert("scopes", self.scopes());
-        let response = reqwest_client
+        let request = reqwest_client
             .post("https://id.twitch.tv/oauth2/device")
-            .form(&params)
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Twitch: failed to request device code: {}", e);
-                e.to_string()
-            })?;
+            .form(&[("client_id", self.client_id()), ("scopes", self.scopes())]);
 
         let device_code_response: TwitchDeviceCodeResponse =
-            response.json().await.map_err(|e| {
-                log::error!("Twitch: failed to parse device code response: {}", e);
-                e.to_string()
-            })?;
+            self.send_twitch_request(request, "device code").await?;
+
         Ok(device_code_response)
     }
 
@@ -164,25 +182,18 @@ pub trait TwitchApi: Send + Sync {
         broadcaster_id: &String,
         reqwest_client: &reqwest::Client,
     ) -> Result<BadgeInfoResponse, String> {
-        let response = reqwest_client
+        let request = reqwest_client
             .get(format!("{}/chat/badges", self.api_endpoint()))
             .bearer_auth(access_token)
             .header(
                 "Client-Id",
                 std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap_or(self.client_id()),
             )
-            .query(&[("broadcaster_id", broadcaster_id)])
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Twitch: failed to send channel badges request: {}", e);
-                e.to_string()
-            })?;
+            .query(&[("broadcaster_id", broadcaster_id)]);
 
-        let chanel_badges: BadgeInfoResponse = response.json().await.map_err(|e| {
-            log::error!("Twitch: failed to parse channel badges response: {}", e);
-            e.to_string()
-        })?;
+        let chanel_badges: BadgeInfoResponse =
+            self.send_twitch_request(request, "channel badges").await?;
+
         Ok(chanel_badges)
     }
 
@@ -191,24 +202,17 @@ pub trait TwitchApi: Send + Sync {
         access_token: &String,
         reqwest_client: &reqwest::Client,
     ) -> Result<BadgeInfoResponse, String> {
-        let response = reqwest_client
+        let request = reqwest_client
             .get(format!("{}/chat/badges/global", self.api_endpoint()))
             .bearer_auth(access_token)
             .header(
                 "Client-Id",
                 std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap_or(self.client_id()),
-            )
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Twitch: failed to send global badges request: {}", e);
-                e.to_string()
-            })?;
+            );
 
-        let global_badges: BadgeInfoResponse = response.json().await.map_err(|e| {
-            log::error!("Twitch: failed to parse global badges response: {}", e);
-            e.to_string()
-        })?;
+        let global_badges: BadgeInfoResponse =
+            self.send_twitch_request(request, "global badges").await?;
+
         Ok(global_badges)
     }
 
@@ -217,35 +221,24 @@ pub trait TwitchApi: Send + Sync {
         device_code: String,
         reqwest_client: &reqwest::Client,
     ) -> Result<TwitchAuth, String> {
-        let mut params = HashMap::new();
-
-        params.insert("client_id", self.client_id());
-        params.insert("scopes", self.scopes());
-        params.insert("device_code", device_code);
-        params.insert(
-            "grant_type",
-            "urn:ietf:params:oauth:grant-type:device_code".to_string(),
-        );
-
-        let response = reqwest_client
-            .post("https://id.twitch.tv/oauth2/token")
-            .form(&params)
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Twitch: failed to request oauth token: {}", e);
-                e.to_string()
-            })?;
-        if !response.status().is_success() {
-            let err_text = response.text().await.map_err(|e| {
-                log::error!("Twitch: failed to read token error response: {}", e);
-                e.to_string()
-            })?;
-            log::error!("Twitch token error response: {}", err_text);
-            return Err(err_text);
+        if cfg!(debug_assertions) {
+            return self.get_token_mock(reqwest_client).await;
         }
+
+        let request = reqwest_client
+            .post("https://id.twitch.tv/oauth2/token")
+            .form(&[
+                ("client_id", self.client_id()),
+                ("scopes", self.scopes()),
+                ("device_code", device_code),
+                (
+                    "grant_type",
+                    "urn:ietf:params:oauth:grant-type:device_code".to_string(),
+                ),
+            ]);
+
         let token_response: TwitchTokenResponse =
-            response.json().await.map_err(|e| e.to_string())?;
+            self.send_twitch_request(request, "token").await?;
 
         let token_info: TwitchTokenInfo = self
             .validate_token(
@@ -254,10 +247,6 @@ pub trait TwitchApi: Send + Sync {
                 reqwest_client,
             )
             .await?;
-
-        if cfg!(debug_assertions) {
-            return self.get_token_mock(reqwest_client).await;
-        }
 
         let auth = TwitchAuth {
             access_token: token_response.access_token,
@@ -277,33 +266,18 @@ pub trait TwitchApi: Send + Sync {
         let client_secret =
             std::env::var("TWITCH_CLIENT_SECRET_MOCK").expect("TWITCH_CLIENT_SECRET_MOCK not set");
 
-        let mut params = HashMap::new();
-
-        params.insert("client_id", client_id);
-        params.insert("client_secret", client_secret);
-        params.insert("grant_type", "user_token".to_string());
-        params.insert("user_id", user_id.clone());
-        params.insert("scope", self.scopes());
-
-        let response = reqwest_client
+        let request = reqwest_client
             .post(format!("{}/authorize", self.auth_endpoint()))
-            .query(&params)
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Twitch: failed to send mock token request: {}", e);
-                e.to_string()
-            })?;
-        if !response.status().is_success() {
-            let err_text = response.text().await.map_err(|e| {
-                log::error!("Twitch: failed to read mock token error response: {}", e);
-                e.to_string()
-            })?;
-            log::error!("Twitch mock token error response: {}", err_text);
-            return Err(err_text);
-        }
+            .query(&[
+                ("client_id", client_id),
+                ("client_secret", client_secret),
+                ("grant_type", "user_token".to_string()),
+                ("user_id", user_id.clone()),
+                ("scope", self.scopes()),
+            ]);
+
         let token_response: TwitchTokenResponse =
-            response.json().await.map_err(|e| e.to_string())?;
+            self.send_twitch_request(request, "token mock").await?;
 
         let auth = TwitchAuth {
             access_token: token_response.access_token.clone(),
@@ -322,42 +296,19 @@ pub trait TwitchApi: Send + Sync {
         refresh_token: &String,
         reqwest_client: &reqwest::Client,
     ) -> Result<TwitchRefreshTokenResponse, String> {
-        let mut params = HashMap::new();
-
-        params.insert("grant_type", "refresh_token".to_string());
-        params.insert(
-            "refresh_token",
-            urlencoding::encode(&refresh_token).to_string(),
-        );
-        params.insert("client_id", client_id.to_owned());
-
-        let response = reqwest_client
+        let request = reqwest_client
             .post(format!("{}/token", self.auth_endpoint()))
-            .form(&params)
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Twitch: failed to refresh token request: {}", e);
-                e.to_string()
-            })?;
-
-        if !response.status().is_success() {
-            let bad_response = response.json().await.map_err(|e| {
-                log::error!(
-                    "Twitch: failed to parse refresh token error response: {}",
-                    e
-                );
-                e.to_string()
-            })?;
-
-            return Err(bad_response);
-        }
+            .form(&[
+                ("grant_type", "refresh_token".to_string()),
+                (
+                    "refresh_token",
+                    urlencoding::encode(&refresh_token).to_string(),
+                ),
+                ("client_id", client_id.to_owned()),
+            ]);
 
         let refresh_token_response: TwitchRefreshTokenResponse =
-            response.json().await.map_err(|e| {
-                log::error!("Twitch: failed to parse refresh token response: {}", e);
-                e.to_string()
-            })?;
+            self.send_twitch_request(request, "refresh token").await?;
 
         Ok(refresh_token_response)
     }
@@ -368,31 +319,13 @@ pub trait TwitchApi: Send + Sync {
         auth_endpoint: &String,
         reqwest_client: &reqwest::Client,
     ) -> Result<TwitchTokenInfo, String> {
-        let response = reqwest_client
+        let request = reqwest_client
             .get(format!("{}/validate", auth_endpoint))
-            .header("Authorization", format!("OAuth {}", token))
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Twitch: failed to validate token request: {}", e);
-                e.to_string()
-            })?;
-        if !response.status().is_success() {
-            let bad_response = response.json().await.map_err(|e| {
-                log::error!(
-                    "Twitch: failed to read token validate error response: {}",
-                    e
-                );
-                e.to_string()
-            })?;
+            .header("Authorization", format!("OAuth {}", token));
 
-            return Err(bad_response);
-        }
+        let token_info: TwitchTokenInfo =
+            self.send_twitch_request(request, "token validate").await?;
 
-        let token_info: TwitchTokenInfo = response.json().await.map_err(|e| {
-            log::error!("Twitch: failed to parse token validate response: {}", e);
-            e.to_string()
-        })?;
         Ok(token_info.clone())
     }
 
@@ -420,7 +353,7 @@ pub trait TwitchApi: Send + Sync {
             should_redemptions_skip_request_queue: reward.should_redemptions_skip_request_queue,
         };
 
-        let response = reqwest_client
+        let request = reqwest_client
             .post(format!(
                 "{}/channel_points/custom_rewards",
                 self.api_endpoint()
@@ -431,27 +364,11 @@ pub trait TwitchApi: Send + Sync {
                 std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap_or(self.client_id()),
             )
             .query(&[("broadcaster_id", &auth.user_id)])
-            .json(&twitch_reward_body)
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Twitch: failed to send create reward request: {}", e);
-                e.to_string()
-            })?;
+            .json(&twitch_reward_body);
 
-        if !response.status().is_success() {
-            let err_text = response.text().await.map_err(|e| {
-                log::error!("Twitch: failed to read create reward error response: {}", e);
-                e.to_string()
-            })?;
-            log::error!("Twitch subscription error response: {}", err_text);
-            return Err(err_text);
-        }
-
-        let json: serde_json::Value = response.json().await.map_err(|e| {
-            log::error!("Twitch: failed to parse reward create response JSON: {}", e);
-            e.to_string()
-        })?;
+        let json: serde_json::Value = self
+            .send_twitch_request(request, "add custom reward")
+            .await?;
 
         let reward_id = json["data"][0]["id"]
             .as_str()
@@ -480,7 +397,8 @@ pub trait TwitchApi: Send + Sync {
             .get_reward_by_id(id)
             .await?
             .ok_or("Reward not found".to_string())?;
-        let response = reqwest_client
+
+        let request = reqwest_client
             .delete(format!(
                 "{}/channel_points/custom_rewards",
                 self.api_endpoint()
@@ -498,21 +416,11 @@ pub trait TwitchApi: Send + Sync {
                         .external_id
                         .ok_or("Reward external_id not exist".to_string())?,
                 ),
-            ])
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Twitch: failed to send delete reward request: {}", e);
-                e.to_string()
-            })?;
-        if !response.status().is_success() {
-            let err_text = response.text().await.map_err(|e| {
-                log::error!("Twitch: failed to read delete reward error response: {}", e);
-                e.to_string()
-            })?;
-            log::error!("Twitch subscription error response: {}", err_text);
-            return Err(err_text);
-        }
+            ]);
+
+        let _: serde_json::Value = self
+            .send_twitch_request(request, "remove custom reward")
+            .await?;
 
         database_service.delete_reward_by_id(id).await?;
 
@@ -681,7 +589,7 @@ pub trait TwitchApi: Send + Sync {
         body: SubscriptionRequestBody,
         reqwest_client: &reqwest::Client,
     ) -> Result<Option<String>, String> {
-        let response = reqwest_client
+        let request = reqwest_client
             .post(format!(
                 "{}/eventsub/subscriptions",
                 self.eventsub_endpoint()
@@ -689,37 +597,12 @@ pub trait TwitchApi: Send + Sync {
             .bearer_auth(token)
             .header("Client-Id", self.client_id())
             .header("Content-Type", "application/json")
-            .json(&body)
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Twitch: failed to create subscription request: {}", e);
-                e.to_string()
-            })?;
+            .json(&body);
 
-        if !response.status().is_success() {
-            let err_text = response.text().await.map_err(|e| {
-                log::error!(
-                    "Twitch: failed to read create subscription error response: {}",
-                    e
-                );
-                e.to_string()
-            })?;
-            log::error!(
-                "Twitch create subscription {} error response: {}",
-                body.r#type,
-                err_text,
-            );
-            return Err(err_text);
-        }
+        let json: serde_json::Value = self
+            .send_twitch_request(request, "create subscription")
+            .await?;
 
-        let json: serde_json::Value = response.json().await.map_err(|e| {
-            log::error!(
-                "Twitch: failed to parse create subscription response: {}",
-                e
-            );
-            e.to_string()
-        })?;
         let subscription_id = json["data"][0]["id"].as_str().map(|s| s.to_string());
 
         Ok(subscription_id)
@@ -732,32 +615,18 @@ pub trait TwitchApi: Send + Sync {
         subscription_id: String,
         reqwest_client: &reqwest::Client,
     ) -> Result<(), String> {
-        let response = reqwest_client
+        let request = reqwest_client
             .delete(format!(
                 "{}/eventsub/subscriptions",
                 self.eventsub_endpoint()
             ))
             .header("Authorization", format!("Bearer {}", token))
             .header("Client-Id", self.client_id())
-            .query(&[("id", subscription_id)])
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Twitch: failed to delete subscription request: {}", e);
-                e.to_string()
-            })?;
+            .query(&[("id", subscription_id)]);
 
-        if !response.status().is_success() {
-            let err_text = response.text().await.map_err(|e| {
-                log::error!(
-                    "Twitch: failed to read delete subscription error response: {}",
-                    e
-                );
-                e.to_string()
-            })?;
-            log::error!("Twitch delete subscription error response: {}", err_text);
-            return Err(err_text);
-        }
+        let _: serde_json::Value = self
+            .send_twitch_request(request, "delete subscription")
+            .await?;
 
         Ok(())
     }
@@ -770,7 +639,9 @@ pub trait TwitchApi: Send + Sync {
         is_close_connection: bool,
         service_type: ServiceType,
     ) -> Result<(), String> {
-        self.set_is_close_connection(is_close_connection);
+        if is_close_connection {
+            self.cancellation_token().cancel();
+        }
         database_service
             .update_service_auth(service_type, auth, authorized)
             .await
@@ -786,7 +657,7 @@ pub trait TwitchApi: Send + Sync {
         reply_parent_message_id: Option<String>,
         client_id: String,
     ) -> Result<(), String> {
-        let response = reqwest_client
+        let request = reqwest_client
             .post(format!("{}/chat/messages", self.api_endpoint()))
             .bearer_auth(access_token)
             .header("Client-Id", client_id)
@@ -798,22 +669,9 @@ pub trait TwitchApi: Send + Sync {
                 reply_parent_message_id,
                 for_source_only: None,
                 pin: None,
-            })
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Failed to send chat message: {}", e);
-                e.to_string()
-            })?;
+            });
 
-        if !response.status().is_success() {
-            let err_text = response.text().await.map_err(|e| {
-                log::error!("Twitch: failed to read send chat error response: {}", e);
-                e.to_string()
-            })?;
-            log::error!("Send chat message error response: {}", err_text);
-            return Err(err_text);
-        }
+        let _: serde_json::Value = self.send_twitch_request(request, "chat message").await?;
 
         Ok(())
     }
@@ -827,7 +685,7 @@ pub trait TwitchApi: Send + Sync {
         moderator_id: String,
         client_id: String,
     ) -> Result<(), String> {
-        let response = reqwest_client
+        let request = reqwest_client
             .post(format!("{}/chat/announcements", self.api_endpoint()))
             .bearer_auth(access_token)
             .query(&[
@@ -840,25 +698,11 @@ pub trait TwitchApi: Send + Sync {
                 message,
                 color: None,
                 for_source_only: None,
-            })
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Failed to send chat announcement: {}", e);
-                e.to_string()
-            })?;
+            });
 
-        if !response.status().is_success() {
-            let err_text = response.text().await.map_err(|e| {
-                log::error!(
-                    "Twitch: failed to read send chat announcement error response: {}",
-                    e
-                );
-                e.to_string()
-            })?;
-            log::error!("Send chat announcement error response: {}", err_text);
-            return Err(err_text);
-        }
+        let _: serde_json::Value = self
+            .send_twitch_request(request, "chat announcement")
+            .await?;
 
         Ok(())
     }

@@ -1,9 +1,9 @@
 use crate::services::twitch::traits::TwitchApi;
 use async_trait::async_trait;
 use entity::services::ServiceType;
-use std::sync::{Arc, atomic::AtomicU64};
+use std::sync::{Arc, Mutex, atomic::AtomicU64};
 use tauri::AppHandle;
-use tokio::sync::{Mutex, MutexGuard};
+use tokio_util::sync::CancellationToken;
 
 #[derive(Clone, Debug)]
 pub struct TwitchBotService {
@@ -14,6 +14,7 @@ pub struct TwitchBotService {
     eventsub_endpoint: String,
     pub session_id: Arc<Mutex<Option<String>>>,
     expire_at: Arc<AtomicU64>,
+    cancellation_token: Arc<Mutex<CancellationToken>>,
 }
 
 impl TwitchBotService {
@@ -34,6 +35,7 @@ impl TwitchBotService {
             eventsub_endpoint,
             session_id: Arc::new(Mutex::new(None)),
             expire_at: Arc::new(AtomicU64::new(0)),
+            cancellation_token: Arc::new(Mutex::new(CancellationToken::new())),
         }
     }
 
@@ -56,8 +58,14 @@ impl TwitchApi for TwitchBotService {
         self.expire_at.clone()
     }
 
-    async fn session_id(&self) -> MutexGuard<'_, Option<String>> {
-        self.session_id.lock().await
+    fn session_id(&self) -> Option<String> {
+        let guard = self.session_id.lock().unwrap();
+        guard.clone()
+    }
+
+    fn cancellation_token(&self) -> CancellationToken {
+        let guard = self.cancellation_token.lock().unwrap();
+        guard.clone()
     }
 
     fn eventsub_endpoint(&self) -> String {
@@ -75,6 +83,4 @@ impl TwitchApi for TwitchBotService {
     fn api_endpoint(&self) -> String {
         self.api_endpoint.clone()
     }
-
-    fn set_is_close_connection(&self, _: bool) {}
 }

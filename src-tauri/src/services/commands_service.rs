@@ -305,7 +305,7 @@ impl CommandsService {
             .get_auth(app, ServiceType::TwitchBot)
             .await?;
         let auth = twitch_service.get_auth(app, ServiceType::Twitch).await?;
-        let chat_messages_buffer = twitch_service.chat_messages_buffer.lock().await;
+        let chat_messages_buffer = { twitch_service.chat_messages_buffer.lock().unwrap().clone() };
         if chat_messages_buffer.is_message_not_lines_passed(message.clone(), lines_passed as usize)
         {
             return Err("Bot message not passed lines".to_string());
@@ -339,7 +339,7 @@ impl CommandsService {
             .get_auth(app, ServiceType::TwitchBot)
             .await?;
         let auth = twitch_service.get_auth(app, ServiceType::Twitch).await?;
-        let chat_messages_buffer = twitch_service.chat_messages_buffer.lock().await;
+        let chat_messages_buffer = { twitch_service.chat_messages_buffer.lock().unwrap().clone() };
         if chat_messages_buffer.is_message_not_lines_passed(message.clone(), lines_passed as usize)
         {
             return Err("Bot message not passed lines".to_string());
