@@ -3,7 +3,6 @@ use entity::{
     settings::Currency,
 };
 use futures::{SinkExt, StreamExt};
-use http::StatusCode;
 use serde::Deserialize;
 use std::sync::{Arc, Mutex};
 use tauri::{AppHandle, Manager};
@@ -13,6 +12,7 @@ use tokio_util::sync::CancellationToken;
 use crate::{
     repositories::ServicesRepository,
     services::{DatabaseService, EventsService},
+    utils::send_request,
 };
 
 #[derive(Debug, Clone, Deserialize)]
@@ -214,25 +214,14 @@ impl DestreamService {
         &self,
         reqwest_client: &reqwest::Client,
         overlayid: &str,
-    ) -> Result<StatusCode, String> {
-        let response = reqwest_client
-            .get(format!(
-                "https://api.destream.net/siteapi/v2/OverlayViewer/{}",
-                overlayid
-            ))
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Failed to send overlay info request: {}", e);
-                e.to_string()
-            })?;
-        if response.status().is_success() {
-            return Ok(response.status());
-        } else {
-            let error = format!("Failed to get overlay info: HTTP {}", response.status());
-            log::error!("{}", error);
-            Err(error)
-        }
+    ) -> Result<(), String> {
+        let request = reqwest_client.get(format!(
+            "https://api.destream.net/siteapi/v2/OverlayViewer/{}",
+            overlayid
+        ));
+
+        let _: serde_json::Value = send_request(request, "chat message", "Destream").await?;
+        Ok(())
     }
 
     pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), String> {
