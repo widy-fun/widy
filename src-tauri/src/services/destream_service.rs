@@ -220,14 +220,11 @@ impl DestreamService {
             overlayid
         ));
 
-        let _: serde_json::Value = send_request(request, "chat message", "Destream").await?;
+        let _: serde_json::Value = send_request(request, "overlay info", "Destream").await?;
         Ok(())
     }
 
     pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), String> {
-        {
-            self.cancellation_token.lock().unwrap().cancel();
-        }
         let database_service = app.state::<DatabaseService>();
         database_service
             .update_service(entity::services::Model {
@@ -237,6 +234,9 @@ impl DestreamService {
                 authorized: false,
             })
             .await?;
+        {
+            self.cancellation_token.lock().unwrap().cancel();
+        }
         Ok(())
     }
 }

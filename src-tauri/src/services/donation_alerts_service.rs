@@ -1,6 +1,7 @@
 use crate::{
     repositories::ServicesRepository,
     services::{DatabaseService, EventsService},
+    utils::send_request,
 };
 use entity::{
     services::{DonationAlertsAuth, ServiceAuth, ServiceType},
@@ -9,15 +10,13 @@ use entity::{
 use futures::{SinkExt, StreamExt};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use std::sync::{
-    atomic::{AtomicBool, Ordering},
-    Arc,
-};
+use std::sync::{Arc, Mutex};
 use tauri::{AppHandle, Manager};
 use tokio_tungstenite::{
     connect_async,
     tungstenite::{Message, Utf8Bytes},
 };
+use tokio_util::sync::CancellationToken;
 
 #[derive(Debug, Clone, Deserialize)]
 #[serde(untagged)]
@@ -98,17 +97,21 @@ struct AuthToken {
     token: String,
 }
 pub struct DonationAlertsService {
-    is_close_connection: Arc<AtomicBool>,
+    cancellation_token: Arc<Mutex<CancellationToken>>,
 }
 
 impl DonationAlertsService {
     pub fn new() -> Self {
         Self {
-            is_close_connection: Arc::new(AtomicBool::new(false)),
+            cancellation_token: Arc::new(Mutex::new(CancellationToken::new())),
         }
     }
 
     pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
+        {
+            let mut cancellation_token = self.cancellation_token.lock().unwrap();
+            *cancellation_token = CancellationToken::new();
+        }
         let database_service = app.state::<DatabaseService>();
         let service = database_service
             .get_service_with_auth_by_id(entity::services::ServiceType::DonationAlerts)
@@ -150,41 +153,61 @@ impl DonationAlertsService {
         tauri::async_runtime::spawn(async move {
             let donation_alerts_service = app.state::<DonationAlertsService>();
             let reqwest_client = app.state::<reqwest::Client>();
+            let cancellation_token = {
+                donation_alerts_service
+                    .cancellation_token
+                    .lock()
+                    .unwrap()
+                    .clone()
+            };
             let connect_url = "wss://centrifugo.donationalerts.com/connection/websocket";
             'connection_loop: loop {
                 log::info!("Connecting to DonationAlerts websocket: {}", connect_url);
-                match connect_async(connect_url).await {
-                    Ok((mut socket, _)) => {
-                        log::info!("DonationAlerts websocket connected.");
-                        let _ = socket
-                            .send(Message::Text(Utf8Bytes::from(
-                                json!({
-                                    "params": {
-                                        "token": user_info.socket_connection_token
-                                    },
-                                    "id": 1
-                                })
-                                .to_string(),
-                            )))
-                            .await
-                            .map_err(|e| {
-                                log::error!(
-                                    "DonationAlerts send connection message error: {}",
-                                    e.to_string()
-                                )
-                            });
-                        while let Some(msg_result) = socket.next().await {
-                            let is_close_connection = donation_alerts_service
-                                .is_close_connection
-                                .load(Ordering::Relaxed);
-                            if is_close_connection {
-                                donation_alerts_service
-                                    .is_close_connection
-                                    .store(false, Ordering::Relaxed);
-                                break 'connection_loop;
-                            }
+                let (mut socket, _) = match connect_async(connect_url).await {
+                    Ok(socket) => socket,
+                    Err(e) => {
+                        log::error!("Failed to connect: {}", e);
+                        tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+                        continue;
+                    }
+                };
 
-                            match msg_result {
+                log::info!("DonationAlerts websocket connected.");
+
+                let _ = socket
+                    .send(Message::Text(Utf8Bytes::from(
+                        json!({
+                            "params": {
+                                "token": user_info.socket_connection_token
+                            },
+                            "id": 1
+                        })
+                        .to_string(),
+                    )))
+                    .await
+                    .map_err(|e| {
+                        log::error!(
+                            "DonationAlerts send connection message error: {}",
+                            e.to_string()
+                        )
+                    });
+
+                loop {
+                    tokio::select! {
+                        _ = cancellation_token.cancelled() => {
+                            log::info!("Stopping DonationAlerts websocket.");
+                            let _ = socket.send(Message::Close(None)).await;
+                            break 'connection_loop;
+                        }
+
+
+                        msg = socket.next() => {
+                            let Some(msg_result) = msg else {
+                                log::warn!("DonationAlerts websocket ended.");
+                                break;
+                            };
+
+                           match msg_result {
                                 Ok(Message::Text(text)) => {
                                     if let Ok(message) =
                                         serde_json::from_str::<WebsocketMessage>(&text)
@@ -251,10 +274,6 @@ impl DonationAlertsService {
                             }
                         }
                     }
-                    Err(e) => {
-                        log::error!("Failed to connect: {}. Retrying in 5s...", e);
-                        tokio::time::sleep(std::time::Duration::from_secs(5)).await;
-                    }
                 }
             }
         });
@@ -275,28 +294,14 @@ impl DonationAlertsService {
         reqwest_client: &reqwest::Client,
         token: &str,
     ) -> Result<String, String> {
-        let response = reqwest_client
-            .get(format!(
-                "https://www.donationalerts.com/api/v1/token/widget?token={}",
-                token
-            ))
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Failed to send auth token request: {}", e);
-                e.to_string()
-            })?;
-        if response.status().is_success() {
-            let json: AuthTokenResponse = response.json().await.map_err(|e| {
-                log::error!("Failed to parse auth token response: {}", e);
-                e.to_string()
-            })?;
-            Ok(json.data.token)
-        } else {
-            let error = format!("Failed to get token: HTTP {}", response.status());
-            log::error!("{}", error);
-            Err(error)
-        }
+        let request = reqwest_client.get(format!(
+            "https://www.donationalerts.com/api/v1/token/widget?token={}",
+            token
+        ));
+
+        let json: AuthTokenResponse = send_request(request, "auth user", "DonationAlerts").await?;
+
+        Ok(json.data.token)
     }
 
     async fn get_user_info(
@@ -304,26 +309,12 @@ impl DonationAlertsService {
         reqwest_client: &reqwest::Client,
         auth_token: &str,
     ) -> Result<UserInfo, String> {
-        let response = reqwest_client
+        let request = reqwest_client
             .get("https://www.donationalerts.com/api/v1/user/widget")
-            .bearer_auth(auth_token)
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Failed to send user info request: {}", e);
-                e.to_string()
-            })?;
-        if response.status().is_success() {
-            let json: UserInfoResponse = response.json().await.map_err(|e| {
-                log::error!("Failed to parse user info response: {}", e);
-                e.to_string()
-            })?;
-            Ok(json.data)
-        } else {
-            let error = format!("Failed to get user info: HTTP {}", response.status());
-            log::error!("{}", error);
-            Err(error)
-        }
+            .bearer_auth(auth_token);
+
+        let json: UserInfoResponse = send_request(request, "user info", "DonationAlerts").await?;
+        Ok(json.data)
     }
 
     async fn subscribe(
@@ -332,27 +323,13 @@ impl DonationAlertsService {
         auth_token: &str,
         body: SubscriptionBody,
     ) -> Result<ChannelsResponse, String> {
-        let response = reqwest_client
+        let request = reqwest_client
             .post("https://www.donationalerts.com/api/v1/centrifuge/subscribe")
             .bearer_auth(auth_token)
-            .json(&body)
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Failed to send subscription request: {}", e);
-                e.to_string()
-            })?;
-        if response.status().is_success() {
-            let json: ChannelsResponse = response.json().await.map_err(|e| {
-                log::error!("Failed to parse channels response: {}", e);
-                e.to_string()
-            })?;
-            Ok(json)
-        } else {
-            let error = format!("Failed to subscribe: HTTP {}", response.status());
-            log::error!("{}", error);
-            Err(error)
-        }
+            .json(&body);
+
+        let json: ChannelsResponse = send_request(request, "subscribe", "DonationAlerts").await?;
+        Ok(json)
     }
 
     pub async fn sign_out(&self, app: &AppHandle) -> Result<(), String> {
@@ -360,7 +337,9 @@ impl DonationAlertsService {
         database_service
             .update_service_auth(ServiceType::DonationAlerts, None, false)
             .await?;
-        self.is_close_connection.store(true, Ordering::Relaxed);
+        {
+            self.cancellation_token.lock().unwrap().cancel();
+        }
         Ok(())
     }
 }
