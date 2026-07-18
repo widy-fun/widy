@@ -46,7 +46,7 @@ pub struct TwitchService {
     pub session_id: Arc<Mutex<Option<String>>>,
     pub chat_messages_buffer: Arc<Mutex<ChatMessageBuffer>>,
     expire_at: Arc<AtomicU64>,
-    pub cancellation_token: Arc<Mutex<CancellationToken>>,
+    cancellation_token: Arc<Mutex<CancellationToken>>,
 }
 
 impl TwitchService {

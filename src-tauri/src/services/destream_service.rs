@@ -5,12 +5,10 @@ use entity::{
 use futures::{SinkExt, StreamExt};
 use http::StatusCode;
 use serde::Deserialize;
-use std::sync::{
-    atomic::{AtomicBool, Ordering},
-    Arc,
-};
+use std::sync::{Arc, Mutex};
 use tauri::{AppHandle, Manager};
 use tokio_tungstenite::{connect_async, tungstenite::Message};
+use tokio_util::sync::CancellationToken;
 
 use crate::{
     repositories::ServicesRepository,
@@ -53,17 +51,21 @@ enum EventTarget {
     NewDonationsReceived,
 }
 pub struct DestreamService {
-    is_sign_out: Arc<AtomicBool>,
+    cancellation_token: Arc<Mutex<CancellationToken>>,
 }
 
 impl DestreamService {
     pub fn new() -> Self {
         Self {
-            is_sign_out: Arc::new(AtomicBool::new(false)),
+            cancellation_token: Arc::new(Mutex::new(CancellationToken::new())),
         }
     }
 
     pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
+        {
+            let mut cancellation_token = self.cancellation_token.lock().unwrap();
+            *cancellation_token = CancellationToken::new();
+        }
         let database_service = app.state::<DatabaseService>();
         let reqwest_client = app.state::<reqwest::Client>();
         let service = database_service
@@ -108,30 +110,51 @@ impl DestreamService {
                 "{\"protocol\":\"json\",\"version\":1}",
                 char::from(30)
             );
+
+            let cancellation_token =
+                { destream_service.cancellation_token.lock().unwrap().clone() };
+
             let ping_message = &format!("{}{}", "{\"type\":6}", char::from(30));
+
             'connection_loop: loop {
                 log::info!("Connecting to Destream websocket");
-                match connect_async(format!(
+
+                let (mut socket, _) = match connect_async(format!(
                     "wss://api.destream.net/ws/overlays?overlayid={}",
                     overlayid
                 ))
                 .await
                 {
-                    Ok((mut socket, _)) => {
-                        log::info!("Destream websocket connected.");
+                    Ok(socket) => socket,
+                    Err(e) => {
+                        log::error!("Failed to connect: {}", e);
+                        tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+                        continue;
+                    }
+                };
 
-                        if let Err(e) = socket.send(Message::Text(handshake.as_str().into())).await
-                        {
-                            log::error!("Failed to send Destream version: {e}");
-                            continue 'connection_loop;
+                log::info!("Destream websocket connected.");
+
+                if let Err(e) = socket.send(Message::Text(handshake.as_str().into())).await {
+                    log::error!("Failed to send Destream version: {e}");
+                    continue 'connection_loop;
+                }
+
+                loop {
+                    tokio::select! {
+                        _ = cancellation_token.cancelled() => {
+                            log::info!("Stopping Destream websocket.");
+                            let _ = socket.send(Message::Close(None)).await;
+                            break 'connection_loop;
                         }
 
-                        while let Some(msg_result) = socket.next().await {
-                            if destream_service.is_sign_out.load(Ordering::Relaxed) {
-                                destream_service.is_sign_out.store(false, Ordering::Relaxed);
-                                break 'connection_loop;
-                            }
-                            match msg_result {
+                        msg = socket.next() => {
+                            let Some(msg_result) = msg else {
+                                log::warn!("Destream websocket ended.");
+                                break;
+                            };
+
+                           match msg_result {
                                 Ok(Message::Text(text)) => {
                                     if text == ping_message {
                                         let _ =
@@ -182,13 +205,6 @@ impl DestreamService {
                             }
                         }
                     }
-                    Err(e) => {
-                        log::error!(
-                            "Failed to connect Destream WebSocket: {}. Retrying in 5s...",
-                            e
-                        );
-                        tokio::time::sleep(std::time::Duration::from_secs(5)).await;
-                    }
                 }
             }
         });
@@ -220,6 +236,9 @@ impl DestreamService {
     }
 
     pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), String> {
+        {
+            self.cancellation_token.lock().unwrap().cancel();
+        }
         let database_service = app.state::<DatabaseService>();
         database_service
             .update_service(entity::services::Model {
@@ -229,7 +248,6 @@ impl DestreamService {
                 authorized: false,
             })
             .await?;
-        self.is_sign_out.store(true, Ordering::Relaxed);
         Ok(())
     }
 }
