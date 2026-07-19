@@ -46,7 +46,7 @@ const CommandSourceActionCard = ({
 			<div>{icon}</div>
 			<div>
 				<div style={{ fontWeight: "bold" }}>{title}</div>
-				<div style={{ fontSize: 14 }}>{description}</div>
+				<div style={{ fontSize: 13 }}>{description}</div>
 			</div>
 		</Card>
 	);

@@ -3,12 +3,13 @@
 	"off": "Aus",
 	"select": "Auswählen",
 	"success": "Erfolg",
-	"ok": "OK",
+	"ok": "Ok",
 	"cancel": "Abbrechen",
 	"sound_volume": "Lautstärke",
 	"skip_media": "Shortcut Media überspringen",
 	"skip_alert": "Shortcut Alert überspringen",
 	"none": "Keine",
+	"next": "Weiter",
 	"start": "Starten",
 	"stop": "Stoppen",
 	"delay": "Verzögerung",
@@ -18,18 +19,23 @@
 	"api_key": "API-Schlüssel",
 	"disconnected": "Getrennt",
 	"documentation": "Dokumentation",
+	"configure": "Konfigurieren",
+	"delete": "Löschen",
+	"create": "Erstellen",
+	"test": "Testen",
+	"sure_delete": "Möchten Sie diese Variation wirklich löschen?",
 	"authorization": {
 		"title": "Autorisierung",
 		"code": "Code anfordern",
 		"sign_in": "Anmelden",
 		"phone": "Telefonnummer",
 		"telegram_code": "Code aus Telegram",
-		"your_code": "Dein Code",
+		"your_code": "Ihr Code",
 		"2fa_password": "2FA-Passwort",
 		"password": "Passwort",
-		"streamelements": "Du musst zuerst StreamElements JWT verbinden",
-		"you_can_find_by_url": "Du findest es unter dieser URL",
-		"set_id_and_jwt": "Du musst StreamElements Account ID und JWT für {{service}} festlegen"
+		"streamelements": "Sie müssen zuerst StreamElements JWT verbinden",
+		"you_can_find_by_url": "Sie finden es unter dieser URL",
+		"set_id_and_jwt": "Sie müssen StreamElements Account ID und JWT für {{service}} festlegen"
 	},
 	"error": {
 		"wrong_lots_format": "Falsches Lots-Format",
@@ -38,7 +44,7 @@
 	},
 	"updater": {
 		"title": "Update",
-		"description": "Eine neue Version der App ist verfügbar. Möchtest du aktualisieren?",
+		"description": "Eine neue Version der App ist verfügbar. Möchten Sie aktualisieren?",
 		"update": "Aktualisieren",
 		"later": "Später",
 		"downloading": "Wird heruntergeladen..."
@@ -61,10 +67,10 @@
 		"set_point": "Punkt setzen",
 		"meter_price": "Preis pro Meter",
 		"amount": "Betrag",
-		"finish": "Abschließen",
+		"finish": "Beenden",
 		"lat_error": "Breitengrad muss zwischen -90 und 90 liegen",
 		"lng_error": "Längengrad muss zwischen -180 und 180 liegen",
-		"rules": "Damit sich der Zeiger automatisch in der Nachricht bewegt, darf nur ein Wort aus folgender Liste vorkommen:"
+		"rules": "Damit sich der Zeiger automatisch in der Nachricht bewegt, darf nur ein Wort aus folgender Liste enthalten sein:"
 	},
 	"media_settings": {
 		"enabled": "Aktiviert",
@@ -85,7 +91,8 @@
 		"widgets": "Widgets",
 		"info": "Info",
 		"nsfw": "NSFW",
-		"rewards": "Belohnungen"
+		"rewards": "Belohnungen",
+		"commands": "Befehle"
 	},
 	"messages": {
 		"title": "Letzte Nachrichten"
@@ -98,7 +105,8 @@
 		"followed": "{{user_name}} folgt jetzt",
 		"subscribed": "{{user_name}} hat abonniert",
 		"gifted_subscriptions": "{{user_name}} hat {{total}} Abonnements verschenkt",
-		"raided_with": "{{user_name}} raided mit {{viewers}} Zuschauern"
+		"raided_with": "{{user_name}} raidet mit {{viewers}} Zuschauern",
+		"command_action": "{{user_name}} hat den Befehl {{command_name}} verwendet"
 	},
 	"filter": {
 		"title": "Nachrichten filtern",
@@ -106,7 +114,8 @@
 		"exclude_follows": "Follows ausschließen",
 		"exclude_subscriptions": "Abonnements ausschließen",
 		"exclude_raids": "Raids ausschließen",
-		"exclude_redemptions": "Einlösungen ausschließen"
+		"exclude_redemptions": "Einlösungen ausschließen",
+		"exclude_commands_actions": "Befehlsaktionen ausschließen"
 	},
 	"settings": {
 		"title": "Einstellungen",
@@ -121,9 +130,9 @@
 	},
 	"wheel": {
 		"normal": "Normal",
-		"dropout": "Dropout",
+		"dropout": "Ausscheiden",
 		"spin": "Drehen",
-		"speed": "Rad-Geschwindigkeit"
+		"speed": "Radgeschwindigkeit"
 	},
 	"timer": {
 		"continue": "Fortsetzen",
@@ -156,7 +165,7 @@
 		"delete": "Löschen",
 		"to_lot": "Zum Lot",
 		"new": "Neu",
-		"add_to_random_slot": "Zum Zufallslot hinzufügen"
+		"add_to_random_slot": "Zum zufälligen Lot hinzufügen"
 	},
 	"lots": {
 		"add": "Hinzufügen",
@@ -170,7 +179,7 @@
 		"new_donation": "Neue Spende",
 		"show_odds": "Quoten anzeigen",
 		"show_total_sum": "Gesamtsumme anzeigen",
-		"greater_timer_adding_time": "Timer bei höherem Gebot verlängern",
+		"greater_timer_adding_time": "Größerer Timer bei Zeit hinzufügen",
 		"not_add_time_if": "Keine Zeit hinzufügen, wenn",
 		"adding_time": "Zeit"
 	},
@@ -193,10 +202,10 @@
 		"connect": "Verbinden",
 		"integrations": "Integrationen",
 		"sign_out": "Abmelden",
-		"confirm_sign_out": "Möchtest du dich wirklich von diesem Dienst abmelden?"
+		"confirm_sign_out": "Möchten Sie sich wirklich von diesem Dienst abmelden?"
 	},
 	"twitch": {
-		"device_code_expired": "Gerätecode abgelaufen. Bitte versuche es erneut.",
+		"device_code_expired": "Gerätecode abgelaufen. Bitte versuchen Sie es erneut.",
 		"user_code": "Benutzercode",
 		"authorize_with_code": "Mit Code autorisieren",
 		"waiting_authorization": "Warte auf Autorisierung..."
@@ -216,7 +225,6 @@
 		"message": "Nachricht",
 		"test_name": "Test",
 		"test_text": "Dies ist ein Test-Alert!",
-		"configure": "Konfigurieren",
 		"test": "Testen",
 		"add_new_variant": "Neue Variante hinzufügen",
 		"new_variant": "Neue Variante",
@@ -228,8 +236,6 @@
 		"Random": "Zufällig",
 		"AmountIsGreater": "Betrag ist größer",
 		"AmountIsEqual": "Betrag ist gleich",
-		"delete": "Löschen",
-		"sure_delete": "Möchtest du diese Variante wirklich löschen?",
 		"type": "Typ",
 		"Donation": "Spende",
 		"Subscription": "Abonnement",
@@ -240,7 +246,9 @@
 		"video_volume": "Videolautstärke",
 		"video": "Video",
 		"duration": "Dauer",
-		"delay": "Verzögerung"
+		"delay": "Verzögerung",
+		"Redemption": "Einlösung",
+		"CommandAction": "Befehlsaktion"
 	},
 	"alert_variant": {
 		"Image": "Bild",
@@ -265,7 +273,7 @@
 		"end_date": "Ziel-Enddatum",
 		"bar_height": "Balkenhöhe",
 		"rounding_radius": "Abrundungsradius",
-		"bar_stroke_thickness": "Balkenstrichstärke",
+		"bar_stroke_thickness": "Balken-Strichstärke",
 		"background_bar_color": "Hintergrundfarbe des Balkens",
 		"progress_bar_color": "Fortschrittsbalken-Farbe",
 		"goal_progress_bar": "Ziel-Fortschrittsbalken",
@@ -282,13 +290,13 @@
 		"limits": "Limits",
 		"raised": "Erreicht",
 		"days_left": "Tage übrig",
-		"finish_goal": "Ziel abschließen",
-		"sure_finish": "Möchtest du dieses Ziel wirklich abschließen?",
+		"finish_goal": "Ziel beenden",
+		"sure_finish": "Möchten Sie dieses Ziel wirklich beenden?",
 		"Donation": "Spende",
-		"TwitchSubscription": "Twitch-Abo",
+		"TwitchSubscription": "Twitch-Abonnement",
 		"TwitchFollow": "Twitch-Follow",
-		"goal_not_finished": "Du hast ein unvollendetes Ziel dieses Typs.",
-		"KickSubscription": "Kick-Abonnement"
+		"KickSubscription": "Kick-Abonnement",
+		"goal_not_finished": "Sie haben ein unvollendetes Ziel dieses Typs."
 	},
 	"save": "Speichern",
 	"back": "Zurück",
@@ -296,7 +304,7 @@
 		"copy": "Kopieren",
 		"launch": "Starten",
 		"url": "Widget-URL",
-		"obs_dock_url": "OBS Dock-URL"
+		"obs_dock_url": "OBS-Dock-URL"
 	},
 	"view": {
 		"top": "Bild oben, Text unten",
@@ -338,77 +346,77 @@
 		"all": "Alle",
 		"settings": "Einstellungen",
 		"control": "Steuerung",
-		"delete_confirm": "Möchtest du dieses Widget wirklich löschen?",
+		"delete_confirm": "Möchten Sie dieses Widget wirklich löschen?",
 		"invalid_manifest": "Ungültiges Widget-Manifest",
 		"add_confirm": "Das Hinzufügen erlaubt {{widget_name}} folgendes:",
 		"installing": "Wird installiert...",
 		"updating": "Wird aktualisiert...",
 		"view_url": "Ansichts-URL",
-		"widget_connection": "Widget darf Anfragen senden/empfangen an:"
+		"widget_connection": "Widget sendet/empfängt Anfragen an:"
 	},
 	"scopes": {
 		"widgets:messages.read": "Nachrichten lesen",
 		"widgets:goals.read": "Ziele lesen",
 		"widgets:auc-fighter:settings.read": "Auc-Fighter-Einstellungen lesen",
 		"widgets:settings.read": "Widget-Einstellungen lesen",
-		"widgets:alerts.read": "Benachrichtigungen lesen",
-		"widgets:media:settings.read": "Medieneinstellungen lesen",
-		"widgets:auc-fighter:match-playing.send": "Laufendes Match senden",
-		"widgets:auc-fighter:match-winner.send": "Match-Sieger senden",
-		"widgets:auc-fighter:match-paused.send": "Pausiertes Match senden",
+		"widgets:alerts.read": "Alerts lesen",
+		"widgets:media:settings.read": "Medien-Einstellungen lesen",
+		"widgets:auc-fighter:match-playing.send": "Match läuft senden",
+		"widgets:auc-fighter:match-winner.send": "Match-Gewinner senden",
+		"widgets:auc-fighter:match-paused.send": "Match pausiert senden",
 		"widgets:auc-fighter:match-id.send": "Match-ID senden",
-		"widgets:alert:played.send": "Abgespielte Benachrichtigung senden",
-		"widgets:alert:playing.send": "Aktive Benachrichtigung senden",
-		"widgets:media:played.send": "Abgespielte Medien senden",
-		"widgets:media:end.send": "Medienende senden",
-		"widgets:media:playing.send": "Aktive Medien senden",
-		"widgets:media:paused.send": "Pausierte Medien senden",
-		"widgets:media:error.send": "Medienfehler senden",
-		"widgets:media:replay.send": "Medienwiedergabe senden",
-		"widgets:alert:replay.send": "Benachrichtigungswiedergabe senden",
-		"widgets:alert:skip.send": "Benachrichtigung überspringen senden",
+		"widgets:alert:played.send": "Alert abgespielt senden",
+		"widgets:alert:playing.send": "Alert wird abgespielt senden",
+		"widgets:media:played.send": "Media abgespielt senden",
+		"widgets:media:end.send": "Media Ende senden",
+		"widgets:media:playing.send": "Media wird abgespielt senden",
+		"widgets:media:paused.send": "Media pausiert senden",
+		"widgets:media:error.send": "Media-Fehler senden",
+		"widgets:media:replay.send": "Media wiederholen senden",
+		"widgets:alert:replay.send": "Alert wiederholen senden",
+		"widgets:alert:skip.send": "Alert überspringen senden",
 		"widgets:messages.subscription": "Nachrichten abonnieren",
 		"widgets:media.subscription": "Medien abonnieren",
-		"widgets:alert.subscription": "Benachrichtigungen abonnieren",
+		"widgets:alert.subscription": "Alerts abonnieren",
 		"widgets:donation.subscription": "Spenden abonnieren",
 		"widgets:redemption.subscription": "Einlösungen abonnieren",
 		"widgets:chat-message.subscription": "Chat-Nachrichten abonnieren",
-		"widgets:chat-message-delete.subscription": "Löschen von Chat-Nachrichten abonnieren",
-		"widgets:goal.subscription": "Ziele abonnieren",
+		"widgets:chat-message-delete.subscription": "Chat-Nachrichten-Löschung abonnieren",
+		"widgets:goal.subscription": "Ziel abonnieren",
 		"widgets:settings.subscription": "Einstellungen abonnieren",
-		"widgets:auc-fighter:start-match.subscription": "Matchstart abonnieren",
-		"widgets:auc-fighter:pause-match.subscription": "Matchpause abonnieren",
-		"widgets:auc-fighter:resume-match.subscription": "Matchfortsetzung abonnieren",
-		"widgets:auc-fighter:cancel-match.subscription": "Matchabbruch abonnieren",
-		"widgets:auc-fighter:update-match.subscription": "Matchaktualisierungen abonnieren",
+		"widgets:auc-fighter:start-match.subscription": "Match-Start abonnieren",
+		"widgets:auc-fighter:pause-match.subscription": "Match-Pause abonnieren",
+		"widgets:auc-fighter:resume-match.subscription": "Match-Fortsetzung abonnieren",
+		"widgets:auc-fighter:cancel-match.subscription": "Match-Abbruch abonnieren",
+		"widgets:auc-fighter:update-match.subscription": "Match-Update abonnieren",
 		"widgets:auc-fighter:settings.subscription": "Auc-Fighter-Einstellungen abonnieren",
-		"widgets:alert:replay.subscription": "Benachrichtigungswiedergabe abonnieren",
-		"widgets:alert:skip.subscription": "Überspringen von Benachrichtigungen abonnieren",
-		"widgets:alert:test.subscription": "Benachrichtigungstests abonnieren",
-		"widgets:alert:skip-playing.subscription": "Überspringen aktiver Benachrichtigungen abonnieren",
-		"widgets:alert:alerts.subscription": "Benachrichtigungen abonnieren",
-		"widgets:media:replay.subscription": "Medienwiedergabe abonnieren",
-		"widgets:media:settings.subscription": "Medieneinstellungen abonnieren",
-		"widgets:media:skip.subscription": "Medien überspringen abonnieren",
-		"widgets:media:skip-playing-media.subscription": "Überspringen aktiver Medien abonnieren",
-		"widgets:media:end.subscription": "Medienende abonnieren",
-		"widgets:media:error.subscription": "Medienfehler abonnieren",
-		"widgets:media:pause.subscription": "Medienpause abonnieren",
-		"widgets:media:play.subscription": "Medienwiedergabe abonnieren",
-		"widgets:alert:played.subscription": "Abgespielte Benachrichtigungen abonnieren",
-		"widgets:view:storage.read": "Widget-Ansichtsspeicher lesen",
-		"widgets:control:storage.read": "Widget-Steuerungsspeicher lesen",
-		"widgets:view:storage.write": "In den Widget-Ansichtsspeicher schreiben",
-		"widgets:control:storage.write": "In den Widget-Steuerungsspeicher schreiben",
-		"widgets:view:storage.subscription": "Widget-Ansichtsspeicher abonnieren",
-		"widgets:control:storage.subscription": "Widget-Steuerungsspeicher abonnieren"
+		"widgets:alert:replay.subscription": "Alert-Wiederholung abonnieren",
+		"widgets:alert:skip.subscription": "Alert-Überspringen abonnieren",
+		"widgets:alert:test.subscription": "Alert-Test abonnieren",
+		"widgets:alert:skip-playing.subscription": "Alert-Überspringen während Abspielen abonnieren",
+		"widgets:alert:alerts.subscription": "Alerts abonnieren",
+		"widgets:media:replay.subscription": "Media-Wiederholung abonnieren",
+		"widgets:media:settings.subscription": "Medien-Einstellungen abonnieren",
+		"widgets:media:skip.subscription": "Media-Überspringen abonnieren",
+		"widgets:media:skip-playing-media.subscription": "Media-Überspringen während Abspielen abonnieren",
+		"widgets:media:end.subscription": "Media-Ende abonnieren",
+		"widgets:media:error.subscription": "Media-Fehler abonnieren",
+		"widgets:media:pause.subscription": "Media-Pause abonnieren",
+		"widgets:media:play.subscription": "Media-Abspielen abonnieren",
+		"widgets:alert:played.subscription": "Alert abgespielt abonnieren",
+		"widgets:view:storage.read": "Widget-View-Speicher lesen",
+		"widgets:control:storage.read": "Widget-Control-Speicher lesen",
+		"widgets:view:storage.write": "In Widget-View-Speicher schreiben",
+		"widgets:control:storage.write": "In Widget-Control-Speicher schreiben",
+		"widgets:view:storage.subscription": "Widget-View-Speicher abonnieren",
+		"widgets:control:storage.subscription": "Widget-Control-Speicher abonnieren"
 	},
 	"nsfw": {
 		"title": "NSFW",
 		"nsfw_window": "NSFW-Fenster",
 		"settings": "Einstellungen",
 		"window": "Fenster",
-		"blur_timeout_duration": "Weichzeichner-Timeout",
+		"blur_timeout_duration": "Unschärfe-Timeout-Dauer",
 		"confidence_threshold": "Konfidenzschwelle",
 		"anus": "Anus",
 		"make_love": "Liebe machen",
@@ -430,13 +438,54 @@
 		"background_color": "Hintergrundfarbe",
 		"is_user_input_required": "Benutzereingabe erforderlich",
 		"delete": "Löschen",
-		"sure_delete": "Möchtest du diese Belohnung wirklich löschen?",
-		"points_currency_ratio": "Punkte-Währungsverhältnis",
+		"sure_delete": "Möchten Sie diese Belohnung wirklich löschen?",
+		"points_currency_ratio": "Punkte-Währungs-Verhältnis",
 		"is_global_cooldown_enabled": "Globaler Cooldown aktiviert",
-		"global_cooldown_seconds": "Globaler Cooldown (Sekunden)",
-		"title_exist": "Belohnung mit demselben Titel existiert bereits"
+		"global_cooldown_seconds": "Globaler Cooldown in Sekunden",
+		"title_exist": "Belohnung mit gleichem Titel existiert bereits"
 	},
 	"validation": {
 		"required": "Erforderlich"
+	},
+	"commands": {
+		"title": "Befehle",
+		"create": "Befehl erstellen"
+	},
+	"command": {
+		"name": "Name",
+		"description": "Beschreibung",
+		"source": "Quelle",
+		"action": "Aktion",
+		"delete": "Löschen",
+		"confirm_delete": "Möchten Sie diesen Befehl wirklich löschen?"
+	},
+	"chat_source": {
+		"title": "Chat",
+		"description": "Chat-Nachricht-Trigger zum Auslösen von Aktionen",
+		"trigger": "Trigger",
+		"platforms": "Plattformen",
+		"user_levels": "Benutzerlevel"
+	},
+	"timer_source": {
+		"title": "Timer",
+		"description": "Geplante Aktionsaufrufe",
+		"message": "Nachricht",
+		"post_type": "Post-Typ",
+		"alias": "Alias",
+		"Normal": "Normal",
+		"interval": "Intervall",
+		"Announcement": "Ankündigung",
+		"mins_passed": "Minuten vergangen vor dem Posten",
+		"lines_passed": "Chat-Zeilen vergangen vor dem Posten"
+	},
+	"chat_bot_action": {
+		"title": "Chat-Bot",
+		"description": "Chat-Bot antwortet und sendet Nachrichten",
+		"message": "Nachricht",
+		"replay": "Soll wiederholen"
+	},
+	"alert_action": {
+		"title": "Alert",
+		"description": "Alert bei Befehlsquelle"
 	}
 }

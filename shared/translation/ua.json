@@ -9,18 +9,24 @@
 	"skip_media": "Скорочення пропуску медіа",
 	"skip_alert": "Скорочення пропуску сповіщення",
 	"none": "Немає",
-	"start": "Запустити",
-	"stop": "Зупинити",
+	"next": "Далі",
+	"start": "Старт",
+	"stop": "Стоп",
 	"delay": "Затримка",
 	"milliseconds": "мс",
 	"token": "Токен",
 	"overlay_id": "ID оверлея",
 	"api_key": "API ключ",
-	"disconnected": "Відключено",
+	"disconnected": "Від’єднано",
 	"documentation": "Документація",
+	"configure": "Налаштувати",
+	"delete": "Видалити",
+	"create": "Створити",
+	"test": "Тест",
+	"sure_delete": "Ви впевнені, що хочете видалити цю варіацію?",
 	"authorization": {
 		"title": "Авторизація",
-		"code": "Запит коду",
+		"code": "Код запиту",
 		"sign_in": "Увійти",
 		"phone": "Номер телефону",
 		"telegram_code": "Код з Telegram",
@@ -29,7 +35,7 @@
 		"password": "Пароль",
 		"streamelements": "Спочатку потрібно підключити StreamElements JWT",
 		"you_can_find_by_url": "Ви можете знайти його за цим посиланням",
-		"set_id_and_jwt": "Потрібно вказати StreamElements Account ID та JWT для {{service}}"
+		"set_id_and_jwt": "Потрібно встановити StreamElements Account ID та JWT для {{service}}"
 	},
 	"error": {
 		"wrong_lots_format": "Неправильний формат лотів",
@@ -38,7 +44,7 @@
 	},
 	"updater": {
 		"title": "Оновлення",
-		"description": "Доступна нова версія програми. Бажаєте оновити?",
+		"description": "Доступна нова версія додатка. Бажаєте оновити?",
 		"update": "Оновити",
 		"later": "Пізніше",
 		"downloading": "Завантаження..."
@@ -50,7 +56,7 @@
 		"tiktok": "TikTok"
 	},
 	"integration": {
-		"tribute": "Показувати повідомлення подяки"
+		"tribute": "Показувати tribute-повідомлення"
 	},
 	"auction": {
 		"lots": "Лоти",
@@ -62,15 +68,15 @@
 		"meter_price": "Ціна за 1 метр",
 		"amount": "Сума",
 		"finish": "Завершити",
-		"lat_error": "Широта повинна бути між -90 і 90",
-		"lng_error": "Довгота повинна бути між -180 і 180",
-		"rules": "Для того, щоб вказівник автоматично змінював позицію в повідомленні, має бути лише одне слово з:"
+		"lat_error": "Широта має бути від -90 до 90",
+		"lng_error": "Довгота має бути від -180 до 180",
+		"rules": "Щоб покажчик автоматично змінював позицію в повідомленні, має бути лише одне слово з:"
 	},
 	"media_settings": {
 		"enabled": "Увімкнено",
 		"min_amount": "Мінімальна сума",
 		"video_volume": "Гучність відео",
-		"min_views": "Мінімум переглядів"
+		"min_views": "Мінімальна кількість переглядів"
 	},
 	"dashboard": {
 		"messages": "Повідомлення",
@@ -85,7 +91,8 @@
 		"widgets": "Віджети",
 		"info": "Інформація",
 		"nsfw": "NSFW",
-		"rewards": "Нагороди"
+		"rewards": "Нагороди",
+		"commands": "Команди"
 	},
 	"messages": {
 		"title": "Останні повідомлення"
@@ -94,11 +101,12 @@
 		"skip": "Пропустити",
 		"replay": "Повторити",
 		"donated": "{{user_name}} задонатив {{amount}} {{currency}}",
-		"redemption": "{{user_name}} redemption {{title}} {{cost}}",
+		"redemption": "{{user_name}} редемпшн {{title}} {{cost}}",
 		"followed": "{{user_name}} підписався",
 		"subscribed": "{{user_name}} оформив підписку",
 		"gifted_subscriptions": "{{user_name}} подарував {{total}} підписок",
-		"raided_with": "{{user_name}} зарейдив з {{viewers}} глядачами"
+		"raided_with": "{{user_name}} зарейдив з {{viewers}} глядачами",
+		"command_action": "{{user_name}} використав команду {{command_name}}"
 	},
 	"filter": {
 		"title": "Фільтр повідомлень",
@@ -106,7 +114,8 @@
 		"exclude_follows": "Виключити підписки",
 		"exclude_subscriptions": "Виключити підписки",
 		"exclude_raids": "Виключити рейди",
-		"exclude_redemptions": "Виключити redemption"
+		"exclude_redemptions": "Виключити редемпшени",
+		"exclude_commands_actions": "Виключити дії команд"
 	},
 	"settings": {
 		"title": "Налаштування",
@@ -115,19 +124,19 @@
 		"black_list": "Чорний список",
 		"remove_links": "Видаляти посилання",
 		"language": "Мова",
-		"sec": "сек",
+		"sec": "Сек",
 		"currency": "Валюта",
 		"tts_type": "Тип TTS"
 	},
 	"wheel": {
 		"normal": "Звичайне",
-		"dropout": "Вибування",
+		"dropout": "Випадання",
 		"spin": "Обертання",
 		"speed": "Швидкість колеса"
 	},
 	"timer": {
 		"continue": "Продовжити",
-		"pause": "Пауза",
+		"pause": "Призупинити",
 		"reset": "Скинути",
 		"add_time": "Додати час",
 		"reduce_time": "Зменшити час",
@@ -145,12 +154,12 @@
 		"start": "Старт",
 		"pause": "Пауза",
 		"rematch": "Реванш",
-		"resume": "Продовжити"
+		"resume": "Відновити"
 	},
 	"lot": {
 		"name": "Назва",
 		"delete": "Видалити",
-		"add": "Додати суму"
+		"add": "Додати кількість"
 	},
 	"bid": {
 		"delete": "Видалити",
@@ -170,12 +179,12 @@
 		"new_donation": "Новий донат",
 		"show_odds": "Показувати шанси",
 		"show_total_sum": "Показувати загальну суму",
-		"greater_timer_adding_time": "Додавання часу при перевищенні",
+		"greater_timer_adding_time": "Додавання часу при більшішому таймері",
 		"not_add_time_if": "Не додавати час якщо",
 		"adding_time": "Час"
 	},
 	"lots_options": {
-		"import_lots": "Імпорт лотів",
+		"import_lots": "Імпортувати лоти",
 		"clear_lots": "Очистити лоти"
 	},
 	"auc_fighter_settings": {
@@ -188,59 +197,58 @@
 	},
 	"services": {
 		"title": "Сервіси",
-		"tribute": "Подяка",
-		"streamelements": "StreamElements",
+		"tribute": "Tribute",
+		"streamelements": "Streamelements",
 		"connect": "Підключити",
 		"integrations": "Інтеграції",
 		"sign_out": "Вийти",
 		"confirm_sign_out": "Ви впевнені, що хочете вийти з цього сервісу?"
 	},
 	"twitch": {
-		"device_code_expired": "Термін дії коду пристрою закінчився. Спробуйте ще раз.",
+		"device_code_expired": "Код пристрою прострочено. Спробуйте ще раз.",
 		"user_code": "Код користувача",
 		"authorize_with_code": "Авторизуватися за кодом",
 		"waiting_authorization": "Очікування авторизації..."
 	},
 	"widy": {
 		"donation_account_name": "Назва акаунта донатів",
-		"donation_url": "Посилання на донат",
+		"donation_url": "URL донатів",
 		"create_donation_account": "Створити акаунт донатів Widy",
-		"connect_to_existing_account": "Підключити до існуючого акаунту",
+		"connect_to_existing_account": "Підключитися до існуючого акаунта",
 		"create_donation_account_pending": "Створення акаунта донатів..."
 	},
 	"alert": {
 		"image": "Зображення",
 		"audio": "Аудіо",
-		"view": "Перегляд",
+		"view": "Вид",
 		"title": "Заголовок",
 		"message": "Повідомлення",
 		"test_name": "Тест",
 		"test_text": "Це тестове сповіщення!",
-		"configure": "Налаштувати",
 		"test": "Тест",
-		"add_new_variant": "Додати новий варіант",
-		"new_variant": "Новий варіант",
-		"variant_title": "Назва варіанта",
-		"variant_group": "Група варіанта",
+		"add_new_variant": "Додати нову варіацію",
+		"new_variant": "Нова варіація",
+		"variant_title": "Назва варіації",
+		"variant_group": "Група варіації",
 		"status": "Статус",
 		"variation_condition": "Умова варіації",
 		"group": "Група",
-		"Random": "Випадковий",
+		"Random": "Випадково",
 		"AmountIsGreater": "Сума більша",
 		"AmountIsEqual": "Сума дорівнює",
-		"delete": "Видалити",
-		"sure_delete": "Ви впевнені, що хочете видалити цей варіант?",
 		"type": "Тип",
 		"Donation": "Донат",
 		"Subscription": "Підписка",
 		"Follow": "Підписка",
 		"Raid": "Рейд",
-		"variant": "Варіант",
+		"variant": "Варіація",
 		"audio_volume": "Гучність аудіо",
 		"video_volume": "Гучність відео",
 		"video": "Відео",
 		"duration": "Тривалість",
-		"delay": "Затримка"
+		"delay": "Затримка",
+		"Redemption": "Редемпшен",
+		"CommandAction": "Дія команди"
 	},
 	"alert_variant": {
 		"Image": "Зображення",
@@ -248,7 +256,7 @@
 		"Video": "Відео",
 		"ImageAndAudio": "Зображення та аудіо"
 	},
-	"general": "Загальне",
+	"general": "Загальні",
 	"goals": {
 		"title": "Цілі",
 		"create": "Створити нову ціль"
@@ -281,14 +289,14 @@
 		"title": "Заголовок",
 		"limits": "ліміти",
 		"raised": "Зібрано",
-		"days_left": "Днів залишилось",
+		"days_left": "Залишилось днів",
 		"finish_goal": "Завершити ціль",
 		"sure_finish": "Ви впевнені, що хочете завершити цю ціль?",
 		"Donation": "Донат",
 		"TwitchSubscription": "Підписка Twitch",
 		"TwitchFollow": "Підписка Twitch",
-		"goal_not_finished": "У вас є незавершена ціль цього типу.",
-		"KickSubscription": "Підписка Kick"
+		"KickSubscription": "Підписка Kick",
+		"goal_not_finished": "У вас є незавершена ціль цього типу."
 	},
 	"save": "Зберегти",
 	"back": "Назад",
@@ -347,61 +355,61 @@
 		"widget_connection": "Віджет отримує або надсилає запити до:"
 	},
 	"scopes": {
-		"widgets:messages.read": "Читання повідомлень",
-		"widgets:goals.read": "Читання цілей",
-		"widgets:auc-fighter:settings.read": "Читання налаштувань auc-fighter",
-		"widgets:settings.read": "Читання налаштувань віджетів",
-		"widgets:alerts.read": "Читання сповіщень",
-		"widgets:media:settings.read": "Читання налаштувань медіа",
-		"widgets:auc-fighter:match-playing.send": "Надсилання інформації про активний матч",
-		"widgets:auc-fighter:match-winner.send": "Надсилання інформації про переможця матчу",
-		"widgets:auc-fighter:match-paused.send": "Надсилання інформації про призупинений матч",
-		"widgets:auc-fighter:match-id.send": "Надсилання ID матчу",
-		"widgets:alert:played.send": "Надсилання інформації про відтворене сповіщення",
-		"widgets:alert:playing.send": "Надсилання інформації про сповіщення, що відтворюється",
-		"widgets:media:played.send": "Надсилання інформації про відтворене медіа",
-		"widgets:media:end.send": "Надсилання інформації про завершення медіа",
-		"widgets:media:playing.send": "Надсилання інформації про медіа, що відтворюється",
-		"widgets:media:paused.send": "Надсилання інформації про призупинене медіа",
-		"widgets:media:error.send": "Надсилання інформації про помилку медіа",
-		"widgets:media:replay.send": "Надсилання інформації про повторне відтворення медіа",
-		"widgets:alert:replay.send": "Надсилання інформації про повторне відтворення сповіщення",
-		"widgets:alert:skip.send": "Надсилання інформації про пропуск сповіщення",
+		"widgets:messages.read": "Читати повідомлення",
+		"widgets:goals.read": "Читати цілі",
+		"widgets:auc-fighter:settings.read": "Читати налаштування auc-fighter",
+		"widgets:settings.read": "Читати налаштування віджета",
+		"widgets:alerts.read": "Читати сповіщення",
+		"widgets:media:settings.read": "Читати налаштування медіа",
+		"widgets:auc-fighter:match-playing.send": "Надсилати стан матчу (грає)",
+		"widgets:auc-fighter:match-winner.send": "Надсилати переможця матчу",
+		"widgets:auc-fighter:match-paused.send": "Надсилати паузу матчу",
+		"widgets:auc-fighter:match-id.send": "Надсилати ID матчу",
+		"widgets:alert:played.send": "Надсилати відтворене сповіщення",
+		"widgets:alert:playing.send": "Надсилати сповіщення, що грає",
+		"widgets:media:played.send": "Надсилати відтворене медіа",
+		"widgets:media:end.send": "Надсилати завершення медіа",
+		"widgets:media:playing.send": "Надсилати медіа, що грає",
+		"widgets:media:paused.send": "Надсилати паузу медіа",
+		"widgets:media:error.send": "Надсилати помилку медіа",
+		"widgets:media:replay.send": "Надсилати повтор медіа",
+		"widgets:alert:replay.send": "Надсилати повтор сповіщення",
+		"widgets:alert:skip.send": "Надсилати пропуск сповіщення",
 		"widgets:messages.subscription": "Підписка на повідомлення",
 		"widgets:media.subscription": "Підписка на медіа",
 		"widgets:alert.subscription": "Підписка на сповіщення",
 		"widgets:donation.subscription": "Підписка на донати",
-		"widgets:redemption.subscription": "Підписка на винагороди",
+		"widgets:redemption.subscription": "Підписка на редемпшени",
 		"widgets:chat-message.subscription": "Підписка на повідомлення чату",
 		"widgets:chat-message-delete.subscription": "Підписка на видалення повідомлень чату",
 		"widgets:goal.subscription": "Підписка на цілі",
 		"widgets:settings.subscription": "Підписка на налаштування",
 		"widgets:auc-fighter:start-match.subscription": "Підписка на початок матчу",
-		"widgets:auc-fighter:pause-match.subscription": "Підписка на призупинення матчу",
+		"widgets:auc-fighter:pause-match.subscription": "Підписка на паузу матчу",
 		"widgets:auc-fighter:resume-match.subscription": "Підписка на відновлення матчу",
 		"widgets:auc-fighter:cancel-match.subscription": "Підписка на скасування матчу",
 		"widgets:auc-fighter:update-match.subscription": "Підписка на оновлення матчу",
 		"widgets:auc-fighter:settings.subscription": "Підписка на налаштування auc-fighter",
-		"widgets:alert:replay.subscription": "Підписка на повторне відтворення сповіщення",
+		"widgets:alert:replay.subscription": "Підписка на повтор сповіщення",
 		"widgets:alert:skip.subscription": "Підписка на пропуск сповіщення",
-		"widgets:alert:test.subscription": "Підписка на тестування сповіщень",
-		"widgets:alert:skip-playing.subscription": "Підписка на пропуск сповіщення, що відтворюється",
+		"widgets:alert:test.subscription": "Підписка на тестове сповіщення",
+		"widgets:alert:skip-playing.subscription": "Підписка на пропуск активного сповіщення",
 		"widgets:alert:alerts.subscription": "Підписка на сповіщення",
-		"widgets:media:replay.subscription": "Підписка на повторне відтворення медіа",
+		"widgets:media:replay.subscription": "Підписка на повтор медіа",
 		"widgets:media:settings.subscription": "Підписка на налаштування медіа",
 		"widgets:media:skip.subscription": "Підписка на пропуск медіа",
-		"widgets:media:skip-playing-media.subscription": "Підписка на пропуск медіа, що відтворюється",
+		"widgets:media:skip-playing-media.subscription": "Підписка на пропуск активного медіа",
 		"widgets:media:end.subscription": "Підписка на завершення медіа",
-		"widgets:media:error.subscription": "Підписка на помилки медіа",
-		"widgets:media:pause.subscription": "Підписка на призупинення медіа",
+		"widgets:media:error.subscription": "Підписка на помилку медіа",
+		"widgets:media:pause.subscription": "Підписка на паузу медіа",
 		"widgets:media:play.subscription": "Підписка на відтворення медіа",
-		"widgets:alert:played.subscription": "Підписка на відтворені сповіщення",
-		"widgets:view:storage.read": "Читання сховища перегляду віджета",
-		"widgets:control:storage.read": "Читання сховища керування віджетом",
-		"widgets:view:storage.write": "Запис до сховища перегляду віджета",
-		"widgets:control:storage.write": "Запис до сховища керування віджетом",
-		"widgets:view:storage.subscription": "Підписка на сховище перегляду віджета",
-		"widgets:control:storage.subscription": "Підписка на сховище керування віджетом"
+		"widgets:alert:played.subscription": "Підписка на відтворене сповіщення",
+		"widgets:view:storage.read": "Читати сховище view",
+		"widgets:control:storage.read": "Читати сховище control",
+		"widgets:view:storage.write": "Записувати у сховище view",
+		"widgets:control:storage.write": "Записувати у сховище control",
+		"widgets:view:storage.subscription": "Підписка на сховище view",
+		"widgets:control:storage.subscription": "Підписка на сховище control"
 	},
 	"nsfw": {
 		"title": "NSFW",
@@ -411,7 +419,7 @@
 		"blur_timeout_duration": "Тривалість розмиття",
 		"confidence_threshold": "Поріг впевненості",
 		"anus": "Анус",
-		"make_love": "Статевий акт",
+		"make_love": "Займатися коханням",
 		"nipple": "Сосок",
 		"penis": "Пеніс",
 		"vagina": "Вагіна"
@@ -428,15 +436,56 @@
 		"description": "Опис",
 		"cost": "Вартість",
 		"background_color": "Колір фону",
-		"is_user_input_required": "Потрібен ввід від користувача",
+		"is_user_input_required": "Потрібне введення від користувача",
 		"delete": "Видалити",
 		"sure_delete": "Ви впевнені, що хочете видалити цю нагороду?",
 		"points_currency_ratio": "Співвідношення балів до валюти",
-		"is_global_cooldown_enabled": "Увімкнено глобальний кулдаун",
+		"is_global_cooldown_enabled": "Глобальний кулдаун увімкнено",
 		"global_cooldown_seconds": "Глобальний кулдаун (секунди)",
-		"title_exist": "Нагорода з такою ж назвою вже існує"
+		"title_exist": "Нагорода з такою назвою вже існує"
 	},
 	"validation": {
 		"required": "Обов’язкове поле"
+	},
+	"commands": {
+		"title": "Команди",
+		"create": "Створити команду"
+	},
+	"command": {
+		"name": "Назва",
+		"description": "Опис",
+		"source": "Джерело",
+		"action": "Дія",
+		"delete": "Видалити",
+		"confirm_delete": "Ви впевнені, що хочете видалити цю команду?"
+	},
+	"chat_source": {
+		"title": "Чат",
+		"description": "Тригер повідомлення чату для виклику дій",
+		"trigger": "Тригер",
+		"platforms": "Платформи",
+		"user_levels": "Рівні користувачів"
+	},
+	"timer_source": {
+		"title": "Таймер",
+		"description": "Заплановані виклики дій",
+		"message": "Повідомлення",
+		"post_type": "Тип посту",
+		"alias": "Аліас",
+		"Normal": "Звичайний",
+		"interval": "Інтервал",
+		"Announcement": "Оголошення",
+		"mins_passed": "Хвилин пройшло перед публікацією",
+		"lines_passed": "Рядків чату пройшло перед публікацією"
+	},
+	"chat_bot_action": {
+		"title": "Чат-бот",
+		"description": "Чат-бот відповідає та надсилає повідомлення",
+		"message": "Повідомлення",
+		"replay": "Повторювати"
+	},
+	"alert_action": {
+		"title": "Сповіщення",
+		"description": "Сповіщення за джерелом команди"
 	}
 }

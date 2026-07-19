@@ -5,19 +5,25 @@
 	"success": "Éxito",
 	"ok": "Aceptar",
 	"cancel": "Cancelar",
-	"sound_volume": "Volumen de sonido",
+	"sound_volume": "Volumen del sonido",
 	"skip_media": "Atajo saltar medio",
 	"skip_alert": "Atajo saltar alerta",
 	"none": "Ninguno",
+	"next": "Siguiente",
 	"start": "Iniciar",
 	"stop": "Detener",
 	"delay": "Retraso",
 	"milliseconds": "ms",
 	"token": "Token",
-	"overlay_id": "ID de overlay",
+	"overlay_id": "ID de Overlay",
 	"api_key": "Clave API",
 	"disconnected": "Desconectado",
 	"documentation": "Documentación",
+	"configure": "Configurar",
+	"delete": "Eliminar",
+	"create": "Crear",
+	"test": "Probar",
+	"sure_delete": "¿Estás seguro de que quieres eliminar esta variación?",
 	"authorization": {
 		"title": "Autorización",
 		"code": "Solicitar código",
@@ -29,7 +35,7 @@
 		"password": "Contraseña",
 		"streamelements": "Necesitas conectar primero con StreamElements JWT",
 		"you_can_find_by_url": "Puedes encontrarlo en esta URL",
-		"set_id_and_jwt": "Necesitas configurar el ID de cuenta de StreamElements y JWT para {{service}}"
+		"set_id_and_jwt": "Necesitas configurar el ID de cuenta de StreamElements y el JWT para {{service}}"
 	},
 	"error": {
 		"wrong_lots_format": "Formato de lotes incorrecto",
@@ -45,16 +51,16 @@
 	},
 	"media": {
 		"title": "Medios",
-		"youtube": "Youtube",
+		"youtube": "YouTube",
 		"twitch": "Twitch",
-		"tiktok": "Tiktok"
+		"tiktok": "TikTok"
 	},
 	"integration": {
 		"tribute": "Mostrar mensajes de tributo"
 	},
 	"auction": {
 		"lots": "Lotes",
-		"wheel": "Ruleta",
+		"wheel": "Rueda",
 		"settings": "Ajustes"
 	},
 	"maption": {
@@ -67,7 +73,7 @@
 		"rules": "Para que el puntero cambie automáticamente de posición en el mensaje, debe haber solo una palabra de:"
 	},
 	"media_settings": {
-		"enabled": "Habilitado",
+		"enabled": "Activado",
 		"min_amount": "Cantidad mínima",
 		"video_volume": "Volumen del video",
 		"min_views": "Vistas mínimas"
@@ -85,7 +91,8 @@
 		"widgets": "Widgets",
 		"info": "Info",
 		"nsfw": "NSFW",
-		"rewards": "Recompensas"
+		"rewards": "Recompensas",
+		"commands": "Comandos"
 	},
 	"messages": {
 		"title": "Últimos mensajes"
@@ -95,10 +102,11 @@
 		"replay": "Reproducir de nuevo",
 		"donated": "{{user_name}} donó {{amount}} {{currency}}",
 		"redemption": "{{user_name}} redimió {{title}} {{cost}}",
-		"followed": "{{user_name}} siguió",
+		"followed": "{{user_name}} te siguió",
 		"subscribed": "{{user_name}} se suscribió",
 		"gifted_subscriptions": "{{user_name}} regaló {{total}} suscripciones",
-		"raided_with": "{{user_name}} hizo raid con {{viewers}} espectadores"
+		"raided_with": "{{user_name}} hizo raid con {{viewers}} viewers",
+		"command_action": "{{user_name}} usó el comando {{command_name}}"
 	},
 	"filter": {
 		"title": "Filtrar mensajes",
@@ -106,7 +114,8 @@
 		"exclude_follows": "Excluir follows",
 		"exclude_subscriptions": "Excluir suscripciones",
 		"exclude_raids": "Excluir raids",
-		"exclude_redemptions": "Excluir redenciones"
+		"exclude_redemptions": "Excluir redenciones",
+		"exclude_commands_actions": "Excluir acciones de comandos"
 	},
 	"settings": {
 		"title": "Ajustes",
@@ -123,7 +132,7 @@
 		"normal": "Normal",
 		"dropout": "Eliminación",
 		"spin": "Girar",
-		"speed": "Velocidad de la ruleta"
+		"speed": "Velocidad de la rueda"
 	},
 	"timer": {
 		"continue": "Continuar",
@@ -170,7 +179,7 @@
 		"new_donation": "Nueva donación",
 		"show_odds": "Mostrar probabilidades",
 		"show_total_sum": "Mostrar suma total",
-		"greater_timer_adding_time": "Añadir tiempo si mayor temporizador",
+		"greater_timer_adding_time": "Añadir tiempo al temporizador mayor",
 		"not_add_time_if": "No añadir tiempo si",
 		"adding_time": "Tiempo"
 	},
@@ -189,14 +198,14 @@
 	"services": {
 		"title": "Servicios",
 		"tribute": "Tributo",
-		"streamelements": "Streamelements",
+		"streamelements": "StreamElements",
 		"connect": "Conectar",
 		"integrations": "Integraciones",
 		"sign_out": "Cerrar sesión",
 		"confirm_sign_out": "¿Estás seguro de que quieres cerrar sesión de este servicio?"
 	},
 	"twitch": {
-		"device_code_expired": "Código de dispositivo expirado. Inténtalo de nuevo.",
+		"device_code_expired": "El código de dispositivo ha expirado. Por favor, inténtalo de nuevo.",
 		"user_code": "Código de usuario",
 		"authorize_with_code": "Autorizar con código",
 		"waiting_authorization": "Esperando autorización..."
@@ -216,7 +225,6 @@
 		"message": "Mensaje",
 		"test_name": "Prueba",
 		"test_text": "¡Esta es una alerta de prueba!",
-		"configure": "Configurar",
 		"test": "Probar",
 		"add_new_variant": "Añadir nueva variante",
 		"new_variant": "Nueva variante",
@@ -228,8 +236,6 @@
 		"Random": "Aleatorio",
 		"AmountIsGreater": "La cantidad es mayor",
 		"AmountIsEqual": "La cantidad es igual",
-		"delete": "Eliminar",
-		"sure_delete": "¿Estás seguro de que quieres eliminar esta variación?",
 		"type": "Tipo",
 		"Donation": "Donación",
 		"Subscription": "Suscripción",
@@ -240,7 +246,9 @@
 		"video_volume": "Volumen de video",
 		"video": "Video",
 		"duration": "Duración",
-		"delay": "Retraso"
+		"delay": "Retraso",
+		"Redemption": "Redención",
+		"CommandAction": "Acción de comando"
 	},
 	"alert_variant": {
 		"Image": "Imagen",
@@ -255,7 +263,7 @@
 	},
 	"goal": {
 		"new": "Nueva meta",
-		"goal": "Ver",
+		"goal": "Meta",
 		"type": "Tipo",
 		"elements": "Elementos",
 		"progress": "Progreso",
@@ -265,7 +273,7 @@
 		"end_date": "Fecha de fin de meta",
 		"bar_height": "Altura de la barra",
 		"rounding_radius": "Radio de redondeo",
-		"bar_stroke_thickness": "Grosor del trazo de la barra",
+		"bar_stroke_thickness": "Grosor del borde de la barra",
 		"background_bar_color": "Color de barra de fondo",
 		"progress_bar_color": "Color de barra de progreso",
 		"goal_progress_bar": "Barra de progreso de meta",
@@ -287,23 +295,23 @@
 		"Donation": "Donación",
 		"TwitchSubscription": "Suscripción de Twitch",
 		"TwitchFollow": "Follow de Twitch",
-		"goal_not_finished": "Tienes una meta sin finalizar de este tipo.",
-		"KickSubscription": "Suscripción Kick"
+		"KickSubscription": "Suscripción de Kick",
+		"goal_not_finished": "Tienes una meta sin finalizar de este tipo."
 	},
 	"save": "Guardar",
-	"back": "Atrás",
+	"back": "Volver",
 	"widget": {
 		"copy": "Copiar",
 		"launch": "Lanzar",
 		"url": "URL del widget",
-		"obs_dock_url": "URL de dock OBS"
+		"obs_dock_url": "URL del dock de OBS"
 	},
 	"view": {
 		"top": "Imagen arriba, texto abajo",
 		"bottom": "Imagen abajo, texto arriba",
 		"left": "Imagen izquierda, texto derecha",
 		"right": "Imagen derecha, texto izquierda",
-		"overlay": "Texto superpuesto a imagen"
+		"overlay": "Texto superpuesto a la imagen"
 	},
 	"image": {
 		"show": "Mostrar imagen"
@@ -311,7 +319,7 @@
 	"text": {
 		"font": "Fuente",
 		"font_size": "Tamaño de fuente",
-		"text_color": "Color de texto",
+		"text_color": "Color del texto",
 		"bold": "Negrita",
 		"italics": "Cursiva",
 		"underline": "Subrayado",
@@ -340,7 +348,7 @@
 		"control": "Control",
 		"delete_confirm": "¿Estás seguro de que quieres eliminar este widget?",
 		"invalid_manifest": "Manifiesto de widget inválido",
-		"add_confirm": "Añadir permitirá a {{widget_name}}:",
+		"add_confirm": "Añadir permitirá que {{widget_name}}:",
 		"installing": "Instalando...",
 		"updating": "Actualizando...",
 		"view_url": "Ver URL",
@@ -348,59 +356,59 @@
 	},
 	"scopes": {
 		"widgets:messages.read": "Leer mensajes",
-		"widgets:goals.read": "Leer objetivos",
-		"widgets:auc-fighter:settings.read": "Leer la configuración de AUC Fighter",
-		"widgets:settings.read": "Leer la configuración de los widgets",
+		"widgets:goals.read": "Leer metas",
+		"widgets:auc-fighter:settings.read": "Leer ajustes de auc-fighter",
+		"widgets:settings.read": "Leer ajustes de widget",
 		"widgets:alerts.read": "Leer alertas",
-		"widgets:media:settings.read": "Leer la configuración de medios",
-		"widgets:auc-fighter:match-playing.send": "Enviar estado de partida en curso",
-		"widgets:auc-fighter:match-winner.send": "Enviar ganador de la partida",
-		"widgets:auc-fighter:match-paused.send": "Enviar estado de partida pausada",
-		"widgets:auc-fighter:match-id.send": "Enviar ID de la partida",
+		"widgets:media:settings.read": "Leer ajustes de medios",
+		"widgets:auc-fighter:match-playing.send": "Enviar combate en curso",
+		"widgets:auc-fighter:match-winner.send": "Enviar ganador del combate",
+		"widgets:auc-fighter:match-paused.send": "Enviar combate pausado",
+		"widgets:auc-fighter:match-id.send": "Enviar ID de combate",
 		"widgets:alert:played.send": "Enviar alerta reproducida",
-		"widgets:alert:playing.send": "Enviar alerta en reproducción",
+		"widgets:alert:playing.send": "Enviar alerta reproduciéndose",
 		"widgets:media:played.send": "Enviar medio reproducido",
-		"widgets:media:end.send": "Enviar fin del medio",
-		"widgets:media:playing.send": "Enviar medio en reproducción",
-		"widgets:media:paused.send": "Enviar medio en pausa",
-		"widgets:media:error.send": "Enviar error del medio",
-		"widgets:media:replay.send": "Enviar repetición del medio",
+		"widgets:media:end.send": "Enviar fin de medio",
+		"widgets:media:playing.send": "Enviar medio reproduciéndose",
+		"widgets:media:paused.send": "Enviar medio pausado",
+		"widgets:media:error.send": "Enviar error de medio",
+		"widgets:media:replay.send": "Enviar repetición de medio",
 		"widgets:alert:replay.send": "Enviar repetición de alerta",
-		"widgets:alert:skip.send": "Enviar omisión de alerta",
-		"widgets:messages.subscription": "Suscribirse a los mensajes",
-		"widgets:media.subscription": "Suscribirse a los medios",
-		"widgets:alert.subscription": "Suscribirse a las alertas",
-		"widgets:donation.subscription": "Suscribirse a las donaciones",
-		"widgets:redemption.subscription": "Suscribirse a los canjes",
-		"widgets:chat-message.subscription": "Suscribirse a los mensajes del chat",
-		"widgets:chat-message-delete.subscription": "Suscribirse a la eliminación de mensajes del chat",
-		"widgets:goal.subscription": "Suscribirse a los objetivos",
-		"widgets:settings.subscription": "Suscribirse a la configuración",
-		"widgets:auc-fighter:start-match.subscription": "Suscribirse al inicio de la partida",
-		"widgets:auc-fighter:pause-match.subscription": "Suscribirse a la pausa de la partida",
-		"widgets:auc-fighter:resume-match.subscription": "Suscribirse a la reanudación de la partida",
-		"widgets:auc-fighter:cancel-match.subscription": "Suscribirse a la cancelación de la partida",
-		"widgets:auc-fighter:update-match.subscription": "Suscribirse a la actualización de la partida",
-		"widgets:auc-fighter:settings.subscription": "Suscribirse a la configuración de AUC Fighter",
-		"widgets:alert:replay.subscription": "Suscribirse a la repetición de alertas",
-		"widgets:alert:skip.subscription": "Suscribirse a la omisión de alertas",
-		"widgets:alert:test.subscription": "Suscribirse a las pruebas de alertas",
-		"widgets:alert:skip-playing.subscription": "Suscribirse a la omisión de alertas en reproducción",
-		"widgets:alert:alerts.subscription": "Suscribirse a las alertas",
-		"widgets:media:replay.subscription": "Suscribirse a la repetición de medios",
-		"widgets:media:settings.subscription": "Suscribirse a la configuración de medios",
-		"widgets:media:skip.subscription": "Suscribirse a la omisión de medios",
-		"widgets:media:skip-playing-media.subscription": "Suscribirse a la omisión de medios en reproducción",
-		"widgets:media:end.subscription": "Suscribirse al fin de los medios",
-		"widgets:media:error.subscription": "Suscribirse a los errores de medios",
-		"widgets:media:pause.subscription": "Suscribirse a la pausa de medios",
-		"widgets:media:play.subscription": "Suscribirse a la reproducción de medios",
-		"widgets:alert:played.subscription": "Suscribirse a las alertas reproducidas",
-		"widgets:view:storage.read": "Leer el almacenamiento de la vista del widget",
-		"widgets:control:storage.read": "Leer el almacenamiento de control del widget",
-		"widgets:view:storage.write": "Escribir en el almacenamiento de la vista del widget",
-		"widgets:control:storage.write": "Escribir en el almacenamiento de control del widget",
-		"widgets:view:storage.subscription": "Suscribirse al almacenamiento de la vista del widget",
+		"widgets:alert:skip.send": "Enviar salto de alerta",
+		"widgets:messages.subscription": "Suscribirse a mensajes",
+		"widgets:media.subscription": "Suscribirse a medios",
+		"widgets:alert.subscription": "Suscribirse a alertas",
+		"widgets:donation.subscription": "Suscribirse a donaciones",
+		"widgets:redemption.subscription": "Suscribirse a redenciones",
+		"widgets:chat-message.subscription": "Suscribirse a mensajes de chat",
+		"widgets:chat-message-delete.subscription": "Suscribirse a eliminación de mensajes de chat",
+		"widgets:goal.subscription": "Suscribirse a meta",
+		"widgets:settings.subscription": "Suscribirse a ajustes",
+		"widgets:auc-fighter:start-match.subscription": "Suscribirse a inicio de combate",
+		"widgets:auc-fighter:pause-match.subscription": "Suscribirse a pausa de combate",
+		"widgets:auc-fighter:resume-match.subscription": "Suscribirse a reanudación de combate",
+		"widgets:auc-fighter:cancel-match.subscription": "Suscribirse a cancelación de combate",
+		"widgets:auc-fighter:update-match.subscription": "Suscribirse a actualización de combate",
+		"widgets:auc-fighter:settings.subscription": "Suscribirse a ajustes de auc-fighter",
+		"widgets:alert:replay.subscription": "Suscribirse a repetición de alerta",
+		"widgets:alert:skip.subscription": "Suscribirse a salto de alerta",
+		"widgets:alert:test.subscription": "Suscribirse a prueba de alerta",
+		"widgets:alert:skip-playing.subscription": "Suscribirse a salto de alerta en reproducción",
+		"widgets:alert:alerts.subscription": "Suscribirse a alertas",
+		"widgets:media:replay.subscription": "Suscribirse a repetición de medio",
+		"widgets:media:settings.subscription": "Suscribirse a ajustes de medios",
+		"widgets:media:skip.subscription": "Suscribirse a salto de medio",
+		"widgets:media:skip-playing-media.subscription": "Suscribirse a salto de medio en reproducción",
+		"widgets:media:end.subscription": "Suscribirse a fin de medio",
+		"widgets:media:error.subscription": "Suscribirse a error de medio",
+		"widgets:media:pause.subscription": "Suscribirse a pausa de medio",
+		"widgets:media:play.subscription": "Suscribirse a reproducción de medio",
+		"widgets:alert:played.subscription": "Suscribirse a alerta reproducida",
+		"widgets:view:storage.read": "Leer almacenamiento de vista del widget",
+		"widgets:control:storage.read": "Leer almacenamiento de control del widget",
+		"widgets:view:storage.write": "Escribir en almacenamiento de vista del widget",
+		"widgets:control:storage.write": "Escribir en almacenamiento de control del widget",
+		"widgets:view:storage.subscription": "Suscribirse al almacenamiento de vista del widget",
 		"widgets:control:storage.subscription": "Suscribirse al almacenamiento de control del widget"
 	},
 	"nsfw": {
@@ -408,7 +416,7 @@
 		"nsfw_window": "Ventana NSFW",
 		"settings": "Ajustes",
 		"window": "Ventana",
-		"blur_timeout_duration": "Duración del timeout de desenfoque",
+		"blur_timeout_duration": "Duración del desenfoque",
 		"confidence_threshold": "Umbral de confianza",
 		"anus": "Ano",
 		"make_love": "Hacer el amor",
@@ -431,12 +439,53 @@
 		"is_user_input_required": "¿Se requiere entrada del usuario?",
 		"delete": "Eliminar",
 		"sure_delete": "¿Estás seguro de que quieres eliminar esta recompensa?",
-		"points_currency_ratio": "Ratio de puntos a moneda",
-		"is_global_cooldown_enabled": "¿Está habilitado el cooldown global?",
+		"points_currency_ratio": "Ratio puntos-moneda",
+		"is_global_cooldown_enabled": "¿Cooldown global activado?",
 		"global_cooldown_seconds": "Segundos de cooldown global",
 		"title_exist": "Ya existe una recompensa con el mismo título"
 	},
 	"validation": {
 		"required": "Requerido"
+	},
+	"commands": {
+		"title": "Comandos",
+		"create": "Crear comando"
+	},
+	"command": {
+		"name": "Nombre",
+		"description": "Descripción",
+		"source": "Origen",
+		"action": "Acción",
+		"delete": "Eliminar",
+		"confirm_delete": "¿Estás seguro de que quieres eliminar este comando?"
+	},
+	"chat_source": {
+		"title": "Chat",
+		"description": "Mensaje de chat que activa acciones",
+		"trigger": "Activador",
+		"platforms": "Plataformas",
+		"user_levels": "Niveles de usuarios"
+	},
+	"timer_source": {
+		"title": "Temporizador",
+		"description": "Llamadas de acciones programadas",
+		"message": "Mensaje",
+		"post_type": "Tipo de publicación",
+		"alias": "Alias",
+		"Normal": "Normal",
+		"interval": "Intervalo",
+		"Announcement": "Anuncio",
+		"mins_passed": "Minutos transcurridos antes de publicar",
+		"lines_passed": "Líneas de chat transcurridas antes de publicar"
+	},
+	"chat_bot_action": {
+		"title": "Bot de chat",
+		"description": "El bot de chat responde y envía mensajes",
+		"message": "Mensaje",
+		"replay": "Debe reproducir de nuevo"
+	},
+	"alert_action": {
+		"title": "Alerta",
+		"description": "Alerta activada por comando"
 	}
 }

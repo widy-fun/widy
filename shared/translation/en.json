@@ -248,7 +248,7 @@
 		"duration": "Duration",
 		"delay": "Delay",
 		"Redemption": "Redemption",
-		"Command": "Command"
+		"CommandAction": "Command action"
 	},
 	"alert_variant": {
 		"Image": "Image",
@@ -461,12 +461,14 @@
 	},
 	"chat_source": {
 		"title": "Chat",
+		"description": "Chat message trigger to call actions",
 		"trigger": "Trigger",
 		"platforms": "Platforms",
 		"user_levels": "Users levels"
 	},
 	"timer_source": {
 		"title": "Timer",
+		"description": "Scheduled action calls",
 		"message": "Message",
 		"post_type": "Post type",
 		"alias": "Alias",
@@ -478,10 +480,12 @@
 	},
 	"chat_bot_action": {
 		"title": "Chat bot",
+		"description": "Chat bot responds and sends messages",
 		"message": "Message",
 		"replay": "Should replay"
 	},
 	"alert_action": {
-		"title": "Alert"
+		"title": "Alert",
+		"description": "Alert on command source"
 	}
 }
