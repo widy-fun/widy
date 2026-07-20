@@ -15,11 +15,9 @@ pub async fn update_nsfw_settings(
         .update_nsfw_settings(nsfw_settings.clone())
         .await?;
     let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
-    websocket_broadcaster
-        .broadcast_event_message(&EventMessage {
-            event: AppEvent::NsfwSettings,
-            data: nsfw_settings,
-        })
-        .await;
+    websocket_broadcaster.broadcast_event_message(&EventMessage {
+        event: AppEvent::NsfwSettings,
+        data: nsfw_settings,
+    });
     Ok(())
 }

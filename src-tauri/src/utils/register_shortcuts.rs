@@ -14,18 +14,13 @@ pub fn register_shortcuts(app: &AppHandle) -> Result<(), Box<dyn std::error::Err
             tauri_plugin_global_shortcut::Builder::new()
                 .with_handler(move |app_handle, shortcut, event| {
                     let app_handle = app_handle.clone();
+                    let websocket_broadcaster = app_handle.state::<WebSocketBroadcaster>();
                     if shortcut == &ctrl_f1_shortcut {
                         match event.state() {
                             ShortcutState::Pressed => {
-                                tauri::async_runtime::spawn(async move {
-                                    let websocket_broadcaster =
-                                        app_handle.state::<WebSocketBroadcaster>();
-                                    websocket_broadcaster
-                                        .broadcast_event_message(&EventMessage {
-                                            event: AppEvent::SkipPlayingAlert,
-                                            data: None::<String>,
-                                        })
-                                        .await;
+                                websocket_broadcaster.broadcast_event_message(&EventMessage {
+                                    event: AppEvent::SkipPlayingAlert,
+                                    data: None::<String>,
                                 });
                             }
                             _ => {}
@@ -33,15 +28,9 @@ pub fn register_shortcuts(app: &AppHandle) -> Result<(), Box<dyn std::error::Err
                     } else if shortcut == &ctrl_f2_shortcut {
                         match event.state() {
                             ShortcutState::Pressed => {
-                                tauri::async_runtime::spawn(async move {
-                                    let websocket_broadcaster =
-                                        app_handle.state::<WebSocketBroadcaster>();
-                                    websocket_broadcaster
-                                        .broadcast_event_message(&EventMessage {
-                                            event: AppEvent::SkipPlayingMedia,
-                                            data: None::<String>,
-                                        })
-                                        .await;
+                                websocket_broadcaster.broadcast_event_message(&EventMessage {
+                                    event: AppEvent::SkipPlayingMedia,
+                                    data: None::<String>,
                                 });
                             }
                             _ => {}

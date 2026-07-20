@@ -343,9 +343,7 @@ impl EventsService {
                     event: AppEvent::Goal,
                     data: goal,
                 };
-                websocket_broadcaster
-                    .broadcast_event_message(&event_message)
-                    .await;
+                websocket_broadcaster.broadcast_event_message(&event_message);
             }
             Err(_) => todo!(),
         }
@@ -436,9 +434,7 @@ impl EventsService {
                         data: e,
                     };
 
-                    websocket_broadcaster
-                        .broadcast_event_message(&ws_message)
-                        .await;
+                    websocket_broadcaster.broadcast_event_message(&ws_message);
                     None
                 }
             }
@@ -494,27 +490,21 @@ impl EventsService {
             data: client_message.clone(),
         };
 
-        websocket_broadcaster
-            .broadcast_event_message(&event_message)
-            .await;
+        websocket_broadcaster.broadcast_event_message(&event_message);
 
         let event_message = EventMessage {
             event: AppEvent::Donation,
             data: client_message.clone(),
         };
 
-        websocket_broadcaster
-            .broadcast_event_message(&event_message)
-            .await;
+        websocket_broadcaster.broadcast_event_message(&event_message);
 
         let event_message = EventMessage {
             event: AppEvent::Alert,
             data: client_message.clone(),
         };
 
-        websocket_broadcaster
-            .broadcast_event_message(&event_message)
-            .await;
+        websocket_broadcaster.broadcast_event_message(&event_message);
 
         if !media.is_none() {
             let event_message = EventMessage {
@@ -522,9 +512,7 @@ impl EventsService {
                 data: client_message,
             };
 
-            websocket_broadcaster
-                .broadcast_event_message(&event_message)
-                .await;
+            websocket_broadcaster.broadcast_event_message(&event_message);
         }
         Ok(())
     }
@@ -551,16 +539,12 @@ impl EventsService {
             event: AppEvent::Message,
             data: client_message.clone(),
         };
-        websocket_broadcaster
-            .broadcast_event_message(&event_message)
-            .await;
+        websocket_broadcaster.broadcast_event_message(&event_message);
         let event_message = EventMessage {
             event: AppEvent::Alert,
             data: client_message.clone(),
         };
-        websocket_broadcaster
-            .broadcast_event_message(&event_message)
-            .await;
+        websocket_broadcaster.broadcast_event_message(&event_message);
         let _ = database_service
             .save_subscribe_message(client_message)
             .await;
@@ -613,16 +597,12 @@ impl EventsService {
             event: AppEvent::Message,
             data: client_message.clone(),
         };
-        websocket_broadcaster
-            .broadcast_event_message(&event_message)
-            .await;
+        websocket_broadcaster.broadcast_event_message(&event_message);
         let event_message = EventMessage {
             event: AppEvent::Redemption,
             data: client_message.clone(),
         };
-        websocket_broadcaster
-            .broadcast_event_message(&event_message)
-            .await;
+        websocket_broadcaster.broadcast_event_message(&event_message);
 
         Ok(())
     }
@@ -652,19 +632,13 @@ impl EventsService {
             event: AppEvent::Message,
             data: client_message.clone(),
         };
-        websocket_broadcaster
-            .broadcast_event_message(&event_message)
-            .await;
+        websocket_broadcaster.broadcast_event_message(&event_message);
         let event_message = EventMessage {
             event: AppEvent::CommandAction,
             data: client_message.clone(),
         };
-        websocket_broadcaster
-            .broadcast_event_message(&event_message)
-            .await;
-        let _ = database_service
-            .save_command_action_message(client_message)
-            .await;
+        websocket_broadcaster.broadcast_event_message(&event_message);
+        let _ = database_service.save_command_action_message(client_message);
 
         Ok(())
     }
@@ -691,16 +665,12 @@ impl EventsService {
             event: AppEvent::Message,
             data: client_message.clone(),
         };
-        websocket_broadcaster
-            .broadcast_event_message(&event_message)
-            .await;
+        websocket_broadcaster.broadcast_event_message(&event_message);
         let event_message = EventMessage {
             event: AppEvent::Alert,
             data: client_message.clone(),
         };
-        websocket_broadcaster
-            .broadcast_event_message(&event_message)
-            .await;
+        websocket_broadcaster.broadcast_event_message(&event_message);
         let _ = database_service.save_follow_message(client_message).await;
         let _ = Self::goal(&database_service, &websocket_broadcaster, 1, goal_type).await;
         Ok(())
@@ -724,16 +694,12 @@ impl EventsService {
             event: AppEvent::Message,
             data: client_message.clone(),
         };
-        websocket_broadcaster
-            .broadcast_event_message(&event_message)
-            .await;
+        websocket_broadcaster.broadcast_event_message(&event_message);
         let event_message = EventMessage {
             event: AppEvent::Alert,
             data: client_message.clone(),
         };
-        websocket_broadcaster
-            .broadcast_event_message(&event_message)
-            .await;
+        websocket_broadcaster.broadcast_event_message(&event_message);
         let _ = database_service.save_raid_message(client_message).await;
 
         Ok(())
@@ -748,9 +714,7 @@ impl EventsService {
             event: AppEvent::ChatMessage,
             data: chat_message,
         };
-        websocket_broadcaster
-            .broadcast_event_message(&event_message)
-            .await;
+        websocket_broadcaster.broadcast_event_message(&event_message);
 
         Ok(())
     }
@@ -764,9 +728,7 @@ impl EventsService {
             event: AppEvent::ChatMessageDelete,
             data: event,
         };
-        websocket_broadcaster
-            .broadcast_event_message(&event_message)
-            .await;
+        websocket_broadcaster.broadcast_event_message(&event_message);
 
         Ok(())
     }

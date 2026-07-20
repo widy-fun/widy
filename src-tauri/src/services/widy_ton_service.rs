@@ -149,12 +149,10 @@ impl DeepLinkHandler for WidyTonService {
                 return;
             }
 
-            websocket_broadcaster
-                .broadcast_event_message(&EventMessage {
-                    event: AppEvent::CreateDonationAccount,
-                    data: query_params,
-                })
-                .await;
+            websocket_broadcaster.broadcast_event_message(&EventMessage {
+                event: AppEvent::CreateDonationAccount,
+                data: query_params,
+            });
         });
     }
 }
@@ -299,9 +297,9 @@ impl WidyTonService {
             .await;
         if let Ok(response) = result {
             if let Ok(trace_response) = response.json::<Value>().await {
-                let raw_transaction = trace_response["children"][0]["children"][0]["children"][0]
-                    ["transaction"]
-                    .clone();
+                let raw_transaction =
+                    trace_response["children"][0]["children"][0]["children"][0]["transaction"]
+                        .clone();
                 return serde_json::from_value::<Transaction>(raw_transaction).ok();
             }
         }

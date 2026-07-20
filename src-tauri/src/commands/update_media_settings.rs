@@ -16,11 +16,9 @@ pub async fn update_media_settings(
         .update_media_settings(media_settings.clone())
         .await?;
     let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
-    websocket_broadcaster
-        .broadcast_event_message(&EventMessage {
-            event: AppEvent::MediaSettings,
-            data: media_settings,
-        })
-        .await;
+    websocket_broadcaster.broadcast_event_message(&EventMessage {
+        event: AppEvent::MediaSettings,
+        data: media_settings,
+    });
     Ok(())
 }

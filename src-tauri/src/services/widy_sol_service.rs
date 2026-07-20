@@ -1,6 +1,6 @@
 use anchor_client::{
-    solana_sdk::{commitment_config::CommitmentConfig, signature::Keypair},
     Client, Cluster, EventContext,
+    solana_sdk::{commitment_config::CommitmentConfig, signature::Keypair},
 };
 use anchor_lang::prelude::*;
 use anchor_lang::{AnchorDeserialize, AnchorSerialize};
@@ -122,12 +122,10 @@ impl DeepLinkHandler for WidySolService {
                 return;
             }
 
-            websocket_broadcaster
-                .broadcast_event_message(&EventMessage {
-                    event: AppEvent::CreateDonationAccount,
-                    data: query_params,
-                })
-                .await;
+            websocket_broadcaster.broadcast_event_message(&EventMessage {
+                event: AppEvent::CreateDonationAccount,
+                data: query_params,
+            });
         });
     }
 }

@@ -3,11 +3,10 @@ use rten_imageio::image_to_tensor;
 use std::{
     error::Error,
     sync::{
+        Arc, Mutex,
         atomic::{AtomicBool, Ordering},
-        Arc,
     },
 };
-use tokio::sync::Mutex;
 
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
@@ -18,8 +17,8 @@ use crate::{
     services::{AppEvent, ConfigService, EventMessage, WebSocketBroadcaster},
 };
 use rten::{FloatOperators, Model, NodeId};
-use rten_tensor::prelude::*;
 use rten_tensor::NdTensor;
+use rten_tensor::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct NsfwDetection {
@@ -48,13 +47,13 @@ impl NsfwService {
     }
 
     pub async fn start(&self, app: AppHandle, window_info: WindowInfo) -> Result<(), String> {
-        let mut selected_window = self.selected_window.lock().await;
-        if selected_window.is_some() {
-            return Ok(());
+        {
+            let mut selected_window = self.selected_window.lock().unwrap();
+            if selected_window.is_some() {
+                return Ok(());
+            }
+            *selected_window = Some(window_info.clone());
         }
-        *selected_window = Some(window_info.clone());
-
-        drop(selected_window);
 
         self.is_stopping.store(false, Ordering::Relaxed);
 
@@ -97,8 +96,9 @@ impl NsfwService {
                 'nsfw_loop: loop {
                     let is_stopping = nsfw_service.is_stopping.load(Ordering::Relaxed);
                     if is_stopping {
-                        let mut selected_window = nsfw_service.selected_window.lock().await;
-                        *selected_window = None;
+                        {
+                            *nsfw_service.selected_window.lock().unwrap() = None;
+                        }
                         nsfw_service.is_stopping.store(false, Ordering::Relaxed);
                         break 'nsfw_loop;
                     }
@@ -110,16 +110,17 @@ impl NsfwService {
                                     log::error!("Detect image error: {}", e);
                                 })
                             {
-                                let _ = websocket_broadcaster
-                                    .broadcast_event_message(&EventMessage {
+                                let _ =
+                                    websocket_broadcaster.broadcast_event_message(&EventMessage {
                                         event: AppEvent::NsfwDetection,
                                         data: detections,
-                                    })
-                                    .await;
+                                    });
                             }
                         }
                         Err(e) => {
-                            *nsfw_service.selected_window.lock().await = None;
+                            {
+                                *nsfw_service.selected_window.lock().unwrap() = None;
+                            }
                             log::error!("Capture window image error: {}", e);
                             break 'nsfw_loop;
                         }
@@ -136,7 +137,7 @@ impl NsfwService {
             e.to_string()
         })?;
         let mut windows_info: Vec<WindowInfo> = vec![];
-        let selected_window = self.selected_window.lock().await.clone();
+        let selected_window = { self.selected_window.lock().unwrap().clone() };
         for window in windows.clone() {
             let window_id = window.id().map_err(|e| {
                 log::error!("Get window ID error: {}", e);

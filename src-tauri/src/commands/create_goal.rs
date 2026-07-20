@@ -15,11 +15,9 @@ pub async fn create_goal(
     database_service.create_goal(goal.clone()).await?;
 
     let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
-    websocket_broadcaster
-        .broadcast_event_message(&EventMessage {
-            event: AppEvent::Goal,
-            data: goal,
-        })
-        .await;
+    websocket_broadcaster.broadcast_event_message(&EventMessage {
+        event: AppEvent::Goal,
+        data: goal,
+    });
     Ok(())
 }

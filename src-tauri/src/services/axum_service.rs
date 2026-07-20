@@ -9,18 +9,18 @@ use crate::services::{
     AppEvent, ConfigService, DatabaseService, EventMessage, WebSocketBroadcaster,
 };
 use crate::utils::validate_csp;
+use axum::Json;
 use axum::extract::ws::{Message, WebSocket};
 use axum::extract::{Path, Query};
 use axum::http::HeaderValue;
 use axum::http::StatusCode;
 use axum::response::Redirect;
 use axum::routing::patch;
-use axum::Json;
 use axum::{
+    Router,
     extract::{State, WebSocketUpgrade},
     response::Response,
     routing::get,
-    Router,
 };
 use entity::goals::GoalType;
 use entity::messages::ClientMessage;
@@ -290,12 +290,10 @@ impl AxumService {
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
         {
             let websocket_broadcaster = state.app.state::<WebSocketBroadcaster>();
-            websocket_broadcaster
-                .broadcast_event_message(&EventMessage {
-                    event: AppEvent::WidgetViewStorage,
-                    data: widget,
-                })
-                .await;
+            websocket_broadcaster.broadcast_event_message(&EventMessage {
+                event: AppEvent::WidgetViewStorage,
+                data: widget,
+            });
             return Ok(StatusCode::OK);
         }
         Ok(StatusCode::NOT_FOUND)
@@ -313,12 +311,10 @@ impl AxumService {
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
         {
             let websocket_broadcaster = state.app.state::<WebSocketBroadcaster>();
-            websocket_broadcaster
-                .broadcast_event_message(&EventMessage {
-                    event: AppEvent::WidgetControlStorage,
-                    data: widget,
-                })
-                .await;
+            websocket_broadcaster.broadcast_event_message(&EventMessage {
+                event: AppEvent::WidgetControlStorage,
+                data: widget,
+            });
             return Ok(StatusCode::OK);
         }
         Ok(StatusCode::NOT_FOUND)
@@ -406,11 +402,11 @@ impl AxumService {
 
         let websocket_broadcaster = app_handle.state::<WebSocketBroadcaster>();
 
-        let connection_id = websocket_broadcaster.add_connection(tx.clone()).await;
+        let connection_id = websocket_broadcaster.add_connection(tx.clone());
 
         if let Err(e) = AxumService::send_settings(tx, app_handle.clone()).await {
             log::error!("WebSocket send error: {}", e);
-            websocket_broadcaster.remove_connection(connection_id).await;
+            websocket_broadcaster.remove_connection(connection_id);
             return;
         }
 
@@ -424,24 +420,23 @@ impl AxumService {
                     break;
                 }
             }
-            websocket_broadcaster.remove_connection(connection_id).await;
+            websocket_broadcaster.remove_connection(connection_id);
         });
 
         while let Some(msg) = receiver.next().await {
             match msg {
-                Ok(Message::Text(text)) => websocket_broadcaster.broadcast_text(text).await,
+                Ok(Message::Text(text)) => websocket_broadcaster.broadcast_text(text),
 
                 Ok(Message::Close(_)) => {
                     log::info!("WebSocket connection closed");
                     break;
                 }
                 Ok(Message::Ping(data)) => {
-                    if let Err(e) = websocket_broadcaster
-                        .send_to_client(connection_id, Message::Pong(data))
-                        .await
+                    if let Err(e) =
+                        websocket_broadcaster.send_to_client(connection_id, Message::Pong(data))
                     {
                         log::error!("WebSocket pong error: {}", e);
-                        websocket_broadcaster.remove_connection(connection_id).await;
+                        websocket_broadcaster.remove_connection(connection_id);
                         break;
                     }
                 }
@@ -456,7 +451,7 @@ impl AxumService {
         }
 
         outgoing_task.abort();
-        websocket_broadcaster.remove_connection(connection_id).await;
+        websocket_broadcaster.remove_connection(connection_id);
         log::info!("WebSocket connection ended");
     }
 

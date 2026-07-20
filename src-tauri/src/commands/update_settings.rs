@@ -13,11 +13,9 @@ pub async fn update_settings(
 ) -> Result<(), String> {
     database_service.update_settings(settings.clone()).await?;
     let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
-    websocket_broadcaster
-        .broadcast_event_message(&EventMessage {
-            event: AppEvent::Settings,
-            data: settings,
-        })
-        .await;
+    websocket_broadcaster.broadcast_event_message(&EventMessage {
+        event: AppEvent::Settings,
+        data: settings,
+    });
     Ok(())
 }

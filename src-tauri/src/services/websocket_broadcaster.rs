@@ -1,7 +1,7 @@
 use axum::extract::ws::{Message, Utf8Bytes};
 use serde::Serialize;
-use std::collections::HashMap;
-use tokio::sync::{mpsc, Mutex};
+use std::{collections::HashMap, sync::Mutex};
+use tokio::sync::mpsc;
 use uuid::Uuid;
 
 use crate::services::AppEvent;
@@ -25,22 +25,22 @@ impl WebSocketBroadcaster {
         }
     }
 
-    pub async fn add_connection(&self, tx: Tx) -> Uuid {
+    pub fn add_connection(&self, tx: Tx) -> Uuid {
         let connection_id = Uuid::new_v4();
-        let mut websocket_clients = self.websocket_clients.lock().await;
+        let mut websocket_clients = self.websocket_clients.lock().unwrap();
         websocket_clients.insert(connection_id, tx);
         log::info!("WebSocket connection added: {}", connection_id);
         connection_id
     }
 
-    pub async fn remove_connection(&self, id: Uuid) {
-        let mut websocket_clients = self.websocket_clients.lock().await;
+    pub fn remove_connection(&self, id: Uuid) {
+        let mut websocket_clients = self.websocket_clients.lock().unwrap();
         websocket_clients.remove(&id);
         log::info!("WebSocket connection removed: {}", id);
     }
 
-    pub async fn broadcast_text(&self, text: Utf8Bytes) {
-        let websocket_clients = self.websocket_clients.lock().await;
+    pub fn broadcast_text(&self, text: Utf8Bytes) {
+        let websocket_clients = self.websocket_clients.lock().unwrap();
 
         let mut failed_connections = Vec::new();
 
@@ -51,9 +51,8 @@ impl WebSocketBroadcaster {
             }
         }
 
-        drop(websocket_clients);
         if !failed_connections.is_empty() {
-            let mut websocket_clients = self.websocket_clients.lock().await;
+            let mut websocket_clients = self.websocket_clients.lock().unwrap();
             for id in failed_connections {
                 websocket_clients.remove(&id);
                 log::warn!("Removed failed WebSocket connection: {}", id);
@@ -61,7 +60,7 @@ impl WebSocketBroadcaster {
         }
     }
 
-    pub async fn broadcast_event_message<T>(&self, message: &EventMessage<T>)
+    pub fn broadcast_event_message<T>(&self, message: &EventMessage<T>)
     where
         T: serde::Serialize,
     {
@@ -69,16 +68,12 @@ impl WebSocketBroadcaster {
             log::error!("serde error: {}", e.to_string());
         });
         if let Ok(text) = text {
-            self.broadcast_text(text.into()).await;
+            self.broadcast_text(text.into());
         }
     }
 
-    pub async fn send_to_client(
-        &self,
-        connection_id: Uuid,
-        message: Message,
-    ) -> Result<(), String> {
-        let websocket_clients = self.websocket_clients.lock().await;
+    pub fn send_to_client(&self, connection_id: Uuid, message: Message) -> Result<(), String> {
+        let websocket_clients = self.websocket_clients.lock().unwrap();
 
         if let Some(sender) = websocket_clients.get(&connection_id) {
             sender.send(message).map_err(|e| e.to_string())?;

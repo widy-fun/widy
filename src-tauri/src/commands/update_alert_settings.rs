@@ -15,11 +15,9 @@ pub async fn update_alert_settings(
     database_service
         .update_alert_settings(alert.clone())
         .await?;
-    websocket_broadcaster
-        .broadcast_event_message(&EventMessage {
-            event: AppEvent::UpdateAlert,
-            data: alert,
-        })
-        .await;
+    websocket_broadcaster.broadcast_event_message(&EventMessage {
+        event: AppEvent::UpdateAlert,
+        data: alert,
+    });
     Ok(())
 }
