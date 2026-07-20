@@ -24,5 +24,7 @@ pub async fn create_command(
             CommandsService::on_timer_tick,
         );
     };
+    let commands = database_service.get_commands().await?;
+    *commands_service.commands.lock().unwrap() = commands;
     Ok(())
 }

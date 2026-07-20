@@ -13,5 +13,8 @@ pub async fn delete_command_by_id(
     id: Uuid,
 ) -> Result<(), String> {
     commands_service.remove_timer(id);
-    database_service.delete_command_by_id(id).await
+    let _ = database_service.delete_command_by_id(id).await;
+    let commands = database_service.get_commands().await?;
+    *commands_service.commands.lock().unwrap() = commands;
+    Ok(())
 }

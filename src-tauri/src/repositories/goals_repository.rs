@@ -62,7 +62,6 @@ impl GoalsRepository for DatabaseService {
             )
             .filter(Expr::col(Column::Ended).eq(false))
             .filter(Expr::col(Column::Type).eq(r#type))
-            .filter(Expr::col(Column::Ended).eq(false))
             .exec(&self.connection)
             .await
             .map_err(|e| {

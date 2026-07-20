@@ -42,7 +42,7 @@ pub async fn init(app: AppHandle, flag: State<'_, ExecutionFlag>) -> Result<(), 
     app.manage(Mutex::new(exchange_rates_service));
 
     //http client
-    let user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36";
+    let user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36";
     let reqwest_client = reqwest::Client::builder()
         .user_agent(user_agent)
         .connect_timeout(Duration::from_secs(10))
@@ -166,7 +166,7 @@ pub async fn init(app: AppHandle, flag: State<'_, ExecutionFlag>) -> Result<(), 
 
     //commands
     let commands_service = CommandsService::new();
-    commands_service.start_timers(&app).await?;
+    commands_service.start(&app).await?;
     app.manage(commands_service);
 
     Ok(())

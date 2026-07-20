@@ -29,5 +29,8 @@ pub async fn update_command(
             commands_service.remove_timer(command.id);
         }
     };
-    database_service.update_command(command).await
+    let _ = database_service.update_command(command).await;
+    let commands = database_service.get_commands().await?;
+    *commands_service.commands.lock().unwrap() = commands;
+    Ok(())
 }

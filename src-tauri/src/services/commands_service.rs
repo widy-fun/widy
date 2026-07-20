@@ -25,18 +25,21 @@ use crate::{
 
 pub struct CommandsService {
     timers: Arc<Mutex<HashMap<Uuid, AbortHandle>>>,
+    pub commands: Arc<Mutex<Vec<Command>>>,
 }
 
 impl CommandsService {
     pub fn new() -> Self {
         Self {
             timers: Arc::new(Mutex::new(HashMap::new())),
+            commands: Arc::new(Mutex::new(vec![])),
         }
     }
 
-    pub async fn start_timers(&self, app: &AppHandle) -> Result<(), String> {
+    pub async fn start(&self, app: &AppHandle) -> Result<(), String> {
         let database_service = app.state::<DatabaseService>();
         let commands = database_service.get_commands().await?;
+        *self.commands.lock().unwrap() = commands.clone();
         for command in commands {
             if let Command {
                 is_enabled: true,
@@ -59,15 +62,23 @@ impl CommandsService {
         message: UnifiedChatMessage,
         app: &AppHandle,
     ) -> Result<(), String> {
-        let database_service = app.state::<DatabaseService>();
         let kick_bot_service = app.state::<KickBotService>();
         let kick_service = app.state::<KickService>();
+        let commands_service = app.state::<CommandsService>();
         let reqwest_client = app.state::<reqwest::Client>();
         let trigger = message.content.text;
-        let command = database_service
-            .get_command_by_chat_trigger(&trigger)
-            .await?
-            .ok_or("Command not found".to_string())?;
+        let command = {
+            let commands = commands_service.commands.lock().unwrap();
+            commands
+                .iter()
+                .find(|c| {
+                    c.chat
+                        .as_ref()
+                        .map_or(false, |chat| chat.trigger == trigger)
+                })
+                .cloned()
+        };
+        let command = command.ok_or("Command not found".to_string())?;
         let broadcaster_user_id: u64 = message
             .channel_id
             .parse()
@@ -133,15 +144,23 @@ impl CommandsService {
         message: UnifiedChatMessage,
         app: &AppHandle,
     ) -> Result<(), String> {
-        let database_service = app.state::<DatabaseService>();
         let twitch_bot_service = app.state::<TwitchBotService>();
         let twitch_service = app.state::<TwitchService>();
+        let commands_service = app.state::<CommandsService>();
         let reqwest_client = app.state::<reqwest::Client>();
         let trigger = message.content.text;
-        let command = database_service
-            .get_command_by_chat_trigger(&trigger)
-            .await?
-            .ok_or("Command not found".to_string())?;
+        let command = {
+            let commands = commands_service.commands.lock().unwrap();
+            commands
+                .iter()
+                .find(|c| {
+                    c.chat
+                        .as_ref()
+                        .map_or(false, |chat| chat.trigger == trigger)
+                })
+                .cloned()
+        };
+        let command = command.ok_or("Command not found".to_string())?;
         if let Command {
             is_enabled: true,
             chat: Some(chat),
@@ -276,7 +295,6 @@ impl CommandsService {
         {
             return Err("Bot message not passed lines".to_string());
         }
-        drop(chat_messages_buffer);
         let reqwest_client = app.state::<reqwest::Client>();
         let user_info = kick_service
             .get_user_info(&reqwest_client, &auth.access_token)
@@ -310,7 +328,6 @@ impl CommandsService {
         {
             return Err("Bot message not passed lines".to_string());
         }
-        drop(chat_messages_buffer);
         let reqwest_client = app.state::<reqwest::Client>();
 
         twitch_bot_service
@@ -344,7 +361,6 @@ impl CommandsService {
         {
             return Err("Bot message not passed lines".to_string());
         }
-        drop(chat_messages_buffer);
         let reqwest_client = app.state::<reqwest::Client>();
 
         twitch_bot_service
