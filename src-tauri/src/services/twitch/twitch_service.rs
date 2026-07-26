@@ -12,7 +12,7 @@ use crate::{
             traits::TwitchApi,
         },
     },
-    traits::ChatMessageBuffer,
+    traits::ItemsBuffer,
     utils::get_random_alert,
 };
 use async_trait::async_trait;
@@ -44,7 +44,7 @@ pub struct TwitchService {
     auth_endpoint: String,
     eventsub_endpoint: String,
     pub session_id: Arc<Mutex<Option<String>>>,
-    pub chat_messages_buffer: Arc<Mutex<ChatMessageBuffer>>,
+    pub chat_messages_buffer: Arc<Mutex<ItemsBuffer<String>>>,
     expire_at: Arc<AtomicU64>,
     cancellation_token: Arc<Mutex<CancellationToken>>,
 }
@@ -81,7 +81,7 @@ impl TwitchService {
             eventsub_endpoint,
             session_id: Arc::new(Mutex::new(None)),
             expire_at: Arc::new(AtomicU64::new(0)),
-            chat_messages_buffer: Arc::new(Mutex::new(ChatMessageBuffer::new(1001))),
+            chat_messages_buffer: Arc::new(Mutex::new(ItemsBuffer::new(1001))),
             cancellation_token: Arc::new(Mutex::new(CancellationToken::new())),
         }
     }

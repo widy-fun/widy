@@ -2,10 +2,11 @@ use async_trait::async_trait;
 use entity::{
     donations,
     messages::{self, ClientMessage},
+    services::ServiceType,
 };
 
 use crate::services::DatabaseService;
-use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
+use sea_orm::{ColumnTrait, EntityTrait, QueryFilter, QueryOrder, QuerySelect};
 
 #[async_trait]
 pub trait DonationsRepository: Send + Sync {
@@ -13,6 +14,11 @@ pub trait DonationsRepository: Send + Sync {
         &self,
         service_id: String,
     ) -> Result<Option<donations::Model>, String>;
+    async fn get_latest_donations_by_service(
+        &self,
+        service: ServiceType,
+        limit: u64,
+    ) -> Result<Vec<donations::Model>, String>;
     async fn save_donation_message(&self, client_message: ClientMessage) -> Result<(), String>;
 }
 
@@ -31,6 +37,24 @@ impl DonationsRepository for DatabaseService {
                 e.to_string()
             })
     }
+
+    async fn get_latest_donations_by_service(
+        &self,
+        service: ServiceType,
+        limit: u64,
+    ) -> Result<Vec<donations::Model>, String> {
+        donations::Entity::find()
+            .filter(donations::Column::Service.eq(service))
+            .order_by_desc(donations::Column::CreatedAt)
+            .limit(limit)
+            .all(&self.connection)
+            .await
+            .map_err(|e| {
+                log::error!("Get latest donation by service error: {}", e);
+                e.to_string()
+            })
+    }
+
     async fn save_donation_message(&self, client_message: ClientMessage) -> Result<(), String> {
         if let Some(donation) = client_message.donation {
             donations::ActiveModel::builder()

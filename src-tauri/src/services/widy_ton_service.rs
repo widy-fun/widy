@@ -1,48 +1,60 @@
 use crate::{
     constants::USDT_MULTIPLICATION,
-    repositories::ServicesRepository,
+    error::AppError::{self},
+    repositories::{DonationsRepository, ServicesRepository},
     services::{
         AppEvent, DatabaseService, DeepLinkHandler, DeepLinkQueryParams, EventMessage,
         EventsService, WebSocketBroadcaster, WidyNetwork,
     },
+    traits::ItemsBuffer,
 };
+use base64::{Engine, engine::general_purpose};
+use chrono::Utc;
 use entity::services::{ServiceAuth, ServiceType, WidyAuth};
-use eventsource_client::{self as es, Client};
-use futures::{StreamExt, TryStreamExt};
 use serde::Deserialize;
-use serde_json::Value;
 use std::{
+    collections::HashMap,
     sync::{Arc, Mutex},
     time::Duration,
 };
 use tauri::{AppHandle, Manager};
-use tokio::{pin, sync::broadcast};
+use tokio_util::sync::CancellationToken;
 use tonlib_core::cell::{BagOfCells, Cell};
+
+const BASE_INTERVAL: Duration = Duration::from_secs(1);
+const MAX_INTERVAL: Duration = Duration::from_secs(60);
 
 #[derive(Debug, Clone, Deserialize)]
 #[allow(dead_code)]
-struct TraceResponse {
-    transaction: Transaction,
-    interfaces: String,
-    emulated: bool,
+struct TracesResponse {
+    traces: Vec<Trace>,
+}
+#[derive(Debug, Clone, Deserialize)]
+#[allow(dead_code)]
+struct Trace {
+    transactions: Option<HashMap<String, Transaction>>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
 #[allow(dead_code)]
 struct Transaction {
-    hash: String,
-    success: bool,
-    out_msgs: Vec<Message>,
+    trace_id: Option<String>,
+    out_msgs: Option<Vec<Message>>,
+    emulated: Option<bool>,
 }
-
 #[derive(Debug, Clone, Deserialize)]
 #[allow(dead_code)]
 struct Message {
-    op_code: String,
-    raw_body: String,
-    #[serde(default)]
-    out_msgs: Vec<Message>,
+    hash: Option<String>,
+    opcode: Option<String>,
+    message_content: Option<MessageContent>,
 }
+#[derive(Debug, Clone, Deserialize)]
+#[allow(dead_code)]
+struct MessageContent {
+    body: Option<String>,
+}
+
 #[derive(Debug, Clone, Deserialize)]
 #[allow(dead_code)]
 struct DonationEvent {
@@ -159,20 +171,35 @@ impl DeepLinkHandler for WidyTonService {
 
 pub struct WidyTonService {
     pub nonce: Arc<Mutex<Option<String>>>,
-    sign_out_sender: broadcast::Sender<()>,
+    cancellation_token: Arc<Mutex<CancellationToken>>,
+    donations_buffer: Arc<Mutex<ItemsBuffer<String>>>,
 }
 
 impl WidyTonService {
     pub fn new() -> Self {
-        let (tx, _) = broadcast::channel(1);
         Self {
             nonce: Arc::new(Mutex::new(None)),
-            sign_out_sender: tx,
+            cancellation_token: Arc::new(Mutex::new(CancellationToken::new())),
+            donations_buffer: Arc::new(Mutex::new(ItemsBuffer::new(1001))),
         }
     }
 
     pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
+        {
+            let mut cancellation_token = self.cancellation_token.lock().unwrap();
+            *cancellation_token = CancellationToken::new();
+        }
         let database_service = app.state::<DatabaseService>();
+        let latest_donations = database_service
+            .get_latest_donations_by_service(ServiceType::WidyTon, 1000)
+            .await?;
+        {
+            let mut donations_buffer = self.donations_buffer.lock().unwrap();
+            for donation in latest_donations {
+                donations_buffer.push(donation.service_id);
+            }
+        }
+
         let service = database_service
             .get_service_with_auth_by_id(ServiceType::WidyTon)
             .await?;
@@ -182,79 +209,55 @@ impl WidyTonService {
             ..
         }) = service
         {
-            self.subscribe_to_donation_event(app.clone(), auth.donation_account_address)
+            self.poll_traces(app.clone(), auth.donation_account_address)
                 .await;
         }
 
         Ok(())
     }
 
-    pub async fn subscribe_to_donation_event(
-        &self,
-        app: AppHandle,
-        donation_account_address: String,
-    ) {
+    async fn poll_traces(&self, app: AppHandle, donation_account_address: String) {
         tauri::async_runtime::spawn(async move {
             let widy_ton_service = app.state::<Arc<WidyTonService>>();
             let reqwest_client = app.state::<reqwest::Client>();
-            let mut sign_out_receiver = widy_ton_service.sign_out_sender.subscribe();
-            let client = es::ClientBuilder::for_url(&format!(
-                "https://tonapi.io/v2/sse/accounts/traces?accounts={}&operations=0x05a73567",
-                donation_account_address
-            ))
-            .map_err(|e| {
-                log::error!("WidyTon es build error: {}", e.to_string());
-                e.to_string()
-            })
-            .unwrap()
-            .reconnect(
-                es::ReconnectOptions::reconnect(true)
-                    .retry_initial(false)
-                    .delay(Duration::from_secs(1))
-                    .backoff_factor(2)
-                    .delay_max(Duration::from_secs(60))
-                    .build(),
-            )
-            .build();
-            let stop_signal = sign_out_receiver.recv();
-            pin!(stop_signal);
-            let mut stream = client.stream().take_until(stop_signal);
 
-            while let Ok(Some(sse)) = stream.try_next().await {
-                match sse {
-                    es::SSE::Event(ev) => {
-                        if let Ok(trace) = serde_json::from_str::<TonTraceAccounts>(&ev.data) {
-                            if let Some(transaction) = widy_ton_service
-                                .get_donation_transaction(trace.hash, &reqwest_client)
-                                .await
-                            {
-                                if let Some(message) = transaction.out_msgs.first() {
-                                    if let Ok(event) =
-                                        widy_ton_service.parse_donation_event(&message.raw_body)
-                                    {
-                                        let _ = EventsService::donation(
-                                            transaction.hash,
-                                            ServiceType::WidyTon,
-                                            Some(event.name),
-                                            entity::settings::Currency::USD,
-                                            event.amount as f64 / USDT_MULTIPLICATION,
-                                            Some(event.message),
-                                            &app,
-                                        )
-                                        .await;
+            let mut current_interval = BASE_INTERVAL;
+            let cancellation_token =
+                { widy_ton_service.cancellation_token.lock().unwrap().clone() };
+            let start_utime = Utc::now().timestamp();
+            loop {
+                tokio::select! {
+                    _ = cancellation_token.cancelled() => {
+                        break;
+                    }
+                    _ = tokio::time::sleep(current_interval) => {
+                        match widy_ton_service.get_traces(donation_account_address.clone(), &reqwest_client,start_utime).await {
+                            Ok(response) => {
+                                widy_ton_service.handle_traces(&app,response.traces).await;
+                            }
+                            Err(e) => {
+                                match e {
+                                    AppError::HttpStatus { status, .. } => {
+                                        if status == 429 {
+                                            current_interval = (current_interval + Duration::from_secs(1)).min(MAX_INTERVAL);
+                                        }
                                     }
+                                    _ => {}
+
                                 }
-                            };
+
+                            }
                         }
                     }
-                    _ => {}
                 }
             }
         });
     }
 
-    fn parse_donation_event(&self, hex: &str) -> Result<DonationEvent, String> {
-        let boc_bytes = hex::decode(hex).map_err(|e| e.to_string())?;
+    fn parse_donation_event(&self, base64: &str) -> Result<DonationEvent, String> {
+        let boc_bytes = general_purpose::STANDARD
+            .decode(base64)
+            .map_err(|e| e.to_string())?;
         let boc = BagOfCells::parse(&boc_bytes).map_err(|e| e.to_string())?;
 
         let root = boc.single_root().map_err(|e| e.to_string())?;
@@ -286,24 +289,76 @@ impl WidyTonService {
         })
     }
 
-    async fn get_donation_transaction(
-        &self,
-        hash: String,
-        reqwest_client: &reqwest::Client,
-    ) -> Option<Transaction> {
-        let result = reqwest_client
-            .get(format!("https://tonapi.io/v2/traces/{hash}"))
-            .send()
-            .await;
-        if let Ok(response) = result {
-            if let Ok(trace_response) = response.json::<Value>().await {
-                let raw_transaction =
-                    trace_response["children"][0]["children"][0]["children"][0]["transaction"]
-                        .clone();
-                return serde_json::from_value::<Transaction>(raw_transaction).ok();
+    async fn handle_traces(&self, app: &AppHandle, traces: Vec<Trace>) {
+        let messages: Vec<&Message> = traces
+            .iter()
+            .filter_map(|trace| trace.transactions.as_ref())
+            .flat_map(|transactions| transactions.values())
+            .filter(|tx| tx.emulated == Some(false))
+            .flat_map(|tx| tx.out_msgs.as_deref().unwrap_or(&[]))
+            .collect();
+
+        for message in messages {
+            if let Message {
+                hash: Some(hash),
+                opcode: Some(opcode),
+                message_content: Some(MessageContent { body: Some(body) }),
+                ..
+            } = message
+                && opcode == "0x05a73567"
+            {
+                {
+                    let mut buffer = self.donations_buffer.lock().unwrap();
+                    if buffer.iter().any(|message_hash| message_hash == hash) {
+                        continue;
+                    }
+                    buffer.push(hash.to_string());
+                }
+
+                if let Ok(event) = self.parse_donation_event(body) {
+                    let _ = EventsService::donation(
+                        hash.clone(),
+                        ServiceType::WidyTon,
+                        Some(event.name),
+                        entity::settings::Currency::USD,
+                        event.amount as f64 / USDT_MULTIPLICATION,
+                        Some(event.message),
+                        &app,
+                    )
+                    .await;
+                }
             }
         }
-        None
+    }
+
+    async fn get_traces(
+        &self,
+        donation_account_address: String,
+        reqwest_client: &reqwest::Client,
+        start_utime: i64,
+    ) -> Result<TracesResponse, AppError> {
+        let response = reqwest_client
+            .get(format!(
+                "https://toncenter.com/api/v3/traces/?account={}&start_utime={}&limit=100",
+                donation_account_address, start_utime
+            ))
+            .send()
+            .await?;
+
+        let status = response.status();
+        let body = response.text().await?;
+
+        if !status.is_success() {
+            return Err(AppError::HttpStatus {
+                status: status.as_u16(),
+                body,
+            });
+        }
+
+        let traces_response: TracesResponse =
+            serde_json::from_str(&body).map_err(|e| AppError::ParseError(e.to_string()))?;
+
+        Ok(traces_response)
     }
 
     pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), String> {
@@ -316,7 +371,9 @@ impl WidyTonService {
                 authorized: false,
             })
             .await?;
-        let _ = self.sign_out_sender.send(());
+        {
+            self.cancellation_token.lock().unwrap().cancel();
+        }
         Ok(())
     }
 }

@@ -31,7 +31,7 @@ use crate::{
             traits::KickApi,
         },
     },
-    traits::ChatMessageBuffer,
+    traits::ItemsBuffer,
     utils::get_random_alert,
 };
 
@@ -42,7 +42,7 @@ pub struct KickService {
     pub scopes: String,
     pub app_token: String,
     pub auth_session: Mutex<Option<KickAuthSession>>,
-    pub chat_messages_buffer: Arc<Mutex<ChatMessageBuffer>>,
+    pub chat_messages_buffer: Arc<Mutex<ItemsBuffer<String>>>,
     expire_at: Arc<AtomicU64>,
     cancellation_token: Arc<Mutex<CancellationToken>>,
 }
@@ -63,7 +63,7 @@ impl KickService {
             scopes,
             app_token,
             auth_session: Mutex::new(None),
-            chat_messages_buffer: Arc::new(Mutex::new(ChatMessageBuffer::new(1001))),
+            chat_messages_buffer: Arc::new(Mutex::new(ItemsBuffer::new(1001))),
             expire_at: Arc::new(AtomicU64::new(0)),
             cancellation_token: Arc::new(Mutex::new(CancellationToken::new())),
         }

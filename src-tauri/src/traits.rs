@@ -1,45 +1,57 @@
 use std::collections::VecDeque;
 
 #[derive(Clone, Debug)]
-pub struct ChatMessageBuffer {
+pub struct ItemsBuffer<T> {
     capacity: usize,
-    messages: VecDeque<String>,
+    items: VecDeque<T>,
 }
 
-impl ChatMessageBuffer {
+impl<T> ItemsBuffer<T> {
     pub fn new(capacity: usize) -> Self {
         Self {
             capacity,
-            messages: VecDeque::with_capacity(capacity),
+            items: VecDeque::with_capacity(capacity),
         }
     }
 
-    pub fn push(&mut self, message: String) {
-        if self.messages.len() == self.capacity {
-            self.messages.pop_front();
+    pub fn push(&mut self, item: T) {
+        if self.items.len() == self.capacity {
+            self.items.pop_front();
         }
 
-        self.messages.push_back(message);
+        self.items.push_back(item);
+    }
+
+    pub fn push_many<I: IntoIterator<Item = T>>(&mut self, items: I) {
+        for item in items {
+            self.push(item);
+        }
     }
 
     pub fn len(&self) -> usize {
-        self.messages.len()
+        self.items.len()
     }
 
     pub fn is_empty(&self) -> bool {
-        self.messages.is_empty()
+        self.items.is_empty()
     }
 
-    pub fn iter(&self) -> impl Iterator<Item = &String> {
-        self.messages.iter()
+    pub fn iter(&self) -> impl Iterator<Item = &T> {
+        self.items.iter()
     }
 
     pub fn clear(&mut self) {
-        self.messages.clear();
+        self.items.clear();
     }
+}
 
-    pub fn is_message_not_lines_passed(&self, message: String, lines_passed: usize) -> bool {
-        self.messages
+pub trait ChatMessageBuffer {
+    fn is_message_not_lines_passed(&self, message: String, lines_passed: usize) -> bool;
+}
+
+impl ChatMessageBuffer for ItemsBuffer<String> {
+    fn is_message_not_lines_passed(&self, message: String, lines_passed: usize) -> bool {
+        self.items
             .iter()
             .rev()
             .take(lines_passed)

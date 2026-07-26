@@ -21,6 +21,7 @@ use crate::{
         kick::{KickBotService, KickService, traits::KickApi},
         twitch::{TwitchBotService, TwitchService, traits::TwitchApi},
     },
+    traits::ChatMessageBuffer,
 };
 
 pub struct CommandsService {
