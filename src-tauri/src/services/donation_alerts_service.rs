@@ -299,7 +299,9 @@ impl DonationAlertsService {
             token
         ));
 
-        let json: AuthTokenResponse = send_request(request, "auth user", "DonationAlerts").await?;
+        let json = send_request::<AuthTokenResponse>(request, "auth user", "DonationAlerts")
+            .await?
+            .ok_or("Get auth token error".to_string())?;
 
         Ok(json.data.token)
     }
@@ -313,7 +315,9 @@ impl DonationAlertsService {
             .get("https://www.donationalerts.com/api/v1/user/widget")
             .bearer_auth(auth_token);
 
-        let json: UserInfoResponse = send_request(request, "user info", "DonationAlerts").await?;
+        let json = send_request::<UserInfoResponse>(request, "user info", "DonationAlerts")
+            .await?
+            .ok_or("Get user info error".to_string())?;
         Ok(json.data)
     }
 
@@ -328,7 +332,9 @@ impl DonationAlertsService {
             .bearer_auth(auth_token)
             .json(&body);
 
-        let json: ChannelsResponse = send_request(request, "subscribe", "DonationAlerts").await?;
+        let json = send_request::<ChannelsResponse>(request, "subscribe", "DonationAlerts")
+            .await?
+            .ok_or("Subscribe error".to_string())?;
         Ok(json)
     }
 

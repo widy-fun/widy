@@ -55,7 +55,7 @@ pub trait KickApi: Send + Sync {
         &self,
         request: reqwest::RequestBuilder,
         context: &str,
-    ) -> Result<T, String> {
+    ) -> Result<Option<T>, String> {
         send_request(request, context, "Kick").await
     }
 
@@ -145,8 +145,10 @@ pub trait KickApi: Send + Sync {
                 app_token: self.app_token(),
             });
 
-        let refresh_token_response: KickAuth =
-            self.send_kick_request(request, "refresh token").await?;
+        let refresh_token_response = self
+            .send_kick_request::<KickAuth>(request, "refresh token")
+            .await?
+            .ok_or("Refresh token error".to_string())?;
 
         Ok(refresh_token_response)
     }
@@ -210,8 +212,10 @@ pub trait KickApi: Send + Sync {
     ) -> Result<ChanelInfoResponse, String> {
         let request = reqwest_client.get(format!("https://kick.com/api/v2/channels/{}", name));
 
-        let chanel_info_response: ChanelInfoResponse =
-            self.send_kick_request(request, "channel info").await?;
+        let chanel_info_response = self
+            .send_kick_request::<ChanelInfoResponse>(request, "channel info")
+            .await?
+            .ok_or("Get chanel info error".to_string())?;
 
         Ok(chanel_info_response)
     }
@@ -225,7 +229,10 @@ pub trait KickApi: Send + Sync {
             .get("https://api.kick.com/public/v1/users")
             .bearer_auth(access_token);
 
-        let user_info: UserInfoResponse = self.send_kick_request(request, "user info").await?;
+        let user_info = self
+            .send_kick_request::<UserInfoResponse>(request, "user info")
+            .await?
+            .ok_or("Get user info error".to_string())?;
 
         Ok(user_info
             .data
@@ -257,7 +264,10 @@ pub trait KickApi: Send + Sync {
             .bearer_auth(&auth.access_token)
             .json(&twitch_reward_body);
 
-        let json: serde_json::Value = self.send_kick_request(request, "add custom reward").await?;
+        let json = self
+            .send_kick_request::<serde_json::Value>(request, "add custom reward")
+            .await?
+            .ok_or("Add custom reward error".to_string())?;
 
         let reward_id = json["data"]["id"]
             .as_str()
@@ -296,8 +306,8 @@ pub trait KickApi: Send + Sync {
             ))
             .bearer_auth(&auth.access_token);
 
-        let _: serde_json::Value = self
-            .send_kick_request(request, "remove custom reward")
+        let _ = self
+            .send_kick_request::<serde_json::Value>(request, "remove custom reward")
             .await?;
 
         database_service.delete_reward_by_id(id).await?;
@@ -323,7 +333,9 @@ pub trait KickApi: Send + Sync {
                 r#type: PostChatMessageType::Bot,
             });
 
-        let _: serde_json::Value = self.send_kick_request(request, "chat message").await?;
+        let _ = self
+            .send_kick_request::<serde_json::Value>(request, "chat message")
+            .await?;
 
         Ok(())
     }

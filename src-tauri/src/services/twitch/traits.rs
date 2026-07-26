@@ -50,7 +50,7 @@ pub trait TwitchApi: Send + Sync {
         &self,
         request: reqwest::RequestBuilder,
         context: &str,
-    ) -> Result<T, String> {
+    ) -> Result<Option<T>, String> {
         send_request(request, context, "Twitch").await
     }
 
@@ -152,8 +152,10 @@ pub trait TwitchApi: Send + Sync {
             .post("https://id.twitch.tv/oauth2/device")
             .form(&[("client_id", self.client_id()), ("scopes", self.scopes())]);
 
-        let device_code_response: TwitchDeviceCodeResponse =
-            self.send_twitch_request(request, "device code").await?;
+        let device_code_response = self
+            .send_twitch_request::<TwitchDeviceCodeResponse>(request, "device code")
+            .await?
+            .ok_or("Get device code error".to_string())?;
 
         Ok(device_code_response)
     }
@@ -173,8 +175,10 @@ pub trait TwitchApi: Send + Sync {
             )
             .query(&[("broadcaster_id", broadcaster_id)]);
 
-        let chanel_badges: BadgeInfoResponse =
-            self.send_twitch_request(request, "channel badges").await?;
+        let chanel_badges = self
+            .send_twitch_request::<BadgeInfoResponse>(request, "channel badges")
+            .await?
+            .ok_or("Get chanel badges error".to_string())?;
 
         Ok(chanel_badges)
     }
@@ -192,8 +196,10 @@ pub trait TwitchApi: Send + Sync {
                 std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap_or(self.client_id()),
             );
 
-        let global_badges: BadgeInfoResponse =
-            self.send_twitch_request(request, "global badges").await?;
+        let global_badges: BadgeInfoResponse = self
+            .send_twitch_request(request, "global badges")
+            .await?
+            .ok_or("Get global badges error".to_string())?;
 
         Ok(global_badges)
     }
@@ -219,8 +225,10 @@ pub trait TwitchApi: Send + Sync {
                 ),
             ]);
 
-        let token_response: TwitchTokenResponse =
-            self.send_twitch_request(request, "token").await?;
+        let token_response: TwitchTokenResponse = self
+            .send_twitch_request(request, "token")
+            .await?
+            .ok_or("Get token error".to_string())?;
 
         let token_info: TwitchTokenInfo = self
             .validate_token(
@@ -258,8 +266,10 @@ pub trait TwitchApi: Send + Sync {
                 ("scope", self.scopes()),
             ]);
 
-        let token_response: TwitchTokenResponse =
-            self.send_twitch_request(request, "token mock").await?;
+        let token_response: TwitchTokenResponse = self
+            .send_twitch_request(request, "token mock")
+            .await?
+            .ok_or("Get token error".to_string())?;
 
         let auth = TwitchAuth {
             access_token: token_response.access_token.clone(),
@@ -289,8 +299,10 @@ pub trait TwitchApi: Send + Sync {
                 ("client_id", client_id.to_owned()),
             ]);
 
-        let refresh_token_response: TwitchRefreshTokenResponse =
-            self.send_twitch_request(request, "refresh token").await?;
+        let refresh_token_response: TwitchRefreshTokenResponse = self
+            .send_twitch_request(request, "refresh token")
+            .await?
+            .ok_or("Get refresh token error".to_string())?;
 
         Ok(refresh_token_response)
     }
@@ -305,8 +317,10 @@ pub trait TwitchApi: Send + Sync {
             .get(format!("{}/validate", auth_endpoint))
             .header("Authorization", format!("OAuth {}", token));
 
-        let token_info: TwitchTokenInfo =
-            self.send_twitch_request(request, "token validate").await?;
+        let token_info: TwitchTokenInfo = self
+            .send_twitch_request(request, "token validate")
+            .await?
+            .ok_or("Validate token error".to_string())?;
 
         Ok(token_info.clone())
     }
@@ -348,9 +362,10 @@ pub trait TwitchApi: Send + Sync {
             .query(&[("broadcaster_id", &auth.user_id)])
             .json(&twitch_reward_body);
 
-        let json: serde_json::Value = self
-            .send_twitch_request(request, "add custom reward")
-            .await?;
+        let json = self
+            .send_twitch_request::<serde_json::Value>(request, "add custom reward")
+            .await?
+            .ok_or("Add custom reward error".to_string())?;
 
         let reward_id = json["data"][0]["id"]
             .as_str()
@@ -400,8 +415,8 @@ pub trait TwitchApi: Send + Sync {
                 ),
             ]);
 
-        let _: serde_json::Value = self
-            .send_twitch_request(request, "remove custom reward")
+        let _ = self
+            .send_twitch_request::<serde_json::Value>(request, "remove custom reward")
             .await?;
 
         database_service.delete_reward_by_id(id).await?;
@@ -581,9 +596,10 @@ pub trait TwitchApi: Send + Sync {
             .header("Content-Type", "application/json")
             .json(&body);
 
-        let json: serde_json::Value = self
-            .send_twitch_request(request, "create subscription")
-            .await?;
+        let json = self
+            .send_twitch_request::<serde_json::Value>(request, "create subscription")
+            .await?
+            .ok_or("Create subscription error")?;
 
         let subscription_id = json["data"][0]["id"].as_str().map(|s| s.to_string());
 
@@ -606,8 +622,8 @@ pub trait TwitchApi: Send + Sync {
             .header("Client-Id", self.client_id())
             .query(&[("id", subscription_id)]);
 
-        let _: serde_json::Value = self
-            .send_twitch_request(request, "delete subscription")
+        let _ = self
+            .send_twitch_request::<serde_json::Value>(request, "delete subscription")
             .await?;
 
         Ok(())
@@ -653,7 +669,9 @@ pub trait TwitchApi: Send + Sync {
                 pin: None,
             });
 
-        let _: serde_json::Value = self.send_twitch_request(request, "chat message").await?;
+        let _ = self
+            .send_twitch_request::<serde_json::Value>(request, "chat message")
+            .await?;
 
         Ok(())
     }
@@ -682,8 +700,8 @@ pub trait TwitchApi: Send + Sync {
                 for_source_only: None,
             });
 
-        let _: serde_json::Value = self
-            .send_twitch_request(request, "chat announcement")
+        let _ = self
+            .send_twitch_request::<serde_json::Value>(request, "chat announcement")
             .await?;
 
         Ok(())

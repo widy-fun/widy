@@ -220,7 +220,7 @@ impl DestreamService {
             overlayid
         ));
 
-        let _: serde_json::Value = send_request(request, "overlay info", "Destream").await?;
+        let _ = send_request::<serde_json::Value>(request, "overlay info", "Destream").await?;
         Ok(())
     }
 

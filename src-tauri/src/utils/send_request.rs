@@ -4,7 +4,7 @@ pub async fn send_request<T: DeserializeOwned>(
     request: reqwest::RequestBuilder,
     context: &str,
     service: &str,
-) -> Result<T, String> {
+) -> Result<Option<T>, String> {
     let response = request.send().await.map_err(|e| {
         log::error!("{service}: {context} request failed: {e}");
         e.to_string()
@@ -21,7 +21,11 @@ pub async fn send_request<T: DeserializeOwned>(
         return Err(body);
     }
 
-    serde_json::from_str(&body).map_err(|e| {
+    if body.trim().is_empty() {
+        return Ok(None);
+    }
+
+    serde_json::from_str(&body).map(Some).map_err(|e| {
         log::error!("{service}: {context} failed to parse response: {e}");
         e.to_string()
     })

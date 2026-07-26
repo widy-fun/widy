@@ -244,7 +244,9 @@ impl DonatePayService {
         let request = reqwest_client
             .post("https://donatepay.ru/api/v2/socket/token")
             .json(&serde_json::json!({ "access_token": access_token }));
-        let token_response: TokenResponse = send_request(request, "token", "DonatePay").await?;
+        let token_response = send_request::<TokenResponse>(request, "token", "DonatePay")
+            .await?
+            .ok_or("Get token error".to_string())?;
         Ok(token_response.token)
     }
 
@@ -258,7 +260,9 @@ impl DonatePayService {
             access_token
         ));
 
-        let json: UserInfoResponse = send_request(request, "user info", "DonatePay").await?;
+        let json = send_request::<UserInfoResponse>(request, "user info", "DonatePay")
+            .await?
+            .ok_or("Get user info error".to_string())?;
         Ok(json.data)
     }
 
