@@ -1,22 +1,27 @@
 use std::{fs, path::PathBuf};
 
-pub fn copy_assets_to_static(assets_patch: &PathBuf, static_path: &PathBuf) -> Result<(), String> {
+use crate::error::AppError;
+
+pub fn copy_assets_to_static(
+    assets_patch: &PathBuf,
+    static_path: &PathBuf,
+) -> Result<(), AppError> {
     fs::create_dir_all(&static_path).map_err(|e| {
-        log::error!("Crate static dir error: {}", e.to_string());
-        e.to_string()
+        log::error!("Create static dir error: {}", e);
+        AppError::Io(e)
     })?;
     let dir = fs::read_dir(assets_patch).map_err(|e| {
-        log::error!("Read static dir error: {}", e.to_string());
-        e.to_string()
+        log::error!("Read assets dir error: {}", e);
+        AppError::Io(e)
     })?;
     for entry in dir {
         let entry = entry.map_err(|e| {
-            log::error!("Entry error: {}", e.to_string());
-            e.to_string()
+            log::error!("Entry error: {}", e);
+            AppError::Io(e)
         })?;
         fs::copy(entry.path(), static_path.join(entry.file_name())).map_err(|e| {
-            log::error!("Copy error: {}", e.to_string());
-            e.to_string()
+            log::error!("Copy error: {}", e);
+            AppError::Io(e)
         })?;
     }
     Ok(())
