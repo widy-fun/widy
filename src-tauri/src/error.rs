@@ -17,6 +17,12 @@ pub enum AppError {
 
     #[error("Database error: {0}")]
     DbError(#[from] sea_orm::DbErr),
+
+    #[error("{0}")]
+    Custom(String),
+
+    #[error("IO error: {0}")]
+    Io(#[from] std::io::Error),
 }
 
 impl From<reqwest::Error> for AppError {

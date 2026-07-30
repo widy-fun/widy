@@ -49,7 +49,10 @@ pub async fn init(app: AppHandle, flag: State<'_, ExecutionFlag>) -> Result<(), 
         .connect_timeout(Duration::from_secs(10))
         .timeout(Duration::from_secs(30))
         .build()
-        .map_err(|e| format!("reqwest build error: {}", e))?;
+        .map_err(|e| {
+            log::error!("reqwest build error: {}", e);
+            AppError::Custom(e.to_string())
+        })?;
     app.manage(reqwest_client);
 
     //ws
@@ -62,7 +65,7 @@ pub async fn init(app: AppHandle, flag: State<'_, ExecutionFlag>) -> Result<(), 
         &config_service.static_path,
         &config_service.auc_fighter_path,
     );
-    axum_service.run(&app).await?;
+    axum_service.start(&app).await?;
     app.manage(axum_service);
     copy_assets_to_static(&config_service.assets_path, &config_service.static_path)?;
 

@@ -1,4 +1,5 @@
 use crate::constants::HTTP_WIDGET_PORT;
+use crate::error::AppError;
 use crate::repositories::{
     AlertsRepository, AucFighterSettingsRepository, GoalsRepository, MediaSettingsRepository,
     MessagesRepository, NsfwRepository, ServicesRepository, SettingsRepository, WidgetsRepository,
@@ -97,20 +98,18 @@ impl AxumService {
         }
     }
 
-    pub async fn run(&self, app: &AppHandle) -> Result<(), String> {
+    pub async fn start(&self, app: &AppHandle) -> Result<(), AppError> {
         let widget_path = self.widget_path.clone();
         let static_path = self.static_path.clone();
         let auc_fighter_path = self.auc_fighter_path.clone();
         #[cfg(debug_assertions)]
-        let cors = CorsLayer::new()
-            .allow_origin(HeaderValue::from_static("http://localhost:12553"))
-            .allow_origin(HeaderValue::from_static("http://localhost:1420"))
-            .allow_methods(Any)
-            .allow_headers(Any);
+        let extra_origin = "http://localhost:1420";
         #[cfg(not(debug_assertions))]
+        let extra_origin = "http://tauri.localhost";
+
         let cors = CorsLayer::new()
             .allow_origin(HeaderValue::from_static("http://localhost:12553"))
-            .allow_origin(HeaderValue::from_static("http://tauri.localhost"))
+            .allow_origin(HeaderValue::from_static(extra_origin))
             .allow_methods(Any)
             .allow_headers(Any);
 
@@ -160,13 +159,12 @@ impl AxumService {
             .layer(cors)
             .with_state(AxumState { app: app.clone() });
 
-        let listener = match tokio::net::TcpListener::bind(("127.0.0.1", HTTP_WIDGET_PORT)).await {
-            Ok(listener) => listener,
-            Err(e) => {
-                log::error!("Axum tcp listener error: {}", e.to_string());
-                return Err(e.to_string());
-            }
-        };
+        let listener = tokio::net::TcpListener::bind(("127.0.0.1", HTTP_WIDGET_PORT))
+            .await
+            .map_err(|e| {
+                log::error!("Axum tcp listener error: {}", e);
+                AppError::Io(e)
+            })?;
 
         let server = axum::serve(listener, axum_router);
 
