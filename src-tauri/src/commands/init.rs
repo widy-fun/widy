@@ -1,3 +1,4 @@
+use crate::error::AppError;
 use crate::services::kick::{KickBotService, KickService};
 use crate::services::twitch::traits::TwitchApi;
 use crate::services::twitch::{TwitchBotService, TwitchService};
@@ -19,7 +20,7 @@ use tokio::sync::Mutex;
 pub struct ExecutionFlag(pub Mutex<bool>);
 
 #[tauri::command]
-pub async fn init(app: AppHandle, flag: State<'_, ExecutionFlag>) -> Result<(), String> {
+pub async fn init(app: AppHandle, flag: State<'_, ExecutionFlag>) -> Result<(), AppError> {
     let mut executed = flag.0.lock().await;
     if *executed {
         return Ok(());

@@ -1,7 +1,7 @@
 use serde::Serialize;
 use thiserror::Error;
 
-#[derive(Debug, Error, Serialize)]
+#[derive(Debug, Error)]
 pub enum AppError {
     #[error("HTTP request failed: {0}")]
     HttpRequest(String),
@@ -11,6 +11,12 @@ pub enum AppError {
 
     #[error("Failed to parse response: {0}")]
     ParseError(String),
+
+    #[error("Configuration error: {0}")]
+    Config(String),
+
+    #[error("Database error: {0}")]
+    DbError(#[from] sea_orm::DbErr),
 }
 
 impl From<reqwest::Error> for AppError {
@@ -23,5 +29,14 @@ impl From<reqwest::Error> for AppError {
         } else {
             Self::HttpRequest(error.to_string())
         }
+    }
+}
+
+impl Serialize for AppError {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(&self.to_string())
     }
 }

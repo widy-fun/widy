@@ -1,8 +1,26 @@
 use std::path::PathBuf;
 
-use tauri::{path::BaseDirectory, AppHandle, Manager};
+use tauri::{AppHandle, Manager, path::BaseDirectory};
 
-use crate::constants::{SQLITE_DB, STATIC_DIR};
+use crate::{
+    constants::{SQLITE_DB, STATIC_DIR},
+    error::AppError,
+    utils::resolve_path,
+};
+
+macro_rules! load_env {
+    ($name:literal) => {{
+        #[cfg(not(debug_assertions))]
+        {
+            env!($name).to_string()
+        }
+        #[cfg(debug_assertions)]
+        {
+            std::env::var($name)
+                .map_err(|_| AppError::Config(concat!($name, " must be set").to_string()))?
+        }
+    }};
+}
 
 #[derive(Clone, Debug)]
 pub struct ConfigService {
@@ -27,90 +45,46 @@ pub struct ConfigService {
 }
 
 impl ConfigService {
-    pub fn new(app: &AppHandle) -> Result<Self, String> {
-        #[cfg(not(debug_assertions))]
-        let twitch_client_id: String = env!("TWITCH_CLIENT_ID").to_string();
-        #[cfg(not(debug_assertions))]
-        let widy_sol_program_id: String = env!("WIDY_SOL_PROGRAM_ID").to_string();
-        #[cfg(not(debug_assertions))]
-        let kick_client_id: String = env!("KICK_CLIENT_ID").to_string();
-        #[cfg(not(debug_assertions))]
-        let kick_token_endpoint: String = env!("KICK_TOKEN_ENDPOINT").to_string();
-        #[cfg(not(debug_assertions))]
-        let kick_redirect_uri: String = env!("KICK_REDIRECT_URI").to_string();
-        #[cfg(not(debug_assertions))]
-        let kick_bot_client_id: String = env!("KICK_BOT_CLIENT_ID").to_string();
-        #[cfg(not(debug_assertions))]
-        let kick_bot_token_endpoint: String = env!("KICK_BOT_TOKEN_ENDPOINT").to_string();
-        #[cfg(not(debug_assertions))]
-        let kick_bot_redirect_uri: String = env!("KICK_BOT_REDIRECT_URI").to_string();
-        #[cfg(not(debug_assertions))]
-        let app_token: String = env!("APP_TOKEN").to_string();
+    pub fn new(app: &AppHandle) -> Result<Self, AppError> {
+        let twitch_client_id = load_env!("TWITCH_CLIENT_ID");
+        let widy_sol_program_id = load_env!("WIDY_SOL_PROGRAM_ID");
+        let kick_client_id = load_env!("KICK_CLIENT_ID");
+        let kick_token_endpoint = load_env!("KICK_TOKEN_ENDPOINT");
+        let kick_redirect_uri = load_env!("KICK_REDIRECT_URI");
+        let kick_bot_client_id = load_env!("KICK_BOT_CLIENT_ID");
+        let kick_bot_token_endpoint = load_env!("KICK_BOT_TOKEN_ENDPOINT");
+        let kick_bot_redirect_uri = load_env!("KICK_BOT_REDIRECT_URI");
+        let app_token = load_env!("APP_TOKEN");
 
-        #[cfg(debug_assertions)]
-        let twitch_client_id: String =
-            std::env::var("TWITCH_CLIENT_ID").expect("TWITCH_CLIENT_ID must be set");
-        #[cfg(debug_assertions)]
-        let widy_sol_program_id: String =
-            std::env::var("WIDY_SOL_PROGRAM_ID").expect("WIDY_SOL_PROGRAM_ID must be set");
-        #[cfg(debug_assertions)]
-        let kick_client_id: String =
-            std::env::var("KICK_CLIENT_ID").expect("KICK_CLIENT_ID must be set");
-        #[cfg(debug_assertions)]
-        let kick_token_endpoint: String =
-            std::env::var("KICK_TOKEN_ENDPOINT").expect("KICK_TOKEN_ENDPOINT must be set");
-        #[cfg(debug_assertions)]
-        let kick_redirect_uri: String =
-            std::env::var("KICK_REDIRECT_URI").expect("KICK_REDIRECT_URI must be set");
-        #[cfg(debug_assertions)]
-        let kick_bot_client_id: String =
-            std::env::var("KICK_BOT_CLIENT_ID").expect("KICK_BOT_CLIENT_ID must be set");
-        #[cfg(debug_assertions)]
-        let kick_bot_token_endpoint: String =
-            std::env::var("KICK_BOT_TOKEN_ENDPOINT").expect("KICK_BOT_TOKEN_ENDPOINT must be set");
-        #[cfg(debug_assertions)]
-        let kick_bot_redirect_uri: String =
-            std::env::var("KICK_BOT_REDIRECT_URI").expect("KICK_BOT_REDIRECT_URI must be set");
-        #[cfg(debug_assertions)]
-        let app_token: String = std::env::var("APP_TOKEN").expect("APP_TOKEN must be set");
-
-        let db_path = app
-            .path()
-            .resolve(SQLITE_DB.to_string(), BaseDirectory::AppLocalData)
-            .map_err(|e| format!("Failed to resolve database path: {}", e))?;
-        let widget_path = app
-            .path()
-            .resolve("dist-widget", BaseDirectory::Resource)
-            .map_err(|e| format!("Failed to resolve widget path: {}", e))?;
-        let nsfw_model_path = app
-            .path()
-            .resolve("nsfw/erax_nsfw_yolo11m.onnx", BaseDirectory::Resource)
-            .map_err(|e| format!("Failed to resolve widget path: {}", e))?;
-        let widgets_path = app
-            .path()
-            .resolve("widgets", BaseDirectory::AppLocalData)
-            .map_err(|e| format!("Failed to resolve widgets path: {}", e))?;
-
-        let auc_fighter_path = app
-            .path()
-            .resolve("auc-fighter", BaseDirectory::Resource)
-            .map_err(|e| format!("Failed to resolve auc-fighter path: {}", e))?;
-        let static_path = app
-            .path()
-            .resolve(format!("{}", STATIC_DIR), BaseDirectory::AppLocalData)
-            .map_err(|e| format!("Failed to resolve static directory path: {}", e))?;
-        let audio_path = app
-            .path()
-            .resolve(format!("{}/audio", STATIC_DIR), BaseDirectory::AppLocalData)
-            .map_err(|e| format!("Failed to resolve audio directory path: {}", e))?;
-        let assets_path = app
-            .path()
-            .resolve("assets", BaseDirectory::Resource)
-            .map_err(|e| format!("Failed to resolve assets path: {}", e))?;
+        let db_path = resolve_path(app, SQLITE_DB, BaseDirectory::AppLocalData, "database")?;
+        let widget_path = resolve_path(app, "dist-widget", BaseDirectory::Resource, "widget")?;
+        let nsfw_model_path = resolve_path(
+            app,
+            "nsfw/erax_nsfw_yolo11m.onnx",
+            BaseDirectory::Resource,
+            "nsfw model",
+        )?;
+        let widgets_path = resolve_path(app, "widgets", BaseDirectory::AppLocalData, "widgets")?;
+        let auc_fighter_path =
+            resolve_path(app, "auc-fighter", BaseDirectory::Resource, "auc-fighter")?;
+        let static_path = resolve_path(
+            app,
+            STATIC_DIR.to_string(),
+            BaseDirectory::AppLocalData,
+            "static directory",
+        )?;
+        let audio_path = resolve_path(
+            app,
+            format!("{}/audio", STATIC_DIR),
+            BaseDirectory::AppLocalData,
+            "audio directory",
+        )?;
+        let assets_path = resolve_path(app, "assets", BaseDirectory::Resource, "assets")?;
         let tmp_path = app
             .path()
             .temp_dir()
-            .map_err(|e| format!("Failed to resolve tmp path: {}", e))?;
+            .map_err(|e| AppError::Config(format!("Failed to resolve tmp path: {}", e)))?;
+
         Ok(Self {
             db_path,
             widget_path,
