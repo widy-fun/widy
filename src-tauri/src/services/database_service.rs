@@ -3,12 +3,14 @@ use sea_orm::{ConnectOptions, Database, DatabaseConnection};
 use std::path::PathBuf;
 use tauri::is_dev;
 
+use crate::error::AppError;
+
 #[derive(Clone, Debug)]
 pub struct DatabaseService {
     pub connection: DatabaseConnection,
 }
 impl DatabaseService {
-    pub async fn new(db_path: &PathBuf, version: &str) -> Result<Self, String> {
+    pub async fn new(db_path: &PathBuf, version: &str) -> Result<Self, AppError> {
         let db_url = format!("sqlite://{}?mode=rwc", db_path.to_string_lossy());
 
         let options = Self::get_connect_options(db_url);
@@ -46,22 +48,18 @@ impl DatabaseService {
             });
         options
     }
-    async fn establish_connection(options: ConnectOptions) -> Result<DatabaseConnection, String> {
+    async fn establish_connection(options: ConnectOptions) -> Result<DatabaseConnection, AppError> {
         Database::connect(options).await.map_err(|e| {
-            log::error!("Database connect error: {}", e.to_string());
-            e.to_string()
+            log::error!("Database connect error: {}", e);
+            AppError::DbError(e)
         })
     }
-    async fn run_migrations(connection: &DatabaseConnection) -> Result<(), String> {
-        match Migrator::up(connection, None).await {
-            Ok(_) => {
-                log::info!("Migrations run");
-                Ok(())
-            }
-            Err(e) => {
-                log::error!("Migration error: {}", e.to_string());
-                Err(e.to_string())
-            }
-        }
+    async fn run_migrations(connection: &DatabaseConnection) -> Result<(), AppError> {
+        Migrator::up(connection, None).await.map_err(|e| {
+            log::error!("Migration error: {}", e);
+            AppError::DbError(e)
+        })?;
+        log::info!("Migrations run");
+        Ok(())
     }
 }
