@@ -4,6 +4,7 @@ use entity::commands::*;
 use tauri::{AppHandle, State};
 
 use crate::{
+    error::AppError,
     repositories::CommandsRepository,
     services::{CommandsService, DatabaseService},
 };
@@ -14,7 +15,7 @@ pub async fn create_command(
     database_service: State<'_, DatabaseService>,
     commands_service: State<'_, CommandsService>,
     command: Command,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     database_service.create_command(command.clone()).await?;
     if let Some(timer) = command.clone().timer {
         commands_service.add_timer(

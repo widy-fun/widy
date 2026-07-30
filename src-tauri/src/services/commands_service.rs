@@ -15,6 +15,7 @@ use tokio::{task::AbortHandle, time::interval};
 use uuid::Uuid;
 
 use crate::{
+    error::AppError,
     repositories::CommandsRepository,
     services::{
         DatabaseService, EventsService, UnifiedChatMessage,
@@ -37,7 +38,7 @@ impl CommandsService {
         }
     }
 
-    pub async fn start(&self, app: &AppHandle) -> Result<(), String> {
+    pub async fn start(&self, app: &AppHandle) -> Result<(), AppError> {
         let database_service = app.state::<DatabaseService>();
         let commands = database_service.get_commands().await?;
         *self.commands.lock().unwrap() = commands.clone();

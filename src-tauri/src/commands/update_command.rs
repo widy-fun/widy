@@ -1,6 +1,7 @@
 use std::time::Duration;
 
 use crate::{
+    error::AppError,
     repositories::CommandsRepository,
     services::{CommandsService, DatabaseService},
 };
@@ -13,7 +14,7 @@ pub async fn update_command(
     database_service: State<'_, DatabaseService>,
     commands_service: State<'_, CommandsService>,
     command: Command,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     if let Command {
         timer: Some(timer), ..
     } = command.clone()

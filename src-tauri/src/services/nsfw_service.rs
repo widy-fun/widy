@@ -39,11 +39,11 @@ pub struct NsfwService {
 }
 
 impl NsfwService {
-    pub fn new() -> Result<Self, String> {
-        Ok(Self {
+    pub fn new() -> Self {
+        Self {
             is_stopping: Arc::new(AtomicBool::new(false)),
             selected_window: Arc::new(Mutex::new(None)),
-        })
+        }
     }
 
     pub async fn start(&self, app: AppHandle, window_info: WindowInfo) -> Result<(), String> {

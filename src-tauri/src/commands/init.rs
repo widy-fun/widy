@@ -165,7 +165,7 @@ pub async fn init(app: AppHandle, flag: State<'_, ExecutionFlag>) -> Result<(), 
     app.manage(deep_link_dispatcher_service);
 
     //nsfw
-    let nsfw_service = NsfwService::new()?;
+    let nsfw_service = NsfwService::new();
     app.manage(nsfw_service);
 
     //commands

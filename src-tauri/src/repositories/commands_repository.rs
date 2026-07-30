@@ -4,7 +4,7 @@ use migration::Expr;
 use sea_orm::{ActiveModelTrait, ActiveValue::Set, ColumnTrait, EntityTrait, QueryFilter};
 use uuid::Uuid;
 
-use crate::{repositories::AlertsRepository, services::DatabaseService};
+use crate::{error::AppError, repositories::AlertsRepository, services::DatabaseService};
 
 #[async_trait]
 pub trait CommandsRepository: Send + Sync {
@@ -13,26 +13,26 @@ pub trait CommandsRepository: Send + Sync {
         &self,
         trigger: &String,
     ) -> Result<Option<Command>, String>;
-    async fn get_commands(&self) -> Result<Vec<Command>, String>;
-    async fn create_command(&self, command: Command) -> Result<(), String>;
+    async fn get_commands(&self) -> Result<Vec<Command>, AppError>;
+    async fn create_command(&self, command: Command) -> Result<(), AppError>;
     async fn update_command(&self, command: Command) -> Result<(), String>;
     async fn delete_command_by_id(&self, id: Uuid) -> Result<(), String>;
 }
 
 #[async_trait]
 impl CommandsRepository for DatabaseService {
-    async fn get_commands(&self) -> Result<Vec<Command>, String> {
+    async fn get_commands(&self) -> Result<Vec<Command>, AppError> {
         Entity::find()
             .left_join(entity::alerts::Entity)
             .into_partial_model()
             .all(&self.connection)
             .await
             .map_err(|e| {
-                log::error!("Get commands error: {}", e.to_string());
-                e.to_string()
+                log::error!("Get commands error: {}", e);
+                AppError::DbError(e)
             })
     }
-    async fn create_command(&self, command: Command) -> Result<(), String> {
+    async fn create_command(&self, command: Command) -> Result<(), AppError> {
         let query_builder = ActiveModel::builder()
             .set_id(command.id)
             .set_name(command.name)
@@ -51,14 +51,14 @@ impl CommandsRepository for DatabaseService {
                 .insert(&self.connection)
                 .await
                 .map_err(|e| {
-                    log::error!("Save command error: {}", e.to_string());
-                    e.to_string()
+                    log::error!("Save command error: {}", e);
+                    AppError::DbError(e)
                 })?;
             return Ok(());
         }
         query_builder.insert(&self.connection).await.map_err(|e| {
-            log::error!("Save command error: {}", e.to_string());
-            e.to_string()
+            log::error!("Save command error: {}", e);
+            AppError::DbError(e)
         })?;
 
         Ok(())
