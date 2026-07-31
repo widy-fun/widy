@@ -9,9 +9,8 @@ import {
 	IconButton,
 	Typography,
 } from "@mui/material";
-import type { SerializedError } from "@reduxjs/toolkit";
 import { showSnackBar } from "@widy/react";
-import { AlertSeverity, type IGoal } from "@widy/sdk";
+import { AlertSeverity, type IGoal, type SerializedAppError } from "@widy/sdk";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
@@ -50,7 +49,7 @@ const GoalCard = ({ goal }: { goal: IGoal }) => {
 							}),
 						);
 					} catch (error) {
-						const err = error as SerializedError;
+						const err = error as SerializedAppError;
 						dispatch(
 							showSnackBar({
 								message: err.message as string,

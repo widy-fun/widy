@@ -1,10 +1,10 @@
-use crate::{repositories::RewardsRepository, services::DatabaseService};
+use crate::{error::AppError, repositories::RewardsRepository, services::DatabaseService};
 use entity::rewards::*;
 use tauri::State;
 
 #[tauri::command]
 pub async fn get_rewards(
     database_service: State<'_, DatabaseService>,
-) -> Result<Vec<Reward>, String> {
+) -> Result<Vec<Reward>, AppError> {
     database_service.get_rewards().await
 }

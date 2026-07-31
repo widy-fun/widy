@@ -1,28 +1,19 @@
 use std::{fs, path::PathBuf};
 
-use crate::error::AppError;
+use crate::{error::AppError, utils::log_and_wrap_error};
 
 pub fn copy_assets_to_static(
     assets_patch: &PathBuf,
     static_path: &PathBuf,
 ) -> Result<(), AppError> {
-    fs::create_dir_all(&static_path).map_err(|e| {
-        log::error!("Create static dir error: {}", e);
-        AppError::Io(e)
-    })?;
-    let dir = fs::read_dir(assets_patch).map_err(|e| {
-        log::error!("Read assets dir error: {}", e);
-        AppError::Io(e)
-    })?;
+    fs::create_dir_all(&static_path)
+        .map_err(|e| log_and_wrap_error("Create static dir error", e))?;
+    let dir =
+        fs::read_dir(assets_patch).map_err(|e| log_and_wrap_error("Read assets dir error", e))?;
     for entry in dir {
-        let entry = entry.map_err(|e| {
-            log::error!("Entry error: {}", e);
-            AppError::Io(e)
-        })?;
-        fs::copy(entry.path(), static_path.join(entry.file_name())).map_err(|e| {
-            log::error!("Copy error: {}", e);
-            AppError::Io(e)
-        })?;
+        let entry = entry.map_err(|e| log_and_wrap_error("Entry error", e))?;
+        fs::copy(entry.path(), static_path.join(entry.file_name()))
+            .map_err(|e| log_and_wrap_error("Copy error", e))?;
     }
     Ok(())
 }

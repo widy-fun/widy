@@ -13,11 +13,13 @@ use tokio::sync::broadcast;
 
 use crate::{
     constants::USDT_MULTIPLICATION,
+    error::AppError,
     repositories::ServicesRepository,
     services::{
         AppEvent, DatabaseService, DeepLinkHandler, EventMessage, EventsService,
         WebSocketBroadcaster,
     },
+    utils::log_and_wrap_error,
 };
 
 #[derive(Debug, Clone)]
@@ -139,7 +141,7 @@ impl WidySolService {
         }
     }
 
-    pub async fn connect(&self, app: &AppHandle) -> core::result::Result<(), String> {
+    pub async fn connect(&self, app: &AppHandle) -> core::result::Result<(), AppError> {
         let database_service = app.state::<DatabaseService>();
         let service = database_service
             .get_service_with_auth_by_id(ServiceType::WidySol)
@@ -172,10 +174,7 @@ impl WidySolService {
                 .program(Pubkey::from_str_const(
                     &widy_sol_service.widy_sol_program_id,
                 ))
-                .map_err(|e| {
-                    ::log::error!("WidySol program error: {}", e);
-                    e.to_string()
-                })
+                .map_err(|e| log_and_wrap_error("Program error", e))
                 .unwrap();
             let subscription = program
                 .on(move |ctx: &EventContext, event: DonationEvent| {
@@ -206,10 +205,7 @@ impl WidySolService {
                     }
                 })
                 .await
-                .map_err(|e| {
-                    ::log::error!("WidySol subscription error: {}", e);
-                    e.to_string()
-                })
+                .map_err(|e| log_and_wrap_error("Subscription error", e))
                 .unwrap();
 
             sign_out_receiver.recv().await.ok();
@@ -217,7 +213,7 @@ impl WidySolService {
         });
     }
 
-    pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), String> {
+    pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), AppError> {
         let database_service = app.state::<DatabaseService>();
         database_service
             .update_service(entity::services::Model {

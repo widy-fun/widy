@@ -1,6 +1,8 @@
 use crate::{
+    error::AppError,
     repositories::ServicesRepository,
     services::{DatabaseService, EventsService},
+    utils::send_request,
 };
 use entity::{
     services::{ServiceAuth, ServiceType, TributeAuth},
@@ -8,7 +10,6 @@ use entity::{
 };
 use eventsource_client::{self as es, Client};
 use futures::{StreamExt, TryStreamExt};
-use http::StatusCode;
 use serde::Deserialize;
 use std::time::Duration;
 use tauri::{AppHandle, Manager};
@@ -50,7 +51,7 @@ impl TributeService {
         }
     }
 
-    pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
+    pub async fn connect(&self, app: &AppHandle) -> Result<(), AppError> {
         let database_service = app.state::<DatabaseService>();
         let service = database_service
             .get_service_with_auth_by_id(ServiceType::Tribute)
@@ -62,11 +63,13 @@ impl TributeService {
         }) = service
         {
             let reqwest_client = app.state::<reqwest::Client>();
-            if let Err(e) = self.get_products(&reqwest_client, &auth.api_key).await {
+            if let Err(AppError::HttpStatus { status: 401, .. }) =
+                self.get_products(&reqwest_client, &auth.api_key).await
+            {
                 database_service
                     .update_service_auth(ServiceType::Tribute, None, false)
                     .await?;
-                return Err(e);
+                return Err(AppError::HttpRequest("Unauthorized".to_string()));
             }
             database_service
                 .update_service_auth(
@@ -137,26 +140,17 @@ impl TributeService {
         &self,
         reqwest_client: &reqwest::Client,
         api_key: &str,
-    ) -> Result<StatusCode, String> {
-        let response = reqwest_client
+    ) -> Result<serde_json::Value, AppError> {
+        let request = reqwest_client
             .get("https://tribute.tg/api/v1/products")
-            .header("Api-Key", api_key)
-            .send()
-            .await
-            .map_err(|e| {
-                log::error!("Failed to send products request: {}", e);
-                e.to_string()
-            })?;
-        if response.status().is_success() {
-            return Ok(response.status());
-        } else {
-            let error = format!("Failed to get products: HTTP {}", response.status());
-            log::error!("{}", error);
-            Err(error)
-        }
+            .header("Api-Key", api_key);
+        let result = send_request::<serde_json::Value>(request, "products", "Tribute")
+            .await?
+            .ok_or(AppError::HttpRequest("Get products error".to_string()))?;
+        Ok(result)
     }
 
-    pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), String> {
+    pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), AppError> {
         let database_service = app.state::<DatabaseService>();
         database_service
             .update_service(entity::services::Model {

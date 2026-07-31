@@ -1,7 +1,6 @@
 import { Button, MenuItem, Select, TextField } from "@mui/material";
-import type { SerializedError } from "@reduxjs/toolkit";
 import { showSnackBar } from "@widy/react";
-import { AlertSeverity, Currency } from "@widy/sdk";
+import { AlertSeverity, Currency, type SerializedAppError } from "@widy/sdk";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { languages } from "../../../../../shared/i18n/languages";
@@ -160,7 +159,7 @@ const Settings = () => {
 											}),
 										);
 									} catch (error) {
-										const err = error as SerializedError;
+										const err = error as SerializedAppError;
 										dispatch(
 											showSnackBar({
 												message: err.message as string,

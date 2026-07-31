@@ -3,7 +3,7 @@ use entity::rewards::*;
 use sea_orm::{ActiveValue::Set, ColumnTrait, EntityTrait, QueryFilter};
 use uuid::Uuid;
 
-use crate::services::DatabaseService;
+use crate::{error::AppError, services::DatabaseService, utils::log_and_wrap_error};
 
 #[async_trait]
 pub trait RewardsRepository: Send + Sync {
@@ -11,33 +11,30 @@ pub trait RewardsRepository: Send + Sync {
         &self,
         external_id: &String,
         platform: Platform,
-    ) -> Result<Option<Reward>, String>;
-    async fn get_reward_by_id(&self, external_id: Uuid) -> Result<Option<Reward>, String>;
+    ) -> Result<Option<Reward>, AppError>;
+    async fn get_reward_by_id(&self, external_id: Uuid) -> Result<Option<Reward>, AppError>;
     async fn get_reward_by_title(
         &self,
         external_id: &String,
         platform: Platform,
-    ) -> Result<Option<Reward>, String>;
-    async fn get_rewards(&self) -> Result<Vec<Reward>, String>;
-    async fn create_reward(&self, reward: Reward) -> Result<(), String>;
-    async fn update_reward_settings(&self, reward: Model) -> Result<(), String>;
-    async fn delete_reward_by_id(&self, id: Uuid) -> Result<(), String>;
+    ) -> Result<Option<Reward>, AppError>;
+    async fn get_rewards(&self) -> Result<Vec<Reward>, AppError>;
+    async fn create_reward(&self, reward: Reward) -> Result<(), AppError>;
+    async fn update_reward_settings(&self, reward: Model) -> Result<(), AppError>;
+    async fn delete_reward_by_id(&self, id: Uuid) -> Result<(), AppError>;
 }
 
 #[async_trait]
 impl RewardsRepository for DatabaseService {
-    async fn get_rewards(&self) -> Result<Vec<Reward>, String> {
+    async fn get_rewards(&self) -> Result<Vec<Reward>, AppError> {
         Entity::find()
             .left_join(entity::alerts::Entity)
             .into_partial_model()
             .all(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get rewards error: {}", e.to_string());
-                e.to_string()
-            })
+            .map_err(|e| log_and_wrap_error("Get rewards error", e))
     }
-    async fn create_reward(&self, reward: Reward) -> Result<(), String> {
+    async fn create_reward(&self, reward: Reward) -> Result<(), AppError> {
         let query_builder = ActiveModel::builder()
             .set_id(reward.id)
             .set_platform(reward.platform)
@@ -67,16 +64,13 @@ impl RewardsRepository for DatabaseService {
                 .set_alert(alert)
                 .insert(&self.connection)
                 .await
-                .map_err(|e| {
-                    log::error!("Save reward error: {}", e.to_string());
-                    e.to_string()
-                })?;
+                .map_err(|e| log_and_wrap_error("Save reward error", e))?;
             return Ok(());
         }
-        query_builder.insert(&self.connection).await.map_err(|e| {
-            log::error!("Save reward error: {}", e.to_string());
-            e.to_string()
-        })?;
+        query_builder
+            .insert(&self.connection)
+            .await
+            .map_err(|e| log_and_wrap_error("Save reward error", e))?;
 
         Ok(())
     }
@@ -85,7 +79,7 @@ impl RewardsRepository for DatabaseService {
         &self,
         external_id: &String,
         platform: Platform,
-    ) -> Result<Option<Reward>, String> {
+    ) -> Result<Option<Reward>, AppError> {
         Entity::find()
             .left_join(entity::alerts::Entity)
             .filter(Column::ExternalId.eq(external_id))
@@ -93,17 +87,14 @@ impl RewardsRepository for DatabaseService {
             .into_partial_model()
             .one(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get reward by external_id error: {}", e.to_string());
-                e.to_string()
-            })
+            .map_err(|e| log_and_wrap_error("Get reward by external_id error", e))
     }
 
     async fn get_reward_by_title(
         &self,
         title: &String,
         platform: Platform,
-    ) -> Result<Option<Reward>, String> {
+    ) -> Result<Option<Reward>, AppError> {
         Entity::find()
             .filter(Column::Title.eq(title))
             .filter(Column::Platform.eq(platform))
@@ -111,45 +102,33 @@ impl RewardsRepository for DatabaseService {
             .into_partial_model()
             .one(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get reward by title error: {}", e.to_string());
-                e.to_string()
-            })
+            .map_err(|e| log_and_wrap_error("Get reward by title error", e))
     }
 
-    async fn get_reward_by_id(&self, id: Uuid) -> Result<Option<Reward>, String> {
+    async fn get_reward_by_id(&self, id: Uuid) -> Result<Option<Reward>, AppError> {
         Entity::find()
             .filter(Column::Id.eq(id))
             .left_join(entity::alerts::Entity)
             .into_partial_model()
             .one(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get reward by id error: {}", e.to_string());
-                e.to_string()
-            })
+            .map_err(|e| log_and_wrap_error("Get reward by id error", e))
     }
 
-    async fn delete_reward_by_id(&self, id: Uuid) -> Result<(), String> {
+    async fn delete_reward_by_id(&self, id: Uuid) -> Result<(), AppError> {
         Entity::delete_by_id(id)
             .exec(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Delete reward by id error: {}", e);
-                e.to_string()
-            })?;
+            .map_err(|e| log_and_wrap_error("Delete reward by id error", e))?;
         entity::alerts::Entity::delete_many()
             .filter(entity::alerts::Column::RewardId.eq(id))
             .exec(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Delete alert  by reward_id error: {}", e);
-                e.to_string()
-            })?;
+            .map_err(|e| log_and_wrap_error("Delete alert  by reward_id error", e))?;
         Ok(())
     }
 
-    async fn update_reward_settings(&self, reward: Model) -> Result<(), String> {
+    async fn update_reward_settings(&self, reward: Model) -> Result<(), AppError> {
         Entity::update(ActiveModel {
             id: Set(reward.id),
             platform: Set(reward.platform),
@@ -173,8 +152,7 @@ impl RewardsRepository for DatabaseService {
         .exec(&self.connection)
         .await
         .map_err(|e| {
-            log::error!("Update reward settings error: {}", e);
-            e.to_string()
+            log_and_wrap_error("Update reward settings error", e)
         })?;
 
         Ok(())

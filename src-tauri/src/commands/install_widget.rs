@@ -3,6 +3,7 @@ use tauri::State;
 use uuid::Uuid;
 
 use crate::{
+    error::AppError,
     repositories::WidgetsRepository,
     services::{ConfigService, DatabaseService},
     utils::{download_widget, validate_csp},
@@ -14,7 +15,7 @@ pub async fn install_widget(
     config_service: State<'_, ConfigService>,
     database_service: State<'_, DatabaseService>,
     manifest: Manifest,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     validate_csp(manifest.csp.clone(), false)?;
     let id = Uuid::new_v4();
     download_widget(&reqwest_client, &config_service, &manifest, id).await?;

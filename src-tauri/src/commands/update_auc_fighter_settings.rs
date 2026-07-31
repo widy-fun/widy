@@ -1,4 +1,5 @@
 use crate::{
+    error::AppError,
     repositories::AucFighterSettingsRepository,
     services::{AppEvent, DatabaseService, EventMessage, WebSocketBroadcaster},
 };
@@ -10,7 +11,7 @@ pub async fn update_auc_fighter_settings(
     app: AppHandle,
     database_service: State<'_, DatabaseService>,
     auc_fighter_settings: Model,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     database_service
         .update_auc_fighter_settings(auc_fighter_settings.clone())
         .await?;

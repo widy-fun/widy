@@ -14,6 +14,7 @@ use tokio_util::sync::CancellationToken;
 use uuid::Uuid;
 
 use crate::{
+    error::AppError,
     repositories::{RewardsRepository, ServicesRepository},
     services::{
         DatabaseService,
@@ -50,7 +51,7 @@ pub trait TwitchApi: Send + Sync {
         &self,
         request: reqwest::RequestBuilder,
         context: &str,
-    ) -> Result<Option<T>, String> {
+    ) -> Result<Option<T>, AppError> {
         send_request(request, context, "Twitch").await
     }
 
@@ -58,18 +59,22 @@ pub trait TwitchApi: Send + Sync {
         &self,
         app: &AppHandle,
         service_type: ServiceType,
-    ) -> Result<TwitchAuth, String> {
+    ) -> Result<TwitchAuth, AppError> {
         let database_service = app.state::<DatabaseService>();
 
         let service = database_service
             .get_service_with_auth_by_id(service_type.clone())
             .await?;
 
-        let service = service.ok_or("Service not found".to_string())?;
+        let service = service.ok_or(AppError::DbError("Service not found".to_string()))?;
 
         let auth = match service.auth {
             Some(ServiceAuth::Twitch(auth)) => auth,
-            _ => return Err("No Twitch authentication found".to_string()),
+            _ => {
+                return Err(AppError::DbError(
+                    "No Twitch authentication found".to_string(),
+                ));
+            }
         };
         Ok(auth)
     }
@@ -78,13 +83,13 @@ pub trait TwitchApi: Send + Sync {
         &self,
         app: &AppHandle,
         service_type: ServiceType,
-    ) -> Result<TwitchAuth, String> {
+    ) -> Result<TwitchAuth, AppError> {
         let reqwest_client = app.state::<reqwest::Client>();
         let auth = self.get_database_auth(app, service_type.clone()).await?;
         let expire_at = self.expire_at().load(Ordering::Relaxed);
         let now = SystemTime::now()
             .duration_since(UNIX_EPOCH)
-            .map_err(|e| e.to_string())?;
+            .map_err(|e| AppError::Custom(e.to_string()))?;
 
         if expire_at > now.as_secs() {
             return Ok(auth);
@@ -102,7 +107,7 @@ pub trait TwitchApi: Send + Sync {
         app: &AppHandle,
         old_auth: &TwitchAuth,
         service_type: ServiceType,
-    ) -> Result<TwitchAuth, String> {
+    ) -> Result<TwitchAuth, AppError> {
         if cfg!(debug_assertions) {
             return Ok(old_auth.clone());
         }
@@ -122,7 +127,7 @@ pub trait TwitchApi: Send + Sync {
                 };
                 let now = SystemTime::now()
                     .duration_since(UNIX_EPOCH)
-                    .map_err(|e| e.to_string())?;
+                    .map_err(|e| AppError::Custom(e.to_string()))?;
                 self.expire_at()
                     .store(now.as_secs() + (new_auth.expires_in / 2), Ordering::Relaxed);
                 self.set_authorized(
@@ -135,11 +140,11 @@ pub trait TwitchApi: Send + Sync {
                 .await?;
                 Ok(new_auth)
             }
-            Err(_) => {
+            Err(e) => {
                 self.set_authorized(&database_service, None, false, true, service_type)
                     .await?;
 
-                Err("Token refresh failed".to_string())
+                Err(e)
             }
         }
     }
@@ -147,7 +152,7 @@ pub trait TwitchApi: Send + Sync {
     async fn get_device_code(
         &self,
         reqwest_client: &reqwest::Client,
-    ) -> Result<TwitchDeviceCodeResponse, String> {
+    ) -> Result<TwitchDeviceCodeResponse, AppError> {
         let request = reqwest_client
             .post("https://id.twitch.tv/oauth2/device")
             .form(&[("client_id", self.client_id()), ("scopes", self.scopes())]);
@@ -155,7 +160,7 @@ pub trait TwitchApi: Send + Sync {
         let device_code_response = self
             .send_twitch_request::<TwitchDeviceCodeResponse>(request, "device code")
             .await?
-            .ok_or("Get device code error".to_string())?;
+            .ok_or(AppError::HttpRequest("Get device code error".to_string()))?;
 
         Ok(device_code_response)
     }
@@ -165,7 +170,7 @@ pub trait TwitchApi: Send + Sync {
         access_token: &String,
         broadcaster_id: &String,
         reqwest_client: &reqwest::Client,
-    ) -> Result<BadgeInfoResponse, String> {
+    ) -> Result<BadgeInfoResponse, AppError> {
         let request = reqwest_client
             .get(format!("{}/chat/badges", self.api_endpoint()))
             .bearer_auth(access_token)
@@ -178,7 +183,7 @@ pub trait TwitchApi: Send + Sync {
         let chanel_badges = self
             .send_twitch_request::<BadgeInfoResponse>(request, "channel badges")
             .await?
-            .ok_or("Get chanel badges error".to_string())?;
+            .ok_or(AppError::HttpRequest("Get chanel badges error".to_string()))?;
 
         Ok(chanel_badges)
     }
@@ -187,7 +192,7 @@ pub trait TwitchApi: Send + Sync {
         &self,
         access_token: &String,
         reqwest_client: &reqwest::Client,
-    ) -> Result<BadgeInfoResponse, String> {
+    ) -> Result<BadgeInfoResponse, AppError> {
         let request = reqwest_client
             .get(format!("{}/chat/badges/global", self.api_endpoint()))
             .bearer_auth(access_token)
@@ -199,7 +204,7 @@ pub trait TwitchApi: Send + Sync {
         let global_badges: BadgeInfoResponse = self
             .send_twitch_request(request, "global badges")
             .await?
-            .ok_or("Get global badges error".to_string())?;
+            .ok_or(AppError::HttpRequest("Get global badges error".to_string()))?;
 
         Ok(global_badges)
     }
@@ -208,7 +213,7 @@ pub trait TwitchApi: Send + Sync {
         &self,
         device_code: String,
         reqwest_client: &reqwest::Client,
-    ) -> Result<TwitchAuth, String> {
+    ) -> Result<TwitchAuth, AppError> {
         if cfg!(debug_assertions) {
             return self.get_token_mock(reqwest_client).await;
         }
@@ -228,7 +233,7 @@ pub trait TwitchApi: Send + Sync {
         let token_response: TwitchTokenResponse = self
             .send_twitch_request(request, "token")
             .await?
-            .ok_or("Get token error".to_string())?;
+            .ok_or(AppError::HttpRequest("Get token error".to_string()))?;
 
         let token_info: TwitchTokenInfo = self
             .validate_token(
@@ -249,7 +254,10 @@ pub trait TwitchApi: Send + Sync {
         Ok(auth)
     }
 
-    async fn get_token_mock(&self, reqwest_client: &reqwest::Client) -> Result<TwitchAuth, String> {
+    async fn get_token_mock(
+        &self,
+        reqwest_client: &reqwest::Client,
+    ) -> Result<TwitchAuth, AppError> {
         let user_id = std::env::var("TWITCH_USER_ID_MOCK").expect("TWITCH_USER_ID_MOCK not set");
         let client_id =
             std::env::var("TWITCH_CLIENT_ID_MOCK").expect("TWITCH_CLIENT_ID_MOCK not set");
@@ -269,7 +277,7 @@ pub trait TwitchApi: Send + Sync {
         let token_response: TwitchTokenResponse = self
             .send_twitch_request(request, "token mock")
             .await?
-            .ok_or("Get token error".to_string())?;
+            .ok_or(AppError::HttpRequest("Get token error".to_string()))?;
 
         let auth = TwitchAuth {
             access_token: token_response.access_token.clone(),
@@ -287,7 +295,7 @@ pub trait TwitchApi: Send + Sync {
         client_id: &String,
         refresh_token: &String,
         reqwest_client: &reqwest::Client,
-    ) -> Result<TwitchRefreshTokenResponse, String> {
+    ) -> Result<TwitchRefreshTokenResponse, AppError> {
         let request = reqwest_client
             .post(format!("{}/token", self.auth_endpoint()))
             .form(&[
@@ -302,7 +310,7 @@ pub trait TwitchApi: Send + Sync {
         let refresh_token_response: TwitchRefreshTokenResponse = self
             .send_twitch_request(request, "refresh token")
             .await?
-            .ok_or("Get refresh token error".to_string())?;
+            .ok_or(AppError::HttpRequest("Get refresh token error".to_string()))?;
 
         Ok(refresh_token_response)
     }
@@ -312,7 +320,7 @@ pub trait TwitchApi: Send + Sync {
         token: &String,
         auth_endpoint: &String,
         reqwest_client: &reqwest::Client,
-    ) -> Result<TwitchTokenInfo, String> {
+    ) -> Result<TwitchTokenInfo, AppError> {
         let request = reqwest_client
             .get(format!("{}/validate", auth_endpoint))
             .header("Authorization", format!("OAuth {}", token));
@@ -320,7 +328,7 @@ pub trait TwitchApi: Send + Sync {
         let token_info: TwitchTokenInfo = self
             .send_twitch_request(request, "token validate")
             .await?
-            .ok_or("Validate token error".to_string())?;
+            .ok_or(AppError::HttpRequest("Validate token error".to_string()))?;
 
         Ok(token_info.clone())
     }
@@ -330,7 +338,7 @@ pub trait TwitchApi: Send + Sync {
         app: &AppHandle,
         auth: &TwitchAuth,
         reward: &entity::rewards::Reward,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         let database_service = app.state::<DatabaseService>();
         let reqwest_client = app.state::<reqwest::Client>();
         let twitch_reward_body = AddTwitchRewardBody {
@@ -365,12 +373,14 @@ pub trait TwitchApi: Send + Sync {
         let json = self
             .send_twitch_request::<serde_json::Value>(request, "add custom reward")
             .await?
-            .ok_or("Add custom reward error".to_string())?;
+            .ok_or(AppError::HttpRequest("Add custom reward error".to_string()))?;
 
         let reward_id = json["data"][0]["id"]
             .as_str()
             .map(|s| s.to_string())
-            .ok_or("Twitch reward create error".to_string())?;
+            .ok_or(AppError::HttpRequest(
+                "Twitch reward create error".to_string(),
+            ))?;
 
         let _ = database_service
             .create_reward(entity::rewards::Reward {
@@ -387,13 +397,13 @@ pub trait TwitchApi: Send + Sync {
         app: &AppHandle,
         auth: &TwitchAuth,
         id: Uuid,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         let database_service = app.state::<DatabaseService>();
         let reqwest_client = app.state::<reqwest::Client>();
         let reward = database_service
             .get_reward_by_id(id)
             .await?
-            .ok_or("Reward not found".to_string())?;
+            .ok_or(AppError::DbError("Reward not found".to_string()))?;
 
         let request = reqwest_client
             .delete(format!(
@@ -409,9 +419,9 @@ pub trait TwitchApi: Send + Sync {
                 ("broadcaster_id", auth.user_id.clone()),
                 (
                     "id",
-                    reward
-                        .external_id
-                        .ok_or("Reward external_id not exist".to_string())?,
+                    reward.external_id.ok_or(AppError::DbError(
+                        "Reward external_id not exist".to_string(),
+                    ))?,
                 ),
             ]);
 
@@ -585,7 +595,7 @@ pub trait TwitchApi: Send + Sync {
         token: &String,
         body: SubscriptionRequestBody,
         reqwest_client: &reqwest::Client,
-    ) -> Result<Option<String>, String> {
+    ) -> Result<Option<String>, AppError> {
         let request = reqwest_client
             .post(format!(
                 "{}/eventsub/subscriptions",
@@ -599,7 +609,9 @@ pub trait TwitchApi: Send + Sync {
         let json = self
             .send_twitch_request::<serde_json::Value>(request, "create subscription")
             .await?
-            .ok_or("Create subscription error")?;
+            .ok_or(AppError::HttpRequest(
+                "Create subscription error".to_string(),
+            ))?;
 
         let subscription_id = json["data"][0]["id"].as_str().map(|s| s.to_string());
 
@@ -612,7 +624,7 @@ pub trait TwitchApi: Send + Sync {
         token: &String,
         subscription_id: String,
         reqwest_client: &reqwest::Client,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         let request = reqwest_client
             .delete(format!(
                 "{}/eventsub/subscriptions",
@@ -636,7 +648,7 @@ pub trait TwitchApi: Send + Sync {
         authorized: bool,
         is_close_connection: bool,
         service_type: ServiceType,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         if is_close_connection {
             self.cancellation_token().cancel();
         }
@@ -654,7 +666,7 @@ pub trait TwitchApi: Send + Sync {
         sender_id: String,
         reply_parent_message_id: Option<String>,
         client_id: String,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         let request = reqwest_client
             .post(format!("{}/chat/messages", self.api_endpoint()))
             .bearer_auth(access_token)
@@ -684,7 +696,7 @@ pub trait TwitchApi: Send + Sync {
         broadcaster_id: String,
         moderator_id: String,
         client_id: String,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         let request = reqwest_client
             .post(format!("{}/chat/announcements", self.api_endpoint()))
             .bearer_auth(access_token)
@@ -707,7 +719,7 @@ pub trait TwitchApi: Send + Sync {
         Ok(())
     }
 
-    async fn sign_out(&self, app: &AppHandle, service_type: ServiceType) -> Result<(), String> {
+    async fn sign_out(&self, app: &AppHandle, service_type: ServiceType) -> Result<(), AppError> {
         let database_service = app.state::<DatabaseService>();
         self.set_authorized(&database_service, None, false, true, service_type)
             .await

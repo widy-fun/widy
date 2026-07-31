@@ -3,14 +3,16 @@ use entity::{
     settings::Currency,
 };
 use futures::FutureExt;
-use rust_socketio::{asynchronous::ClientBuilder, Payload, TransportType};
+use rust_socketio::{Payload, TransportType, asynchronous::ClientBuilder};
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
 use tokio::sync::broadcast;
 
 use crate::{
+    error::AppError,
     repositories::ServicesRepository,
     services::{DatabaseService, EventsService},
+    utils::log_and_wrap_error,
 };
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -45,7 +47,7 @@ impl StreamLabsService {
         }
     }
 
-    pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
+    pub async fn connect(&self, app: &AppHandle) -> Result<(), AppError> {
         let database_service = app.state::<DatabaseService>();
         let service = database_service
             .get_service_with_auth_by_id(entity::services::ServiceType::StreamLabs)
@@ -142,8 +144,10 @@ impl StreamLabsService {
                     .connect()
                     .await
                     .map_err(|e| {
-                        log::error!("Failed to connect to StreamLabs Socket.IO: {e}");
-                        e.to_string()
+                        log_and_wrap_error(
+                            "Failed to connect to StreamLabs Socket.IO",
+                            AppError::StreamLabs(e.to_string()),
+                        )
                     })
                     .unwrap();
 
@@ -152,7 +156,7 @@ impl StreamLabsService {
         });
     }
 
-    pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), String> {
+    pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), AppError> {
         let database_service = app.state::<DatabaseService>();
         database_service
             .update_service(entity::services::Model {

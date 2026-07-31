@@ -1,4 +1,5 @@
 use crate::{
+    error::AppError,
     repositories::NsfwRepository,
     services::{AppEvent, DatabaseService, EventMessage, WebSocketBroadcaster},
 };
@@ -10,7 +11,7 @@ pub async fn update_nsfw_settings(
     app: AppHandle,
     database_service: State<'_, DatabaseService>,
     nsfw_settings: Model,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     database_service
         .update_nsfw_settings(nsfw_settings.clone())
         .await?;

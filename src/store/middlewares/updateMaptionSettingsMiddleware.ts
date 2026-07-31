@@ -1,10 +1,6 @@
-import type {
-	Middleware,
-	SerializedError,
-	UnknownAction,
-} from "@reduxjs/toolkit";
+import type { Middleware, UnknownAction } from "@reduxjs/toolkit";
 import { showSnackBar } from "@widy/react";
-import { AlertSeverity } from "@widy/sdk";
+import { AlertSeverity, SerializedAppError } from "@widy/sdk";
 import { maptionApi } from "../../api/maptionApi";
 import type { AppDispatch, AppState } from "..";
 import { maptionSlice } from "../slices/maptionSlice";
@@ -25,7 +21,7 @@ const updateMaptionSettingsMiddleware: Middleware<unknown, AppState> =
 				}),
 			);
 			result.unwrap().catch((error) => {
-				const err = error as SerializedError;
+				const err = error as SerializedAppError;
 				store.dispatch(
 					showSnackBar({
 						message: err.message as string,

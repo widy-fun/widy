@@ -4,7 +4,10 @@ use std::sync::{Arc, Mutex, MutexGuard, atomic::AtomicU64};
 use tauri::AppHandle;
 use tokio_util::sync::CancellationToken;
 
-use crate::services::kick::{models::KickAuthSession, traits::KickApi};
+use crate::{
+    error::AppError,
+    services::kick::{models::KickAuthSession, traits::KickApi},
+};
 
 pub struct KickBotService {
     pub kick_bot_client_id: String,
@@ -38,7 +41,7 @@ impl KickBotService {
         }
     }
 
-    pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
+    pub async fn connect(&self, app: &AppHandle) -> Result<(), AppError> {
         let auth = self.get_database_auth(app, ServiceType::Kick).await?;
         let _ = self
             .refresh_and_update_auth(&app, &auth, ServiceType::Kick)

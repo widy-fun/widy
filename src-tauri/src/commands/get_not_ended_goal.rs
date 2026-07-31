@@ -1,4 +1,4 @@
-use crate::{repositories::GoalsRepository, services::DatabaseService};
+use crate::{error::AppError, repositories::GoalsRepository, services::DatabaseService};
 use entity::goals::*;
 use tauri::State;
 
@@ -6,6 +6,6 @@ use tauri::State;
 pub async fn get_not_ended_goal(
     database_service: State<'_, DatabaseService>,
     r#type: GoalType,
-) -> Result<Option<Model>, String> {
+) -> Result<Option<Model>, AppError> {
     database_service.get_not_ended_goal(r#type).await
 }

@@ -2,6 +2,7 @@ use entity::alerts::*;
 use tauri::State;
 
 use crate::{
+    error::AppError,
     repositories::AlertsRepository,
     services::{AppEvent, DatabaseService, EventMessage, WebSocketBroadcaster},
 };
@@ -11,7 +12,7 @@ pub async fn update_alert_settings(
     database_service: State<'_, DatabaseService>,
     websocket_broadcaster: State<'_, WebSocketBroadcaster>,
     alert: Model,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     database_service
         .update_alert_settings(alert.clone())
         .await?;

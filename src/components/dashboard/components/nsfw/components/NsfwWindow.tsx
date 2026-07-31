@@ -1,11 +1,11 @@
 import { Button, MenuItem, Select, Typography } from "@mui/material";
-import type { SerializedError } from "@reduxjs/toolkit";
 import { showSnackBar } from "@widy/react";
 import {
 	AlertSeverity,
 	AppEvent,
 	type INsfwDetection,
 	type IWindowInfo,
+	type SerializedAppError,
 } from "@widy/sdk";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -112,7 +112,7 @@ const NsfwWindow = () => {
 										}),
 									);
 								} catch (error) {
-									const err = error as SerializedError;
+									const err = error as SerializedAppError;
 									dispatch(
 										showSnackBar({
 											message: err.message as string,

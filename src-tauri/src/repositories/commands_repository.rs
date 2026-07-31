@@ -4,19 +4,22 @@ use migration::Expr;
 use sea_orm::{ActiveModelTrait, ActiveValue::Set, ColumnTrait, EntityTrait, QueryFilter};
 use uuid::Uuid;
 
-use crate::{error::AppError, repositories::AlertsRepository, services::DatabaseService};
+use crate::{
+    error::AppError, repositories::AlertsRepository, services::DatabaseService,
+    utils::log_and_wrap_error,
+};
 
 #[async_trait]
 pub trait CommandsRepository: Send + Sync {
-    async fn get_command_by_id(&self, id: Uuid) -> Result<Option<Command>, String>;
+    async fn get_command_by_id(&self, id: Uuid) -> Result<Option<Command>, AppError>;
     async fn get_command_by_chat_trigger(
         &self,
         trigger: &String,
-    ) -> Result<Option<Command>, String>;
+    ) -> Result<Option<Command>, AppError>;
     async fn get_commands(&self) -> Result<Vec<Command>, AppError>;
     async fn create_command(&self, command: Command) -> Result<(), AppError>;
-    async fn update_command(&self, command: Command) -> Result<(), String>;
-    async fn delete_command_by_id(&self, id: Uuid) -> Result<(), String>;
+    async fn update_command(&self, command: Command) -> Result<(), AppError>;
+    async fn delete_command_by_id(&self, id: Uuid) -> Result<(), AppError>;
 }
 
 #[async_trait]
@@ -27,10 +30,7 @@ impl CommandsRepository for DatabaseService {
             .into_partial_model()
             .all(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get commands error: {}", e);
-                AppError::DbError(e)
-            })
+            .map_err(|e| log_and_wrap_error("Get commands error", e))
     }
     async fn create_command(&self, command: Command) -> Result<(), AppError> {
         let query_builder = ActiveModel::builder()
@@ -50,37 +50,31 @@ impl CommandsRepository for DatabaseService {
                 .set_alert(alert)
                 .insert(&self.connection)
                 .await
-                .map_err(|e| {
-                    log::error!("Save command error: {}", e);
-                    AppError::DbError(e)
-                })?;
+                .map_err(|e| log_and_wrap_error("Save command error", e))?;
             return Ok(());
         }
-        query_builder.insert(&self.connection).await.map_err(|e| {
-            log::error!("Save command error: {}", e);
-            AppError::DbError(e)
-        })?;
+        query_builder
+            .insert(&self.connection)
+            .await
+            .map_err(|e| log_and_wrap_error("Save command error", e))?;
 
         Ok(())
     }
 
-    async fn get_command_by_id(&self, id: Uuid) -> Result<Option<Command>, String> {
+    async fn get_command_by_id(&self, id: Uuid) -> Result<Option<Command>, AppError> {
         Entity::find()
             .left_join(entity::alerts::Entity)
             .filter(Column::Id.eq(id))
             .into_partial_model()
             .one(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get command by id error: {}", e.to_string());
-                e.to_string()
-            })
+            .map_err(|e| log_and_wrap_error("Get command by id error", e))
     }
 
     async fn get_command_by_chat_trigger(
         &self,
         trigger: &String,
-    ) -> Result<Option<Command>, String> {
+    ) -> Result<Option<Command>, AppError> {
         Entity::find()
             .left_join(entity::alerts::Entity)
             .filter(Expr::cust_with_values(
@@ -90,32 +84,23 @@ impl CommandsRepository for DatabaseService {
             .into_partial_model()
             .one(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get command by chat trigger error: {}", e.to_string());
-                e.to_string()
-            })
+            .map_err(|e| log_and_wrap_error("Get command by chat trigger error", e))
     }
 
-    async fn delete_command_by_id(&self, id: Uuid) -> Result<(), String> {
+    async fn delete_command_by_id(&self, id: Uuid) -> Result<(), AppError> {
         Entity::delete_by_id(id)
             .exec(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Delete command by id error: {}", e);
-                e.to_string()
-            })?;
+            .map_err(|e| log_and_wrap_error("Delete command by id error", e))?;
         entity::alerts::Entity::delete_many()
             .filter(entity::alerts::Column::CommandId.eq(id))
             .exec(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Delete alert by command_id error: {}", e);
-                e.to_string()
-            })?;
+            .map_err(|e| log_and_wrap_error("Delete alert by command_id error", e))?;
         Ok(())
     }
 
-    async fn update_command(&self, command: Command) -> Result<(), String> {
+    async fn update_command(&self, command: Command) -> Result<(), AppError> {
         if let Some(alert) = command.alert {
             let active_model = alerts::ActiveModel {
                 id: Set(alert.id),
@@ -148,18 +133,12 @@ impl CommandsRepository for DatabaseService {
                 alerts::Entity::insert(active_model)
                     .exec(&self.connection)
                     .await
-                    .map_err(|e| {
-                        log::error!("Insert alert error: {}", e.to_string());
-                        e.to_string()
-                    })?;
+                    .map_err(|e| log_and_wrap_error("Insert alert error", e))?;
             } else {
                 alerts::Entity::update(active_model)
                     .exec(&self.connection)
                     .await
-                    .map_err(|e| {
-                        log::error!("Update alert error: {}", e.to_string());
-                        e.to_string()
-                    })?;
+                    .map_err(|e| log_and_wrap_error("Update alert error", e))?;
             }
         }
 
@@ -175,10 +154,7 @@ impl CommandsRepository for DatabaseService {
         }
         .save(&self.connection)
         .await
-        .map_err(|e| {
-            log::error!("Update command error: {}", e.to_string());
-            e.to_string()
-        })?;
+        .map_err(|e| log_and_wrap_error("Update command error", e))?;
 
         Ok(())
     }

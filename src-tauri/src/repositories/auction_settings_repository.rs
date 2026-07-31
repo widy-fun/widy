@@ -1,26 +1,23 @@
-use crate::services::DatabaseService;
+use crate::{error::AppError, services::DatabaseService, utils::log_and_wrap_error};
 use async_trait::async_trait;
 use entity::auction_settings::*;
 use sea_orm::{ActiveValue::Set, EntityTrait};
 
 #[async_trait]
 pub trait AuctionSettingsRepository: Send + Sync {
-    async fn get_auction_settings(&self) -> Result<Option<Model>, String>;
-    async fn update_auction_settings(&self, settings: Model) -> Result<(), String>;
+    async fn get_auction_settings(&self) -> Result<Option<Model>, AppError>;
+    async fn update_auction_settings(&self, settings: Model) -> Result<(), AppError>;
 }
 
 #[async_trait]
 impl AuctionSettingsRepository for DatabaseService {
-    async fn get_auction_settings(&self) -> Result<Option<Model>, String> {
+    async fn get_auction_settings(&self) -> Result<Option<Model>, AppError> {
         Entity::find_by_id(1)
             .one(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get auction settings error: {}", e);
-                e.to_string()
-            })
+            .map_err(|e| log_and_wrap_error("Get auction settings error", e))
     }
-    async fn update_auction_settings(&self, auction_settings: Model) -> Result<(), String> {
+    async fn update_auction_settings(&self, auction_settings: Model) -> Result<(), AppError> {
         Entity::update(ActiveModel {
             leader_change_adding_time: Set(auction_settings.leader_change_adding_time),
             new_lot_adding_time: Set(auction_settings.new_lot_adding_time),
@@ -36,10 +33,7 @@ impl AuctionSettingsRepository for DatabaseService {
         })
         .exec(&self.connection)
         .await
-        .map_err(|e| {
-            log::error!("Update auction settings error: {}", e);
-            e.to_string()
-        })?;
+        .map_err(|e| log_and_wrap_error("Update auction settings error", e))?;
         Ok(())
     }
 }

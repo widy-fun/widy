@@ -1,4 +1,4 @@
-use crate::{repositories::GoalsRepository, services::DatabaseService};
+use crate::{error::AppError, repositories::GoalsRepository, services::DatabaseService};
 use entity::goals::*;
 use tauri::State;
 use uuid::Uuid;
@@ -7,6 +7,6 @@ use uuid::Uuid;
 pub async fn get_goal_by_id(
     database_service: State<'_, DatabaseService>,
     id: Uuid,
-) -> Result<Option<Model>, String> {
+) -> Result<Option<Model>, AppError> {
     database_service.get_goal_by_id(id).await
 }

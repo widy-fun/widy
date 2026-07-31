@@ -2,20 +2,20 @@ use async_trait::async_trait;
 use entity::{messages::ClientMessage, redemptions::*};
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
 
-use crate::services::DatabaseService;
+use crate::{error::AppError, services::DatabaseService, utils::log_and_wrap_error};
 
 #[async_trait]
 pub trait RedemptionsRepository: Send + Sync {
-    async fn save_redemption_message(&self, client_message: ClientMessage) -> Result<(), String>;
+    async fn save_redemption_message(&self, client_message: ClientMessage) -> Result<(), AppError>;
     async fn get_redemption_by_external_id(
         &self,
         external_id: &String,
-    ) -> Result<Option<Model>, String>;
+    ) -> Result<Option<Model>, AppError>;
 }
 
 #[async_trait]
 impl RedemptionsRepository for DatabaseService {
-    async fn save_redemption_message(&self, client_message: ClientMessage) -> Result<(), String> {
+    async fn save_redemption_message(&self, client_message: ClientMessage) -> Result<(), AppError> {
         if let Some(redemption) = client_message.redemption {
             entity::redemptions::ActiveModel::builder()
                 .set_id(redemption.id)
@@ -40,10 +40,7 @@ impl RedemptionsRepository for DatabaseService {
                 )
                 .insert(&self.connection)
                 .await
-                .map_err(|e| {
-                    log::error!("Save redemption message error: {}", e);
-                    e.to_string()
-                })?;
+                .map_err(|e| log_and_wrap_error("Save redemption message error", e))?;
         }
 
         Ok(())
@@ -51,14 +48,11 @@ impl RedemptionsRepository for DatabaseService {
     async fn get_redemption_by_external_id(
         &self,
         external_id: &String,
-    ) -> Result<Option<Model>, String> {
+    ) -> Result<Option<Model>, AppError> {
         Entity::find()
             .filter(Column::ExternalId.eq(external_id))
             .one(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get redemption by id error: {}", e.to_string());
-                e.to_string()
-            })
+            .map_err(|e| log_and_wrap_error("Get redemption by id error", e))
     }
 }

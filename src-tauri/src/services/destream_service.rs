@@ -10,6 +10,7 @@ use tokio_tungstenite::{connect_async, tungstenite::Message};
 use tokio_util::sync::CancellationToken;
 
 use crate::{
+    error::AppError,
     repositories::ServicesRepository,
     services::{DatabaseService, EventsService},
     utils::send_request,
@@ -61,7 +62,7 @@ impl DestreamService {
         }
     }
 
-    pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
+    pub async fn connect(&self, app: &AppHandle) -> Result<(), AppError> {
         {
             let mut cancellation_token = self.cancellation_token.lock().unwrap();
             *cancellation_token = CancellationToken::new();
@@ -214,7 +215,7 @@ impl DestreamService {
         &self,
         reqwest_client: &reqwest::Client,
         overlayid: &str,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         let request = reqwest_client.get(format!(
             "https://api.destream.net/siteapi/v2/OverlayViewer/{}",
             overlayid
@@ -224,7 +225,7 @@ impl DestreamService {
         Ok(())
     }
 
-    pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), String> {
+    pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), AppError> {
         let database_service = app.state::<DatabaseService>();
         database_service
             .update_service(entity::services::Model {

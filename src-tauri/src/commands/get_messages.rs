@@ -1,4 +1,5 @@
 use crate::{
+    error::AppError,
     repositories::{MessagesRepository, SettingsRepository},
     services::{DatabaseService, ExchangeRatesService},
 };
@@ -13,7 +14,7 @@ pub async fn get_messages(
     limit: u64,
     offset: u64,
     filter: MessagesFilter,
-) -> Result<Vec<ClientMessage>, String> {
+) -> Result<Vec<ClientMessage>, AppError> {
     let mut exchange_rates_service = exchange_rates_service_mutex.lock().await;
 
     let mut client_messages = database_service
@@ -28,26 +29,26 @@ pub async fn get_messages(
             &filter.exclude_commands_actions,
         )
         .await?;
-    let settings = database_service.get_settings().await?;
-    if let Some(settings) = settings {
-        for message in client_messages.iter_mut() {
-            if let Some(donation) = &message.donation {
-                let exchanged_amount = exchange_rates_service
-                    .calculate_amount_by_currency(
-                        settings.currency.clone(),
-                        donation.currency.clone(),
-                        donation.amount,
-                    )
-                    .await;
-                message.donation = Some(Donation {
-                    exchanged_amount: Some(exchanged_amount),
-                    exchanged_currency: Some(settings.currency.clone()),
-                    ..donation.clone()
-                });
-            }
+    let settings = database_service
+        .get_settings()
+        .await?
+        .ok_or(AppError::DbError("No settings".to_string()))?;
+    for message in client_messages.iter_mut() {
+        if let Some(donation) = &message.donation {
+            let exchanged_amount = exchange_rates_service
+                .calculate_amount_by_currency(
+                    settings.currency.clone(),
+                    donation.currency.clone(),
+                    donation.amount,
+                )
+                .await;
+            message.donation = Some(Donation {
+                exchanged_amount: Some(exchanged_amount),
+                exchanged_currency: Some(settings.currency.clone()),
+                ..donation.clone()
+            });
         }
-
-        return Ok(client_messages);
     }
-    Err("No settings".to_string())
+
+    return Ok(client_messages);
 }

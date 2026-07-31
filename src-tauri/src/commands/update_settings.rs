@@ -1,4 +1,5 @@
 use crate::{
+    error::AppError,
     repositories::SettingsRepository,
     services::{AppEvent, DatabaseService, EventMessage, WebSocketBroadcaster},
 };
@@ -10,7 +11,7 @@ pub async fn update_settings(
     app: AppHandle,
     database_service: State<'_, DatabaseService>,
     settings: Model,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     database_service.update_settings(settings.clone()).await?;
     let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
     websocket_broadcaster.broadcast_event_message(&EventMessage {

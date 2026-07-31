@@ -1,4 +1,4 @@
-use crate::{repositories::ServicesRepository, services::DatabaseService};
+use crate::{error::AppError, repositories::ServicesRepository, services::DatabaseService};
 use entity::services::*;
 use tauri::State;
 
@@ -8,7 +8,7 @@ pub async fn update_service_auth(
     id: ServiceType,
     auth: Option<ServiceAuth>,
     authorized: bool,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     database_service
         .update_service_auth(id, auth, authorized)
         .await

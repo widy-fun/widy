@@ -1,4 +1,5 @@
 use crate::{
+    error::AppError,
     repositories::ServicesRepository,
     services::{DatabaseService, EventsService},
     utils::send_request,
@@ -107,7 +108,7 @@ impl DonationAlertsService {
         }
     }
 
-    pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
+    pub async fn connect(&self, app: &AppHandle) -> Result<(), AppError> {
         {
             let mut cancellation_token = self.cancellation_token.lock().unwrap();
             *cancellation_token = CancellationToken::new();
@@ -283,7 +284,7 @@ impl DonationAlertsService {
         &self,
         reqwest_client: &reqwest::Client,
         token: &str,
-    ) -> Result<(String, UserInfo), String> {
+    ) -> Result<(String, UserInfo), AppError> {
         let auth_token = self.get_auth_token(&reqwest_client, &token).await?;
         let user_info = self.get_user_info(&reqwest_client, &auth_token).await?;
         Ok((auth_token, user_info))
@@ -293,7 +294,7 @@ impl DonationAlertsService {
         &self,
         reqwest_client: &reqwest::Client,
         token: &str,
-    ) -> Result<String, String> {
+    ) -> Result<String, AppError> {
         let request = reqwest_client.get(format!(
             "https://www.donationalerts.com/api/v1/token/widget?token={}",
             token
@@ -301,7 +302,7 @@ impl DonationAlertsService {
 
         let json = send_request::<AuthTokenResponse>(request, "auth user", "DonationAlerts")
             .await?
-            .ok_or("Get auth token error".to_string())?;
+            .ok_or(AppError::HttpRequest("Get auth token error".to_string()))?;
 
         Ok(json.data.token)
     }
@@ -310,14 +311,14 @@ impl DonationAlertsService {
         &self,
         reqwest_client: &reqwest::Client,
         auth_token: &str,
-    ) -> Result<UserInfo, String> {
+    ) -> Result<UserInfo, AppError> {
         let request = reqwest_client
             .get("https://www.donationalerts.com/api/v1/user/widget")
             .bearer_auth(auth_token);
 
         let json = send_request::<UserInfoResponse>(request, "user info", "DonationAlerts")
             .await?
-            .ok_or("Get user info error".to_string())?;
+            .ok_or(AppError::HttpRequest("Get user info error".to_string()))?;
         Ok(json.data)
     }
 
@@ -326,7 +327,7 @@ impl DonationAlertsService {
         reqwest_client: &reqwest::Client,
         auth_token: &str,
         body: SubscriptionBody,
-    ) -> Result<ChannelsResponse, String> {
+    ) -> Result<ChannelsResponse, AppError> {
         let request = reqwest_client
             .post("https://www.donationalerts.com/api/v1/centrifuge/subscribe")
             .bearer_auth(auth_token)
@@ -334,11 +335,11 @@ impl DonationAlertsService {
 
         let json = send_request::<ChannelsResponse>(request, "subscribe", "DonationAlerts")
             .await?
-            .ok_or("Subscribe error".to_string())?;
+            .ok_or(AppError::HttpRequest("Subscribe error".to_string()))?;
         Ok(json)
     }
 
-    pub async fn sign_out(&self, app: &AppHandle) -> Result<(), String> {
+    pub async fn sign_out(&self, app: &AppHandle) -> Result<(), AppError> {
         let database_service = app.state::<DatabaseService>();
         database_service
             .update_service_auth(ServiceType::DonationAlerts, None, false)

@@ -1,4 +1,4 @@
-use crate::services::twitch::traits::TwitchApi;
+use crate::{error::AppError, services::twitch::traits::TwitchApi};
 use async_trait::async_trait;
 use entity::services::ServiceType;
 use std::sync::{Arc, Mutex, atomic::AtomicU64};
@@ -39,7 +39,7 @@ impl TwitchBotService {
         }
     }
 
-    pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
+    pub async fn connect(&self, app: &AppHandle) -> Result<(), AppError> {
         let auth = self.get_database_auth(app, ServiceType::TwitchBot).await?;
         let _ = self
             .refresh_and_update_auth(&app, &auth, ServiceType::TwitchBot)

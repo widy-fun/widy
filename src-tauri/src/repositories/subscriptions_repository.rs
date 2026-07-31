@@ -4,16 +4,16 @@ use entity::{
     subscriptions,
 };
 
-use crate::services::DatabaseService;
+use crate::{error::AppError, services::DatabaseService, utils::log_and_wrap_error};
 
 #[async_trait]
 pub trait SubscriptionsRepository: Send + Sync {
-    async fn save_subscribe_message(&self, client_message: ClientMessage) -> Result<(), String>;
+    async fn save_subscribe_message(&self, client_message: ClientMessage) -> Result<(), AppError>;
 }
 
 #[async_trait]
 impl SubscriptionsRepository for DatabaseService {
-    async fn save_subscribe_message(&self, client_message: ClientMessage) -> Result<(), String> {
+    async fn save_subscribe_message(&self, client_message: ClientMessage) -> Result<(), AppError> {
         if let Some(subscription) = client_message.subscription {
             subscriptions::ActiveModel::builder()
                 .set_subscribed_at(subscription.subscribed_at)
@@ -37,10 +37,7 @@ impl SubscriptionsRepository for DatabaseService {
                 )
                 .insert(&self.connection)
                 .await
-                .map_err(|e| {
-                    log::error!("Save subscription error: {}", e.to_string());
-                    e.to_string()
-                })?;
+                .map_err(|e| log_and_wrap_error("Save subscription error", e))?;
         }
 
         Ok(())

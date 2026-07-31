@@ -5,7 +5,7 @@ use entity::{
     services::ServiceType,
 };
 
-use crate::services::DatabaseService;
+use crate::{error::AppError, services::DatabaseService, utils::log_and_wrap_error};
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter, QueryOrder, QuerySelect};
 
 #[async_trait]
@@ -13,13 +13,13 @@ pub trait DonationsRepository: Send + Sync {
     async fn get_donation_by_service_id(
         &self,
         service_id: String,
-    ) -> Result<Option<donations::Model>, String>;
+    ) -> Result<Option<donations::Model>, AppError>;
     async fn get_latest_donations_by_service(
         &self,
         service: ServiceType,
         limit: u64,
-    ) -> Result<Vec<donations::Model>, String>;
-    async fn save_donation_message(&self, client_message: ClientMessage) -> Result<(), String>;
+    ) -> Result<Vec<donations::Model>, AppError>;
+    async fn save_donation_message(&self, client_message: ClientMessage) -> Result<(), AppError>;
 }
 
 #[async_trait]
@@ -27,35 +27,29 @@ impl DonationsRepository for DatabaseService {
     async fn get_donation_by_service_id(
         &self,
         service_id: String,
-    ) -> Result<Option<donations::Model>, String> {
+    ) -> Result<Option<donations::Model>, AppError> {
         donations::Entity::find()
             .filter(donations::Column::ServiceId.eq(service_id))
             .one(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get donation by service id error: {}", e);
-                e.to_string()
-            })
+            .map_err(|e| log_and_wrap_error("Get donation by service id error", e))
     }
 
     async fn get_latest_donations_by_service(
         &self,
         service: ServiceType,
         limit: u64,
-    ) -> Result<Vec<donations::Model>, String> {
+    ) -> Result<Vec<donations::Model>, AppError> {
         donations::Entity::find()
             .filter(donations::Column::Service.eq(service))
             .order_by_desc(donations::Column::CreatedAt)
             .limit(limit)
             .all(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get latest donation by service error: {}", e);
-                e.to_string()
-            })
+            .map_err(|e| log_and_wrap_error("Get latest donation by service error", e))
     }
 
-    async fn save_donation_message(&self, client_message: ClientMessage) -> Result<(), String> {
+    async fn save_donation_message(&self, client_message: ClientMessage) -> Result<(), AppError> {
         if let Some(donation) = client_message.donation {
             donations::ActiveModel::builder()
                 .set_amount(donation.amount)
@@ -80,10 +74,7 @@ impl DonationsRepository for DatabaseService {
                 )
                 .insert(&self.connection)
                 .await
-                .map_err(|e| {
-                    log::error!("Save donation message error: {}", e);
-                    e.to_string()
-                })?;
+                .map_err(|e| log_and_wrap_error("Save donation message error", e))?;
         }
 
         Ok(())

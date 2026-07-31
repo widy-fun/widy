@@ -2,10 +2,11 @@ use entity::services::{ServiceAuth, ServiceType};
 use tauri::State;
 
 use crate::{
+    error::AppError,
     repositories::ServicesRepository,
     services::{
-        twitch::{traits::TwitchApi, TwitchBotService},
         DatabaseService,
+        twitch::{TwitchBotService, traits::TwitchApi},
     },
 };
 
@@ -15,7 +16,7 @@ pub async fn get_twitch_bot_token(
     database_service: State<'_, DatabaseService>,
     reqwest_client: State<'_, reqwest::Client>,
     device_code: String,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     let auth = twitch_bot_service
         .get_token(device_code, &reqwest_client)
         .await?;

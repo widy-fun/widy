@@ -1,7 +1,9 @@
 use serde::Serialize;
 use thiserror::Error;
+use zip::result::ZipError;
 
-#[derive(Debug, Error)]
+#[derive(Debug, Clone, Error, Serialize)]
+#[serde(tag = "kind", content = "data")]
 pub enum AppError {
     #[error("HTTP request failed: {0}")]
     HttpRequest(String),
@@ -16,13 +18,28 @@ pub enum AppError {
     Config(String),
 
     #[error("Database error: {0}")]
-    DbError(#[from] sea_orm::DbErr),
+    DbError(String),
+
+    #[error("Zip error: {0}")]
+    Zip(String),
+
+    #[error("WidySol error: {0}")]
+    WidySol(String),
+
+    #[error("StreamLabs error: {0}")]
+    StreamLabs(String),
+
+    #[error("Websocket error: {0}")]
+    Websocket(String),
+
+    #[error("NSFW error: {0}")]
+    NSFW(String),
 
     #[error("{0}")]
     Custom(String),
 
     #[error("IO error: {0}")]
-    Io(#[from] std::io::Error),
+    Io(String),
 }
 
 impl From<reqwest::Error> for AppError {
@@ -38,11 +55,26 @@ impl From<reqwest::Error> for AppError {
     }
 }
 
-impl Serialize for AppError {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(&self.to_string())
+impl From<sea_orm::DbErr> for AppError {
+    fn from(err: sea_orm::DbErr) -> Self {
+        AppError::DbError(err.to_string())
+    }
+}
+
+impl From<std::io::Error> for AppError {
+    fn from(err: std::io::Error) -> Self {
+        AppError::Io(err.to_string())
+    }
+}
+
+impl From<ZipError> for AppError {
+    fn from(err: ZipError) -> Self {
+        AppError::Zip(err.to_string())
+    }
+}
+
+impl From<anchor_client::ClientError> for AppError {
+    fn from(err: anchor_client::ClientError) -> Self {
+        AppError::WidySol(err.to_string())
     }
 }

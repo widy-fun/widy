@@ -1,7 +1,11 @@
 import { Button, TextField } from "@mui/material";
-import type { SerializedError } from "@reduxjs/toolkit";
 import { showSnackBar } from "@widy/react";
-import { AlertSeverity, type ITributeAuth, ServiceType } from "@widy/sdk";
+import {
+	AlertSeverity,
+	type ITributeAuth,
+	type SerializedAppError,
+	ServiceType,
+} from "@widy/sdk";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
@@ -47,7 +51,7 @@ const ApiKey = () => {
 								await tributeConnect().unwrap();
 								navigate(-1);
 							} catch (error) {
-								const err = error as SerializedError;
+								const err = error as SerializedAppError;
 								dispatch(
 									showSnackBar({
 										message: err.message as string,

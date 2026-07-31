@@ -1,11 +1,11 @@
 use tauri::{AppHandle, State};
 
-use crate::services::DonationAlertsService;
+use crate::{error::AppError, services::DonationAlertsService};
 
 #[tauri::command]
 pub async fn donation_alerts_sign_out(
     app: AppHandle,
     donation_alerts_service: State<'_, DonationAlertsService>,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     donation_alerts_service.sign_out(&app).await
 }

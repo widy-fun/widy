@@ -4,7 +4,7 @@ use std::{collections::HashMap, sync::Mutex};
 use tokio::sync::mpsc;
 use uuid::Uuid;
 
-use crate::services::AppEvent;
+use crate::{error::AppError, services::AppEvent};
 
 type Tx = mpsc::UnboundedSender<Message>;
 
@@ -72,14 +72,19 @@ impl WebSocketBroadcaster {
         }
     }
 
-    pub fn send_to_client(&self, connection_id: Uuid, message: Message) -> Result<(), String> {
+    pub fn send_to_client(&self, connection_id: Uuid, message: Message) -> Result<(), AppError> {
         let websocket_clients = self.websocket_clients.lock().unwrap();
 
         if let Some(sender) = websocket_clients.get(&connection_id) {
-            sender.send(message).map_err(|e| e.to_string())?;
+            sender
+                .send(message)
+                .map_err(|e| AppError::Websocket(e.to_string()))?;
             Ok(())
         } else {
-            Err(format!("Client {} not found", connection_id))
+            Err(AppError::Websocket(format!(
+                "Client {} not found",
+                connection_id
+            )))
         }
     }
 }

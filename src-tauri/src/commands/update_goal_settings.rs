@@ -2,6 +2,7 @@ use entity::goals::*;
 use tauri::{AppHandle, Manager, State};
 
 use crate::{
+    error::AppError,
     repositories::GoalsRepository,
     services::{AppEvent, DatabaseService, EventMessage, WebSocketBroadcaster},
 };
@@ -11,7 +12,7 @@ pub async fn update_goal_settings(
     app: AppHandle,
     database_service: State<'_, DatabaseService>,
     goal: Model,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     let updated_goal = database_service.update_goal_settings(goal).await?;
 
     let websocket_broadcaster = app.state::<WebSocketBroadcaster>();

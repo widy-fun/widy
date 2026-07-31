@@ -1,4 +1,4 @@
-use crate::services::DatabaseService;
+use crate::{error::AppError, services::DatabaseService, utils::log_and_wrap_error};
 use async_trait::async_trait;
 use entity::{alerts::*, messages::MessageType};
 use rand::seq::IndexedRandom;
@@ -7,22 +7,22 @@ use sea_orm::{ActiveValue::Set, ColumnTrait, EntityTrait, QueryFilter};
 use uuid::Uuid;
 #[async_trait]
 pub trait AlertsRepository: Send + Sync {
-    async fn get_alerts(&self) -> Result<Vec<Alert>, String>;
+    async fn get_alerts(&self) -> Result<Vec<Alert>, AppError>;
     async fn get_grater_amount_alert(
         &self,
         amount: f64,
         r#type: MessageType,
-    ) -> Result<Option<Alert>, String>;
+    ) -> Result<Option<Alert>, AppError>;
     async fn get_equal_amount_alert(
         &self,
         amount: f64,
         r#type: MessageType,
-    ) -> Result<Option<Alert>, String>;
-    async fn get_random_alert(&self, r#type: MessageType) -> Result<Option<Alert>, String>;
-    async fn get_alert_by_id(&self, id: Uuid) -> Result<Option<Alert>, String>;
-    async fn update_alert_settings(&self, alert: Model) -> Result<(), String>;
-    async fn create_alert(&self, alert: Model) -> Result<(), String>;
-    async fn delete_alert_by_id(&self, id: Uuid) -> Result<(), String>;
+    ) -> Result<Option<Alert>, AppError>;
+    async fn get_random_alert(&self, r#type: MessageType) -> Result<Option<Alert>, AppError>;
+    async fn get_alert_by_id(&self, id: Uuid) -> Result<Option<Alert>, AppError>;
+    async fn update_alert_settings(&self, alert: Model) -> Result<(), AppError>;
+    async fn create_alert(&self, alert: Model) -> Result<(), AppError>;
+    async fn delete_alert_by_id(&self, id: Uuid) -> Result<(), AppError>;
 }
 
 #[async_trait]
@@ -31,7 +31,7 @@ impl AlertsRepository for DatabaseService {
         &self,
         amount: f64,
         r#type: MessageType,
-    ) -> Result<Option<Alert>, String> {
+    ) -> Result<Option<Alert>, AppError> {
         Entity::find()
             .filter(Column::Type.eq(r#type))
             .filter(Column::Amount.lt(amount))
@@ -39,16 +39,13 @@ impl AlertsRepository for DatabaseService {
             .into_partial_model()
             .one(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get grater amount alert error: {}", e);
-                e.to_string()
-            })
+            .map_err(|e| log_and_wrap_error("Get grater amount alert error", e))
     }
     async fn get_equal_amount_alert(
         &self,
         amount: f64,
         r#type: MessageType,
-    ) -> Result<Option<Alert>, String> {
+    ) -> Result<Option<Alert>, AppError> {
         Entity::find()
             .filter(Column::Type.eq(r#type))
             .filter(Column::Amount.eq(amount))
@@ -56,48 +53,36 @@ impl AlertsRepository for DatabaseService {
             .into_partial_model()
             .one(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get equal amount alert error: {}", e);
-                e.to_string()
-            })
+            .map_err(|e| log_and_wrap_error("Get equal amount alert error", e))
     }
-    async fn get_random_alert(&self, r#type: MessageType) -> Result<Option<Alert>, String> {
+    async fn get_random_alert(&self, r#type: MessageType) -> Result<Option<Alert>, AppError> {
         let alerts: Vec<Alert> = Entity::find()
             .filter(Column::Type.eq(r#type))
             .filter(Column::VariationConditions.eq(AlertVariationConditions::Random))
             .into_partial_model()
             .all(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get alerts by type error: {}", e);
-                e.to_string()
-            })?;
+            .map_err(|e| log_and_wrap_error("Get alerts by type error", e))?;
         let mut rng = rand::rng();
         let random_alert = alerts.choose(&mut rng).cloned();
 
         Ok(random_alert)
     }
-    async fn get_alerts(&self) -> Result<Vec<Alert>, String> {
+    async fn get_alerts(&self) -> Result<Vec<Alert>, AppError> {
         Entity::find()
             .into_partial_model()
             .all(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get alerts settings error: {}", e);
-                e.to_string()
-            })
+            .map_err(|e| log_and_wrap_error("Get alerts settings error", e))
     }
-    async fn get_alert_by_id(&self, id: Uuid) -> Result<Option<Alert>, String> {
+    async fn get_alert_by_id(&self, id: Uuid) -> Result<Option<Alert>, AppError> {
         Entity::find_by_id(id)
             .into_partial_model()
             .one(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get alert by id error: {}", e);
-                e.to_string()
-            })
+            .map_err(|e| log_and_wrap_error("Get alert by id error", e))
     }
-    async fn update_alert_settings(&self, alert: Model) -> Result<(), String> {
+    async fn update_alert_settings(&self, alert: Model) -> Result<(), AppError> {
         Entity::update(ActiveModel {
             id: Set(alert.id),
             audio: Set(alert.audio),
@@ -126,13 +111,10 @@ impl AlertsRepository for DatabaseService {
         })
         .exec(&self.connection)
         .await
-        .map_err(|e| {
-            log::error!("Update alert settings error: {}", e);
-            e.to_string()
-        })?;
+        .map_err(|e| log_and_wrap_error("Update alert settings error", e))?;
         Ok(())
     }
-    async fn create_alert(&self, alert: Model) -> Result<(), String> {
+    async fn create_alert(&self, alert: Model) -> Result<(), AppError> {
         Entity::insert(ActiveModel {
             id: Set(alert.id),
             audio: Set(alert.audio),
@@ -161,20 +143,14 @@ impl AlertsRepository for DatabaseService {
         })
         .exec(&self.connection)
         .await
-        .map_err(|e| {
-            log::error!("Create alert error: {}", e);
-            e.to_string()
-        })?;
+        .map_err(|e| log_and_wrap_error("Create alert error", e))?;
         Ok(())
     }
-    async fn delete_alert_by_id(&self, id: Uuid) -> Result<(), String> {
+    async fn delete_alert_by_id(&self, id: Uuid) -> Result<(), AppError> {
         Entity::delete_by_id(id)
             .exec(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Delete alert by id error: {}", e);
-                e.to_string()
-            })?;
+            .map_err(|e| log_and_wrap_error("Delete alert by id error", e))?;
         Ok(())
     }
 }

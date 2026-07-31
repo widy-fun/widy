@@ -3,7 +3,7 @@ use entity::{
     commands_actions, donations, followers, messages::*, raids, redemptions, subscriptions,
 };
 
-use crate::services::DatabaseService;
+use crate::{error::AppError, services::DatabaseService, utils::log_and_wrap_error};
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter, QueryOrder, QuerySelect};
 
 #[async_trait]
@@ -18,7 +18,7 @@ pub trait MessagesRepository: Send + Sync {
         exclude_raids: &bool,
         exclude_redemptions: &bool,
         exclude_commands_actions: &bool,
-    ) -> Result<Vec<ClientMessage>, String>;
+    ) -> Result<Vec<ClientMessage>, AppError>;
 }
 
 #[async_trait]
@@ -33,7 +33,7 @@ impl MessagesRepository for DatabaseService {
         exclude_raids: &bool,
         exclude_redemptions: &bool,
         exclude_commands_actions: &bool,
-    ) -> Result<Vec<ClientMessage>, String> {
+    ) -> Result<Vec<ClientMessage>, AppError> {
         let mut query = Entity::find()
             .left_join(donations::Entity)
             .left_join(followers::Entity)
@@ -67,10 +67,7 @@ impl MessagesRepository for DatabaseService {
             .into_partial_model()
             .all(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get messages error: {}", e);
-                e.to_string()
-            })?;
+            .map_err(|e| log_and_wrap_error("Get messages errorr", e))?;
 
         Ok(client_messages)
     }

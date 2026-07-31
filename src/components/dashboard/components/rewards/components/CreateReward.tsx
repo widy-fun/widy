@@ -1,6 +1,11 @@
-import type { SerializedError } from "@reduxjs/toolkit";
 import { showSnackBar } from "@widy/react";
-import { AlertSeverity, MessageType, Platform, RewardType } from "@widy/sdk";
+import {
+	AlertSeverity,
+	MessageType,
+	Platform,
+	RewardType,
+	type SerializedAppError,
+} from "@widy/sdk";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
@@ -70,7 +75,7 @@ const CreateReward = () => {
 					);
 					navigate(-1);
 				} catch (error) {
-					const err = error as SerializedError;
+					const err = error as SerializedAppError;
 					dispatch(
 						showSnackBar({
 							message: err.message as string,

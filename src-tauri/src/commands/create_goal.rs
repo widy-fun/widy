@@ -2,6 +2,7 @@ use entity::goals::*;
 use tauri::{AppHandle, Manager, State};
 
 use crate::{
+    error::AppError,
     repositories::GoalsRepository,
     services::{AppEvent, DatabaseService, EventMessage, WebSocketBroadcaster},
 };
@@ -11,7 +12,7 @@ pub async fn create_goal(
     app: AppHandle,
     database_service: State<'_, DatabaseService>,
     goal: Model,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     database_service.create_goal(goal.clone()).await?;
 
     let websocket_broadcaster = app.state::<WebSocketBroadcaster>();

@@ -20,6 +20,7 @@ use tokio::sync::Mutex;
 use uuid::Uuid;
 
 use crate::{
+    error::AppError,
     repositories::{
         CommandsActionsRepository, DonationsRepository, FollowsRepository, GoalsRepository,
         RaidsRepository, RedemptionsRepository, SettingsRepository, SubscriptionsRepository,
@@ -333,7 +334,7 @@ impl EventsService {
         websocket_broadcaster: &WebSocketBroadcaster,
         amount: u32,
         r#type: GoalType,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         database_service
             .update_goal_amount(amount, r#type.clone())
             .await?;
@@ -358,7 +359,7 @@ impl EventsService {
         target_amount: f64,
         message: Option<String>,
         app: &AppHandle,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         let user_name = match name {
             Some(name) => match name.as_str() {
                 "" => "Anonymous".to_string(),
@@ -376,12 +377,10 @@ impl EventsService {
             .get_donation_by_service_id(service_id.clone())
             .await?;
 
-        let settings = match database_service.get_settings().await? {
-            Some(settings) => settings,
-            None => {
-                return Err("No settings found".to_string());
-            }
-        };
+        let settings = database_service
+            .get_settings()
+            .await?
+            .ok_or(AppError::DbError("No settings found".to_string()))?;
 
         let id = Uuid::new_v4();
 
@@ -521,7 +520,7 @@ impl EventsService {
         subscription: Subscription,
         goal_type: GoalType,
         app: &AppHandle,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
         let database_service = app.state::<DatabaseService>();
         let client_message = ClientMessage {
@@ -563,7 +562,7 @@ impl EventsService {
         redemption: Redemption,
         reward_type: RewardType,
         app: &AppHandle,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         let media = match reward_type {
             RewardType::Media => {
                 let media_service = app.state::<MediaService>();
@@ -610,7 +609,7 @@ impl EventsService {
     pub async fn command_action(
         command_action: CommandAction,
         app: &AppHandle,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
         let database_service = app.state::<DatabaseService>();
         let created_at = Utc::now().timestamp();
@@ -647,7 +646,7 @@ impl EventsService {
         follow: Follow,
         goal_type: GoalType,
         app: &AppHandle,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
         let database_service = app.state::<DatabaseService>();
         let client_message = ClientMessage {
@@ -676,7 +675,7 @@ impl EventsService {
         Ok(())
     }
 
-    pub async fn raid(raid: Raid, app: &AppHandle) -> Result<(), String> {
+    pub async fn raid(raid: Raid, app: &AppHandle) -> Result<(), AppError> {
         let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
         let database_service = app.state::<DatabaseService>();
         let client_message = ClientMessage {
@@ -708,7 +707,7 @@ impl EventsService {
     pub async fn chat_message(
         chat_message: UnifiedChatMessage,
         app: &AppHandle,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
         let event_message = EventMessage {
             event: AppEvent::ChatMessage,
@@ -722,7 +721,7 @@ impl EventsService {
     pub async fn chat_message_delete(
         event: UnifiedChatMessageDelete,
         app: &AppHandle,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
         let event_message = EventMessage {
             event: AppEvent::ChatMessageDelete,

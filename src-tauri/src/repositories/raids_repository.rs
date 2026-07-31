@@ -4,16 +4,16 @@ use entity::{
     raids,
 };
 
-use crate::services::DatabaseService;
+use crate::{error::AppError, services::DatabaseService, utils::log_and_wrap_error};
 
 #[async_trait]
 pub trait RaidsRepository: Send + Sync {
-    async fn save_raid_message(&self, client_message: ClientMessage) -> Result<(), String>;
+    async fn save_raid_message(&self, client_message: ClientMessage) -> Result<(), AppError>;
 }
 
 #[async_trait]
 impl RaidsRepository for DatabaseService {
-    async fn save_raid_message(&self, client_message: ClientMessage) -> Result<(), String> {
+    async fn save_raid_message(&self, client_message: ClientMessage) -> Result<(), AppError> {
         if let Some(raid) = client_message.raid {
             raids::ActiveModel::builder()
                 .set_created_at(raid.created_at)
@@ -33,10 +33,7 @@ impl RaidsRepository for DatabaseService {
                 )
                 .insert(&self.connection)
                 .await
-                .map_err(|e| {
-                    log::error!("Save raid error: {}", e.to_string());
-                    e.to_string()
-                })?;
+                .map_err(|e| log_and_wrap_error("Save raid error", e))?;
         }
 
         Ok(())

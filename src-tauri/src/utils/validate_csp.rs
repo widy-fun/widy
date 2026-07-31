@@ -1,17 +1,19 @@
 use entity::widgets::Csp;
 
-fn validate_csp_source(value: &str, is_dev: bool) -> Result<(), String> {
+use crate::error::AppError;
+
+fn validate_csp_source(value: &str, is_dev: bool) -> Result<(), AppError> {
     if value.is_empty() {
-        return Err("CSP source value is empty".to_string());
+        return Err(AppError::Custom("CSP source value is empty".to_string()));
     }
 
     if value
         .chars()
         .any(|c| c.is_whitespace() || c == ';' || c == '\'' || c == '"')
     {
-        return Err(format!(
+        return Err(AppError::Custom(format!(
             "CSP source '{value}' contains illegal characters (whitespace, ';', or quotes)"
-        ));
+        )));
     }
 
     let is_valid = value.starts_with("https://")
@@ -19,16 +21,16 @@ fn validate_csp_source(value: &str, is_dev: bool) -> Result<(), String> {
         || (is_dev && value.starts_with("ws://localhost"));
 
     if !is_valid {
-        return Err(format!(
+        return Err(AppError::Custom(format!(
             "CSP source '{value}' must start with https:// or wss://{}",
             if is_dev { " or ws://localhost" } else { "" }
-        ));
+        )));
     }
 
     Ok(())
 }
 
-fn validate_csp_sources(values: &[String], is_dev: bool) -> Result<(), String> {
+fn validate_csp_sources(values: &[String], is_dev: bool) -> Result<(), AppError> {
     for v in values {
         validate_csp_source(v, is_dev)?;
     }
@@ -39,7 +41,7 @@ fn as_slice(values: &Option<Vec<String>>) -> &[String] {
     values.as_deref().unwrap_or(&[])
 }
 
-pub fn validate_csp(csp: Option<Csp>, is_dev: bool) -> Result<String, String> {
+pub fn validate_csp(csp: Option<Csp>, is_dev: bool) -> Result<String, AppError> {
     if let Some(csp) = csp {
         let connect_src = as_slice(&csp.connect_src);
         let img_src = as_slice(&csp.img_src);
@@ -98,9 +100,10 @@ mod tests {
             media_src: None,
         };
 
-        assert!(
-            matches!(validate_csp(Some(csp), false), Err(e) if e == "CSP source value is empty")
-        );
+        assert!(matches!(
+            validate_csp(Some(csp), false),
+            Err(AppError::Custom(ref e)) if e == "CSP source value is empty"
+        ));
     }
 
     #[test]
@@ -111,9 +114,11 @@ mod tests {
             media_src: None,
         };
 
-        assert!(
-            matches!(validate_csp(Some(csp), false), Err(e) if e.contains("contains illegal characters"))
-        );
+        assert!(matches!(
+            validate_csp(Some(csp), false),
+            Err(AppError::Custom(ref e))
+                if e.contains("contains illegal characters")
+        ));
     }
 
     #[test]
@@ -124,8 +129,10 @@ mod tests {
             media_src: None,
         };
 
-        assert!(
-            matches!(validate_csp(Some(csp), false), Err(e) if e.contains("must start with https:// or wss://"))
-        );
+        assert!(matches!(
+            validate_csp(Some(csp), false),
+            Err(AppError::Custom(ref e))
+                if e.contains("must start with https:// or wss://")
+        ));
     }
 }

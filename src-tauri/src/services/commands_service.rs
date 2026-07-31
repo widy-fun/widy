@@ -63,7 +63,7 @@ impl CommandsService {
     pub async fn kick_chat_message_trigger(
         message: UnifiedChatMessage,
         app: &AppHandle,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         let kick_bot_service = app.state::<KickBotService>();
         let kick_service = app.state::<KickService>();
         let commands_service = app.state::<CommandsService>();
@@ -80,11 +80,11 @@ impl CommandsService {
                 })
                 .cloned()
         };
-        let command = command.ok_or("Command not found".to_string())?;
+        let command = command.ok_or(AppError::Custom("Command not found".to_string()))?;
         let broadcaster_user_id: u64 = message
             .channel_id
             .parse()
-            .map_err(|_| "Channel id parse error".to_string())?;
+            .map_err(|_| AppError::Custom("Channel id parse error".to_string()))?;
 
         if let Command {
             is_enabled: true,
@@ -94,7 +94,7 @@ impl CommandsService {
         } = command.clone()
         {
             if !message.sender.roles.has_any_level(&chat.user_levels) {
-                return Err("Not allowed".to_string());
+                return Err(AppError::Custom("Not allowed".to_string()));
             }
 
             let reply_to_message_id: Option<String> = match command.clone().chat_bot {
@@ -145,7 +145,7 @@ impl CommandsService {
     pub async fn twitch_chat_message_trigger(
         message: UnifiedChatMessage,
         app: &AppHandle,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         let twitch_bot_service = app.state::<TwitchBotService>();
         let twitch_service = app.state::<TwitchService>();
         let commands_service = app.state::<CommandsService>();
@@ -162,7 +162,7 @@ impl CommandsService {
                 })
                 .cloned()
         };
-        let command = command.ok_or("Command not found".to_string())?;
+        let command = command.ok_or(AppError::Custom("Command not found".to_string()))?;
         if let Command {
             is_enabled: true,
             chat: Some(chat),
@@ -171,7 +171,7 @@ impl CommandsService {
         } = command.clone()
         {
             if !message.sender.roles.has_any_level(&chat.user_levels) {
-                return Err("Not allowed".to_string());
+                return Err(AppError::Custom("Not allowed".to_string()));
             }
 
             let reply_to_message_id: Option<String> = match command.clone().chat_bot {
@@ -288,14 +288,14 @@ impl CommandsService {
         app: &AppHandle,
         message: String,
         lines_passed: u64,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         let kick_bot_service = app.state::<KickBotService>();
         let kick_service = app.state::<KickService>();
         let auth = kick_service.get_auth(app, ServiceType::Kick).await?;
         let chat_messages_buffer = { kick_service.chat_messages_buffer.lock().unwrap().clone() };
         if chat_messages_buffer.is_message_not_lines_passed(message.clone(), lines_passed as usize)
         {
-            return Err("Bot message not passed lines".to_string());
+            return Err(AppError::Custom("Bot message not passed lines".to_string()));
         }
         let reqwest_client = app.state::<reqwest::Client>();
         let user_info = kick_service
@@ -318,7 +318,7 @@ impl CommandsService {
         app: &AppHandle,
         message: String,
         lines_passed: u64,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         let twitch_bot_service = app.state::<TwitchBotService>();
         let twitch_service = app.state::<TwitchService>();
         let bot_auth = twitch_bot_service
@@ -328,7 +328,7 @@ impl CommandsService {
         let chat_messages_buffer = { twitch_service.chat_messages_buffer.lock().unwrap().clone() };
         if chat_messages_buffer.is_message_not_lines_passed(message.clone(), lines_passed as usize)
         {
-            return Err("Bot message not passed lines".to_string());
+            return Err(AppError::Custom("Bot message not passed lines".to_string()));
         }
         let reqwest_client = app.state::<reqwest::Client>();
 
@@ -351,7 +351,7 @@ impl CommandsService {
         app: &AppHandle,
         message: String,
         lines_passed: u64,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         let twitch_bot_service = app.state::<TwitchBotService>();
         let twitch_service = app.state::<TwitchService>();
         let bot_auth = twitch_bot_service
@@ -361,7 +361,7 @@ impl CommandsService {
         let chat_messages_buffer = { twitch_service.chat_messages_buffer.lock().unwrap().clone() };
         if chat_messages_buffer.is_message_not_lines_passed(message.clone(), lines_passed as usize)
         {
-            return Err("Bot message not passed lines".to_string());
+            return Err(AppError::Custom("Bot message not passed lines".to_string()));
         }
         let reqwest_client = app.state::<reqwest::Client>();
 

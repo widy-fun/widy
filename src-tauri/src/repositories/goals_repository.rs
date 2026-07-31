@@ -2,24 +2,24 @@ use entity::goals::*;
 use migration::Expr;
 use uuid::Uuid;
 
-use crate::services::DatabaseService;
+use crate::{error::AppError, services::DatabaseService, utils::log_and_wrap_error};
 use async_trait::async_trait;
 use sea_orm::{ActiveValue::Set, EntityTrait, ExprTrait, QueryFilter, QueryOrder, QuerySelect};
 #[async_trait]
 pub trait GoalsRepository: Send + Sync {
-    async fn get_goals(&self, limit: u64, offset: u64) -> Result<Vec<Model>, String>;
-    async fn get_goal_by_id(&self, id: Uuid) -> Result<Option<Model>, String>;
-    async fn update_goal_settings(&self, goal: Model) -> Result<Model, String>;
-    async fn update_goal_amount(&self, amount: u32, r#type: GoalType) -> Result<(), String>;
-    async fn create_goal(&self, goal: Model) -> Result<(), String>;
-    async fn get_not_ended_goal(&self, r#type: GoalType) -> Result<Option<Model>, String>;
-    async fn get_not_ended_goals(&self) -> Result<Vec<Model>, String>;
-    async fn finish_goal(&self, id: Uuid) -> Result<(), String>;
+    async fn get_goals(&self, limit: u64, offset: u64) -> Result<Vec<Model>, AppError>;
+    async fn get_goal_by_id(&self, id: Uuid) -> Result<Option<Model>, AppError>;
+    async fn update_goal_settings(&self, goal: Model) -> Result<Model, AppError>;
+    async fn update_goal_amount(&self, amount: u32, r#type: GoalType) -> Result<(), AppError>;
+    async fn create_goal(&self, goal: Model) -> Result<(), AppError>;
+    async fn get_not_ended_goal(&self, r#type: GoalType) -> Result<Option<Model>, AppError>;
+    async fn get_not_ended_goals(&self) -> Result<Vec<Model>, AppError>;
+    async fn finish_goal(&self, id: Uuid) -> Result<(), AppError>;
 }
 
 #[async_trait]
 impl GoalsRepository for DatabaseService {
-    async fn finish_goal(&self, id: Uuid) -> Result<(), String> {
+    async fn finish_goal(&self, id: Uuid) -> Result<(), AppError> {
         Entity::update(ActiveModel {
             id: Set(id),
             ended: Set(true),
@@ -27,34 +27,25 @@ impl GoalsRepository for DatabaseService {
         })
         .exec(&self.connection)
         .await
-        .map_err(|e| {
-            log::error!("Finish goal error: {}", e);
-            e.to_string()
-        })?;
+        .map_err(|e| log_and_wrap_error("Finish goal error", e))?;
         Ok(())
     }
-    async fn get_not_ended_goal(&self, r#type: GoalType) -> Result<Option<Model>, String> {
+    async fn get_not_ended_goal(&self, r#type: GoalType) -> Result<Option<Model>, AppError> {
         Entity::find()
             .filter(Expr::col(Column::Ended).eq(false))
             .filter(Expr::col(Column::Type).eq(r#type))
             .one(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get not ended goal error: {}", e);
-                e.to_string()
-            })
+            .map_err(|e| log_and_wrap_error("Get not ended goal error", e))
     }
-    async fn get_not_ended_goals(&self) -> Result<Vec<Model>, String> {
+    async fn get_not_ended_goals(&self) -> Result<Vec<Model>, AppError> {
         Entity::find()
             .filter(Expr::col(Column::Ended).eq(false))
             .all(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get not ended goals error: {}", e);
-                e.to_string()
-            })
+            .map_err(|e| log_and_wrap_error("Get not ended goals error", e))
     }
-    async fn update_goal_amount(&self, amount: u32, r#type: GoalType) -> Result<(), String> {
+    async fn update_goal_amount(&self, amount: u32, r#type: GoalType) -> Result<(), AppError> {
         Entity::update_many()
             .col_expr(
                 Column::CurrentAmount,
@@ -64,35 +55,26 @@ impl GoalsRepository for DatabaseService {
             .filter(Expr::col(Column::Type).eq(r#type))
             .exec(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Update goal amount error: {}", e);
-                e.to_string()
-            })?;
+            .map_err(|e| log_and_wrap_error("Update goal amount error", e))?;
 
         Ok(())
     }
-    async fn get_goals(&self, limit: u64, offset: u64) -> Result<Vec<Model>, String> {
+    async fn get_goals(&self, limit: u64, offset: u64) -> Result<Vec<Model>, AppError> {
         Entity::find()
             .order_by_desc(Column::StartDate)
             .limit(limit)
             .offset(offset)
             .all(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get goals error: {}", e);
-                e.to_string()
-            })
+            .map_err(|e| log_and_wrap_error("Get goals error", e))
     }
-    async fn get_goal_by_id(&self, id: Uuid) -> Result<Option<Model>, String> {
+    async fn get_goal_by_id(&self, id: Uuid) -> Result<Option<Model>, AppError> {
         Entity::find_by_id(id)
             .one(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get goal by id error: {}", e);
-                e.to_string()
-            })
+            .map_err(|e| log_and_wrap_error("Get goal by id error", e))
     }
-    async fn update_goal_settings(&self, goal: Model) -> Result<Model, String> {
+    async fn update_goal_settings(&self, goal: Model) -> Result<Model, AppError> {
         let updated_goal = Entity::update(ActiveModel {
             id: Set(goal.id),
             title: Set(goal.title),
@@ -121,14 +103,11 @@ impl GoalsRepository for DatabaseService {
         })
         .exec(&self.connection)
         .await
-        .map_err(|e| {
-            log::error!("Update goal settings error: {}", e);
-            e.to_string()
-        })?;
+        .map_err(|e| log_and_wrap_error("Update goal settings error", e))?;
 
         Ok(updated_goal)
     }
-    async fn create_goal(&self, goal: Model) -> Result<(), String> {
+    async fn create_goal(&self, goal: Model) -> Result<(), AppError> {
         Entity::insert(ActiveModel {
             id: Set(goal.id),
             title: Set(goal.title),
@@ -157,10 +136,7 @@ impl GoalsRepository for DatabaseService {
         })
         .exec(&self.connection)
         .await
-        .map_err(|e| {
-            log::error!("Create goal error: {}", e);
-            e.to_string()
-        })?;
+        .map_err(|e| log_and_wrap_error("Create goal error", e))?;
 
         Ok(())
     }

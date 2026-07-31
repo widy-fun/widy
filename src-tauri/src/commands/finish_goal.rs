@@ -1,12 +1,12 @@
 use tauri::State;
 use uuid::Uuid;
 
-use crate::{repositories::GoalsRepository, services::DatabaseService};
+use crate::{error::AppError, repositories::GoalsRepository, services::DatabaseService};
 
 #[tauri::command]
 pub async fn finish_goal(
     database_service: State<'_, DatabaseService>,
     id: Uuid,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     database_service.finish_goal(id).await
 }

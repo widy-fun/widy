@@ -1,7 +1,6 @@
 import { Button, TextField } from "@mui/material";
-import type { SerializedError } from "@reduxjs/toolkit";
 import { showSnackBar } from "@widy/react";
-import { AlertSeverity, ServiceType } from "@widy/sdk";
+import { AlertSeverity, type SerializedAppError, ServiceType } from "@widy/sdk";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
@@ -49,7 +48,7 @@ const Token = () => {
 								}
 								await streamElementsSocketService.signIn(token);
 							} catch (error) {
-								const err = error as SerializedError;
+								const err = error as SerializedAppError;
 								dispatch(
 									showSnackBar({
 										message: err.message as string,

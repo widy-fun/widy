@@ -1,4 +1,7 @@
-use crate::services::{WidyNetwork, WidySolService, WidyTonService};
+use crate::{
+    error::AppError,
+    services::{WidyNetwork, WidySolService, WidyTonService},
+};
 use std::sync::Arc;
 use tauri::State;
 
@@ -7,7 +10,7 @@ pub async fn get_widy_nonce(
     widy_sol_service: State<'_, Arc<WidySolService>>,
     widy_ton_service: State<'_, Arc<WidyTonService>>,
     network: WidyNetwork,
-) -> Result<Option<String>, String> {
+) -> Result<Option<String>, AppError> {
     let mut nonce;
     match network {
         WidyNetwork::Ton => {

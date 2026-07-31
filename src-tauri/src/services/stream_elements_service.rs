@@ -2,7 +2,7 @@ use entity::{services::ServiceType, settings::Currency};
 use serde::{Deserialize, Serialize};
 use tauri::AppHandle;
 
-use crate::services::EventsService;
+use crate::{error::AppError, services::EventsService};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct StreamElementsEvent<T> {
@@ -48,7 +48,7 @@ impl StreamElementsService {
         &self,
         app: AppHandle,
         event: StreamElementsEvent<StreamElementsTip>,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         EventsService::donation(
             event._id,
             ServiceType::Streamelements,

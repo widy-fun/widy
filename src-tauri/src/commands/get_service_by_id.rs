@@ -1,4 +1,4 @@
-use crate::{repositories::ServicesRepository, services::DatabaseService};
+use crate::{error::AppError, repositories::ServicesRepository, services::DatabaseService};
 use entity::services::*;
 use tauri::State;
 
@@ -6,6 +6,6 @@ use tauri::State;
 pub async fn get_service_by_id(
     database_service: State<'_, DatabaseService>,
     id: ServiceType,
-) -> Result<Option<Model>, String> {
+) -> Result<Option<Model>, AppError> {
     database_service.get_service_by_id(id).await
 }

@@ -17,6 +17,7 @@ use tokio_util::sync::CancellationToken;
 use uuid::Uuid;
 
 use crate::{
+    error::AppError,
     repositories::RewardsRepository,
     services::{
         ChatMessageType, CommandsService, DatabaseService, EventsService, SenderRoles,
@@ -69,7 +70,7 @@ impl KickService {
         }
     }
 
-    pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
+    pub async fn connect(&self, app: &AppHandle) -> Result<(), AppError> {
         {
             let mut cancellation_token = self.cancellation_token.lock().unwrap();
             *cancellation_token = CancellationToken::new();

@@ -1,6 +1,5 @@
-import type { SerializedError } from "@reduxjs/toolkit";
 import { showSnackBar } from "@widy/react";
-import { AlertSeverity } from "@widy/sdk";
+import { AlertSeverity, type SerializedAppError } from "@widy/sdk";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -52,7 +51,7 @@ const UpdateGoalSettings = () => {
 							}),
 						);
 					} catch (error) {
-						const err = error as SerializedError;
+						const err = error as SerializedAppError;
 						dispatch(
 							showSnackBar({
 								message: err.message as string,

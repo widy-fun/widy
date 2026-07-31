@@ -1,9 +1,12 @@
 import { Box, Button } from "@mui/material";
-import type { SerializedError } from "@reduxjs/toolkit";
 import { open } from "@tauri-apps/plugin-dialog";
 import { readFile } from "@tauri-apps/plugin-fs";
 import { showSnackBar } from "@widy/react";
-import { AlertSeverity, type IManifest } from "@widy/sdk";
+import {
+	AlertSeverity,
+	type IManifest,
+	type SerializedAppError,
+} from "@widy/sdk";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
@@ -37,7 +40,7 @@ const AddWidget = () => {
 								}),
 							);
 						} catch (error) {
-							const err = error as SerializedError;
+							const err = error as SerializedAppError;
 							dispatch(
 								showSnackBar({
 									message: err.message as string,

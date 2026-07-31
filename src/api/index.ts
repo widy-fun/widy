@@ -1,22 +1,23 @@
-import type { SerializedError } from "@reduxjs/toolkit";
 import { type BaseQueryFn, createApi } from "@reduxjs/toolkit/query/react";
 import { type InvokeArgs, invoke } from "@tauri-apps/api/core";
+import { SerializedAppError } from "@widy/sdk";
+import i18n from "../../shared/i18n/i18n";
 
 const tauriBaseQuery =
 	(): BaseQueryFn<
 		{ command: string; args?: InvokeArgs | undefined },
 		unknown,
-		SerializedError
+		SerializedAppError
 	> =>
 	async ({ command, args }) => {
 		try {
 			const result = await invoke<unknown>(command, args);
 			return { data: result };
 		} catch (error) {
+			console.error(error);
+			const err = error as SerializedAppError;
 			return {
-				error: {
-					message: error as string,
-				},
+				error: { ...err, message: i18n.t(`errors.${err.kind}`) },
 			};
 		}
 	};

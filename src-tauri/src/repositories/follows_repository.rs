@@ -4,16 +4,16 @@ use entity::{
     messages::{self, ClientMessage},
 };
 
-use crate::services::DatabaseService;
+use crate::{error::AppError, services::DatabaseService, utils::log_and_wrap_error};
 
 #[async_trait]
 pub trait FollowsRepository: Send + Sync {
-    async fn save_follow_message(&self, client_message: ClientMessage) -> Result<(), String>;
+    async fn save_follow_message(&self, client_message: ClientMessage) -> Result<(), AppError>;
 }
 
 #[async_trait]
 impl FollowsRepository for DatabaseService {
-    async fn save_follow_message(&self, client_message: ClientMessage) -> Result<(), String> {
+    async fn save_follow_message(&self, client_message: ClientMessage) -> Result<(), AppError> {
         if let Some(follow) = client_message.follow {
             followers::ActiveModel::builder()
                 .set_followed_at(follow.followed_at)
@@ -32,10 +32,7 @@ impl FollowsRepository for DatabaseService {
                 )
                 .insert(&self.connection)
                 .await
-                .map_err(|e| {
-                    log::error!("Save follow message error: {}", e);
-                    e.to_string()
-                })?;
+                .map_err(|e| log_and_wrap_error("Save follow message error", e))?;
         }
 
         Ok(())

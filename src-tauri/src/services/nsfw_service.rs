@@ -14,7 +14,9 @@ use xcap::Window;
 
 use crate::{
     constants::NSFW_LABELS,
+    error::AppError,
     services::{AppEvent, ConfigService, EventMessage, WebSocketBroadcaster},
+    utils::log_and_wrap_error,
 };
 use rten::{FloatOperators, Model, NodeId};
 use rten_tensor::NdTensor;
@@ -46,7 +48,7 @@ impl NsfwService {
         }
     }
 
-    pub async fn start(&self, app: AppHandle, window_info: WindowInfo) -> Result<(), String> {
+    pub async fn start(&self, app: AppHandle, window_info: WindowInfo) -> Result<(), AppError> {
         {
             let mut selected_window = self.selected_window.lock().unwrap();
             if selected_window.is_some() {
@@ -131,17 +133,14 @@ impl NsfwService {
         Ok(())
     }
 
-    pub async fn get_windows(&self) -> Result<Vec<WindowInfo>, String> {
-        let windows = Window::all().map_err(|e| {
-            log::error!("Get windows error: {}", e);
-            e.to_string()
-        })?;
+    pub async fn get_windows(&self) -> Result<Vec<WindowInfo>, AppError> {
+        let windows = Window::all()
+            .map_err(|e| log_and_wrap_error("Get windows error", AppError::NSFW(e.to_string())))?;
         let mut windows_info: Vec<WindowInfo> = vec![];
         let selected_window = { self.selected_window.lock().unwrap().clone() };
         for window in windows.clone() {
             let window_id = window.id().map_err(|e| {
-                log::error!("Get window ID error: {}", e);
-                e.to_string()
+                log_and_wrap_error("Get window ID error", AppError::NSFW(e.to_string()))
             })?;
             let selected = if let Some(selected_window) = &selected_window {
                 selected_window.id == window_id
@@ -150,8 +149,7 @@ impl NsfwService {
             };
             windows_info.push(WindowInfo {
                 title: window.title().map_err(|e| {
-                    log::error!("Get window title error: {}", e);
-                    e.to_string()
+                    log_and_wrap_error("Get window title error", AppError::NSFW(e.to_string()))
                 })?,
                 id: window_id,
                 selected,
@@ -191,7 +189,7 @@ impl NsfwService {
         Ok(detections)
     }
 
-    pub fn stop(&self) -> Result<(), String> {
+    pub fn stop(&self) -> Result<(), AppError> {
         self.is_stopping.store(true, Ordering::Relaxed);
         Ok(())
     }

@@ -51,13 +51,13 @@ impl DatabaseService {
     async fn establish_connection(options: ConnectOptions) -> Result<DatabaseConnection, AppError> {
         Database::connect(options).await.map_err(|e| {
             log::error!("Database connect error: {}", e);
-            AppError::DbError(e)
+            AppError::DbError(e.to_string())
         })
     }
     async fn run_migrations(connection: &DatabaseConnection) -> Result<(), AppError> {
         Migrator::up(connection, None).await.map_err(|e| {
             log::error!("Migration error: {}", e);
-            AppError::DbError(e)
+            AppError::DbError(e.to_string())
         })?;
         log::info!("Migrations run");
         Ok(())

@@ -3,8 +3,10 @@ use tauri::State;
 use tokio::fs;
 
 use crate::{
+    error::AppError,
     repositories::WidgetsRepository,
     services::{ConfigService, DatabaseService},
+    utils::log_and_wrap_error,
 };
 
 #[tauri::command]
@@ -12,7 +14,7 @@ pub async fn delete_widget(
     database_service: State<'_, DatabaseService>,
     config_service: State<'_, ConfigService>,
     widget: widgets::Model,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     database_service
         .delete_widget_by_id(widget.id.clone())
         .await?;
@@ -24,7 +26,7 @@ pub async fn delete_widget(
                 .join(widget.id.to_string()),
         )
         .await
-        .map_err(|e| e.to_string())?;
+        .map_err(|e| log_and_wrap_error("Remove widget dir error", e))?;
     }
     Ok(())
 }

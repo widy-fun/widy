@@ -1,4 +1,5 @@
 use crate::{
+    error::AppError,
     repositories::{RedemptionsRepository, RewardsRepository},
     services::{
         ChatFragment, ChatMessageType, CommandsService, DatabaseService, DeletedMessageUser,
@@ -86,7 +87,7 @@ impl TwitchService {
         }
     }
 
-    pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
+    pub async fn connect(&self, app: &AppHandle) -> Result<(), AppError> {
         {
             let mut cancellation_token = self.cancellation_token.lock().unwrap();
             *cancellation_token = CancellationToken::new();

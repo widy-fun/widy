@@ -73,17 +73,19 @@ struct TonTraceAccounts {
     hash: String,
 }
 trait StringTail {
-    fn load_snake_string(&self) -> Result<String, String>;
+    fn load_snake_string(&self) -> Result<String, AppError>;
 }
 impl StringTail for Cell {
-    fn load_snake_string(&self) -> Result<String, String> {
+    fn load_snake_string(&self) -> Result<String, AppError> {
         let mut bytes = Vec::new();
         let mut current = self.clone();
 
         loop {
             let mut parser = current.parser();
             let available = parser.remaining_bytes();
-            let chunk = parser.load_bytes(available).map_err(|e| e.to_string())?;
+            let chunk = parser
+                .load_bytes(available)
+                .map_err(|e| AppError::ParseError(e.to_string()))?;
             bytes.extend_from_slice(&chunk);
 
             if current.references().is_empty() {
@@ -93,7 +95,7 @@ impl StringTail for Cell {
             current = (*current.references()[0]).clone();
         }
 
-        Ok(String::from_utf8(bytes).map_err(|e| e.to_string())?)
+        Ok(String::from_utf8(bytes).map_err(|e| AppError::ParseError(e.to_string()))?)
     }
 }
 
@@ -184,7 +186,7 @@ impl WidyTonService {
         }
     }
 
-    pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
+    pub async fn connect(&self, app: &AppHandle) -> Result<(), AppError> {
         {
             let mut cancellation_token = self.cancellation_token.lock().unwrap();
             *cancellation_token = CancellationToken::new();
@@ -254,29 +256,43 @@ impl WidyTonService {
         });
     }
 
-    fn parse_donation_event(&self, base64: &str) -> Result<DonationEvent, String> {
+    fn parse_donation_event(&self, base64: &str) -> Result<DonationEvent, AppError> {
         let boc_bytes = general_purpose::STANDARD
             .decode(base64)
-            .map_err(|e| e.to_string())?;
-        let boc = BagOfCells::parse(&boc_bytes).map_err(|e| e.to_string())?;
+            .map_err(|e| AppError::ParseError(e.to_string()))?;
+        let boc = BagOfCells::parse(&boc_bytes).map_err(|e| AppError::ParseError(e.to_string()))?;
 
-        let root = boc.single_root().map_err(|e| e.to_string())?;
+        let root = boc
+            .single_root()
+            .map_err(|e| AppError::ParseError(e.to_string()))?;
         let mut parser = root.parser();
 
-        let op_code = parser.load_u32(32).map_err(|e| e.to_string())?;
-        let query_id = parser.load_u64(64).map_err(|e| e.to_string())?;
-        let amount = parser.load_coins().map_err(|e| e.to_string())?;
-        let sender = parser.load_address().map_err(|e| e.to_string())?;
+        let op_code = parser
+            .load_u32(32)
+            .map_err(|e| AppError::ParseError(e.to_string()))?;
+        let query_id = parser
+            .load_u64(64)
+            .map_err(|e| AppError::ParseError(e.to_string()))?;
+        let amount = parser
+            .load_coins()
+            .map_err(|e| AppError::ParseError(e.to_string()))?;
+        let sender = parser
+            .load_address()
+            .map_err(|e| AppError::ParseError(e.to_string()))?;
 
-        let name_cell = parser.next_reference().map_err(|e| e.to_string())?;
+        let name_cell = parser
+            .next_reference()
+            .map_err(|e| AppError::ParseError(e.to_string()))?;
         let mut name_parser = name_cell.parser();
 
         let bytes_len: usize = name_parser.remaining_bytes();
         let name = name_parser
             .load_utf8(bytes_len)
-            .map_err(|e| e.to_string())?;
+            .map_err(|e| AppError::ParseError(e.to_string()))?;
 
-        let message_cell = parser.next_reference().map_err(|e| e.to_string())?;
+        let message_cell = parser
+            .next_reference()
+            .map_err(|e| AppError::ParseError(e.to_string()))?;
         let message = message_cell.load_snake_string()?;
 
         Ok(DonationEvent {
@@ -361,7 +377,7 @@ impl WidyTonService {
         Ok(traces_response)
     }
 
-    pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), String> {
+    pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), AppError> {
         let database_service = app.state::<DatabaseService>();
         database_service
             .update_service(entity::services::Model {

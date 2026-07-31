@@ -1,4 +1,4 @@
-use crate::{repositories::RewardsRepository, services::DatabaseService};
+use crate::{error::AppError, repositories::RewardsRepository, services::DatabaseService};
 use entity::rewards::Model;
 use tauri::State;
 
@@ -6,9 +6,6 @@ use tauri::State;
 pub async fn update_reward_settings(
     database_service: State<'_, DatabaseService>,
     reward: Model,
-) -> Result<(), String> {
-    database_service
-        .update_reward_settings(reward)
-        .await
-        .map_err(|e| e.to_string())
+) -> Result<(), AppError> {
+    database_service.update_reward_settings(reward).await
 }

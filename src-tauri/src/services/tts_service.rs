@@ -1,12 +1,14 @@
 use entity::alerts::TtsType;
 use lingua::{Language, LanguageDetector};
 use msedge_tts::{
-    tts::{client::connect_async, SpeechConfig},
+    tts::{SpeechConfig, client::connect_async},
     voice::get_voices_list_async,
 };
 use std::{fs, path::PathBuf};
 use tauri::{AppHandle, Manager};
 use tokio::{fs::File, io::AsyncWriteExt};
+
+use crate::{error::AppError, utils::log_and_wrap_error};
 
 #[derive(Clone, Debug)]
 pub struct TtsService {
@@ -24,15 +26,14 @@ impl TtsService {
         file_name: &str,
         app: &AppHandle,
         tts_type: TtsType,
-    ) -> Result<String, String> {
+    ) -> Result<String, AppError> {
         let language = self
             .detect_language(text, app.clone())
             .map(|lang| lang)
             .unwrap_or_else(|| Language::English);
 
         fs::create_dir_all(&self.audio_path).map_err(|e| {
-            log::error!("Create audio dir error: {}", e.to_string());
-            e.to_string()
+            log_and_wrap_error("Create audio dir error", AppError::Io(e.to_string()))
         })?;
 
         match tts_type {
@@ -49,7 +50,7 @@ impl TtsService {
         text: &str,
         file_name: &str,
         language: &Language,
-    ) -> Result<String, String> {
+    ) -> Result<String, AppError> {
         let mut audio_bytes = Vec::new();
         for text_parts in self.split_text(text, 100) {
             let encoded_text = urlencoding::encode(&text_parts);
@@ -61,25 +62,44 @@ impl TtsService {
                 text_parts.chars().count()
             );
 
-            let response = reqwest::get(url).await.map_err(|e| e.to_string())?;
+            let response = reqwest::get(url)
+                .await
+                .map_err(|e| log_and_wrap_error("Google send tts request error", e))?;
             if !response.status().is_success() {
-                return Err(format!(
-                    "Failed to get audio from Google TTS: {}",
-                    response.status()
+                let status = response.status();
+                let body = response
+                    .text()
+                    .await
+                    .map_err(|e| log_and_wrap_error("Google tts read body error", e))?;
+                return Err(log_and_wrap_error(
+                    "Failed to get audio from Google TTS",
+                    AppError::HttpStatus {
+                        status: status.as_u16(),
+                        body,
+                    },
                 ));
             }
 
-            let bytes = response.bytes().await.map_err(|e| e.to_string())?;
+            let bytes = response
+                .bytes()
+                .await
+                .map_err(|e| log_and_wrap_error("Google tts read bytes error", e))?;
             audio_bytes.extend_from_slice(&bytes);
         }
 
         let audio_file_path = self.audio_path.join(format!("{}.mp3", file_name));
-        let mut file = File::create(audio_file_path)
-            .await
-            .map_err(|e| e.to_string())?;
-        file.write_all(&audio_bytes)
-            .await
-            .map_err(|e| e.to_string())?;
+        let mut file = File::create(audio_file_path).await.map_err(|e| {
+            log_and_wrap_error(
+                "Create google tts audio file error",
+                AppError::Io(e.to_string()),
+            )
+        })?;
+        file.write_all(&audio_bytes).await.map_err(|e| {
+            log_and_wrap_error(
+                "Write google tts audio file error",
+                AppError::Io(e.to_string()),
+            )
+        })?;
 
         Ok(format!("{}.mp3", file_name))
     }
@@ -89,24 +109,36 @@ impl TtsService {
         text: &str,
         file_name: &str,
         language: &Language,
-    ) -> Result<String, String> {
-        let voices = get_voices_list_async().await.map_err(|e| e.to_string())?;
+    ) -> Result<String, AppError> {
+        let voices = get_voices_list_async().await.map_err(|e| {
+            log_and_wrap_error("Get edge tts voices error", AppError::Custom(e.to_string()))
+        })?;
         for voice in &voices {
             if let Some(locale) = &voice.locale {
                 if locale.contains(&language.iso_code_639_1().to_string()) {
                     let config = SpeechConfig::from(voice);
-                    let mut tts = connect_async().await.map_err(|e| e.to_string())?;
-                    let audio = tts
-                        .synthesize(text, &config)
-                        .await
-                        .map_err(|e| e.to_string())?;
+                    let mut tts = connect_async().await.map_err(|e| {
+                        log_and_wrap_error(
+                            "Edge tts connect error",
+                            AppError::Custom(e.to_string()),
+                        )
+                    })?;
+                    let audio = tts.synthesize(text, &config).await.map_err(|e| {
+                        log_and_wrap_error(
+                            "Edge tts synthesize error",
+                            AppError::Custom(e.to_string()),
+                        )
+                    })?;
                     let audio_file_path = self.audio_path.join(format!("{}.mp3", file_name));
-                    let mut file = File::create(audio_file_path)
-                        .await
-                        .map_err(|e| e.to_string())?;
-                    file.write_all(&audio.audio_bytes)
-                        .await
-                        .map_err(|e| e.to_string())?;
+                    let mut file = File::create(audio_file_path).await.map_err(|e| {
+                        log_and_wrap_error(
+                            "Edge tts create file error",
+                            AppError::Io(e.to_string()),
+                        )
+                    })?;
+                    file.write_all(&audio.audio_bytes).await.map_err(|e| {
+                        log_and_wrap_error("Edge tts write file error", AppError::Io(e.to_string()))
+                    })?;
                     break;
                 }
             }

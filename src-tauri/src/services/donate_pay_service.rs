@@ -9,6 +9,7 @@ use tokio_tungstenite::{connect_async, tungstenite::Message};
 use tokio_util::sync::CancellationToken;
 
 use crate::{
+    error::AppError,
     repositories::ServicesRepository,
     services::{DatabaseService, EventsService},
     utils::send_request,
@@ -94,7 +95,7 @@ impl DonatePayService {
         }
     }
 
-    pub async fn connect(&self, app: &AppHandle) -> Result<(), String> {
+    pub async fn connect(&self, app: &AppHandle) -> Result<(), AppError> {
         {
             let mut cancellation_token = self.cancellation_token.lock().unwrap();
             *cancellation_token = CancellationToken::new();
@@ -240,13 +241,13 @@ impl DonatePayService {
         &self,
         reqwest_client: &reqwest::Client,
         access_token: &str,
-    ) -> Result<String, String> {
+    ) -> Result<String, AppError> {
         let request = reqwest_client
             .post("https://donatepay.ru/api/v2/socket/token")
             .json(&serde_json::json!({ "access_token": access_token }));
         let token_response = send_request::<TokenResponse>(request, "token", "DonatePay")
             .await?
-            .ok_or("Get token error".to_string())?;
+            .ok_or(AppError::HttpRequest("Get token error".to_string()))?;
         Ok(token_response.token)
     }
 
@@ -254,7 +255,7 @@ impl DonatePayService {
         &self,
         reqwest_client: &reqwest::Client,
         access_token: &str,
-    ) -> Result<UserInfo, String> {
+    ) -> Result<UserInfo, AppError> {
         let request = reqwest_client.get(format!(
             "https://donatepay.ru/api/v1/user?access_token={}",
             access_token
@@ -262,11 +263,11 @@ impl DonatePayService {
 
         let json = send_request::<UserInfoResponse>(request, "user info", "DonatePay")
             .await?
-            .ok_or("Get user info error".to_string())?;
+            .ok_or(AppError::HttpRequest("Get user info error".to_string()))?;
         Ok(json.data)
     }
 
-    pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), String> {
+    pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), AppError> {
         let database_service = app.state::<DatabaseService>();
         database_service
             .update_service(entity::services::Model {

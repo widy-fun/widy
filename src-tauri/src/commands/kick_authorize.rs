@@ -1,11 +1,14 @@
 use tauri::{AppHandle, State};
 
-use crate::services::kick::{traits::KickApi, KickService};
+use crate::{
+    error::AppError,
+    services::kick::{KickService, traits::KickApi},
+};
 
 #[tauri::command]
 pub async fn kick_authorize(
     app: AppHandle,
     kick_service: State<'_, KickService>,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     kick_service.authorize(&app).await
 }

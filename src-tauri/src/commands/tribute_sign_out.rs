@@ -1,11 +1,11 @@
 use tauri::{AppHandle, State};
 
-use crate::services::TributeService;
+use crate::{error::AppError, services::TributeService};
 
 #[tauri::command]
 pub async fn tribute_sign_out(
     app: AppHandle,
     tribute_service: State<'_, TributeService>,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     tribute_service.sign_out(&app).await
 }

@@ -163,7 +163,7 @@ impl AxumService {
             .await
             .map_err(|e| {
                 log::error!("Axum tcp listener error: {}", e);
-                AppError::Io(e)
+                AppError::Io(e.to_string())
             })?;
 
         let server = axum::serve(listener, axum_router);
@@ -453,7 +453,7 @@ impl AxumService {
         log::info!("WebSocket connection ended");
     }
 
-    async fn send_settings(tx: Tx, app: AppHandle) -> Result<(), String> {
+    async fn send_settings(tx: Tx, app: AppHandle) -> Result<(), AppError> {
         let database_service = app.state::<DatabaseService>();
 
         let settings = database_service.get_settings().await?;
@@ -462,10 +462,10 @@ impl AxumService {
                 event: AppEvent::Settings,
                 data: settings,
             })
-            .map_err(|e| e.to_string())?;
+            .map_err(|e| AppError::Custom(e.to_string()))?;
 
             tx.send(Message::Text(json.into()))
-                .map_err(|e| e.to_string())?;
+                .map_err(|e| AppError::Websocket(e.to_string()))?;
         }
 
         let media_settings = database_service.get_media_settings().await?;
@@ -474,10 +474,10 @@ impl AxumService {
                 event: AppEvent::MediaSettings,
                 data: media_settings,
             })
-            .map_err(|e| e.to_string())?;
+            .map_err(|e| AppError::Custom(e.to_string()))?;
 
             tx.send(Message::Text(json.into()))
-                .map_err(|e| e.to_string())?;
+                .map_err(|e| AppError::Websocket(e.to_string()))?;
         }
 
         let auc_fighter_settings = database_service.get_auc_fighter_settings().await?;
@@ -486,10 +486,10 @@ impl AxumService {
                 event: AppEvent::AucFighterSettings,
                 data: auc_fighter_settings,
             })
-            .map_err(|e| e.to_string())?;
+            .map_err(|e| AppError::Custom(e.to_string()))?;
 
             tx.send(Message::Text(json.into()))
-                .map_err(|e| e.to_string())?;
+                .map_err(|e| AppError::Websocket(e.to_string()))?;
         }
 
         let nsfw_settings = database_service.get_nsfw_settings().await?;
@@ -498,10 +498,10 @@ impl AxumService {
                 event: AppEvent::NsfwSettings,
                 data: nsfw_settings,
             })
-            .map_err(|e| e.to_string())?;
+            .map_err(|e| AppError::Custom(e.to_string()))?;
 
             tx.send(Message::Text(json.into()))
-                .map_err(|e| e.to_string())?;
+                .map_err(|e| AppError::Websocket(e.to_string()))?;
         }
 
         Ok(())

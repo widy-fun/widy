@@ -4,14 +4,14 @@ use entity::{
     messages::{self, ClientMessage},
 };
 
-use crate::services::DatabaseService;
+use crate::{error::AppError, services::DatabaseService, utils::log_and_wrap_error};
 
 #[async_trait]
 pub trait CommandsActionsRepository: Send + Sync {
     async fn save_command_action_message(
         &self,
         client_message: ClientMessage,
-    ) -> Result<(), String>;
+    ) -> Result<(), AppError>;
 }
 
 #[async_trait]
@@ -19,7 +19,7 @@ impl CommandsActionsRepository for DatabaseService {
     async fn save_command_action_message(
         &self,
         client_message: ClientMessage,
-    ) -> Result<(), String> {
+    ) -> Result<(), AppError> {
         if let Some(command_action) = client_message.command_action {
             commands_actions::ActiveModel::builder()
                 .set_id(command_action.id)
@@ -38,10 +38,7 @@ impl CommandsActionsRepository for DatabaseService {
                 )
                 .insert(&self.connection)
                 .await
-                .map_err(|e| {
-                    log::error!("Save command action error: {}", e.to_string());
-                    e.to_string()
-                })?;
+                .map_err(|e| log_and_wrap_error("Save command action error", e))?;
         }
 
         Ok(())

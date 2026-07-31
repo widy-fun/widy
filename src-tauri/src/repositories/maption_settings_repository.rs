@@ -1,26 +1,23 @@
-use crate::services::DatabaseService;
+use crate::{error::AppError, services::DatabaseService, utils::log_and_wrap_error};
 use async_trait::async_trait;
 use entity::maption_settings::*;
 use sea_orm::{ActiveValue::Set, EntityTrait};
 
 #[async_trait]
 pub trait MaptionSettingsRepository: Send + Sync {
-    async fn get_maption_settings(&self) -> Result<Option<Model>, String>;
-    async fn update_maption_settings(&self, settings: Model) -> Result<(), String>;
+    async fn get_maption_settings(&self) -> Result<Option<Model>, AppError>;
+    async fn update_maption_settings(&self, settings: Model) -> Result<(), AppError>;
 }
 
 #[async_trait]
 impl MaptionSettingsRepository for DatabaseService {
-    async fn get_maption_settings(&self) -> Result<Option<Model>, String> {
+    async fn get_maption_settings(&self) -> Result<Option<Model>, AppError> {
         Entity::find_by_id(1)
             .one(&self.connection)
             .await
-            .map_err(|e| {
-                log::error!("Get maption settings error: {}", e);
-                e.to_string()
-            })
+            .map_err(|e| log_and_wrap_error("Get maption settings error", e))
     }
-    async fn update_maption_settings(&self, maption_settings: Model) -> Result<(), String> {
+    async fn update_maption_settings(&self, maption_settings: Model) -> Result<(), AppError> {
         Entity::update(ActiveModel {
             price_for_meter: Set(maption_settings.price_for_meter),
             latitude: Set(maption_settings.latitude),
@@ -33,10 +30,7 @@ impl MaptionSettingsRepository for DatabaseService {
         })
         .exec(&self.connection)
         .await
-        .map_err(|e| {
-            log::error!("Update maption settings error: {}", e);
-            e.to_string()
-        })?;
+        .map_err(|e| log_and_wrap_error("Update maption settings error", e))?;
         Ok(())
     }
 }

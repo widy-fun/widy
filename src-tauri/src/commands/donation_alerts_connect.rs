@@ -1,10 +1,10 @@
-use crate::services::DonationAlertsService;
+use crate::{error::AppError, services::DonationAlertsService};
 use tauri::{AppHandle, State};
 
 #[tauri::command]
 pub async fn donation_alerts_connect(
     app: AppHandle,
     donation_alerts_service: State<'_, DonationAlertsService>,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     donation_alerts_service.connect(&app).await
 }

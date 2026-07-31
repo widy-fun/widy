@@ -2,6 +2,7 @@ use entity::media_settings::*;
 use tauri::{AppHandle, Manager, State};
 
 use crate::{
+    error::AppError,
     repositories::MediaSettingsRepository,
     services::{AppEvent, DatabaseService, EventMessage, WebSocketBroadcaster},
 };
@@ -11,7 +12,7 @@ pub async fn update_media_settings(
     app: AppHandle,
     database_service: State<'_, DatabaseService>,
     media_settings: Model,
-) -> Result<(), String> {
+) -> Result<(), AppError> {
     database_service
         .update_media_settings(media_settings.clone())
         .await?;
