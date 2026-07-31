@@ -1,8 +1,10 @@
 import {
 	CommandSourceType,
+	Currency,
 	IChatBotAction,
 	IChatSource,
 	ICommand,
+	ISettings,
 	ITextStyle,
 	ITimerSource,
 	Platform,
@@ -115,4 +117,15 @@ export const DEFAULT_CHAT_BOT_ACTION: IChatBotAction = {
 	message: "",
 	replay: false,
 	platforms: [Platform.Kick, Platform.Twitch],
+};
+
+export const DEFAULT_SETTINGS: ISettings = {
+	id: 0,
+	moderation_duration: 0,
+	alert_paused: false,
+	remove_links: false,
+	black_list: "",
+	language: "en",
+	currency: Currency.EUR,
+	widget_token: "",
 };

@@ -1,13 +1,13 @@
 import { type BaseQueryFn, createApi } from "@reduxjs/toolkit/query/react";
 import { type InvokeArgs, invoke } from "@tauri-apps/api/core";
-import { SerializedAppError } from "@widy/sdk";
+import { IInitialState, ISerializedAppError } from "@widy/sdk";
 import i18n from "../../shared/i18n/i18n";
 
 const tauriBaseQuery =
 	(): BaseQueryFn<
 		{ command: string; args?: InvokeArgs | undefined },
 		unknown,
-		SerializedAppError
+		ISerializedAppError
 	> =>
 	async ({ command, args }) => {
 		try {
@@ -15,7 +15,7 @@ const tauriBaseQuery =
 			return { data: result };
 		} catch (error) {
 			console.error(error);
-			const err = error as SerializedAppError;
+			const err = error as ISerializedAppError;
 			return {
 				error: { ...err, message: i18n.t(`errors.${err.kind}`) },
 			};
@@ -41,9 +41,9 @@ export const api = createApi({
 		"Commands",
 	],
 	endpoints: (builder) => ({
-		init: builder.mutation<void, void>({
+		getInitialState: builder.query<IInitialState, void>({
 			query: () => ({
-				command: "init",
+				command: "get_initial_state",
 			}),
 		}),
 		twitchSignOut: builder.mutation<void, void>({
@@ -116,7 +116,6 @@ export const api = createApi({
 });
 
 export const {
-	useInitMutation,
 	useTwitchSignOutMutation,
 	useWidySolSignOutMutation,
 	useWidyTonSignOutMutation,
@@ -128,4 +127,5 @@ export const {
 	useKickSignOutMutation,
 	useKickBotSignOutMutation,
 	useTwitchBotSignOutMutation,
+	useGetInitialStateQuery,
 } = api;

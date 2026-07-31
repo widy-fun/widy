@@ -3,7 +3,7 @@ import { showSnackBar } from "@widy/react";
 import {
 	AlertSeverity,
 	type INsfwSettings,
-	type SerializedAppError,
+	type ISerializedAppError,
 } from "@widy/sdk";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -239,7 +239,7 @@ const NsfwSettings = () => {
 										}),
 									);
 								} catch (error) {
-									const err = error as SerializedAppError;
+									const err = error as ISerializedAppError;
 									dispatch(
 										showSnackBar({
 											message: err.message as string,

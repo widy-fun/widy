@@ -4,13 +4,13 @@ pub mod enums;
 pub mod repositories;
 pub mod services;
 pub mod utils;
-use crate::commands::*;
+use crate::{commands::*, utils::init_services};
 use tauri::Manager;
 use tauri_plugin_deep_link::DeepLinkExt;
-use tokio::sync::Mutex;
 use utils::register_shortcuts;
 pub mod error;
 pub mod traits;
+use crate::utils::InitialState;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -39,6 +39,7 @@ pub fn run() {
     builder
         .setup(|app: &mut tauri::App| {
             let app_handle = app.handle().clone();
+            let init_handle = app.handle().clone();
             register_shortcuts(&app_handle)?;
             app.deep_link().register("widy")?;
             app.deep_link().on_open_url(move |event| {
@@ -48,13 +49,18 @@ pub fn run() {
                     deep_link_dispatcher_service.dispatch(&url, &app_handle);
                 }
             });
+
+            tauri::async_runtime::spawn(async move {
+                let error = init_services(init_handle.clone()).await.err();
+                init_handle.manage(InitialState { error });
+            });
+
             Ok(())
         })
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_single_instance::init(|_, _, _| {}))
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
-        .manage(ExecutionFlag(Mutex::new(false)))
         .invoke_handler(tauri::generate_handler![
             get_alert_by_id,
             get_alerts,
@@ -135,7 +141,7 @@ pub fn run() {
             twitch_bot_connect,
             twitch_bot_sign_out,
             kick_bot_sign_out,
-            init
+            get_initial_state
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

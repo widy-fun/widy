@@ -2,7 +2,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { Box, Button, Card, IconButton } from "@mui/material";
 import { showSnackBar } from "@widy/react";
-import type { IService, SerializedAppError } from "@widy/sdk";
+import type { ISerializedAppError, IService } from "@widy/sdk";
 import { AlertSeverity } from "@widy/sdk";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -40,7 +40,7 @@ const ServiceCard = ({ service }: { service: IService<unknown, unknown> }) => {
 							}),
 						);
 					} catch (error) {
-						const err = error as SerializedAppError;
+						const err = error as ISerializedAppError;
 						dispatch(
 							showSnackBar({
 								message: err.message as string,

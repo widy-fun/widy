@@ -40,6 +40,9 @@ pub enum AppError {
 
     #[error("IO error: {0}")]
     Io(String),
+
+    #[error("Internet error: {0}")]
+    Internet(String),
 }
 
 impl From<reqwest::Error> for AppError {

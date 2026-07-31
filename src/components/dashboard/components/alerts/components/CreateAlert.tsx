@@ -1,5 +1,5 @@
 import { showSnackBar } from "@widy/react";
-import { AlertSeverity, Platform, type SerializedAppError } from "@widy/sdk";
+import { AlertSeverity, type ISerializedAppError, Platform } from "@widy/sdk";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
@@ -78,7 +78,7 @@ const CreateAlert = () => {
 						navigate(-1);
 					}
 				} catch (error) {
-					const err = error as SerializedAppError;
+					const err = error as ISerializedAppError;
 					dispatch(
 						showSnackBar({
 							message: err.message as string,

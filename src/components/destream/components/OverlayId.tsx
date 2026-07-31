@@ -3,7 +3,7 @@ import { showSnackBar } from "@widy/react";
 import {
 	AlertSeverity,
 	type IDestreamAuth,
-	type SerializedAppError,
+	type ISerializedAppError,
 	ServiceType,
 } from "@widy/sdk";
 import { useState } from "react";
@@ -51,7 +51,7 @@ const OverlayId = () => {
 								await destreamConnect().unwrap();
 								navigate(-1);
 							} catch (error) {
-								const err = error as SerializedAppError;
+								const err = error as ISerializedAppError;
 								dispatch(
 									showSnackBar({
 										message: err.message as string,

@@ -1,12 +1,12 @@
 import { CircularProgress } from "@mui/material";
 import { showSnackBar } from "@widy/react";
-import { AlertSeverity } from "@widy/sdk";
-import { useEffect, useRef } from "react";
+import { AlertSeverity, AppError } from "@widy/sdk";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Route, Routes, useNavigate } from "react-router";
 import useAppEvents from "../shared/hooks/useAppEvents";
-import { useInitMutation } from "./api";
+import { useGetInitialStateQuery } from "./api";
 import { useGetSettingsQuery } from "./api/settingsApi";
 import { AppSnackBar } from "./components/AppSnackBar";
 import WidgetControl from "./components/dashboard/components/widgets/components/WidgetControl";
@@ -31,31 +31,35 @@ function App() {
 	const eventsService = useAppEvents();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const { i18n } = useTranslation();
+	const { i18n, t } = useTranslation();
 	const hasNavigated = useRef(false);
-
-	const [
-		init,
-		{ error: initError, isSuccess: initIsSuccess, isLoading: initIsLoading },
-	] = useInitMutation();
-
-	const {
-		data: settings,
-		error: settingsError,
-		isLoading: settingsIsLoading,
-	} = useGetSettingsQuery(undefined, {
-		skip: !initIsSuccess,
+	const [isLoading, setIsLoading] = useState(true);
+	const { data } = useGetInitialStateQuery(undefined, {
+		pollingInterval: 100,
 	});
 
 	useEffect(() => {
-		init();
-	}, [init]);
-
-	useEffect(() => {
-		if (initIsSuccess) {
+		if (data && isLoading) {
+			if (data.error?.kind === AppError.Internet) {
+				dispatch(
+					showSnackBar({
+						message: t(`errors.${data.error.kind}`),
+						alertSeverity: AlertSeverity.error,
+					}),
+				);
+				return;
+			}
 			eventsService.connect();
+			setIsLoading(false);
 		}
-	}, [initIsSuccess, eventsService]);
+	}, [data, eventsService, isLoading, dispatch, t]);
+
+	const { data: settings, isLoading: settingsIsLoading } = useGetSettingsQuery(
+		undefined,
+		{
+			skip: !data,
+		},
+	);
 
 	useEffect(() => {
 		if (settings) {
@@ -63,28 +67,6 @@ function App() {
 			dispatch(setSettings(settings));
 		}
 	}, [i18n, settings, dispatch]);
-
-	useEffect(() => {
-		if (settingsError) {
-			dispatch(
-				showSnackBar({
-					message: settingsError.message as string,
-					alertSeverity: AlertSeverity.error,
-				}),
-			);
-		}
-	}, [dispatch, settingsError]);
-
-	useEffect(() => {
-		if (initError) {
-			dispatch(
-				showSnackBar({
-					message: initError.message as string,
-					alertSeverity: AlertSeverity.error,
-				}),
-			);
-		}
-	}, [dispatch, initError]);
 
 	useEffect(() => {
 		if (!hasNavigated.current) {
@@ -97,7 +79,7 @@ function App() {
 		<main style={{ display: "grid", height: "100dvh" }}>
 			{settings && <UpdaterDialog />}
 			<AppSnackBar />
-			{settingsIsLoading || initIsLoading ? (
+			{settingsIsLoading || isLoading ? (
 				<CircularProgress sx={{ placeSelf: "center" }} />
 			) : (
 				<Routes>

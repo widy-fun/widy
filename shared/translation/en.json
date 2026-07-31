@@ -500,6 +500,7 @@
 		"Websocket": "Websocket error",
 		"NSFW": "NSFW error",
 		"Custom": "Custom error",
-		"Io": "Io error"
+		"Io": "Io error",
+		"Internet": "Internet error"
 	}
 }

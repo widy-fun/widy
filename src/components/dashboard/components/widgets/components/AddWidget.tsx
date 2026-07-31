@@ -5,7 +5,7 @@ import { showSnackBar } from "@widy/react";
 import {
 	AlertSeverity,
 	type IManifest,
-	type SerializedAppError,
+	type ISerializedAppError,
 } from "@widy/sdk";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -40,7 +40,7 @@ const AddWidget = () => {
 								}),
 							);
 						} catch (error) {
-							const err = error as SerializedAppError;
+							const err = error as ISerializedAppError;
 							dispatch(
 								showSnackBar({
 									message: err.message as string,

@@ -1,6 +1,6 @@
 import { Button, InputAdornment, TextField } from "@mui/material";
 import { showSnackBar } from "@widy/react";
-import { AlertSeverity, type SerializedAppError } from "@widy/sdk";
+import { AlertSeverity, type ISerializedAppError } from "@widy/sdk";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { NumericFormat } from "react-number-format";
@@ -115,7 +115,7 @@ const AucFighterSettings = () => {
 										}),
 									);
 								} catch (error) {
-									const err = error as SerializedAppError;
+									const err = error as ISerializedAppError;
 									dispatch(
 										showSnackBar({
 											message: err.message as string,

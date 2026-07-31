@@ -1,12 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { ISettings } from "@widy/sdk";
+import { DEFAULT_SETTINGS } from "../../constants";
 
 interface SettingsState {
-	settings: ISettings | null;
+	settings: ISettings;
 }
 
 const initialState: SettingsState = {
-	settings: null,
+	settings: DEFAULT_SETTINGS,
 };
 
 export const settingsSlice = createSlice({

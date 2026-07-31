@@ -2,8 +2,8 @@ import { Button, TextField } from "@mui/material";
 import { showSnackBar } from "@widy/react";
 import {
 	AlertSeverity,
+	type ISerializedAppError,
 	type ITributeAuth,
-	type SerializedAppError,
 	ServiceType,
 } from "@widy/sdk";
 import { useState } from "react";
@@ -51,7 +51,7 @@ const ApiKey = () => {
 								await tributeConnect().unwrap();
 								navigate(-1);
 							} catch (error) {
-								const err = error as SerializedAppError;
+								const err = error as ISerializedAppError;
 								dispatch(
 									showSnackBar({
 										message: err.message as string,

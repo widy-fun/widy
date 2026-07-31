@@ -13,21 +13,37 @@ use lingua::Language::{
     Arabic, Chinese, English, French, German, Hindi, Portuguese, Russian, Spanish, Ukrainian,
 };
 use lingua::LanguageDetectorBuilder;
+use serde::Serialize;
 use std::sync::Arc;
 use std::time::Duration;
-use tauri::{AppHandle, Manager, State};
+use tauri::{AppHandle, Manager};
 use tokio::sync::Mutex;
-pub struct ExecutionFlag(pub Mutex<bool>);
 
-#[tauri::command]
-pub async fn init(app: AppHandle, flag: State<'_, ExecutionFlag>) -> Result<(), AppError> {
-    let mut executed = flag.0.lock().await;
-    if *executed {
-        return Ok(());
-    }
-    *executed = true;
+#[derive(Clone, Debug, Serialize)]
 
+pub struct InitialState {
+    pub error: Option<AppError>,
+}
+
+pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
     let version = app.package_info().version.to_string();
+
+    //http client
+    let user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36";
+    let reqwest_client = reqwest::Client::builder()
+        .user_agent(user_agent)
+        .connect_timeout(Duration::from_secs(10))
+        .timeout(Duration::from_secs(30))
+        .build()
+        .map_err(|e| {
+            log::error!("reqwest build error: {}", e);
+            AppError::Custom(e.to_string())
+        })?;
+    let result = reqwest_client.get("https://google.com").send().await;
+    if let Err(_) = result {
+        return Err(AppError::Internet("Not connected".to_string()));
+    }
+    app.manage(reqwest_client);
 
     //config
     let config_service = ConfigService::new(&app)?;
@@ -41,19 +57,6 @@ pub async fn init(app: AppHandle, flag: State<'_, ExecutionFlag>) -> Result<(), 
     let mut exchange_rates_service = ExchangeRatesService::new();
     exchange_rates_service.get_exchange_rates().await;
     app.manage(Mutex::new(exchange_rates_service));
-
-    //http client
-    let user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36";
-    let reqwest_client = reqwest::Client::builder()
-        .user_agent(user_agent)
-        .connect_timeout(Duration::from_secs(10))
-        .timeout(Duration::from_secs(30))
-        .build()
-        .map_err(|e| {
-            log::error!("reqwest build error: {}", e);
-            AppError::Custom(e.to_string())
-        })?;
-    app.manage(reqwest_client);
 
     //ws
     let websocket_broadcaster = WebSocketBroadcaster::new();
