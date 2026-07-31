@@ -130,8 +130,10 @@ pub trait KickApi: Send + Sync {
                 Ok(new_auth)
             }
             Err(e) => {
-                self.set_authorized(&database_service, None, false, true, service_type)
-                    .await?;
+                if let AppError::HttpStatus { status: 401, .. } = e {
+                    self.set_authorized(&database_service, None, false, true, service_type)
+                        .await?;
+                }
                 Err(e.into())
             }
         }

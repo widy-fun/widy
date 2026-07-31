@@ -15,6 +15,7 @@ use uuid::Uuid;
 
 use crate::{
     error::AppError,
+    load_env,
     repositories::{RewardsRepository, ServicesRepository},
     services::{
         DatabaseService,
@@ -141,9 +142,10 @@ pub trait TwitchApi: Send + Sync {
                 Ok(new_auth)
             }
             Err(e) => {
-                self.set_authorized(&database_service, None, false, true, service_type)
-                    .await?;
-
+                if let AppError::HttpStatus { status: 401, .. } = e {
+                    self.set_authorized(&database_service, None, false, true, service_type)
+                        .await?;
+                }
                 Err(e)
             }
         }
@@ -258,11 +260,9 @@ pub trait TwitchApi: Send + Sync {
         &self,
         reqwest_client: &reqwest::Client,
     ) -> Result<TwitchAuth, AppError> {
-        let user_id = std::env::var("TWITCH_USER_ID_MOCK").expect("TWITCH_USER_ID_MOCK not set");
-        let client_id =
-            std::env::var("TWITCH_CLIENT_ID_MOCK").expect("TWITCH_CLIENT_ID_MOCK not set");
-        let client_secret =
-            std::env::var("TWITCH_CLIENT_SECRET_MOCK").expect("TWITCH_CLIENT_SECRET_MOCK not set");
+        let user_id = load_env!("TWITCH_USER_ID_MOCK");
+        let client_id = load_env!("TWITCH_CLIENT_ID_MOCK");
+        let client_secret = load_env!("TWITCH_CLIENT_SECRET_MOCK");
 
         let request = reqwest_client
             .post(format!("{}/authorize", self.auth_endpoint()))

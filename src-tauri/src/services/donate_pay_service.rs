@@ -111,21 +111,33 @@ impl DonatePayService {
         }) = service
         {
             let reqwest_client = app.state::<reqwest::Client>();
-            let user_info = self
+            match self
                 .get_user_info(&reqwest_client, &auth.access_token)
-                .await?;
-            database_service
-                .update_service_auth(
-                    ServiceType::DonatePay,
-                    Some(ServiceAuth::DonatePay(DonatePayAuth {
-                        access_token: auth.access_token.clone(),
-                    })),
-                    true,
-                )
-                .await?;
-            let token = self.get_token(&reqwest_client, &auth.access_token).await?;
-            self.run_websocket_client(app.clone(), user_info, token)
-                .await;
+                .await
+            {
+                Ok(user_info) => {
+                    database_service
+                        .update_service_auth(
+                            ServiceType::DonatePay,
+                            Some(ServiceAuth::DonatePay(DonatePayAuth {
+                                access_token: auth.access_token.clone(),
+                            })),
+                            true,
+                        )
+                        .await?;
+                    let token = self.get_token(&reqwest_client, &auth.access_token).await?;
+                    self.run_websocket_client(app.clone(), user_info, token)
+                        .await;
+                }
+                Err(e) => {
+                    if let AppError::HttpStatus { status: 401, .. } = e {
+                        database_service
+                            .update_service_auth(ServiceType::DonatePay, None, false)
+                            .await?;
+                    }
+                    return Err(e);
+                }
+            }
         }
 
         Ok(())
@@ -270,16 +282,12 @@ impl DonatePayService {
     pub async fn sign_out(&self, app: &AppHandle) -> core::result::Result<(), AppError> {
         let database_service = app.state::<DatabaseService>();
         database_service
-            .update_service(entity::services::Model {
-                id: ServiceType::DonatePay,
-                settings: None,
-                auth: None,
-                authorized: false,
-            })
+            .update_service_auth(ServiceType::DonatePay, None, false)
             .await?;
         {
             self.cancellation_token.lock().unwrap().cancel();
         }
+
         Ok(())
     }
 }

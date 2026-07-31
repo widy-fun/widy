@@ -8,6 +8,7 @@ use crate::{
     utils::resolve_path,
 };
 
+#[macro_export]
 macro_rules! load_env {
     ($name:literal) => {{
         #[cfg(not(debug_assertions))]

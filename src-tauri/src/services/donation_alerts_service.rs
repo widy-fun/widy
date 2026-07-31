@@ -128,9 +128,11 @@ impl DonationAlertsService {
                 match self.get_auth_user(&reqwest_client, &auth.token).await {
                     Ok(val) => val,
                     Err(e) => {
-                        let _ = database_service
-                            .update_service_auth(ServiceType::DonationAlerts, None, false)
-                            .await;
+                        if let AppError::HttpStatus { status: 401, .. } = e {
+                            let _ = database_service
+                                .update_service_auth(ServiceType::DonationAlerts, None, false)
+                                .await;
+                        }
                         return Err(e);
                     }
                 };

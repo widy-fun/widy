@@ -1,5 +1,5 @@
 use entity::{
-    services::{ServiceAuth, ServiceType, StreamLabsAuth},
+    services::{self, ServiceAuth, ServiceType, StreamLabsAuth},
     settings::Currency,
 };
 use futures::FutureExt;
@@ -96,13 +96,22 @@ impl StreamLabsService {
                                             {
                                                 let database_service =
                                                     app_clone.state::<DatabaseService>();
-                                                let _ = database_service
-                                                    .update_service_auth(
+                                                let service = database_service
+                                                    .get_service_with_auth_by_id(
                                                         ServiceType::StreamLabs,
-                                                        None,
-                                                        false,
                                                     )
                                                     .await;
+                                                if let Ok(Some(services::Model { auth, .. })) =
+                                                    service
+                                                {
+                                                    let _ = database_service
+                                                        .update_service_auth(
+                                                            ServiceType::StreamLabs,
+                                                            auth,
+                                                            false,
+                                                        )
+                                                        .await;
+                                                }
                                                 let _ = socket.disconnect().await;
                                             }
                                         }
