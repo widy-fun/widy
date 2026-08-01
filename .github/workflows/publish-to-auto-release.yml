@@ -107,7 +107,7 @@ jobs:
         with:
           tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: "v__VERSION__"
-          releaseBody: "Add commands."
+          releaseBody: "Refactor errors and initialization."
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
@@ -133,7 +133,7 @@ jobs:
         with:
           tagName: latest # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: "latest"
-          releaseBody: "Add commands."
+          releaseBody: "Refactor errors and initialization."
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
