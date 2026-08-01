@@ -501,6 +501,7 @@
 		"NSFW": "NSFW error",
 		"Custom": "Custom error",
 		"Io": "Io error",
-		"Internet": "Internet error"
+		"Internet": "Internet error",
+		"unknown": "Error"
 	}
 }

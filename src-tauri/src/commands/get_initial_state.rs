@@ -1,4 +1,4 @@
-use crate::{error::AppError, utils::InitialState};
+use crate::{InitialState, error::AppError};
 
 use tauri::State;
 

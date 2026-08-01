@@ -4,13 +4,22 @@ pub mod enums;
 pub mod repositories;
 pub mod services;
 pub mod utils;
-use crate::{commands::*, utils::init_services};
+use std::sync::{Arc, Mutex};
+
+use crate::{commands::*, error::AppError, utils::init_services};
 use tauri::Manager;
 use tauri_plugin_deep_link::DeepLinkExt;
 use utils::register_shortcuts;
 pub mod error;
 pub mod traits;
-use crate::utils::InitialState;
+use serde::Serialize;
+
+#[derive(Clone, Debug, Serialize)]
+
+pub struct InitialState {
+    pub error: Arc<Mutex<Option<AppError>>>,
+    pub is_initialized: Arc<Mutex<bool>>,
+}
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -50,9 +59,26 @@ pub fn run() {
                 }
             });
 
+            init_handle.manage(InitialState {
+                error: Arc::new(Mutex::new(None)),
+                is_initialized: Arc::new(Mutex::new(false)),
+            });
+
             tauri::async_runtime::spawn(async move {
-                let error = init_services(init_handle.clone()).await.err();
-                init_handle.manage(InitialState { error });
+                loop {
+                    let initial_state = init_handle.state::<InitialState>();
+                    let error = init_services(init_handle.clone()).await.err();
+                    let should_retry = matches!(error, Some(AppError::Internet(_)));
+                    {
+                        *initial_state.error.lock().unwrap() = error;
+                    }
+
+                    if !should_retry {
+                        *initial_state.is_initialized.lock().unwrap() = true;
+                        break;
+                    }
+                    tokio::time::sleep(std::time::Duration::from_secs(1)).await;
+                }
             });
 
             Ok(())

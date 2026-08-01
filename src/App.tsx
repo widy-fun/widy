@@ -25,10 +25,12 @@ import Twitch from "./components/twitch/Twitch";
 import TwitchBot from "./components/twitch-bot/TwitchBot";
 import UpdaterDialog from "./components/UpdaterDialog";
 import Widy from "./components/widy/Widy";
+import useStreamElementsSocketService from "./hooks/useStreamElementsService";
 import { setSettings } from "./store/slices/settingsSlice";
 
 function App() {
 	const eventsService = useAppEvents();
+	const streamElementsSocketService = useStreamElementsSocketService();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { i18n, t } = useTranslation();
@@ -36,30 +38,44 @@ function App() {
 	const [isLoading, setIsLoading] = useState(true);
 	const { data } = useGetInitialStateQuery(undefined, {
 		pollingInterval: 100,
+		skip: !isLoading,
 	});
 
 	useEffect(() => {
-		if (data && isLoading) {
-			if (data.error?.kind === AppError.Internet) {
+		if (!isLoading) return;
+		if (data?.error?.kind === AppError.Internet) {
+			dispatch(
+				showSnackBar({
+					message: t(`errors.${data.error.kind}`),
+					alertSeverity: AlertSeverity.error,
+				}),
+			);
+			return;
+		} else if (data?.is_initialized) {
+			eventsService.connect();
+			streamElementsSocketService.connect();
+			setIsLoading(false);
+			if (data?.error) {
 				dispatch(
 					showSnackBar({
 						message: t(`errors.${data.error.kind}`),
 						alertSeverity: AlertSeverity.error,
 					}),
 				);
-				return;
 			}
-			eventsService.connect();
-			setIsLoading(false);
 		}
-	}, [data, eventsService, isLoading, dispatch, t]);
+	}, [
+		data,
+		eventsService,
+		streamElementsSocketService,
+		isLoading,
+		dispatch,
+		t,
+	]);
 
-	const { data: settings, isLoading: settingsIsLoading } = useGetSettingsQuery(
-		undefined,
-		{
-			skip: !data,
-		},
-	);
+	const { data: settings } = useGetSettingsQuery(undefined, {
+		skip: isLoading,
+	});
 
 	useEffect(() => {
 		if (settings) {
@@ -79,7 +95,7 @@ function App() {
 		<main style={{ display: "grid", height: "100dvh" }}>
 			{settings && <UpdaterDialog />}
 			<AppSnackBar />
-			{settingsIsLoading || isLoading ? (
+			{isLoading ? (
 				<CircularProgress sx={{ placeSelf: "center" }} />
 			) : (
 				<Routes>

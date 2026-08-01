@@ -13,17 +13,10 @@ use lingua::Language::{
     Arabic, Chinese, English, French, German, Hindi, Portuguese, Russian, Spanish, Ukrainian,
 };
 use lingua::LanguageDetectorBuilder;
-use serde::Serialize;
 use std::sync::Arc;
 use std::time::Duration;
 use tauri::{AppHandle, Manager};
 use tokio::sync::Mutex;
-
-#[derive(Clone, Debug, Serialize)]
-
-pub struct InitialState {
-    pub error: Option<AppError>,
-}
 
 pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
     let version = app.package_info().version.to_string();
@@ -39,8 +32,8 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
             log::error!("reqwest build error: {}", e);
             AppError::Custom(e.to_string())
         })?;
-    let result = reqwest_client.get("https://google.com").send().await;
-    if let Err(_) = result {
+    let response = reqwest_client.get("https://google.com").send().await;
+    if let Err(_) = response {
         return Err(AppError::Internet("Not connected".to_string()));
     }
     app.manage(reqwest_client);

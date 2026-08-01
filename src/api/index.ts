@@ -17,7 +17,7 @@ const tauriBaseQuery =
 			console.error(error);
 			const err = error as ISerializedAppError;
 			return {
-				error: { ...err, message: i18n.t(`errors.${err.kind}`) },
+				error: { ...err, message: i18n.t(`errors.${err.kind ?? "unknown"}`) },
 			};
 		}
 	};

@@ -14,68 +14,79 @@ import { streamElementsApi } from "../api/streamElementsApi";
 import { store } from "../store";
 
 export default class StreamElementsSocketService extends Subscriptions {
-	socket: Socket;
+	private socket: Socket | null = null;
 
 	constructor() {
 		super();
+	}
+
+	connect() {
 		this.socket = io("https://realtime.streamelements.com", {
 			transports: ["websocket"],
 		});
 
-		this.socket.on("unauthorized", async () => {
-			this.signOut();
+		this.socket.on("connect", this.handleConnect);
+		this.socket.on("unauthorized", this.handleUnauthorized);
+		this.socket.on("authenticated", this.handleAuthenticated);
+		this.socket.on("event", this.handleEvent);
+	}
+
+	disconnect() {
+		this.socket?.off("connect", this.handleConnect);
+		this.socket?.off("unauthorized", this.handleUnauthorized);
+		this.socket?.off("authenticated", this.handleAuthenticated);
+		this.socket?.off("event", this.handleEvent);
+		this.socket?.disconnect();
+		this.socket = null;
+	}
+
+	private handleConnect = async () => {
+		const service = await this.getServiceAuth();
+		const token = service?.auth?.jwt_token;
+		if (token) {
+			this.socket?.emit("authenticate", { method: "jwt", token });
+		}
+	};
+
+	private handleUnauthorized = async () => {
+		this.signOut();
+	};
+
+	private handleAuthenticated = async (_: IStreamElementsAuthenticated) => {
+		const service = await this.getServiceAuth();
+		await this.setAuthorized({
+			authorized: true,
+			auth: { jwt_token: service.auth.jwt_token },
 		});
+		this.notifySubscribers("authenticated", true);
+	};
 
-		this.socket.on("authenticated", async (_: IStreamElementsAuthenticated) => {
-			const { data } = await store.dispatch(
-				servicesApi.endpoints.getServiceWithAuthById.initiate(
-					{
-						id: ServiceType.Streamelements,
-					},
-					{ forceRefetch: true },
-				),
-			);
-			const service = data as IService<IStreamElementsAuth, undefined>;
-			await this.setAuthorized({
-				authorized: true,
-				auth: { jwt_token: service.auth.jwt_token },
-			});
-			this.notifySubscribers("authenticated", true);
-		});
+	private handleEvent = (data: IStreamElementsEvent<unknown>) => {
+		switch (data.type) {
+			case StreamElementsEventType.tip: {
+				if (process.env.NODE_ENV !== "development" && data.isMock) return;
 
-		this.socket.on("event", (data: IStreamElementsEvent<unknown>) => {
-			switch (data.type) {
-				case StreamElementsEventType.tip:
-					if (process.env.NODE_ENV !== "development" && data.isMock) return;
-					const event = data as IStreamElementsEvent<IStreamElementsTip>;
-
-					store.dispatch(
-						streamElementsApi.endpoints.streamElementsTipEvent.initiate({
-							event,
-						}),
-					);
-					break;
-
-				default:
-					break;
+				const event = data as IStreamElementsEvent<IStreamElementsTip>;
+				store.dispatch(
+					streamElementsApi.endpoints.streamElementsTipEvent.initiate({
+						event,
+					}),
+				);
+				break;
 			}
-		});
+			default:
+				break;
+		}
+	};
 
-		this.socket.on("connect", async () => {
-			const { data } = await store.dispatch(
-				servicesApi.endpoints.getServiceWithAuthById.initiate(
-					{
-						id: ServiceType.Streamelements,
-					},
-					{ forceRefetch: true },
-				),
-			);
-			const service = data as IService<IStreamElementsAuth, undefined>;
-			const token = service?.auth?.jwt_token;
-			if (token) {
-				this.socket.emit("authenticate", { method: "jwt", token });
-			}
-		});
+	private async getServiceAuth() {
+		const { data } = await store.dispatch(
+			servicesApi.endpoints.getServiceWithAuthById.initiate(
+				{ id: ServiceType.Streamelements },
+				{ forceRefetch: true },
+			),
+		);
+		return data as IService<IStreamElementsAuth, undefined>;
 	}
 
 	async setAuthorized({
@@ -99,18 +110,16 @@ export default class StreamElementsSocketService extends Subscriptions {
 	async signIn(token: string) {
 		await this.setAuthorized({
 			authorized: false,
-			auth: {
-				jwt_token: token,
-			},
+			auth: { jwt_token: token },
 		});
-		if (this.socket.connected) {
+		if (this.socket?.connected) {
 			this.socket.disconnect();
 		}
-		this.socket.connect();
+		this.socket?.connect();
 	}
 
 	signOut() {
-		this.socket.disconnect();
+		this.socket?.disconnect();
 		this.setAuthorized({ authorized: false });
 	}
 }
