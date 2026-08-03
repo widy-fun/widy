@@ -1,13 +1,15 @@
-use image::{DynamicImage, RgbaImage};
-use rten_imageio::image_to_tensor;
 use std::{
     error::Error,
     sync::{
-        Arc, Mutex,
+        Arc,
         atomic::{AtomicBool, Ordering},
     },
 };
+use tokio::sync::Mutex;
 
+use image::{ImageBuffer, Rgb, RgbImage, RgbaImage};
+use ndarray::{Array4, Axis};
+use ort::{inputs, session::Session, value::Tensor};
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
 use xcap::Window;
@@ -18,14 +20,15 @@ use crate::{
     services::{AppEvent, ConfigService, EventMessage, WebSocketBroadcaster},
     utils::log_and_wrap_error,
 };
-use rten::{FloatOperators, Model, NodeId};
-use rten_tensor::NdTensor;
-use rten_tensor::prelude::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-struct NsfwDetection {
+pub struct NsfwDetection {
     pub label: &'static str,
     pub confidence: f32,
+}
+
+struct PreparedImage {
+    blob: Array4<f32>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -34,7 +37,6 @@ pub struct WindowInfo {
     pub id: u32,
     pub selected: bool,
 }
-
 pub struct NsfwService {
     pub is_stopping: Arc<AtomicBool>,
     pub selected_window: Arc<Mutex<Option<WindowInfo>>>,
@@ -49,65 +51,31 @@ impl NsfwService {
     }
 
     pub async fn start(&self, app: AppHandle, window_info: WindowInfo) -> Result<(), AppError> {
-        {
-            let mut selected_window = self.selected_window.lock().unwrap();
-            if selected_window.is_some() {
-                return Ok(());
-            }
-            *selected_window = Some(window_info.clone());
+        let mut selected_window = self.selected_window.lock().await;
+        if selected_window.is_some() {
+            return Ok(());
         }
-
-        self.is_stopping.store(false, Ordering::Relaxed);
-
+        let session = Arc::new(Mutex::new(self.build_session(&app)?));
+        let session_clone = Arc::clone(&session);
+        *selected_window = Some(window_info.clone());
         tauri::async_runtime::spawn(async move {
-            let windows = Window::all()
-                .map_err(|e| {
-                    log::error!("Get windows error: {}", e);
-                })
-                .unwrap();
-
-            if let Some(window) = windows.iter().find(|&w| {
-                w.id()
-                    .map_err(|e| {
-                        log::error!("Get window ID error: {}", e);
-                    })
-                    .unwrap()
-                    == window_info.id
-            }) {
-                let config_service = app.state::<ConfigService>();
+            let windows = Window::all().unwrap();
+            if let Some(window) = windows.iter().find(|&w| w.id().unwrap() == window_info.id) {
                 let nsfw_service = app.state::<NsfwService>();
                 let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
-                let model = Model::load_file(config_service.nsfw_model_path.clone())
-                    .map_err(|e| {
-                        log::error!("Load NSFW model error: {}", e);
-                    })
-                    .unwrap();
-                let images_id = model
-                    .node_id("images")
-                    .map_err(|e| {
-                        log::error!("Get images node ID error: {}", e);
-                    })
-                    .unwrap();
-                let output0_id = model
-                    .node_id("output0")
-                    .map_err(|e| {
-                        log::error!("Get output0 node ID error: {}", e);
-                    })
-                    .unwrap();
-
+                let mut session = session_clone.lock().await;
                 'nsfw_loop: loop {
                     let is_stopping = nsfw_service.is_stopping.load(Ordering::Relaxed);
                     if is_stopping {
-                        {
-                            *nsfw_service.selected_window.lock().unwrap() = None;
-                        }
+                        let mut selected_window = nsfw_service.selected_window.lock().await;
+                        *selected_window = None;
                         nsfw_service.is_stopping.store(false, Ordering::Relaxed);
                         break 'nsfw_loop;
                     }
                     match window.capture_image() {
                         Ok(image_buffer) => {
                             if let Ok(detections) = nsfw_service
-                                .detect(image_buffer, &model, &images_id, &output0_id)
+                                .detect(&image_buffer, &mut session)
                                 .map_err(|e| {
                                     log::error!("Detect image error: {}", e);
                                 })
@@ -120,9 +88,7 @@ impl NsfwService {
                             }
                         }
                         Err(e) => {
-                            {
-                                *nsfw_service.selected_window.lock().unwrap() = None;
-                            }
+                            *nsfw_service.selected_window.lock().await = None;
                             log::error!("Capture window image error: {}", e);
                             break 'nsfw_loop;
                         }
@@ -133,24 +99,27 @@ impl NsfwService {
         Ok(())
     }
 
+    fn build_session(&self, app: &AppHandle) -> Result<Session, AppError> {
+        let config_service = app.state::<ConfigService>();
+        Session::builder()
+            .map_err(|e| log_and_wrap_error("ort build error", AppError::NSFW(e.to_string())))?
+            .commit_from_file(&config_service.nsfw_model_path)
+            .map_err(|e| log_and_wrap_error("ort load model error", AppError::NSFW(e.to_string())))
+    }
+
     pub async fn get_windows(&self) -> Result<Vec<WindowInfo>, AppError> {
-        let windows = Window::all()
-            .map_err(|e| log_and_wrap_error("Get windows error", AppError::NSFW(e.to_string())))?;
+        let windows = Window::all().unwrap();
         let mut windows_info: Vec<WindowInfo> = vec![];
-        let selected_window = { self.selected_window.lock().unwrap().clone() };
+        let selected_window = self.selected_window.lock().await.clone();
         for window in windows.clone() {
-            let window_id = window.id().map_err(|e| {
-                log_and_wrap_error("Get window ID error", AppError::NSFW(e.to_string()))
-            })?;
+            let window_id = window.id().unwrap();
             let selected = if let Some(selected_window) = &selected_window {
                 selected_window.id == window_id
             } else {
                 false
             };
             windows_info.push(WindowInfo {
-                title: window.title().map_err(|e| {
-                    log_and_wrap_error("Get window title error", AppError::NSFW(e.to_string()))
-                })?,
+                title: window.title().unwrap(),
                 id: window_id,
                 selected,
             });
@@ -158,34 +127,81 @@ impl NsfwService {
         Ok(windows_info)
     }
 
+    fn prepare_image(&self, img: &RgbaImage, target_size: u32) -> PreparedImage {
+        let (orig_w, orig_h) = img.dimensions();
+        let rgb: RgbImage = ImageBuffer::from_fn(orig_w, orig_h, |x, y| {
+            let px = img.get_pixel(x, y);
+            let [r, g, b, a] = px.0;
+            let alpha = a as f32 / 255.0;
+            Rgb([
+                (r as f32 * alpha) as u8,
+                (g as f32 * alpha) as u8,
+                (b as f32 * alpha) as u8,
+            ])
+        });
+        let max_size = orig_w.max(orig_h);
+        let mut padded: RgbImage = ImageBuffer::from_pixel(max_size, max_size, Rgb([0u8, 0, 0]));
+        image::imageops::replace(&mut padded, &rgb, 0, 0);
+        let resized = image::imageops::resize(
+            &padded,
+            target_size,
+            target_size,
+            image::imageops::FilterType::Triangle,
+        );
+        let mut blob = Array4::<f32>::zeros((1, 3, target_size as usize, target_size as usize));
+        for (x, y, pixel) in resized.enumerate_pixels() {
+            let [r, g, b] = pixel.0;
+            blob[[0, 0, y as usize, x as usize]] = r as f32 / 255.0;
+            blob[[0, 1, y as usize, x as usize]] = g as f32 / 255.0;
+            blob[[0, 2, y as usize, x as usize]] = b as f32 / 255.0;
+        }
+        PreparedImage { blob }
+    }
+
+    fn run_session(
+        &self,
+        blob: Array4<f32>,
+        session: &mut Session,
+    ) -> Result<ndarray::Array3<f32>, Box<dyn Error>> {
+        let input_tensor = Tensor::from_array(blob)?;
+        let outputs = session.run(inputs!["images" => input_tensor])?;
+        let output_tensor = outputs[0].try_extract_array::<f32>()?;
+        Ok(output_tensor
+            .into_owned()
+            .into_dimensionality::<ndarray::Ix3>()?)
+    }
+
+    fn postprocess(&self, output: &ndarray::ArrayView3<f32>) -> Vec<NsfwDetection> {
+        let view = output.index_axis(Axis(0), 0);
+        let transposed = view.t();
+        let labels_len = NSFW_LABELS.len();
+        let mut best: Vec<f32> = vec![0.0; labels_len];
+        for row in transposed.rows() {
+            let labels_confidence = row.iter().skip(4).take(labels_len);
+            for (label_id, &confidence) in labels_confidence.enumerate() {
+                if confidence > best[label_id] {
+                    best[label_id] = confidence;
+                }
+            }
+        }
+
+        best.into_iter()
+            .enumerate()
+            .map(|(label_id, confidence)| NsfwDetection {
+                label: NSFW_LABELS[label_id],
+                confidence,
+            })
+            .collect()
+    }
+
     fn detect(
         &self,
-        img: RgbaImage,
-        model: &Model,
-        images_id: &NodeId,
-        output0_id: &NodeId,
+        img: &RgbaImage,
+        session: &mut Session,
     ) -> Result<Vec<NsfwDetection>, Box<dyn Error>> {
-        let image = image_to_tensor(DynamicImage::ImageRgba8(img))?.with_new_axis(0);
-        let image = image.resize_image([640, 640])?;
-        let [output] = model.run_n(vec![(*images_id, image.view().into())], [*output0_id], None)?;
-        let output: NdTensor<f32, 3> = output.try_into()?;
-        let scores = output.slice((.., 4.., ..));
-        let num_boxes = scores.shape()[2];
-        let detections = NSFW_LABELS
-            .iter()
-            .enumerate()
-            .map(|(class_id, label)| {
-                let max_confidence = (0..num_boxes)
-                    .map(|box_idx| scores[[0, class_id, box_idx]])
-                    .fold(0.0, f32::max);
-
-                NsfwDetection {
-                    label,
-                    confidence: max_confidence,
-                }
-            })
-            .collect();
-
+        let prep = self.prepare_image(img, 640);
+        let raw = self.run_session(prep.blob, session)?;
+        let detections = self.postprocess(&raw.view());
         Ok(detections)
     }
 
