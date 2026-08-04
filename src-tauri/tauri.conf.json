@@ -44,9 +44,6 @@
 			"timestampUrl": "http://timestamp.comodoca.com",
 			"webviewInstallMode": {
 				"type": "offlineInstaller"
-			},
-			"nsis": {
-				"installerHooks": "windows/hooks.nsh"
 			}
 		},
 		"publisher": "ik1s3v",
@@ -57,8 +54,7 @@
 			"dist-widget/*",
 			"nsfw/*",
 			"auc-fighter/**/*",
-			"assets/*",
-			"windows/*"
+			"assets/*"
 		],
 		"icon": [
 			"icons/32x32.png",
