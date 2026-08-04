@@ -63,9 +63,6 @@ http = "1.4.0"
 zip = "8.5.0"
 image = { version = "0.25.6", features = ["default-formats"] }
 xcap = { version = "0.9.4", features = ["image"] }
-rten-tensor = { git = "https://github.com/robertknight/rten.git", rev = "bae32b361aaa16fa34f8a36cac58f5376d937ab3" }
-rten-imageio = { git = "https://github.com/robertknight/rten.git", rev = "bae32b361aaa16fa34f8a36cac58f5376d937ab3" }
-rten = { git = "https://github.com/robertknight/rten.git", rev = "bae32b361aaa16fa34f8a36cac58f5376d937ab3" }
 base64 = "0.22.1"
 rand = "0.10.1"
 sha2 = "0.11.0"
