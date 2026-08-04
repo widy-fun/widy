@@ -1,11 +1,11 @@
 {
   "bundle": {
-    "resources": [
-      "dist-widget/*",
-      "nsfw/*",
-      "auc-fighter/**/*",
-      "assets/*",
-      "thirdparty-libs/*"
-    ]
+    "resources": {
+      "dist-widget": "dist-widget",
+      "nsfw": "nsfw",
+      "auc-fighter": "auc-fighter",
+      "assets": "assets",
+      "thirdparty-libs": "."
+    }
   }
 }
