@@ -55,7 +55,7 @@
 			"nsfw/*",
 			"auc-fighter/**/*",
 			"assets/*",
-			"pipers/*",
+			"piper/*",
 			"espeak-ng-data/**/*"
 		],
 		"icon": [
