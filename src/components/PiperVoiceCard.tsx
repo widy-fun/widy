@@ -8,7 +8,7 @@ import {
 	Switch,
 	Typography,
 } from "@mui/material";
-import { remove } from "@tauri-apps/plugin-fs";
+import { remove,mkdir } from "@tauri-apps/plugin-fs";
 import { download } from "@tauri-apps/plugin-upload";
 import { showSnackBar } from "@widy/react";
 import { AlertSeverity, type IPiperVoice } from "@widy/sdk";
@@ -56,7 +56,10 @@ const PiperVoiceCard = ({
 	const huggingFaceConfigFilePath = Object.keys(voice.files).find((f) =>
 		f.endsWith(".onnx.json"),
 	);
-	const configFilePath = `${appDataDir}/piper-voices/${voice.key}.onnx.json`;
+
+	const piperVoicesPath=`${appDataDir}/piper-voices`;
+
+	const configFilePath = `${piperVoicesPath}/${voice.key}.onnx.json`;
 
 	const totalSizeBytes = Object.values(voice.files).reduce(
 		(sum, f) => sum + f.size_bytes,
@@ -78,10 +81,11 @@ const PiperVoiceCard = ({
 			);
 			return;
 		}
-
+		
 		setDownloading(true);
-
+		
 		try {
+			await mkdir(piperVoicesPath,{recursive:true});
 			await Promise.all([
 				download(
 					`${baseUrl}/${huggingFaceModelFilePath}?download=true`,
