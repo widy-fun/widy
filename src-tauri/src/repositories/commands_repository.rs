@@ -36,11 +36,12 @@ impl CommandsRepository for DatabaseService {
         let query_builder = ActiveModel::builder()
             .set_id(command.id)
             .set_name(command.name)
-            .set_chat(command.chat)
-            .set_chat_bot(command.chat_bot)
+            .set_chat_source(command.chat_source)
+            .set_tts_action(command.tts_action)
+            .set_chat_bot_action(command.chat_bot_action)
             .set_description(command.description)
             .set_source_type(command.source_type)
-            .set_timer(command.timer)
+            .set_timer_source(command.timer_source)
             .set_is_enabled(command.is_enabled);
 
         let query_builder_clone = query_builder.clone();
@@ -146,9 +147,10 @@ impl CommandsRepository for DatabaseService {
             id: Set(command.id),
             name: Set(command.name),
             description: Set(command.description),
-            chat: Set(command.chat),
-            timer: Set(command.timer),
-            chat_bot: Set(command.chat_bot),
+            chat_source: Set(command.chat_source),
+            timer_source: Set(command.timer_source),
+            chat_bot_action: Set(command.chat_bot_action),
+            tts_action: Set(command.tts_action),
             source_type: Set(command.source_type),
             is_enabled: Set(command.is_enabled),
         }

@@ -31,6 +31,7 @@ impl RedemptionsRepository for DatabaseService {
                 .set_type(redemption.r#type)
                 .set_points_currency_ratio(redemption.points_currency_ratio)
                 .set_media(redemption.media)
+                .set_tts(redemption.tts)
                 .set_alert(redemption.alert)
                 .set_message(
                     entity::messages::ActiveModel::builder()

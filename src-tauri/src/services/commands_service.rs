@@ -45,7 +45,7 @@ impl CommandsService {
         for command in commands {
             if let Command {
                 is_enabled: true,
-                timer: Some(timer),
+                timer_source: Some(timer),
                 ..
             } = command
             {
@@ -68,15 +68,18 @@ impl CommandsService {
         let kick_service = app.state::<KickService>();
         let commands_service = app.state::<CommandsService>();
         let reqwest_client = app.state::<reqwest::Client>();
-        let trigger = message.content.text;
+        let text = message.content.text;
+        let mut parts = text.splitn(2, char::is_whitespace);
+        let trigger = parts.next().unwrap_or("");
+        let rest_text = parts.next().unwrap_or("").trim_start();
         let command = {
             let commands = commands_service.commands.lock().unwrap();
             commands
                 .iter()
                 .find(|c| {
-                    c.chat
+                    c.chat_source
                         .as_ref()
-                        .map_or(false, |chat| chat.trigger == trigger)
+                        .map_or(false, |chat| &chat.trigger == trigger)
                 })
                 .cloned()
         };
@@ -88,8 +91,8 @@ impl CommandsService {
 
         if let Command {
             is_enabled: true,
-            chat: Some(chat),
-            chat_bot: Some(chat_bot),
+            chat_source: Some(chat),
+            chat_bot_action: Some(chat_bot),
             ..
         } = command.clone()
         {
@@ -97,7 +100,7 @@ impl CommandsService {
                 return Err(AppError::Custom("Not allowed".to_string()));
             }
 
-            let reply_to_message_id: Option<String> = match command.clone().chat_bot {
+            let reply_to_message_id: Option<String> = match command.clone().chat_bot_action {
                 Some(chat_bot) => {
                     if chat_bot.replay {
                         Some(message.id)
@@ -127,16 +130,40 @@ impl CommandsService {
         {
             let command_action = CommandAction {
                 id: Uuid::new_v4(),
-                user_name: message.sender.username,
-                user_input: Some(trigger.clone()),
+                user_name: message.sender.username.clone(),
+                user_input: Some(text.clone()),
                 command_id: command.id,
-                command_name: command.name,
+                command_name: command.name.clone(),
                 message_id: Uuid::new_v4(),
                 platform: Some(Platform::Kick),
                 media: None,
+                tts: None,
                 alert: Some(alert),
             };
             let _ = EventsService::command_action(command_action, app).await;
+        }
+
+        if let Command {
+            is_enabled: true,
+            tts_action: Some(tts_action),
+            ..
+        } = command.clone()
+        {
+            let command_action = CommandAction {
+                id: Uuid::new_v4(),
+                user_name: message.sender.username,
+                user_input: Some(rest_text.to_string()),
+                command_id: command.id,
+                command_name: command.name.clone(),
+                message_id: Uuid::new_v4(),
+                platform: Some(Platform::Kick),
+                media: None,
+                tts: None,
+                alert: None,
+            };
+
+            let _ =
+                EventsService::command_tts_action(rest_text, tts_action, app, command_action).await;
         }
 
         Ok(())
@@ -150,23 +177,26 @@ impl CommandsService {
         let twitch_service = app.state::<TwitchService>();
         let commands_service = app.state::<CommandsService>();
         let reqwest_client = app.state::<reqwest::Client>();
-        let trigger = message.content.text;
+        let text = message.content.text;
+        let mut parts = text.splitn(2, char::is_whitespace);
+        let trigger = parts.next().unwrap_or("");
+        let rest_text = parts.next().unwrap_or("").trim_start();
         let command = {
             let commands = commands_service.commands.lock().unwrap();
             commands
                 .iter()
                 .find(|c| {
-                    c.chat
+                    c.chat_source
                         .as_ref()
-                        .map_or(false, |chat| chat.trigger == trigger)
+                        .map_or(false, |chat| &chat.trigger == trigger)
                 })
                 .cloned()
         };
         let command = command.ok_or(AppError::Custom("Command not found".to_string()))?;
         if let Command {
             is_enabled: true,
-            chat: Some(chat),
-            chat_bot: Some(chat_bot),
+            chat_source: Some(chat),
+            chat_bot_action: Some(chat_bot),
             ..
         } = command.clone()
         {
@@ -174,7 +204,7 @@ impl CommandsService {
                 return Err(AppError::Custom("Not allowed".to_string()));
             }
 
-            let reply_to_message_id: Option<String> = match command.clone().chat_bot {
+            let reply_to_message_id: Option<String> = match command.clone().chat_bot_action {
                 Some(chat_bot) => {
                     if chat_bot.replay {
                         Some(message.id)
@@ -210,17 +240,42 @@ impl CommandsService {
         {
             let command_action = CommandAction {
                 id: Uuid::new_v4(),
-                user_name: message.sender.username,
-                user_input: Some(trigger.clone()),
+                user_name: message.sender.username.clone(),
+                user_input: Some(text.clone()),
                 command_id: command.id,
-                command_name: command.name,
+                command_name: command.name.clone(),
                 message_id: Uuid::new_v4(),
                 platform: Some(Platform::Twitch),
                 media: None,
+                tts: None,
                 alert: Some(alert),
             };
             let _ = EventsService::command_action(command_action, app).await;
         }
+
+        if let Command {
+            is_enabled: true,
+            tts_action: Some(tts_action),
+            ..
+        } = command.clone()
+        {
+            let command_action = CommandAction {
+                id: Uuid::new_v4(),
+                user_name: message.sender.username,
+                user_input: Some(rest_text.to_string()),
+                command_id: command.id,
+                command_name: command.name.clone(),
+                message_id: Uuid::new_v4(),
+                platform: Some(Platform::Twitch),
+                media: None,
+                tts: None,
+                alert: None,
+            };
+
+            let _ =
+                EventsService::command_tts_action(rest_text, tts_action, app, command_action).await;
+        }
+
         Ok(())
     }
 
@@ -229,58 +284,86 @@ impl CommandsService {
         let command = database_service.get_command_by_id(command_id).await;
         if let Ok(Some(Command {
             is_enabled: true,
-            timer: Some(timer),
-            chat_bot: Some(chat_bot),
+            timer_source: Some(timer_source),
+            chat_bot_action: Some(chat_bot),
             ..
         })) = command.clone()
         {
             if chat_bot.platforms.contains(&Platform::Kick) {
                 let _ = Self::kick_timer_chat_message(
                     &app,
-                    timer.clone().message,
-                    timer.clone().lines_passed,
+                    timer_source.clone().message,
+                    timer_source.clone().lines_passed,
                 )
                 .await;
             }
             if chat_bot.platforms.contains(&Platform::Twitch) {
-                if timer.post_type == PostType::Announcement {
+                if timer_source.post_type == PostType::Announcement {
                     let _ = Self::twitch_timer_chat_announcement(
                         &app,
-                        timer.clone().message,
-                        timer.clone().lines_passed,
+                        timer_source.clone().message,
+                        timer_source.clone().lines_passed,
                     )
                     .await;
                 } else {
                     let _ = Self::twitch_timer_chat_message(
                         &app,
-                        timer.clone().message,
-                        timer.clone().lines_passed,
+                        timer_source.clone().message,
+                        timer_source.clone().lines_passed,
                     )
                     .await;
                 }
             }
         }
+
         if let Ok(Some(Command {
             id,
             name,
             is_enabled: true,
-            timer: Some(timer),
+            timer_source: Some(timer_source),
             alert: Some(alert),
             ..
-        })) = command
+        })) = command.clone()
         {
             let command_action = CommandAction {
                 id: Uuid::new_v4(),
                 user_name: "Timer".to_string(),
-                user_input: Some(timer.clone().message),
+                user_input: Some(timer_source.clone().message),
                 command_id: id,
                 command_name: name,
                 message_id: Uuid::new_v4(),
                 platform: None,
                 media: None,
+                tts: None,
                 alert: Some(alert),
             };
             let _ = EventsService::command_action(command_action, &app).await;
+        }
+
+        if let Ok(Some(Command {
+            id,
+            name,
+            is_enabled: true,
+            timer_source: Some(timer_source),
+            tts_action: Some(tts_action),
+            ..
+        })) = command.clone()
+        {
+            let text = timer_source.message;
+            let command_action = CommandAction {
+                id: Uuid::new_v4(),
+                user_name: "Timer".to_string(),
+                user_input: Some(text.clone()),
+                command_id: id,
+                command_name: name,
+                message_id: Uuid::new_v4(),
+                platform: None,
+                media: None,
+                tts: None,
+                alert: None,
+            };
+            let _ =
+                EventsService::command_tts_action(&text, tts_action, &app, command_action).await;
         }
     }
 

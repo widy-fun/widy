@@ -17,7 +17,7 @@ pub async fn create_command(
     command: Command,
 ) -> Result<(), AppError> {
     database_service.create_command(command.clone()).await?;
-    if let Some(timer) = command.clone().timer {
+    if let Some(timer) = command.clone().timer_source {
         commands_service.add_timer(
             app,
             Duration::from_mins(timer.mins_passed),

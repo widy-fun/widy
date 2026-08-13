@@ -16,7 +16,8 @@ pub async fn update_command(
     command: Command,
 ) -> Result<(), AppError> {
     if let Command {
-        timer: Some(timer), ..
+        timer_source: Some(timer),
+        ..
     } = command.clone()
     {
         if command.is_enabled && !commands_service.is_timer_run(command.id) {

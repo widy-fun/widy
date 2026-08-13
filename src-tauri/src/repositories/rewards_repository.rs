@@ -53,6 +53,7 @@ impl RewardsRepository for DatabaseService {
             .set_max_per_user_per_stream(reward.max_per_user_per_stream)
             .set_is_global_cooldown_enabled(reward.is_global_cooldown_enabled)
             .set_global_cooldown_seconds(reward.global_cooldown_seconds)
+            .set_tts_action(reward.tts_action)
             .set_should_redemptions_skip_request_queue(
                 reward.should_redemptions_skip_request_queue,
             );
@@ -148,6 +149,7 @@ impl RewardsRepository for DatabaseService {
             is_global_cooldown_enabled: Set(reward.is_global_cooldown_enabled),
             global_cooldown_seconds: Set(reward.global_cooldown_seconds),
             should_redemptions_skip_request_queue: Set(reward.should_redemptions_skip_request_queue),
+            tts_action:Set(reward.tts_action)
         })
         .exec(&self.connection)
         .await

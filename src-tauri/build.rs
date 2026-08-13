@@ -1,5 +1,7 @@
 fn main() {
-    stage_vc_runtime_dlls();
+    if std::env::var("PROFILE").as_deref() == Ok("release") {
+        stage_vc_runtime_dlls();
+    }
     tauri_build::build()
 }
 

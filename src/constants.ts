@@ -4,13 +4,16 @@ import {
 	IChatBotAction,
 	IChatSource,
 	ICommand,
+	IPiperTtsSettings,
 	ISettings,
 	ITextStyle,
 	ITimerSource,
+	ITtsAction,
 	Platform,
 	PostType,
 	TextAnimation,
 	TextAnimationVariant,
+	TtsType,
 	UserLevel,
 } from "@widy/sdk";
 
@@ -117,6 +120,12 @@ export const DEFAULT_CHAT_BOT_ACTION: IChatBotAction = {
 	message: "",
 	replay: false,
 	platforms: [Platform.Kick, Platform.Twitch],
+};
+
+export const DEFAULT_TTS_ACTION: ITtsAction = {
+	tts_type: TtsType.Piper,
+	tts_settings: { voices: {} } as IPiperTtsSettings,
+	tts_volume: 50,
 };
 
 export const DEFAULT_SETTINGS: ISettings = {

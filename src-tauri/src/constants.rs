@@ -3,3 +3,6 @@ pub const HTTP_WIDGET_PORT: u16 = 12553;
 pub const STATIC_DIR: &str = "static";
 pub const USDT_MULTIPLICATION: f64 = 1_000_000.00;
 pub const NSFW_LABELS: &[&str] = &["anus", "make_love", "nipple", "penis", "vagina"];
+pub const BOS: char = '^';
+pub const EOS: char = '$';
+pub const PAD: char = '_';

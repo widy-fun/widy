@@ -25,17 +25,17 @@ const ChatBotAction = () => {
 	const [chatBotAction, setChatBotAction] = useState(DEFAULT_CHAT_BOT_ACTION);
 
 	useEffect(() => {
-		if (command.chat_bot) {
-			setChatBotAction(command.chat_bot);
+		if (command.chat_bot_action) {
+			setChatBotAction(command.chat_bot_action);
 		}
-	}, [command.chat_bot]);
+	}, [command.chat_bot_action]);
 
 	return (
 		<>
 			<h1>{t("chat_bot_action.title")}</h1>
 			<div style={{ display: "grid", placeItems: "center" }}>
 				<div className={styles.settingsContainer}>
-					{!command.timer && (
+					{!command.timer_source && (
 						<>
 							<div className={styles.settings}>
 								<div className={styles.label}>
@@ -96,7 +96,7 @@ const ChatBotAction = () => {
 							dispatch(
 								setCommand({
 									...command,
-									chat_bot: chatBotAction,
+									chat_bot_action: chatBotAction,
 								}),
 							);
 							navigate(-1);
@@ -105,7 +105,7 @@ const ChatBotAction = () => {
 							dispatch(
 								setCommand({
 									...command,
-									chat_bot: undefined,
+									chat_bot_action: undefined,
 								}),
 							);
 							navigate(-1);

@@ -1,5 +1,6 @@
 use serde::Serialize;
 use thiserror::Error;
+use xcap::XCapError;
 use zip::result::ZipError;
 
 #[derive(Debug, Clone, Error, Serialize)]
@@ -43,6 +44,9 @@ pub enum AppError {
 
     #[error("Internet error: {0}")]
     Internet(String),
+
+    #[error("Piper error: {0}")]
+    Piper(String),
 }
 
 impl From<reqwest::Error> for AppError {
@@ -79,5 +83,11 @@ impl From<ZipError> for AppError {
 impl From<anchor_client::ClientError> for AppError {
     fn from(err: anchor_client::ClientError) -> Self {
         AppError::WidySol(err.to_string())
+    }
+}
+
+impl From<XCapError> for AppError {
+    fn from(err: XCapError) -> Self {
+        AppError::Custom(err.to_string())
     }
 }

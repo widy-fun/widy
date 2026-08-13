@@ -178,11 +178,18 @@ impl KickService {
                             r#type: reward.r#type.clone(),
                             platform: reward.platform,
                             media: None,
+                            tts: None,
                             points_currency_ratio: reward.points_currency_ratio,
                             message_id: message_id,
                             alert: reward.alert,
                         };
-                        let _ = EventsService::redemption(redemption, reward.r#type, &app).await;
+                        let _ = EventsService::redemption(
+                            redemption,
+                            reward.r#type,
+                            reward.tts_action,
+                            &app,
+                        )
+                        .await;
                     }
                 }
             }

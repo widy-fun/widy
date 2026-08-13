@@ -19,6 +19,7 @@ impl MigrationTrait for Migration {
                     .col(uuid_uniq("message_id"))
                     .col(string_null("platform"))
                     .col(json_binary_null("media"))
+                    .col(json_binary_null("tts"))
                     .col(json_binary_null("alert"))
                     .to_owned(),
             )

@@ -21,6 +21,7 @@ export default class StreamElementsSocketService extends Subscriptions {
 	}
 
 	connect() {
+		if (this.socket) this.disconnect();
 		this.socket = io("https://realtime.streamelements.com", {
 			transports: ["websocket"],
 		});
@@ -29,6 +30,9 @@ export default class StreamElementsSocketService extends Subscriptions {
 		this.socket.on("unauthorized", this.handleUnauthorized);
 		this.socket.on("authenticated", this.handleAuthenticated);
 		this.socket.on("event", this.handleEvent);
+		this.socket.on("connect_error", (err) => {
+			console.error("[StreamElementsSocketService] connect_error:", err);
+		});
 	}
 
 	disconnect() {
@@ -112,7 +116,11 @@ export default class StreamElementsSocketService extends Subscriptions {
 			authorized: false,
 			auth: { jwt_token: token },
 		});
-		if (this.socket?.connected) {
+		if (!this.socket) {
+			this.connect();
+			return;
+		}
+		if (this.socket.connected) {
 			this.socket.disconnect();
 		}
 		this.socket?.connect();

@@ -10,6 +10,7 @@ pub fn register_shortcuts(app: &AppHandle) -> Result<(), Box<dyn std::error::Err
 
         let ctrl_f1_shortcut = Shortcut::new(Some(Modifiers::CONTROL), Code::F1);
         let ctrl_f2_shortcut = Shortcut::new(Some(Modifiers::CONTROL), Code::F2);
+        let ctrl_f3_shortcut = Shortcut::new(Some(Modifiers::CONTROL), Code::F3);
         app.plugin(
             tauri_plugin_global_shortcut::Builder::new()
                 .with_handler(move |app_handle, shortcut, event| {
@@ -35,6 +36,16 @@ pub fn register_shortcuts(app: &AppHandle) -> Result<(), Box<dyn std::error::Err
                             }
                             _ => {}
                         }
+                    } else if shortcut == &ctrl_f3_shortcut {
+                        match event.state() {
+                            ShortcutState::Pressed => {
+                                websocket_broadcaster.broadcast_event_message(&EventMessage {
+                                    event: AppEvent::SkipPlayingTts,
+                                    data: None::<String>,
+                                });
+                            }
+                            _ => {}
+                        }
                     }
                 })
                 .build(),
@@ -51,6 +62,12 @@ pub fn register_shortcuts(app: &AppHandle) -> Result<(), Box<dyn std::error::Err
             .register(ctrl_f2_shortcut)
             .map_err(|e| {
                 log::error!("Register ctrl_f2 shortcut error: {}", e.to_string());
+            });
+        let _ = app
+            .global_shortcut()
+            .register(ctrl_f3_shortcut)
+            .map_err(|e| {
+                log::error!("Register ctrl_f3 shortcut error: {}", e.to_string());
             });
         Ok(())
     }

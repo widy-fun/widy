@@ -108,18 +108,18 @@ impl NsfwService {
     }
 
     pub async fn get_windows(&self) -> Result<Vec<WindowInfo>, AppError> {
-        let windows = Window::all().unwrap();
+        let windows = Window::all()?;
         let mut windows_info: Vec<WindowInfo> = vec![];
         let selected_window = self.selected_window.lock().await.clone();
         for window in windows.clone() {
-            let window_id = window.id().unwrap();
+            let window_id = window.id()?;
             let selected = if let Some(selected_window) = &selected_window {
                 selected_window.id == window_id
             } else {
                 false
             };
             windows_info.push(WindowInfo {
-                title: window.title().unwrap(),
+                title: window.title()?,
                 id: window_id,
                 selected,
             });

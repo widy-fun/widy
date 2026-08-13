@@ -1,12 +1,13 @@
 use crate::error::AppError;
 use crate::services::kick::{KickBotService, KickService};
+use crate::services::tts::TtsService;
 use crate::services::twitch::traits::TwitchApi;
 use crate::services::twitch::{TwitchBotService, TwitchService};
 use crate::services::{
     AxumService, CommandsService, ConfigService, DatabaseService, DeepLinkDispatcherService,
     DestreamService, DonatePayService, DonationAlertsService, ExchangeRatesService, MediaService,
-    NsfwService, StreamElementsService, StreamLabsService, TributeService, TtsService,
-    WebSocketBroadcaster, WidySolService, WidyTonService,
+    NsfwService, StreamElementsService, StreamLabsService, TributeService, WebSocketBroadcaster,
+    WidySolService, WidyTonService,
 };
 use crate::utils::copy_assets_to_static;
 use lingua::Language::{
@@ -73,7 +74,11 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
     app.manage(language_detector);
 
     //tts
-    let tts_service = TtsService::new(&config_service.audio_path);
+    let tts_service = TtsService::new(
+        &config_service.audio_path,
+        &config_service.piper_voices_path,
+        &config_service.piper_path,
+    );
     app.manage(tts_service);
 
     //media

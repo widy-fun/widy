@@ -256,11 +256,17 @@ impl TwitchService {
                                 platform: reward.platform,
                                 points_currency_ratio: reward.points_currency_ratio,
                                 media: None,
+                                tts: None,
                                 message_id: message_id,
                                 alert: reward.alert,
                             };
-                            let _ =
-                                EventsService::redemption(redemption, reward.r#type, &app).await;
+                            let _ = EventsService::redemption(
+                                redemption,
+                                reward.r#type,
+                                reward.tts_action,
+                                &app,
+                            )
+                            .await;
                         }
                     }
                 }

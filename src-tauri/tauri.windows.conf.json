@@ -5,6 +5,8 @@
       "nsfw": "nsfw",
       "auc-fighter": "auc-fighter",
       "assets": "assets",
+      "piper": "piper",
+      "espeak-ng-data": "espeak-ng-data",
       "thirdparty-libs": "."
     }
   }

@@ -1,20 +1,24 @@
 import type { IClientMessage } from "@widy/sdk";
-import { MessageType } from "@widy/sdk";
+import { MessageType, RewardType } from "@widy/sdk";
 import CommandActionMessageCard from "../../shared/components/CommandActionMessageCard";
+import CommandTtsActionMessageCard from "../../shared/components/CommandTtsActionMessageCard";
 import DonationMessageCard from "../../shared/components/DonationMessageCard";
 import FollowMessageCard from "../../shared/components/FollowMessageCard";
 import RaidMessageCard from "../../shared/components/RaidMessageCard";
 import RedemptionMessageCard from "../../shared/components/RedemptionMessageCard";
+import RedemptionTtsMessageCard from "../../shared/components/RedemptionTtsMessageCard";
 import SubscriptionMessageCard from "../../shared/components/SubscriptionMessageCard";
 
 const getMessageComponentByMessageType = ({
 	message,
 	isAlertPlaying,
 	isMediaPlaying,
+	isTtsPlaying,
 }: {
 	message: IClientMessage;
 	isAlertPlaying: boolean;
 	isMediaPlaying: boolean;
+	isTtsPlaying: boolean;
 }) => {
 	switch (message.type) {
 		case MessageType.Donation:
@@ -40,7 +44,15 @@ const getMessageComponentByMessageType = ({
 			return (
 				<RaidMessageCard message={message} isAlertPlaying={isAlertPlaying} />
 			);
-		case MessageType.Redemption:
+		case MessageType.Redemption: {
+			if (message.redemption?.type === RewardType.TTS) {
+				return (
+					<RedemptionTtsMessageCard
+						message={message}
+						isTtsPlaying={isTtsPlaying}
+					/>
+				);
+			}
 			return (
 				<RedemptionMessageCard
 					message={message}
@@ -48,7 +60,16 @@ const getMessageComponentByMessageType = ({
 					isMediaPlaying={isMediaPlaying}
 				/>
 			);
-		case MessageType.CommandAction:
+		}
+		case MessageType.CommandAction: {
+			if (message.command_action?.tts) {
+				return (
+					<CommandTtsActionMessageCard
+						message={message}
+						isTtsPlaying={isTtsPlaying}
+					/>
+				);
+			}
 			return (
 				<CommandActionMessageCard
 					message={message}
@@ -56,6 +77,7 @@ const getMessageComponentByMessageType = ({
 					isMediaPlaying={isMediaPlaying}
 				/>
 			);
+		}
 
 		default:
 			return <div></div>;

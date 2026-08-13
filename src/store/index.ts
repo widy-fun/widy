@@ -8,6 +8,7 @@ import {
 	auctionTimerSlice,
 	maptionTimerSlice,
 } from "../../shared/slices/timerSlice.ts";
+import { ttsSlice } from "../../shared/slices/ttsSlice.ts";
 import { widgetApi } from "../../src-widget/api/index.ts";
 import { api } from "../api";
 import calculateLotsProbabilityMiddleware from "./middlewares/calculateLotsProbabilityMiddleware";
@@ -51,6 +52,7 @@ export const rootReducer = combineReducers({
 	goalsState: goalsSlice.reducer,
 	servicesState: servicesSlice.reducer,
 	commandsState: commandsSlice.reducer,
+	ttsState: ttsSlice.reducer,
 	[api.reducerPath]: api.reducer,
 	[widgetApi.reducerPath]: widgetApi.reducer,
 });

@@ -4,6 +4,7 @@ use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::{
+    commands_actions::Tts,
     donations::Media,
     rewards::{Platform, RewardType},
 };
@@ -25,7 +26,10 @@ pub struct Model {
     pub platform: Platform,
     pub r#type: RewardType,
     pub points_currency_ratio: f32,
+    #[sea_orm(column_type = "JsonBinary")]
     pub media: Option<Media>,
+    #[sea_orm(column_type = "JsonBinary")]
+    pub tts: Option<Tts>,
     #[sea_orm(uniq)]
     pub message_id: Uuid,
     #[sea_orm(belongs_to, from = "message_id", to = "id")]
@@ -51,6 +55,7 @@ pub struct Redemption {
     pub r#type: RewardType,
     pub points_currency_ratio: f32,
     pub media: Option<Media>,
+    pub tts: Option<Tts>,
     pub alert: Option<super::alerts::Alert>,
 }
 

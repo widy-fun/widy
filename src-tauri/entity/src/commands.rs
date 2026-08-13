@@ -3,7 +3,10 @@
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::rewards::Platform;
+use crate::{
+    alerts::{TtsSettings, TtsType},
+    rewards::Platform,
+};
 
 #[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
@@ -14,11 +17,13 @@ pub struct Model {
     pub name: String,
     pub description: Option<String>,
     #[sea_orm(column_type = "JsonBinary")]
-    pub chat: Option<ChatSource>,
+    pub chat_source: Option<ChatSource>,
     #[sea_orm(column_type = "JsonBinary")]
-    pub timer: Option<TimerSource>,
+    pub timer_source: Option<TimerSource>,
     #[sea_orm(column_type = "JsonBinary")]
-    pub chat_bot: Option<ChatBotAction>,
+    pub chat_bot_action: Option<ChatBotAction>,
+    #[sea_orm(column_type = "JsonBinary")]
+    pub tts_action: Option<TtsAction>,
     #[sea_orm(has_one)]
     pub alert: HasOne<super::alerts::Entity>,
     pub source_type: CommandSourceType,
@@ -31,9 +36,10 @@ pub struct Command {
     pub id: Uuid,
     pub name: String,
     pub description: Option<String>,
-    pub chat: Option<ChatSource>,
-    pub timer: Option<TimerSource>,
-    pub chat_bot: Option<ChatBotAction>,
+    pub chat_source: Option<ChatSource>,
+    pub timer_source: Option<TimerSource>,
+    pub chat_bot_action: Option<ChatBotAction>,
+    pub tts_action: Option<TtsAction>,
     pub source_type: CommandSourceType,
     pub is_enabled: bool,
     #[sea_orm(nested)]
@@ -73,6 +79,13 @@ pub struct ChatBotAction {
     pub message: String,
     pub replay: bool,
     pub platforms: Vec<Platform>,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
+pub struct TtsAction {
+    pub tts_type: TtsType,
+    pub tts_settings: Option<TtsSettings>,
+    pub tts_volume: u32,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]

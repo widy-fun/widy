@@ -30,6 +30,7 @@ impl CommandsActionsRepository for DatabaseService {
                 .set_user_input(command_action.user_input)
                 .set_user_name(command_action.user_name)
                 .set_alert(command_action.alert)
+                .set_tts(command_action.tts)
                 .set_message(
                     messages::ActiveModel::builder()
                         .set_id(client_message.id)

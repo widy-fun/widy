@@ -69,6 +69,7 @@ const Messages = () => {
 
 			<div>{t("skip_alert")} - ctrl+F1</div>
 			<div>{t("skip_media")} - ctrl+F2</div>
+			<div>{t("skip_tts")} - ctrl+F3</div>
 
 			<InfiniteMessages
 				useGetMessagesInfiniteQuery={useGetMessagesInfiniteQuery}

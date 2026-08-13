@@ -9,16 +9,18 @@ import {
 	TextField,
 } from "@mui/material";
 import { convertFileSrc } from "@tauri-apps/api/core";
-import { AlertVariant, TtsType } from "@widy/sdk";
+import { AlertVariant, type IPiperTtsSettings } from "@widy/sdk";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NumericFormat } from "react-number-format";
 import { useDispatch, useSelector } from "react-redux";
 import { setAlert } from "../../../../../../shared/slices/alertsSlice";
 import { FILE_FILTERS } from "../../../../../constants";
+import getDefaultTtsSettingsByType from "../../../../../helpers/getDefaultTtsSettingsByType";
 import selectAndSaveStaticFile from "../../../../../helpers/selectAndSaveStaticFile";
 import type { AppState } from "../../../../../store";
 import InputSlider from "../../../../InputSlider";
+import TtsSettings from "../../../../TtsSettings";
 import styles from "../../settings/Settings.module.css";
 
 const AlertVariantSettings = () => {
@@ -226,50 +228,40 @@ const AlertVariantSettings = () => {
 						</div>
 					</>
 				)}
-				<div className={styles.settings}>
-					<div className={styles.label}>
-						<span>{t("settings.tts_type")}:</span>
-					</div>
-					<Select sx={{ width: 150 }} value={alert.tts_type}>
-						{Object.values(TtsType).map((tts_type) => (
-							<MenuItem
-								value={tts_type}
-								key={tts_type}
-								onClick={() => {
-									dispatch(
-										setAlert({
-											...alert,
-											tts_type,
-										}),
-									);
-								}}
-							>
-								{tts_type}
-							</MenuItem>
-						))}
-					</Select>
-				</div>
-				<div className={styles.settings}>
-					<div className={styles.label}>
-						<span>{t("sound_volume")}:</span>
-					</div>
-					<InputSlider
-						sliderValue={alert.tts_volume}
-						inputValue={alert.tts_volume}
-						onChange={(value) => {
-							dispatch(
-								setAlert({
-									...alert,
-									tts_volume: value,
-								}),
-							);
-						}}
-						min={0}
-						sliderMax={100}
-						inputMax={100}
-						adornmentText={"%"}
-					/>
-				</div>
+				<TtsSettings
+					tts_type={alert.tts_type}
+					onTtsTypeChange={(tts_type) => {
+						dispatch(
+							setAlert({
+								...alert,
+								tts_type,
+								tts_settings: getDefaultTtsSettingsByType(tts_type),
+							}),
+						);
+					}}
+					tts_volume={alert.tts_volume}
+					onTtsVolumeChange={(tts_volume) => {
+						dispatch(
+							setAlert({
+								...alert,
+								tts_volume,
+							}),
+						);
+					}}
+					voices={
+						alert.tts_settings
+							? (alert.tts_settings as IPiperTtsSettings).voices
+							: {}
+					}
+					onVoicesChange={(voices) => {
+						dispatch(
+							setAlert({
+								...alert,
+								tts_settings: { voices },
+							}),
+						);
+					}}
+				/>
 				<div className={styles.settings}>
 					<div className={styles.label}>
 						<span>{t("alert.duration")}:</span>

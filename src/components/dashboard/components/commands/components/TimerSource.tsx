@@ -19,10 +19,10 @@ const TimerSource = () => {
 	const [timerSource, setTimerSource] = useState(DEFAULT_TIMER_SOURCE);
 
 	useEffect(() => {
-		if (command.timer) {
-			setTimerSource(command.timer);
+		if (command.timer_source) {
+			setTimerSource(command.timer_source);
 		}
-	}, [command.timer]);
+	}, [command.timer_source]);
 
 	return (
 		<>
@@ -113,8 +113,8 @@ const TimerSource = () => {
 							dispatch(
 								setCommand({
 									...command,
-									timer: timerSource,
-									chat: undefined,
+									timer_source: timerSource,
+									chat_source: undefined,
 									source_type: CommandSourceType.Timer,
 								}),
 							);
@@ -124,7 +124,7 @@ const TimerSource = () => {
 							dispatch(
 								setCommand({
 									...command,
-									timer: undefined,
+									timer_source: undefined,
 								}),
 							);
 							navigate(-1);

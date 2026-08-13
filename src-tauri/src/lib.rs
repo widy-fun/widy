@@ -24,6 +24,7 @@ pub struct InitialState {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let mut builder = tauri::Builder::default()
+        .plugin(tauri_plugin_upload::init())
         .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_opener::init());
 
@@ -167,6 +168,7 @@ pub fn run() {
             twitch_bot_connect,
             twitch_bot_sign_out,
             kick_bot_sign_out,
+            get_piper_voices,
             get_initial_state
         ])
         .run(tauri::generate_context!())

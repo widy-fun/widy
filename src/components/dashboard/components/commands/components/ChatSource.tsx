@@ -24,10 +24,10 @@ const ChatSource = () => {
 	const [chatSource, setChatSource] = useState(DEFAULT_CHAT_SOURCE);
 
 	useEffect(() => {
-		if (command.chat) {
-			setChatSource(command.chat);
+		if (command.chat_source) {
+			setChatSource(command.chat_source);
 		}
-	}, [command.chat]);
+	}, [command.chat_source]);
 
 	return (
 		<>
@@ -104,8 +104,8 @@ const ChatSource = () => {
 							dispatch(
 								setCommand({
 									...command,
-									chat: chatSource,
-									timer: undefined,
+									chat_source: chatSource,
+									timer_source: undefined,
 									source_type: CommandSourceType.Chat,
 								}),
 							);
@@ -115,7 +115,7 @@ const ChatSource = () => {
 							dispatch(
 								setCommand({
 									...command,
-									chat: undefined,
+									chat_source: undefined,
 								}),
 							);
 							navigate(-1);

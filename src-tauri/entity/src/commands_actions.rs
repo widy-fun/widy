@@ -3,7 +3,7 @@
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::{donations::Media, rewards::Platform};
+use crate::{alerts::TtsType, donations::Media, rewards::Platform};
 
 #[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
@@ -18,6 +18,8 @@ pub struct Model {
     pub platform: Option<Platform>,
     #[sea_orm(column_type = "JsonBinary")]
     pub media: Option<Media>,
+    #[sea_orm(column_type = "JsonBinary")]
+    pub tts: Option<Tts>,
     #[sea_orm(uniq)]
     pub message_id: Uuid,
     #[sea_orm(belongs_to, from = "message_id", to = "id")]
@@ -37,7 +39,16 @@ pub struct CommandAction {
     pub message_id: Uuid,
     pub platform: Option<Platform>,
     pub media: Option<Media>,
+    pub tts: Option<Tts>,
     pub alert: Option<super::alerts::Alert>,
 }
 
 impl ActiveModelBehavior for ActiveModel {}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
+
+pub struct Tts {
+    pub tts_type: TtsType,
+    pub audio: String,
+    pub tts_volume: u32,
+}

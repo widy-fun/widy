@@ -1,13 +1,14 @@
 {
-	"on": "An",
+	"on": "Ein",
 	"off": "Aus",
 	"select": "Auswählen",
 	"success": "Erfolg",
-	"ok": "Ok",
+	"ok": "OK",
 	"cancel": "Abbrechen",
-	"sound_volume": "Lautstärke",
-	"skip_media": "Medien überspringen (Shortcut)",
-	"skip_alert": "Alert überspringen (Shortcut)",
+	"tts_volume": "TTS-Lautstärke",
+	"skip_media": "Tastenkürzel: Medien überspringen",
+	"skip_alert": "Tastenkürzel: Alert überspringen",
+	"skip_tts": "Tastenkürzel: TTS überspringen",
 	"none": "Keine",
 	"next": "Weiter",
 	"start": "Start",
@@ -17,28 +18,35 @@
 	"token": "Token",
 	"overlay_id": "Overlay-ID",
 	"api_key": "API-Schlüssel",
-	"disconnected": "Getrennt",
+	"disconnected": "Nicht verbunden",
 	"documentation": "Dokumentation",
 	"configure": "Konfigurieren",
 	"delete": "Löschen",
 	"create": "Erstellen",
+	"download": "Herunterladen",
+	"downloading": "Wird heruntergeladen",
+	"remove": "Entfernen",
+	"removing": "Wird entfernt",
+	"search_voices": "Stimmen suchen",
 	"test": "Testen",
+	"speakers": "Sprecher",
+	"single_speaker": "Einzelner Sprecher",
 	"sure_delete": "Möchtest du diese Variante wirklich löschen?",
 	"authorization": {
 		"title": "Autorisierung",
-		"code": "Anforderungscode",
+		"code": "Code anfordern",
 		"sign_in": "Anmelden",
 		"phone": "Telefonnummer",
-		"telegram_code": "Code aus Telegram",
+		"telegram_code": "Code von Telegram",
 		"your_code": "Dein Code",
 		"2fa_password": "2FA-Passwort",
 		"password": "Passwort",
 		"streamelements": "Du musst dich zuerst mit StreamElements JWT verbinden",
-		"you_can_find_by_url": "Du findest ihn unter dieser URL",
-		"set_id_and_jwt": "Du musst StreamElements Account-ID und JWT für {{service}} setzen"
+		"you_can_find_by_url": "Du findest es unter dieser URL",
+		"set_id_and_jwt": "Du musst die StreamElements-Konto-ID und das JWT für {{service}} festlegen"
 	},
 	"error": {
-		"wrong_lots_format": "Falsches Lose-Format",
+		"wrong_lots_format": "Falsches Losformat",
 		"not_connected": "Nicht verbunden",
 		"request_error": "Anfragefehler"
 	},
@@ -56,7 +64,7 @@
 		"tiktok": "TikTok"
 	},
 	"integration": {
-		"tribute": "Tribute-Nachrichten anzeigen"
+		"tribute": "Tribut-Nachrichten anzeigen"
 	},
 	"auction": {
 		"lots": "Lose",
@@ -64,19 +72,19 @@
 		"settings": "Einstellungen"
 	},
 	"maption": {
-		"set_point": "Punkt setzen",
-		"meter_price": "Preis pro 1 Meter",
+		"set_point": "Punkt festlegen",
+		"meter_price": "Preis pro Meter",
 		"amount": "Betrag",
-		"finish": "Beenden",
-		"lat_error": "Breitengrad muss zwischen -90 und 90 liegen",
-		"lng_error": "Längengrad muss zwischen -180 und 180 liegen",
-		"rules": "Damit der Zeiger in der Nachricht automatisch die Position ändert, darf nur ein Wort aus den folgenden vorkommen:"
+		"finish": "Fertig",
+		"lat_error": "Der Breitengrad muss zwischen -90 und 90 liegen",
+		"lng_error": "Der Längengrad muss zwischen -180 und 180 liegen",
+		"rules": "Damit der Zeiger seine Position in der Nachricht automatisch ändert, darf nur eines der folgenden Wörter enthalten sein:"
 	},
 	"media_settings": {
 		"enabled": "Aktiviert",
 		"min_amount": "Mindestbetrag",
-		"video_volume": "Video-Lautstärke",
-		"min_views": "Mindestaufrufe"
+		"video_volume": "Videolautstärke",
+		"min_views": "Mindestanzahl an Aufrufen"
 	},
 	"dashboard": {
 		"messages": "Nachrichten",
@@ -92,17 +100,18 @@
 		"info": "Info",
 		"nsfw": "NSFW",
 		"rewards": "Belohnungen",
-		"commands": "Befehle"
+		"commands": "Befehle",
+		"tts": "TTS"
 	},
 	"messages": {
 		"title": "Letzte Nachrichten"
 	},
 	"message": {
 		"skip": "Überspringen",
-		"replay": "Wiederholen",
+		"replay": "Erneut abspielen",
 		"donated": "{{user_name}} hat {{amount}} {{currency}} gespendet",
 		"redemption": "{{user_name}} hat {{title}} für {{cost}} eingelöst",
-		"followed": "{{user_name}} folgt nun",
+		"followed": "{{user_name}} folgt dir",
 		"subscribed": "{{user_name}} hat abonniert",
 		"gifted_subscriptions": "{{user_name}} hat {{total}} Abonnements verschenkt",
 		"raided_with": "{{user_name}} hat mit {{viewers}} Zuschauern geraidet",
@@ -130,13 +139,13 @@
 	},
 	"wheel": {
 		"normal": "Normal",
-		"dropout": "Dropout",
+		"dropout": "Ausscheiden",
 		"spin": "Drehen",
 		"speed": "Radgeschwindigkeit"
 	},
 	"timer": {
 		"continue": "Fortsetzen",
-		"pause": "Pause",
+		"pause": "Pausieren",
 		"reset": "Zurücksetzen",
 		"add_time": "Zeit hinzufügen",
 		"reduce_time": "Zeit reduzieren",
@@ -151,9 +160,9 @@
 		"winner": "Gewinner",
 		"settings": "Einstellungen",
 		"create_game": "Spiel aus Losen erstellen",
-		"start": "Start",
-		"pause": "Pause",
-		"rematch": "Rematch",
+		"start": "Starten",
+		"pause": "Pausieren",
+		"rematch": "Rückkampf",
 		"resume": "Fortsetzen"
 	},
 	"lot": {
@@ -165,7 +174,7 @@
 		"delete": "Löschen",
 		"to_lot": "Zum Los",
 		"new": "Neu",
-		"add_to_random_slot": "Zu zufälligem Los hinzufügen"
+		"add_to_random_slot": "Zu einem zufälligen Los hinzufügen"
 	},
 	"lots": {
 		"add": "Hinzufügen",
@@ -179,13 +188,13 @@
 		"new_donation": "Neue Spende",
 		"show_odds": "Quoten anzeigen",
 		"show_total_sum": "Gesamtsumme anzeigen",
-		"greater_timer_adding_time": "Größere Timer-Zeit hinzufügen",
-		"not_add_time_if": "Keine Zeit hinzufügen wenn",
+		"greater_timer_adding_time": "Zusätzliche Zeit für den Timer",
+		"not_add_time_if": "Keine Zeit hinzufügen, wenn",
 		"adding_time": "Zeit"
 	},
 	"lots_options": {
 		"import_lots": "Lose importieren",
-		"clear_lots": "Lose löschen"
+		"clear_lots": "Lose leeren"
 	},
 	"auc_fighter_settings": {
 		"round_duration": "Rundendauer",
@@ -208,7 +217,7 @@
 		"device_code_expired": "Gerätecode abgelaufen. Bitte versuche es erneut.",
 		"user_code": "Benutzercode",
 		"authorize_with_code": "Mit Code autorisieren",
-		"waiting_authorization": "Warte auf Autorisierung..."
+		"waiting_authorization": "Warten auf Autorisierung..."
 	},
 	"widy": {
 		"donation_account_name": "Name des Spendenkontos",
@@ -231,7 +240,7 @@
 		"variant_title": "Variantentitel",
 		"variant_group": "Variantengruppe",
 		"status": "Status",
-		"variation_condition": "Variationsbedingung",
+		"variation_condition": "Variantenbedingung",
 		"group": "Gruppe",
 		"Random": "Zufällig",
 		"AmountIsGreater": "Betrag ist größer",
@@ -242,8 +251,8 @@
 		"Follow": "Follow",
 		"Raid": "Raid",
 		"variant": "Variante",
-		"audio_volume": "Audio-Lautstärke",
-		"video_volume": "Video-Lautstärke",
+		"audio_volume": "Audiolautstärke",
+		"video_volume": "Videolautstärke",
 		"video": "Video",
 		"duration": "Dauer",
 		"delay": "Verzögerung",
@@ -268,18 +277,18 @@
 		"elements": "Elemente",
 		"progress": "Fortschritt",
 		"goal_title": "Zieltitel",
-		"amount_raise": "Zu erreichender Betrag",
-		"start_raising": "Startbetrag",
+		"amount_raise": "Zu sammelnder Betrag",
+		"start_raising": "Sammeln ab",
 		"end_date": "Enddatum des Ziels",
 		"bar_height": "Balkenhöhe",
 		"rounding_radius": "Abrundungsradius",
 		"bar_stroke_thickness": "Balkenrandstärke",
 		"background_bar_color": "Hintergrundfarbe des Balkens",
-		"progress_bar_color": "Fortschrittsbalkenfarbe",
+		"progress_bar_color": "Farbe des Fortschrittsbalkens",
 		"goal_progress_bar": "Zielfortschrittsbalken",
 		"progress_bar_layout": "Layout des Fortschrittsbalkens",
 		"remaining_time": "Verbleibende Zeit",
-		"goal_amount_limits": "Zielbetragsgrenzen",
+		"goal_amount_limits": "Betragsgrenzen des Ziels",
 		"widget_background": "Widget-Hintergrund",
 		"background_color": "Hintergrundfarbe",
 		"OnTop": "Oben",
@@ -289,14 +298,14 @@
 		"title": "Titel",
 		"limits": "Grenzen",
 		"raised": "Gesammelt",
-		"days_left": "Tage übrig",
-		"finish_goal": "Ziel beenden",
-		"sure_finish": "Möchtest du dieses Ziel wirklich beenden?",
+		"days_left": "Verbleibende Tage",
+		"finish_goal": "Ziel abschließen",
+		"sure_finish": "Möchtest du dieses Ziel wirklich abschließen?",
 		"Donation": "Spende",
 		"TwitchSubscription": "Twitch-Abonnement",
 		"TwitchFollow": "Twitch-Follow",
 		"KickSubscription": "Kick-Abonnement",
-		"goal_not_finished": "Du hast ein unvollendetes Ziel dieses Typs."
+		"goal_not_finished": "Du hast bereits ein nicht abgeschlossenes Ziel dieses Typs."
 	},
 	"save": "Speichern",
 	"back": "Zurück",
@@ -311,7 +320,7 @@
 		"bottom": "Bild unten, Text oben",
 		"left": "Bild links, Text rechts",
 		"right": "Bild rechts, Text links",
-		"overlay": "Text über Bild"
+		"overlay": "Text über dem Bild"
 	},
 	"image": {
 		"show": "Bild anzeigen"
@@ -324,7 +333,7 @@
 		"italics": "Kursiv",
 		"underline": "Unterstrichen",
 		"transformation": "Transformation",
-		"letter_spacing": "Zeichenabstand",
+		"letter_spacing": "Buchstabenabstand",
 		"word_spacing": "Wortabstand",
 		"horizontal_alignment": "Horizontale Ausrichtung",
 		"vertical_alignment": "Vertikale Ausrichtung",
@@ -348,11 +357,11 @@
 		"control": "Steuerung",
 		"delete_confirm": "Möchtest du dieses Widget wirklich löschen?",
 		"invalid_manifest": "Ungültiges Widget-Manifest",
-		"add_confirm": "Das Hinzufügen erlaubt {{widget_name}}:",
+		"add_confirm": "Durch das Hinzufügen erhält {{widget_name}} folgende Berechtigungen:",
 		"installing": "Wird installiert...",
 		"updating": "Wird aktualisiert...",
-		"view_url": "Ansichts-URL",
-		"widget_connection": "Widget sendet oder empfängt Anfragen an:"
+		"view_url": "URL anzeigen",
+		"widget_connection": "Widget kann Anfragen an folgende Adresse senden oder von dort empfangen:"
 	},
 	"scopes": {
 		"widgets:messages.read": "Nachrichten lesen",
@@ -360,54 +369,54 @@
 		"widgets:auc-fighter:settings.read": "Auc-Fighter-Einstellungen lesen",
 		"widgets:settings.read": "Widget-Einstellungen lesen",
 		"widgets:alerts.read": "Alerts lesen",
-		"widgets:media:settings.read": "Medien-Einstellungen lesen",
-		"widgets:auc-fighter:match-playing.send": "Match-Spiel senden",
+		"widgets:media:settings.read": "Medieneinstellungen lesen",
+		"widgets:auc-fighter:match-playing.send": "Match-Wiedergabe senden",
 		"widgets:auc-fighter:match-winner.send": "Match-Gewinner senden",
 		"widgets:auc-fighter:match-paused.send": "Match-Pause senden",
 		"widgets:auc-fighter:match-id.send": "Match-ID senden",
-		"widgets:alert:played.send": "Alert abgespielt senden",
-		"widgets:alert:playing.send": "Alert wird abgespielt senden",
-		"widgets:media:played.send": "Medien abgespielt senden",
-		"widgets:media:end.send": "Medien-Ende senden",
-		"widgets:media:playing.send": "Medien wird abgespielt senden",
-		"widgets:media:paused.send": "Medien pausiert senden",
-		"widgets:media:error.send": "Medien-Fehler senden",
-		"widgets:media:replay.send": "Medien-Wiederholung senden",
+		"widgets:alert:played.send": "Abgespielten Alert senden",
+		"widgets:alert:playing.send": "Alert-Wiedergabe senden",
+		"widgets:media:played.send": "Abgespielte Medien senden",
+		"widgets:media:end.send": "Medienende senden",
+		"widgets:media:playing.send": "Medienwiedergabe senden",
+		"widgets:media:paused.send": "Medienpause senden",
+		"widgets:media:error.send": "Medienfehler senden",
+		"widgets:media:replay.send": "Medien erneut abspielen senden",
 		"widgets:alert:replay.send": "Alert-Wiederholung senden",
-		"widgets:alert:skip.send": "Alert überspringen senden",
+		"widgets:alert:skip.send": "Alert-Überspringen senden",
 		"widgets:messages.subscription": "Nachrichten abonnieren",
 		"widgets:media.subscription": "Medien abonnieren",
 		"widgets:alert.subscription": "Alerts abonnieren",
 		"widgets:donation.subscription": "Spenden abonnieren",
 		"widgets:redemption.subscription": "Einlösungen abonnieren",
 		"widgets:chat-message.subscription": "Chat-Nachrichten abonnieren",
-		"widgets:chat-message-delete.subscription": "Chat-Nachrichten-Löschung abonnieren",
-		"widgets:goal.subscription": "Ziel abonnieren",
+		"widgets:chat-message-delete.subscription": "Löschungen von Chat-Nachrichten abonnieren",
+		"widgets:goal.subscription": "Ziele abonnieren",
 		"widgets:settings.subscription": "Einstellungen abonnieren",
 		"widgets:auc-fighter:start-match.subscription": "Match-Start abonnieren",
 		"widgets:auc-fighter:pause-match.subscription": "Match-Pause abonnieren",
 		"widgets:auc-fighter:resume-match.subscription": "Match-Fortsetzung abonnieren",
 		"widgets:auc-fighter:cancel-match.subscription": "Match-Abbruch abonnieren",
-		"widgets:auc-fighter:update-match.subscription": "Match-Update abonnieren",
+		"widgets:auc-fighter:update-match.subscription": "Match-Aktualisierungen abonnieren",
 		"widgets:auc-fighter:settings.subscription": "Auc-Fighter-Einstellungen abonnieren",
-		"widgets:alert:replay.subscription": "Alert-Wiederholung abonnieren",
-		"widgets:alert:skip.subscription": "Alert überspringen abonnieren",
-		"widgets:alert:test.subscription": "Alert-Test abonnieren",
-		"widgets:alert:skip-playing.subscription": "Alert überspringen während Wiedergabe abonnieren",
+		"widgets:alert:replay.subscription": "Alert-Wiederholungen abonnieren",
+		"widgets:alert:skip.subscription": "Alert-Überspringen abonnieren",
+		"widgets:alert:test.subscription": "Alert-Tests abonnieren",
+		"widgets:alert:skip-playing.subscription": "Überspringen der laufenden Alerts abonnieren",
 		"widgets:alert:alerts.subscription": "Alerts abonnieren",
-		"widgets:media:replay.subscription": "Medien-Wiederholung abonnieren",
-		"widgets:media:settings.subscription": "Medien-Einstellungen abonnieren",
-		"widgets:media:skip.subscription": "Medien überspringen abonnieren",
-		"widgets:media:skip-playing-media.subscription": "Medien überspringen während Wiedergabe abonnieren",
-		"widgets:media:end.subscription": "Medien-Ende abonnieren",
-		"widgets:media:error.subscription": "Medien-Fehler abonnieren",
-		"widgets:media:pause.subscription": "Medien-Pause abonnieren",
-		"widgets:media:play.subscription": "Medien abspielen abonnieren",
-		"widgets:alert:played.subscription": "Alert abgespielt abonnieren",
+		"widgets:media:replay.subscription": "Medienwiederholungen abonnieren",
+		"widgets:media:settings.subscription": "Medieneinstellungen abonnieren",
+		"widgets:media:skip.subscription": "Medienüberspringen abonnieren",
+		"widgets:media:skip-playing-media.subscription": "Überspringen laufender Medien abonnieren",
+		"widgets:media:end.subscription": "Medienende abonnieren",
+		"widgets:media:error.subscription": "Medienfehler abonnieren",
+		"widgets:media:pause.subscription": "Medienpause abonnieren",
+		"widgets:media:play.subscription": "Medienwiedergabe abonnieren",
+		"widgets:alert:played.subscription": "Abgespielte Alerts abonnieren",
 		"widgets:view:storage.read": "Widget-Ansichtsspeicher lesen",
 		"widgets:control:storage.read": "Widget-Steuerungsspeicher lesen",
-		"widgets:view:storage.write": "In Widget-Ansichtsspeicher schreiben",
-		"widgets:control:storage.write": "In Widget-Steuerungsspeicher schreiben",
+		"widgets:view:storage.write": "In den Widget-Ansichtsspeicher schreiben",
+		"widgets:control:storage.write": "In den Widget-Steuerungsspeicher schreiben",
 		"widgets:view:storage.subscription": "Widget-Ansichtsspeicher abonnieren",
 		"widgets:control:storage.subscription": "Widget-Steuerungsspeicher abonnieren"
 	},
@@ -416,10 +425,10 @@
 		"nsfw_window": "NSFW-Fenster",
 		"settings": "Einstellungen",
 		"window": "Fenster",
-		"blur_timeout_duration": "Unschärfe-Timeout-Dauer",
-		"confidence_threshold": "Konfidenzschwelle",
+		"blur_timeout_duration": "Dauer der Unschärfe",
+		"confidence_threshold": "Konfidenzschwellenwert",
 		"anus": "Anus",
-		"make_love": "Sex",
+		"make_love": "Geschlechtsverkehr",
 		"nipple": "Brustwarze",
 		"penis": "Penis",
 		"vagina": "Vagina"
@@ -436,13 +445,13 @@
 		"description": "Beschreibung",
 		"cost": "Kosten",
 		"background_color": "Hintergrundfarbe",
-		"is_user_input_required": "Benutzereingabe erforderlich",
+		"is_user_input_required": "Ist eine Benutzereingabe erforderlich",
 		"delete": "Löschen",
 		"sure_delete": "Möchtest du diese Belohnung wirklich löschen?",
-		"points_currency_ratio": "Punkte-Währungsverhältnis",
-		"is_global_cooldown_enabled": "Globaler Cooldown aktiviert",
-		"global_cooldown_seconds": "Globaler Cooldown in Sekunden",
-		"title_exist": "Belohnung mit gleichem Titel existiert bereits"
+		"points_currency_ratio": "Punkte-Währungs-Verhältnis",
+		"is_global_cooldown_enabled": "Ist die globale Abklingzeit aktiviert",
+		"global_cooldown_seconds": "Globale Abklingzeit in Sekunden",
+		"title_exist": "Eine Belohnung mit demselben Titel existiert bereits"
 	},
 	"validation": {
 		"required": "Erforderlich"
@@ -461,8 +470,8 @@
 	},
 	"chat_source": {
 		"title": "Chat",
-		"description": "Chat-Nachrichten-Trigger zum Aufrufen von Aktionen",
-		"trigger": "Trigger",
+		"description": "Chat-Nachricht als Auslöser zum Aufrufen von Aktionen",
+		"trigger": "Auslöser",
 		"platforms": "Plattformen",
 		"user_levels": "Benutzerstufen"
 	},
@@ -475,18 +484,18 @@
 		"Normal": "Normal",
 		"interval": "Intervall",
 		"Announcement": "Ankündigung",
-		"mins_passed": "Minuten vergangen vor dem Posten",
-		"lines_passed": "Chat-Zeilen vergangen vor dem Posten"
+		"mins_passed": "Vergangene Minuten vor dem Posten",
+		"lines_passed": "Vergangene Chatzeilen vor dem Posten"
 	},
 	"chat_bot_action": {
-		"title": "Chatbot",
-		"description": "Chatbot antwortet und sendet Nachrichten",
+		"title": "Chat-Bot",
+		"description": "Chat-Bot antwortet und sendet Nachrichten",
 		"message": "Nachricht",
-		"replay": "Soll wiederholt werden"
+		"replay": "Soll erneut abgespielt werden"
 	},
 	"alert_action": {
 		"title": "Alert",
-		"description": "Alert bei Befehlsquelle"
+		"description": "Alert bei einer Befehlsquelle"
 	},
 	"errors": {
 		"HttpRequest": "Anfragefehler",
@@ -494,14 +503,34 @@
 		"ParseError": "Antwortfehler",
 		"Config": "Konfigurationsfehler",
 		"DbError": "Datenbankfehler",
-		"Zip": "Zip-Fehler",
+		"Zip": "ZIP-Fehler",
 		"WidySol": "WidySol-Fehler",
 		"StreamLabs": "StreamLabs-Fehler",
-		"Websocket": "Websocket-Fehler",
+		"Websocket": "WebSocket-Fehler",
 		"NSFW": "NSFW-Fehler",
 		"Custom": "Benutzerdefinierter Fehler",
-		"Io": "I/O-Fehler",
+		"Io": "E/A-Fehler",
 		"Internet": "Internetfehler",
 		"unknown": "Fehler"
+	},
+	"tts": {
+		"title": "Text-zu-Sprache",
+		"description": "Text-zu-Sprache bei einer Befehlsquelle",
+		"quotas": "Bei 100 Anfragen/s können Kontingente gelten",
+		"model_ram": "Je mehr Modelle, desto mehr RAM wird verwendet"
+	},
+	"tts_action": {
+		"title": "Text-zu-Sprache"
+	},
+	"piper": {
+		"missing_model": "Fehlendes Modell oder fehlender Konfigurationseintrag für Stimme {{voice_key}}",
+		"failed_download": "Stimme {{voice_key}} konnte nicht heruntergeladen werden",
+		"failed_remove": "Stimme {{voice_key}} konnte nicht entfernt werden",
+		"medium": "Mittel",
+		"low": "Niedrig",
+		"x_low": "Sehr niedrig",
+		"high": "Hoch",
+		"remove_voice": "Stimme entfernen",
+		"sure_remove": "Möchtest du diese Stimme wirklich entfernen?"
 	}
 }

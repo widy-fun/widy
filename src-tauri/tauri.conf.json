@@ -1,6 +1,6 @@
 {
 	"$schema": "https://schema.tauri.app/config/2",
-	"version": "0.3.4",
+	"version": "0.3.5",
 	"productName": "Widy",
 	"identifier": "fun.widy.client",
 	"build": {
@@ -54,7 +54,9 @@
 			"dist-widget/*",
 			"nsfw/*",
 			"auc-fighter/**/*",
-			"assets/*"
+			"assets/*",
+			"pipers/*",
+			"espeak-ng-data/**/*"
 		],
 		"icon": [
 			"icons/32x32.png",

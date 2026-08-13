@@ -1,8 +1,8 @@
 use chrono::Utc;
 use entity::{
     alerts::TtsType,
-    commands::UserLevel,
-    commands_actions::CommandAction,
+    commands::{TtsAction, UserLevel},
+    commands_actions::{CommandAction, Tts},
     donations::Donation,
     followers::Follow,
     goals::GoalType,
@@ -26,8 +26,8 @@ use crate::{
         RaidsRepository, RedemptionsRepository, SettingsRepository, SubscriptionsRepository,
     },
     services::{
-        DatabaseService, EventMessage, ExchangeRatesService, MediaService, TtsService,
-        WebSocketBroadcaster,
+        DatabaseService, EventMessage, ExchangeRatesService, MediaService, WebSocketBroadcaster,
+        tts::TtsService,
     },
     utils::{get_alert_by_amount, remove_black_listed_words, remove_links},
 };
@@ -76,6 +76,11 @@ pub enum AppEvent {
     ChatMessage,
     ChatMessageDelete,
     CommandAction,
+    TtsPlayed,
+    TtsPlaying,
+    ReplayTts,
+    SkipTts,
+    SkipPlayingTts,
 }
 impl AppEvent {
     pub fn as_str(e: AppEvent) -> &'static str {
@@ -122,6 +127,11 @@ impl AppEvent {
             AppEvent::ChatMessage => "ChatMessage",
             AppEvent::ChatMessageDelete => "ChatMessageDelete",
             AppEvent::CommandAction => "CommandAction",
+            AppEvent::TtsPlayed => "TtsPlayed",
+            AppEvent::TtsPlaying => "TtsPlaying",
+            AppEvent::ReplayTts => "ReplayTts",
+            AppEvent::SkipTts => "SkipTts",
+            AppEvent::SkipPlayingTts => "SkipPlayingTts",
         }
     }
 }
@@ -400,10 +410,10 @@ impl EventsService {
         let text = match message {
             Some(text) => {
                 let text_without_black_listed_words =
-                    remove_black_listed_words(text.as_str(), settings.black_list.as_str());
+                    remove_black_listed_words(&text, &settings.black_list);
 
                 if settings.remove_links {
-                    Some(remove_links(text_without_black_listed_words.as_str()))
+                    Some(remove_links(&text_without_black_listed_words))
                 } else {
                     Some(text_without_black_listed_words)
                 }
@@ -420,9 +430,20 @@ impl EventsService {
             _ => TtsType::Edge,
         };
 
+        let tts_settings = match alert.clone() {
+            Some(alert) => alert.tts_settings,
+            _ => None,
+        };
+
         let audio = if let Some(text) = text.clone() {
             match tts_service
-                .make_audio(&remove_links(&text), &id.to_string(), &app, tts_type)
+                .make_audio(
+                    &remove_links(&text),
+                    &id.to_string(),
+                    &app,
+                    tts_type,
+                    tts_settings,
+                )
                 .await
             {
                 Ok(audio) => Some(audio),
@@ -561,8 +582,11 @@ impl EventsService {
     pub async fn redemption(
         redemption: Redemption,
         reward_type: RewardType,
+        tts_action: TtsAction,
         app: &AppHandle,
     ) -> Result<(), AppError> {
+        let tts_service = app.state::<TtsService>();
+        let database_service = app.state::<DatabaseService>();
         let media = match reward_type {
             RewardType::Media => {
                 let media_service = app.state::<MediaService>();
@@ -572,8 +596,44 @@ impl EventsService {
             }
             _ => None,
         };
+        let tts = match reward_type {
+            RewardType::TTS => match &redemption.user_input {
+                Some(text) => {
+                    let settings = database_service
+                        .get_settings()
+                        .await?
+                        .ok_or(AppError::DbError("No settings found".to_string()))?;
+
+                    let text = remove_black_listed_words(text, &settings.black_list);
+                    let text = if settings.remove_links {
+                        remove_links(&text)
+                    } else {
+                        text
+                    };
+
+                    let audio = tts_service
+                        .make_audio(
+                            &text,
+                            &redemption.id.to_string(),
+                            &app,
+                            tts_action.tts_type.clone(),
+                            tts_action.tts_settings,
+                        )
+                        .await?;
+
+                    Some(Tts {
+                        tts_type: tts_action.tts_type,
+                        tts_volume: tts_action.tts_volume,
+                        audio,
+                    })
+                }
+                None => None,
+            },
+            _ => None,
+        };
+
         let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
-        let database_service = app.state::<DatabaseService>();
+
         let created_at = Utc::now().timestamp();
         let client_message = ClientMessage {
             id: redemption.message_id,
@@ -585,6 +645,7 @@ impl EventsService {
             command_action: None,
             redemption: Some(Redemption {
                 media,
+                tts,
                 ..redemption
             }),
             raid: None,
@@ -637,8 +698,77 @@ impl EventsService {
             data: client_message.clone(),
         };
         websocket_broadcaster.broadcast_event_message(&event_message);
-        let _ = database_service.save_command_action_message(client_message);
 
+        Ok(())
+    }
+
+    pub async fn command_tts_action(
+        text: &str,
+        tts_action: TtsAction,
+        app: &AppHandle,
+        command_action: CommandAction,
+    ) -> Result<(), AppError> {
+        let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
+        let database_service = app.state::<DatabaseService>();
+        let tts_service = app.state::<TtsService>();
+        let settings = database_service
+            .get_settings()
+            .await?
+            .ok_or(AppError::DbError("No settings found".to_string()))?;
+        let text = {
+            let text_without_black_listed_words =
+                remove_black_listed_words(text, &settings.black_list);
+
+            if settings.remove_links {
+                remove_links(&text_without_black_listed_words)
+            } else {
+                text_without_black_listed_words
+            }
+        };
+        let created_at = Utc::now().timestamp();
+        let audio = tts_service
+            .make_audio(
+                &remove_links(&text),
+                &command_action.command_id.to_string(),
+                &app,
+                tts_action.tts_type.clone(),
+                tts_action.tts_settings,
+            )
+            .await?;
+
+        let command_action = CommandAction {
+            tts: Some(Tts {
+                tts_type: tts_action.tts_type,
+                tts_volume: tts_action.tts_volume,
+                audio,
+            }),
+            ..command_action
+        };
+        let client_message = ClientMessage {
+            id: command_action.message_id,
+            r#type: MessageType::CommandAction,
+            created_at,
+            donation: None,
+            follow: None,
+            subscription: None,
+            redemption: None,
+            raid: None,
+            command_action: Some(command_action),
+        };
+
+        let _ = database_service
+            .save_command_action_message(client_message.clone())
+            .await;
+        let event_message = EventMessage {
+            event: AppEvent::Message,
+            data: client_message.clone(),
+        };
+        websocket_broadcaster.broadcast_event_message(&event_message);
+        let event_message = EventMessage {
+            event: AppEvent::CommandAction,
+            data: client_message.clone(),
+        };
+        websocket_broadcaster.broadcast_event_message(&event_message);
         Ok(())
     }
 

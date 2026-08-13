@@ -17,7 +17,6 @@ const UpdateCommandSettings = () => {
 	const { id } = useParams();
 	const dispatch = useDispatch();
 	const { command } = useSelector((state: AppState) => state.commandsState);
-	console.log("command:", command);
 	const { data, error: getCommandByIdError } = useGetCommandByIdQuery(
 		{ id },
 		{ skip: !id },

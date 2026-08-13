@@ -2,6 +2,7 @@ import { Button, MenuItem, Select, TextField } from "@mui/material";
 import { showSnackBar } from "@widy/react";
 import {
 	AlertSeverity,
+	type IPiperTtsSettings,
 	type IReward,
 	Platform,
 	RewardType,
@@ -15,10 +16,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { useGetServiceByIdQuery } from "../../../../../api/servicesApi";
 import getDefaultReward from "../../../../../helpers/getDefaultReward";
+import getDefaultTtsSettingsByType from "../../../../../helpers/getDefaultTtsSettingsByType";
 import type { AppState } from "../../../../../store";
 import { setReward } from "../../../../../store/slices/rewardsSlice";
 import ColorPicker from "../../../../ColorPicker";
 import OnOffSwitch from "../../../../OnOffSwitch";
+import TtsSettings from "../../../../TtsSettings";
 import styles from "../../settings/Settings.module.css";
 
 const RewardSettings = ({ onSave }: { onSave: () => Promise<void> }) => {
@@ -233,6 +236,48 @@ const RewardSettings = ({ onSave }: { onSave: () => Promise<void> }) => {
 								value={reward.points_currency_ratio}
 							/>
 						</div>
+					)}
+					{reward.type === RewardType.TTS && (
+						<TtsSettings
+							tts_type={reward.tts_action.tts_type}
+							onTtsTypeChange={(tts_type) => {
+								dispatch(
+									setReward({
+										...reward,
+										tts_action: {
+											tts_type,
+											tts_settings: getDefaultTtsSettingsByType(tts_type),
+											tts_volume: reward.tts_action.tts_volume,
+										},
+									}),
+								);
+							}}
+							tts_volume={reward.tts_action.tts_volume}
+							onTtsVolumeChange={(tts_volume) => {
+								dispatch(
+									setReward({
+										...reward,
+										tts_action: { ...reward.tts_action, tts_volume },
+									}),
+								);
+							}}
+							voices={
+								reward.tts_action.tts_settings
+									? (reward.tts_action.tts_settings as IPiperTtsSettings).voices
+									: {}
+							}
+							onVoicesChange={(voices) => {
+								dispatch(
+									setReward({
+										...reward,
+										tts_action: {
+											...reward.tts_action,
+											tts_settings: { voices },
+										},
+									}),
+								);
+							}}
+						/>
 					)}
 					<div className={styles.settings}>
 						<div className={styles.label}>

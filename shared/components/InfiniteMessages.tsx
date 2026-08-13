@@ -25,6 +25,7 @@ const InfiniteMessages = ({
 	const { playingAlertId } = useSelector(
 		(state: AppState) => state.alertsState,
 	);
+	const { playingTtsId } = useSelector((state: AppState) => state.ttsState);
 	const { filter } = useSelector((state: AppState) => state.messagesState);
 	const { playingMediaId } = useSelector((state: AppState) => state.mediaState);
 	const { data, fetchNextPage, hasNextPage, isFetchingNextPage, error } =
@@ -84,6 +85,7 @@ const InfiniteMessages = ({
 										message,
 										isAlertPlaying: message.id === playingAlertId,
 										isMediaPlaying: message.id === playingMediaId,
+										isTtsPlaying: message.id === playingTtsId,
 									})}
 								</Fragment>
 							)),

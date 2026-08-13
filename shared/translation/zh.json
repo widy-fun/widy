@@ -1,13 +1,14 @@
 {
-	"on": "开",
-	"off": "关",
+	"on": "开启",
+	"off": "关闭",
 	"select": "选择",
 	"success": "成功",
 	"ok": "确定",
 	"cancel": "取消",
-	"sound_volume": "音量",
+	"tts_volume": "TTS 音量",
 	"skip_media": "跳过媒体快捷键",
 	"skip_alert": "跳过提醒快捷键",
+	"skip_tts": "跳过 TTS 快捷键",
 	"none": "无",
 	"next": "下一个",
 	"start": "开始",
@@ -15,51 +16,58 @@
 	"delay": "延迟",
 	"milliseconds": "毫秒",
 	"token": "令牌",
-	"overlay_id": "覆盖层 ID",
+	"overlay_id": "叠加层 ID",
 	"api_key": "API 密钥",
-	"disconnected": "已断开连接",
+	"disconnected": "未连接",
 	"documentation": "文档",
 	"configure": "配置",
 	"delete": "删除",
 	"create": "创建",
+	"download": "下载",
+	"downloading": "下载中",
+	"remove": "移除",
+	"removing": "移除中",
+	"search_voices": "搜索语音",
 	"test": "测试",
+	"speakers": "说话人",
+	"single_speaker": "单说话人",
 	"sure_delete": "确定要删除此变体吗？",
 	"authorization": {
 		"title": "授权",
-		"code": "请求代码",
+		"code": "请求验证码",
 		"sign_in": "登录",
-		"phone": "手机号",
+		"phone": "电话号码",
 		"telegram_code": "Telegram 验证码",
 		"your_code": "您的验证码",
-		"2fa_password": "二次验证密码",
+		"2fa_password": "两步验证密码",
 		"password": "密码",
 		"streamelements": "您需要先连接 StreamElements JWT",
 		"you_can_find_by_url": "您可以通过此网址找到它",
 		"set_id_and_jwt": "您需要为 {{service}} 设置 StreamElements 账户 ID 和 JWT"
 	},
 	"error": {
-		"wrong_lots_format": "拍品格式错误",
+		"wrong_lots_format": "批次格式错误",
 		"not_connected": "未连接",
 		"request_error": "请求错误"
 	},
 	"updater": {
 		"title": "更新",
-		"description": "应用有新版本可用。是否要更新？",
+		"description": "有新版本的应用可用。是否更新？",
 		"update": "更新",
 		"later": "稍后",
-		"downloading": "正在下载..."
+		"downloading": "下载中..."
 	},
 	"media": {
 		"title": "媒体",
-		"youtube": "Youtube",
+		"youtube": "YouTube",
 		"twitch": "Twitch",
-		"tiktok": "Tiktok"
+		"tiktok": "TikTok"
 	},
 	"integration": {
-		"tribute": "显示 Tribute 消息"
+		"tribute": "显示赞助消息"
 	},
 	"auction": {
-		"lots": "拍品",
+		"lots": "批次",
 		"wheel": "转盘",
 		"settings": "设置"
 	},
@@ -68,15 +76,15 @@
 		"meter_price": "每米价格",
 		"amount": "金额",
 		"finish": "完成",
-		"lat_error": "纬度必须在 -90 到 90 之间",
-		"lng_error": "经度必须在 -180 到 180 之间",
-		"rules": "若要让指针根据消息自动改变位置，消息中应只包含以下其中一个词："
+		"lat_error": "纬度必须介于 -90 和 90 之间",
+		"lng_error": "经度必须介于 -180 和 180 之间",
+		"rules": "要让指针根据消息自动改变位置，消息中只能包含以下词语之一："
 	},
 	"media_settings": {
 		"enabled": "已启用",
 		"min_amount": "最低金额",
 		"video_volume": "视频音量",
-		"min_views": "最低播放量"
+		"min_views": "最低观看次数"
 	},
 	"dashboard": {
 		"messages": "消息",
@@ -86,26 +94,27 @@
 		"media": "媒体",
 		"goals": "目标",
 		"auction": "拍卖",
-		"maption": "地图互动",
+		"maption": "Maption",
 		"fighter": "对战",
-		"widgets": "小部件",
+		"widgets": "小组件",
 		"info": "信息",
 		"nsfw": "NSFW",
 		"rewards": "奖励",
-		"commands": "命令"
+		"commands": "命令",
+		"tts": "TTS"
 	},
 	"messages": {
-		"title": "最近消息"
+		"title": "最新消息"
 	},
 	"message": {
 		"skip": "跳过",
 		"replay": "重播",
 		"donated": "{{user_name}} 捐赠了 {{amount}} {{currency}}",
-		"redemption": "{{user_name}} 兑换了 {{title}} {{cost}}",
+		"redemption": "{{user_name}} 兑换了 {{title}}，花费 {{cost}}",
 		"followed": "{{user_name}} 关注了",
 		"subscribed": "{{user_name}} 订阅了",
 		"gifted_subscriptions": "{{user_name}} 赠送了 {{total}} 个订阅",
-		"raided_with": "{{user_name}} 带着 {{viewers}} 名观众突袭了",
+		"raided_with": "{{user_name}} 带领 {{viewers}} 名观众进行了 Raid",
 		"command_action": "{{user_name}} 使用了命令 {{command_name}}"
 	},
 	"filter": {
@@ -113,7 +122,7 @@
 		"exclude_donations": "排除捐赠",
 		"exclude_follows": "排除关注",
 		"exclude_subscriptions": "排除订阅",
-		"exclude_raids": "排除突袭",
+		"exclude_raids": "排除 Raid",
 		"exclude_redemptions": "排除兑换",
 		"exclude_commands_actions": "排除命令操作"
 	},
@@ -129,7 +138,7 @@
 		"tts_type": "TTS 类型"
 	},
 	"wheel": {
-		"normal": "普通",
+		"normal": "正常",
 		"dropout": "淘汰",
 		"spin": "旋转",
 		"speed": "转盘速度"
@@ -140,20 +149,20 @@
 		"reset": "重置",
 		"add_time": "增加时间",
 		"reduce_time": "减少时间",
-		"add_timex2": "增加时间 x2"
+		"add_timex2": "时间增加 x2"
 	},
 	"fighter": {
 		"title": "对战",
 		"match": "比赛",
 		"final": "决赛",
 		"game": "游戏",
-		"cancel": "取消游戏",
+		"cancel": "取消比赛",
 		"winner": "获胜者",
 		"settings": "设置",
-		"create_game": "从拍品创建游戏",
+		"create_game": "从批次创建游戏",
 		"start": "开始",
 		"pause": "暂停",
-		"rematch": "再赛一场",
+		"rematch": "重新比赛",
 		"resume": "继续"
 	},
 	"lot": {
@@ -163,29 +172,29 @@
 	},
 	"bid": {
 		"delete": "删除",
-		"to_lot": "到拍品",
+		"to_lot": "添加到批次",
 		"new": "新建",
-		"add_to_random_slot": "添加到随机拍品"
+		"add_to_random_slot": "添加到随机批次"
 	},
 	"lots": {
 		"add": "添加",
-		"new_lot_name": "新拍品名称",
-		"search": "搜索拍品",
+		"new_lot_name": "新批次名称",
+		"search": "搜索批次",
 		"total": "总计"
 	},
 	"auction_settings": {
-		"leader_change": "领先者变更",
-		"new_lot": "新拍品",
+		"leader_change": "领先者变化",
+		"new_lot": "新批次",
 		"new_donation": "新捐赠",
-		"show_odds": "显示赔率",
+		"show_odds": "显示概率",
 		"show_total_sum": "显示总金额",
-		"greater_timer_adding_time": "更大计时器增加时间",
-		"not_add_time_if": "在以下情况下不增加时间",
+		"greater_timer_adding_time": "增加计时器时间",
+		"not_add_time_if": "不增加时间，如果",
 		"adding_time": "时间"
 	},
 	"lots_options": {
-		"import_lots": "导入拍品",
-		"clear_lots": "清空拍品"
+		"import_lots": "导入批次",
+		"clear_lots": "清空批次"
 	},
 	"auc_fighter_settings": {
 		"round_duration": "回合时长",
@@ -193,28 +202,28 @@
 	},
 	"alerts": {
 		"title": "提醒",
-		"group": "分组"
+		"group": "组"
 	},
 	"services": {
 		"title": "服务",
 		"tribute": "Tribute",
-		"streamelements": "Streamelements",
+		"streamelements": "StreamElements",
 		"connect": "连接",
 		"integrations": "集成",
 		"sign_out": "退出登录",
-		"confirm_sign_out": "确定要退出此服务的登录吗？"
+		"confirm_sign_out": "确定要退出此服务吗？"
 	},
 	"twitch": {
-		"device_code_expired": "设备代码已过期。请重试。",
-		"user_code": "用户代码",
-		"authorize_with_code": "使用代码授权",
-		"waiting_authorization": "等待授权中..."
+		"device_code_expired": "设备验证码已过期。请重试。",
+		"user_code": "用户验证码",
+		"authorize_with_code": "使用验证码授权",
+		"waiting_authorization": "等待授权..."
 	},
 	"widy": {
 		"donation_account_name": "捐赠账户名称",
-		"donation_url": "捐赠链接",
+		"donation_url": "捐赠网址",
 		"create_donation_account": "创建 Widy 捐赠账户",
-		"connect_to_existing_account": "连接到现有账户",
+		"connect_to_existing_account": "连接现有账户",
 		"create_donation_account_pending": "正在创建捐赠账户..."
 	},
 	"alert": {
@@ -229,10 +238,10 @@
 		"add_new_variant": "添加新变体",
 		"new_variant": "新变体",
 		"variant_title": "变体标题",
-		"variant_group": "变体分组",
+		"variant_group": "变体组",
 		"status": "状态",
 		"variation_condition": "变体条件",
-		"group": "分组",
+		"group": "组",
 		"Random": "随机",
 		"AmountIsGreater": "金额大于",
 		"AmountIsEqual": "金额等于",
@@ -240,12 +249,12 @@
 		"Donation": "捐赠",
 		"Subscription": "订阅",
 		"Follow": "关注",
-		"Raid": "突袭",
+		"Raid": "Raid",
 		"variant": "变体",
 		"audio_volume": "音频音量",
 		"video_volume": "视频音量",
 		"video": "视频",
-		"duration": "时长",
+		"duration": "持续时间",
 		"delay": "延迟",
 		"Redemption": "兑换",
 		"CommandAction": "命令操作"
@@ -256,7 +265,7 @@
 		"Video": "视频",
 		"ImageAndAudio": "图片和音频"
 	},
-	"general": "通用",
+	"general": "常规",
 	"goals": {
 		"title": "目标",
 		"create": "创建新目标"
@@ -269,18 +278,18 @@
 		"progress": "进度",
 		"goal_title": "目标标题",
 		"amount_raise": "筹集金额",
-		"start_raising": "起始金额",
+		"start_raising": "开始筹集时间",
 		"end_date": "目标结束日期",
 		"bar_height": "进度条高度",
 		"rounding_radius": "圆角半径",
-		"bar_stroke_thickness": "进度条描边厚度",
-		"background_bar_color": "背景条颜色",
+		"bar_stroke_thickness": "进度条边框厚度",
+		"background_bar_color": "进度条背景颜色",
 		"progress_bar_color": "进度条颜色",
 		"goal_progress_bar": "目标进度条",
 		"progress_bar_layout": "进度条布局",
 		"remaining_time": "剩余时间",
 		"goal_amount_limits": "目标金额限制",
-		"widget_background": "小部件背景",
+		"widget_background": "小组件背景",
 		"background_color": "背景颜色",
 		"OnTop": "顶部",
 		"Inside": "内部",
@@ -296,29 +305,29 @@
 		"TwitchSubscription": "Twitch 订阅",
 		"TwitchFollow": "Twitch 关注",
 		"KickSubscription": "Kick 订阅",
-		"goal_not_finished": "您有一个此类型的未完成目标。"
+		"goal_not_finished": "您有一个未完成的此类型目标。"
 	},
 	"save": "保存",
 	"back": "返回",
 	"widget": {
 		"copy": "复制",
 		"launch": "启动",
-		"url": "小部件链接",
-		"obs_dock_url": "OBS 停靠链接"
+		"url": "小组件 URL",
+		"obs_dock_url": "OBS 停靠窗口 URL"
 	},
 	"view": {
 		"top": "图片在上，文字在下",
 		"bottom": "图片在下，文字在上",
 		"left": "图片在左，文字在右",
 		"right": "图片在右，文字在左",
-		"overlay": "文字覆盖图片"
+		"overlay": "文字叠加在图片上"
 	},
 	"image": {
 		"show": "显示图片"
 	},
 	"text": {
 		"font": "字体",
-		"font_size": "字号",
+		"font_size": "字体大小",
 		"text_color": "文字颜色",
 		"bold": "粗体",
 		"italics": "斜体",
@@ -328,7 +337,7 @@
 		"word_spacing": "词间距",
 		"horizontal_alignment": "水平对齐",
 		"vertical_alignment": "垂直对齐",
-		"text_preview": "这是预览文字！",
+		"text_preview": "这是预览！",
 		"name": "名称"
 	},
 	"audio": {
@@ -337,8 +346,8 @@
 	},
 	"version": "版本",
 	"widgets": {
-		"title": "小部件",
-		"add": "添加小部件",
+		"title": "小组件",
+		"add": "添加小组件",
 		"install": "安装",
 		"delete": "删除",
 		"installed": "已安装",
@@ -346,31 +355,31 @@
 		"all": "全部",
 		"settings": "设置",
 		"control": "控制",
-		"delete_confirm": "确定要删除此小部件吗？",
-		"invalid_manifest": "无效的小部件清单",
-		"add_confirm": "添加后将允许 {{widget_name}}：",
-		"installing": "正在安装...",
-		"updating": "正在更新...",
-		"view_url": "查看链接",
-		"widget_connection": "小部件可获取或发送请求至："
+		"delete_confirm": "确定要删除此小组件吗？",
+		"invalid_manifest": "无效的小组件清单",
+		"add_confirm": "添加后，{{widget_name}} 将能够：",
+		"installing": "安装中...",
+		"updating": "更新中...",
+		"view_url": "查看 URL",
+		"widget_connection": "小组件可以获取或发送请求到："
 	},
 	"scopes": {
 		"widgets:messages.read": "读取消息",
 		"widgets:goals.read": "读取目标",
 		"widgets:auc-fighter:settings.read": "读取对战设置",
-		"widgets:settings.read": "读取小部件设置",
+		"widgets:settings.read": "读取小组件设置",
 		"widgets:alerts.read": "读取提醒",
 		"widgets:media:settings.read": "读取媒体设置",
-		"widgets:auc-fighter:match-playing.send": "发送比赛进行中",
+		"widgets:auc-fighter:match-playing.send": "发送比赛进行中状态",
 		"widgets:auc-fighter:match-winner.send": "发送比赛获胜者",
-		"widgets:auc-fighter:match-paused.send": "发送比赛已暂停",
+		"widgets:auc-fighter:match-paused.send": "发送比赛暂停状态",
 		"widgets:auc-fighter:match-id.send": "发送比赛 ID",
-		"widgets:alert:played.send": "发送提醒已播放",
+		"widgets:alert:played.send": "发送提醒播放完成",
 		"widgets:alert:playing.send": "发送提醒播放中",
-		"widgets:media:played.send": "发送媒体已播放",
+		"widgets:media:played.send": "发送媒体播放完成",
 		"widgets:media:end.send": "发送媒体结束",
 		"widgets:media:playing.send": "发送媒体播放中",
-		"widgets:media:paused.send": "发送媒体已暂停",
+		"widgets:media:paused.send": "发送媒体暂停",
 		"widgets:media:error.send": "发送媒体错误",
 		"widgets:media:replay.send": "发送媒体重播",
 		"widgets:alert:replay.send": "发送提醒重播",
@@ -384,11 +393,11 @@
 		"widgets:chat-message-delete.subscription": "订阅聊天消息删除",
 		"widgets:goal.subscription": "订阅目标",
 		"widgets:settings.subscription": "订阅设置",
-		"widgets:auc-fighter:start-match.subscription": "订阅开始比赛",
-		"widgets:auc-fighter:pause-match.subscription": "订阅暂停比赛",
-		"widgets:auc-fighter:resume-match.subscription": "订阅继续比赛",
-		"widgets:auc-fighter:cancel-match.subscription": "订阅取消比赛",
-		"widgets:auc-fighter:update-match.subscription": "订阅更新比赛",
+		"widgets:auc-fighter:start-match.subscription": "订阅比赛开始",
+		"widgets:auc-fighter:pause-match.subscription": "订阅比赛暂停",
+		"widgets:auc-fighter:resume-match.subscription": "订阅比赛继续",
+		"widgets:auc-fighter:cancel-match.subscription": "订阅比赛取消",
+		"widgets:auc-fighter:update-match.subscription": "订阅比赛更新",
 		"widgets:auc-fighter:settings.subscription": "订阅对战设置",
 		"widgets:alert:replay.subscription": "订阅提醒重播",
 		"widgets:alert:skip.subscription": "订阅提醒跳过",
@@ -403,13 +412,13 @@
 		"widgets:media:error.subscription": "订阅媒体错误",
 		"widgets:media:pause.subscription": "订阅媒体暂停",
 		"widgets:media:play.subscription": "订阅媒体播放",
-		"widgets:alert:played.subscription": "订阅提醒已播放",
-		"widgets:view:storage.read": "读取小部件视图存储",
-		"widgets:control:storage.read": "读取小部件控制存储",
-		"widgets:view:storage.write": "写入小部件视图存储",
-		"widgets:control:storage.write": "写入小部件控制存储",
-		"widgets:view:storage.subscription": "订阅小部件视图存储",
-		"widgets:control:storage.subscription": "订阅小部件控制存储"
+		"widgets:alert:played.subscription": "订阅提醒播放完成",
+		"widgets:view:storage.read": "读取小组件视图存储",
+		"widgets:control:storage.read": "读取小组件控制存储",
+		"widgets:view:storage.write": "写入小组件视图存储",
+		"widgets:control:storage.write": "写入小组件控制存储",
+		"widgets:view:storage.subscription": "订阅小组件视图存储",
+		"widgets:control:storage.subscription": "订阅小组件控制存储"
 	},
 	"nsfw": {
 		"title": "NSFW",
@@ -419,7 +428,7 @@
 		"blur_timeout_duration": "模糊超时时长",
 		"confidence_threshold": "置信度阈值",
 		"anus": "肛门",
-		"make_love": "做爱",
+		"make_love": "性爱",
 		"nipple": "乳头",
 		"penis": "阴茎",
 		"vagina": "阴道"
@@ -434,14 +443,14 @@
 		"title": "标题",
 		"type": "类型",
 		"description": "描述",
-		"cost": "花费",
+		"cost": "费用",
 		"background_color": "背景颜色",
 		"is_user_input_required": "是否需要用户输入",
 		"delete": "删除",
 		"sure_delete": "确定要删除此奖励吗？",
 		"points_currency_ratio": "积分货币比例",
 		"is_global_cooldown_enabled": "是否启用全局冷却",
-		"global_cooldown_seconds": "全局冷却秒数",
+		"global_cooldown_seconds": "全局冷却时间（秒）",
 		"title_exist": "已存在相同标题的奖励"
 	},
 	"validation": {
@@ -461,32 +470,32 @@
 	},
 	"chat_source": {
 		"title": "聊天",
-		"description": "聊天消息触发以调用操作",
+		"description": "通过聊天消息触发操作",
 		"trigger": "触发器",
 		"platforms": "平台",
 		"user_levels": "用户等级"
 	},
 	"timer_source": {
-		"title": "定时器",
-		"description": "定时调用操作",
+		"title": "计时器",
+		"description": "定时执行操作",
 		"message": "消息",
 		"post_type": "发布类型",
 		"alias": "别名",
-		"Normal": "普通",
+		"Normal": "正常",
 		"interval": "间隔",
 		"Announcement": "公告",
 		"mins_passed": "发布前经过的分钟数",
-		"lines_passed": "发布前经过的聊天行数"
+		"lines_passed": "发布前经过的聊天消息行数"
 	},
 	"chat_bot_action": {
 		"title": "聊天机器人",
 		"description": "聊天机器人回复并发送消息",
 		"message": "消息",
-		"replay": "是否重播"
+		"replay": "是否回复"
 	},
 	"alert_action": {
 		"title": "提醒",
-		"description": "基于命令来源的提醒"
+		"description": "命令来源上的提醒"
 	},
 	"errors": {
 		"HttpRequest": "请求错误",
@@ -494,14 +503,34 @@
 		"ParseError": "响应错误",
 		"Config": "配置错误",
 		"DbError": "数据库错误",
-		"Zip": "压缩错误",
+		"Zip": "Zip 错误",
 		"WidySol": "WidySol 错误",
 		"StreamLabs": "StreamLabs 错误",
-		"Websocket": "Websocket 错误",
+		"Websocket": "WebSocket 错误",
 		"NSFW": "NSFW 错误",
 		"Custom": "自定义错误",
-		"Io": "输入输出错误",
+		"Io": "IO 错误",
 		"Internet": "网络错误",
 		"unknown": "错误"
+	},
+	"tts": {
+		"title": "文本转语音",
+		"description": "在命令来源上执行文本转语音",
+		"quotas": "如果达到 100 个请求/秒，可能会受到配额限制",
+		"model_ram": "模型越多，占用的 RAM 越多"
+	},
+	"tts_action": {
+		"title": "文本转语音"
+	},
+	"piper": {
+		"missing_model": "缺少语音 {{voice_key}} 的模型或配置文件条目",
+		"failed_download": "下载语音 {{voice_key}} 失败",
+		"failed_remove": "移除语音 {{voice_key}} 失败",
+		"medium": "中等",
+		"low": "低",
+		"x_low": "极低",
+		"high": "高",
+		"remove_voice": "移除语音",
+		"sure_remove": "确定要移除该语音吗？"
 	}
 }

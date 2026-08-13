@@ -45,6 +45,7 @@
     "fs:scope-applocaldata-recursive",
     "dialog:default",
     "log:default",
-    "deep-link:default"
+    "deep-link:default",
+    "upload:default"
   ]
 }

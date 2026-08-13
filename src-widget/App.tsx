@@ -10,20 +10,16 @@ import Goal from "./components/goal/Goal";
 import Media from "./components/media/Media";
 import Nsfw from "./components/nsfw/Nsfw";
 import ObsDockMessages from "./components/obs-dock-messages/ObsDockMessages";
+import Tts from "./components/tts/Tts";
 
 const App = () => {
 	const eventsService = useAppEvents();
-	const [isConnected, setIsConnected] = useState(() => eventsService.connected);
+	const [isConnected, setIsConnected] = useState(false);
 	const { t } = useTranslation();
 
 	useEffect(() => {
-		const handleStatusChange = (connected: boolean) => {
-			setIsConnected(connected);
-		};
-		eventsService.addStatusListener(handleStatusChange);
-		return () => {
-			eventsService.removeStatusListener(handleStatusChange);
-		};
+		eventsService.addStatusListener(setIsConnected);
+		return () => eventsService.removeStatusListener(setIsConnected);
 	}, [eventsService]);
 
 	return (
@@ -35,6 +31,7 @@ const App = () => {
 						top: 0,
 						right: 0,
 						color: "red",
+						zIndex: 2,
 					}}
 				>
 					<Typography
@@ -49,6 +46,7 @@ const App = () => {
 			)}
 			<Routes>
 				<Route path="/alert" element={<Alert />} />
+				<Route path="/tts" element={<Tts />} />
 				<Route path="/media" element={<Media />} />
 				<Route path="/goal" element={<Goal />} />
 				<Route path="/nsfw" element={<Nsfw />} />

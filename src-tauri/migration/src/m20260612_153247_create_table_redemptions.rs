@@ -24,7 +24,8 @@ impl MigrationTrait for Migration {
                     .col(string("platform"))
                     .col(string("type"))
                     .col(float("points_currency_ratio"))
-                    .col(string_null("media"))
+                    .col(json_binary_null("media"))
+                    .col(json_binary_null("tts"))
                     .col(json_binary_null("alert"))
                     .to_owned(),
             )

@@ -1,5 +1,6 @@
 import CampaignIcon from "@mui/icons-material/Campaign";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import { Box } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
@@ -9,7 +10,10 @@ import CommandSourceActionCard from "./CommandSourceActionCard";
 
 const CommandAction = ({ isUpdate }: { isUpdate: boolean }) => {
 	const { command } = useSelector((state: AppState) => state.commandsState);
-	const { data } = useGetAlertByIdQuery({ id: command.alert?.id });
+	const { data } = useGetAlertByIdQuery(
+		{ id: command.alert?.id },
+		{ skip: !command.alert },
+	);
 	const { t } = useTranslation();
 
 	return (
@@ -26,7 +30,7 @@ const CommandAction = ({ isUpdate }: { isUpdate: boolean }) => {
 				description={t("chat_bot_action.description")}
 				path="/dashboard/commands/action/chat-bot"
 				icon={<SmartToyIcon sx={{ width: 40, height: 40 }} />}
-				selected={!!command.chat_bot}
+				selected={!!command.chat_bot_action}
 			/>
 			<CommandSourceActionCard
 				title={t("alert_action.title")}
@@ -38,6 +42,13 @@ const CommandAction = ({ isUpdate }: { isUpdate: boolean }) => {
 				}
 				icon={<CampaignIcon sx={{ width: 40, height: 40 }} />}
 				selected={!!command.alert}
+			/>
+			<CommandSourceActionCard
+				title={t("tts.title")}
+				description={t("tts.description")}
+				path="/dashboard/commands/action/tts"
+				icon={<VolumeUpIcon sx={{ width: 40, height: 40 }} />}
+				selected={!!command.tts_action}
 			/>
 		</Box>
 	);

@@ -8,7 +8,7 @@ export class WebsocketEventsService
 	private socket: WebSocket | null = null;
 	private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
 	private statusListeners = new Set<(connected: boolean) => void>();
-	connected = true;
+	private connected = false;
 
 	private static readonly RECONNECT_DELAY_MS = 1000;
 
@@ -17,7 +17,7 @@ export class WebsocketEventsService
 	}
 
 	connect(): void {
-		if (this.isConnected()) return;
+		if (this.isSocketConnected() || this.isSocketConnecting()) return;
 		this.clearReconnectTimer();
 		this.initSocket();
 	}
@@ -29,7 +29,7 @@ export class WebsocketEventsService
 	}
 
 	send<T>(message: IEventMessage<T>): void {
-		if (!this.isConnected()) return;
+		if (!this.isSocketConnected()) return;
 		try {
 			this.socket!.send(JSON.stringify(message));
 		} catch (error) {
@@ -38,6 +38,7 @@ export class WebsocketEventsService
 	}
 
 	addStatusListener(callback: (connected: boolean) => void): void {
+		callback(this.connected);
 		this.statusListeners.add(callback);
 	}
 
@@ -50,6 +51,9 @@ export class WebsocketEventsService
 		this.socket.onmessage = ({ data }) => this.handleMessage(data);
 		this.socket.onopen = () => this.emitStatus(true);
 		this.socket.onclose = () => this.handleClose();
+		this.socket.onerror = (event) => {
+			console.error("[WebsocketEventsService] Socket error:", event);
+		};
 	}
 
 	private closeSocket(): void {
@@ -91,7 +95,15 @@ export class WebsocketEventsService
 		this.reconnectTimer = null;
 	}
 
-	private isConnected(): boolean {
+	private isSocketConnected(): boolean {
 		return this.socket?.readyState === WebSocket.OPEN;
+	}
+
+	private isSocketConnecting(): boolean {
+		return this.socket?.readyState === WebSocket.CONNECTING;
+	}
+
+	isConnected(): boolean {
+		return this.connected;
 	}
 }

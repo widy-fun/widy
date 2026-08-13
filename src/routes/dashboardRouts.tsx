@@ -8,6 +8,7 @@ import NoAdultContentIcon from "@mui/icons-material/NoAdultContent";
 import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SportsMartialArtsIcon from "@mui/icons-material/SportsMartialArts";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import WidgetsIcon from "@mui/icons-material/Widgets";
 import Alerts from "../components/dashboard/components/alerts/Alerts";
 import Auction from "../components/dashboard/components/auction/Auction";
@@ -25,6 +26,7 @@ import RewardIcon from "../components/dashboard/components/rewards/components/Re
 import Rewards from "../components/dashboard/components/rewards/Rewards";
 import Services from "../components/dashboard/components/services/Services";
 import Settings from "../components/dashboard/components/settings/Settings";
+import Tts from "../components/dashboard/components/tts/Tts";
 import Widgets from "../components/dashboard/components/widgets/Widgets";
 
 export const dashboardRouts = [
@@ -105,6 +107,12 @@ export const dashboardRouts = [
 		element: <Commands />,
 		icon: <PriorityHighIcon />,
 		name: "commands",
+	},
+	{
+		path: "tts",
+		element: <Tts />,
+		icon: <VolumeUpIcon />,
+		name: "tts",
 	},
 	{
 		path: "info",

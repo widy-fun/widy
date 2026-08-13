@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use sea_orm::{entity::prelude::*, ActiveValue::Set, FromJsonQueryResult, HasOneModel::NotSet};
 use serde::{Deserialize, Serialize};
 
@@ -186,17 +188,25 @@ pub enum TtsType {
     Google,
     #[sea_orm(string_value = "Edge")]
     Edge,
+    #[sea_orm(string_value = "Piper")]
+    Piper,
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
 #[serde(untagged)]
 
 pub enum TtsSettings {
     Edge(EdgeTtsSettings),
+    Piper(PiperTtsSettings),
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct EdgeTtsSettings {
     pub gender: Gender,
 }
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct PiperTtsSettings {
+    pub voices: HashMap<String, String>,
+}
+
 #[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
 #[sea_orm(rs_type = "String", db_type = "Text")]
 pub enum Gender {

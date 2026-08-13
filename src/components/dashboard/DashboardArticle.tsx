@@ -9,6 +9,7 @@ import ChatBotAction from "./components/commands/components/ChatBotAction";
 import ChatSource from "./components/commands/components/ChatSource";
 import CreateCommand from "./components/commands/components/CreateCommand";
 import TimerSource from "./components/commands/components/TimerSource";
+import TtsAction from "./components/commands/components/TtsAction";
 import UpdateCommandSettings from "./components/commands/UpdateCommandSettings";
 import CreateGoal from "./components/goals/components/CreateGoal";
 import UpdateGoalSettings from "./components/goals/components/UpdateGoalSettings";
@@ -46,6 +47,7 @@ const DashboardArticle = () => {
 				<Route path="commands/source/chat" element={<ChatSource />} />
 				<Route path="commands/source/timer" element={<TimerSource />} />
 				<Route path="commands/action/chat-bot" element={<ChatBotAction />} />
+				<Route path="commands/action/tts" element={<TtsAction />} />
 				<Route
 					path="commands/action/alert/create"
 					element={<AlertAction isUpdate={false} />}

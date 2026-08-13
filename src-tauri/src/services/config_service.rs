@@ -43,6 +43,8 @@ pub struct ConfigService {
     pub kick_bot_token_endpoint: String,
     pub kick_bot_redirect_uri: String,
     pub app_token: String,
+    pub piper_voices_path: PathBuf,
+    pub piper_path: PathBuf,
 }
 
 impl ConfigService {
@@ -66,6 +68,13 @@ impl ConfigService {
             "nsfw model",
         )?;
         let widgets_path = resolve_path(app, "widgets", BaseDirectory::AppLocalData, "widgets")?;
+        let piper_path = resolve_path(app, "piper", BaseDirectory::Resource, "piper")?;
+        let piper_voices_path = resolve_path(
+            app,
+            "piper-voices",
+            BaseDirectory::AppLocalData,
+            "piper-voices",
+        )?;
         let auc_fighter_path =
             resolve_path(app, "auc-fighter", BaseDirectory::Resource, "auc-fighter")?;
         let static_path = resolve_path(
@@ -80,6 +89,7 @@ impl ConfigService {
             BaseDirectory::AppLocalData,
             "audio directory",
         )?;
+
         let assets_path = resolve_path(app, "assets", BaseDirectory::Resource, "assets")?;
         let tmp_path = app
             .path()
@@ -105,6 +115,8 @@ impl ConfigService {
             kick_bot_client_id,
             kick_bot_redirect_uri,
             kick_bot_token_endpoint,
+            piper_voices_path,
+            piper_path,
         })
     }
 }

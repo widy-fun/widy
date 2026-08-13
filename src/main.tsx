@@ -18,6 +18,7 @@ import {
 	setPausedMediaId,
 	setPlayingMediaId,
 } from "../shared/slices/mediaSlice";
+import { setPlayingTtsId } from "../shared/slices/ttsSlice";
 import { messagesApi } from "./api/messagesApi";
 import { settingsApi } from "./api/settingsApi";
 import { StreamElementsSocketServiceContext } from "./contexts/StreamElementsSocketServiceContext";
@@ -92,6 +93,11 @@ eventsService.subscribe<IClientMessage>(
 eventsService.subscribe<string>(AppEvent.AlertPlaying, (id) => {
 	store.dispatch(setPlayingAlertId(id));
 });
+
+eventsService.subscribe<string>(AppEvent.TtsPlaying, (id) => {
+	store.dispatch(setPlayingTtsId(id));
+});
+
 eventsService.subscribe<string>(AppEvent.MediaPlaying, (id) => {
 	store.dispatch(setPausedMediaId(""));
 	store.dispatch(setPlayingMediaId(id));
@@ -104,6 +110,11 @@ eventsService.subscribe<string>(AppEvent.MediaPaused, (id) => {
 eventsService.subscribe<string>(AppEvent.AlertPlayed, (_) => {
 	store.dispatch(setPlayingAlertId(""));
 });
+
+eventsService.subscribe<string>(AppEvent.TtsPlayed, (_) => {
+	store.dispatch(setPlayingTtsId(""));
+});
+
 eventsService.subscribe<string>(AppEvent.MediaPlayed, (_) => {
 	store.dispatch(setPlayingMediaId(""));
 	store.dispatch(setPausedMediaId(""));

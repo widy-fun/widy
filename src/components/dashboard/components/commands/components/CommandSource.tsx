@@ -23,14 +23,14 @@ const CommandSource = () => {
 				title={t("chat_source.title")}
 				description={t("chat_source.description")}
 				path="/dashboard/commands/source/chat"
-				selected={!!command.chat}
+				selected={!!command.chat_source}
 				icon={<SmsFailedIcon sx={{ width: 40, height: 40 }} />}
 			/>
 			<CommandSourceActionCard
 				title={t("timer_source.title")}
 				description={t("timer_source.description")}
 				path="/dashboard/commands/source/timer"
-				selected={!!command.timer}
+				selected={!!command.timer_source}
 				icon={<AccessAlarmIcon sx={{ width: 40, height: 40 }} />}
 			/>
 		</Box>
