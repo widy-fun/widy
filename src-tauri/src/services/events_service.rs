@@ -729,7 +729,7 @@ impl EventsService {
         let audio = tts_service
             .make_audio(
                 &remove_links(&text),
-                &command_action.command_id.to_string(),
+                &command_action.id.to_string(),
                 &app,
                 tts_action.tts_type.clone(),
                 tts_action.tts_settings,
