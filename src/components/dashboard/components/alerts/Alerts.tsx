@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import { showSnackBar } from "@widy/react";
 import { AlertSeverity } from "@widy/sdk";
 import { useEffect } from "react";
@@ -6,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { useGetAlertsQuery } from "../../../../api/alertsApi";
 import groupAlertsByGroupId from "../../../../utils/groupAlertsByGroupId";
 import AlertsGroup from "./AlertsGroup";
+import AddNewAlertVariantButton from "./components/AddNewAlertVariantButton";
 
 const Alerts = () => {
 	const { t } = useTranslation();
@@ -25,6 +27,9 @@ const Alerts = () => {
 	return (
 		<>
 			<h1>{t("alerts.title")}</h1>
+			<Box sx={{ display: "grid", placeItems: "center", marginBottom: 1 }}>
+				<AddNewAlertVariantButton group_id={"1"} />
+			</Box>
 			{groupAlertsByGroupId(data ?? []).map((alertsGroup) => (
 				<AlertsGroup alertsGroup={alertsGroup} key={alertsGroup.group_id} />
 			))}

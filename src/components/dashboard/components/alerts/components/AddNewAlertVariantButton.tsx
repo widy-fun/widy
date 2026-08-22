@@ -13,7 +13,7 @@ const AddNewAlertVariantButton = ({ group_id }: { group_id: string }) => {
 
 	return (
 		<Button
-			sx={{ minHeight: "5.3rem" }}
+			variant="contained"
 			startIcon={<AddIcon />}
 			onClick={() => {
 				dispatch(setAlert(getDefaultAlert(group_id)));

@@ -26,7 +26,6 @@ const CreateAlert = () => {
 	return (
 		<AlertSettings
 			name={t("alert.new_variant").toUpperCase()}
-			isDefault={false}
 			onSave={async () => {
 				try {
 					if (reward.id === alert.reward_id) {

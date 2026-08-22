@@ -56,7 +56,7 @@ struct EventNotification {
 #[derive(Debug, Serialize, Deserialize)]
 struct EventVars {
     pub name: String,
-    pub comment: String,
+    pub comment: Option<String>,
     pub sum: f64,
     pub target: String,
     pub video_link: String,
@@ -220,7 +220,7 @@ impl DonatePayService {
                                                 Some(event_vars.name),
                                                 entity::settings::Currency::RUB,
                                                 event_vars.sum,
-                                                Some(event_vars.comment),
+                                                event_vars.comment,
                                                 &app,
                                             )
                                             .await;
