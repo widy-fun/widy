@@ -55,7 +55,7 @@ struct Donation {
     id: u64,
     name: String,
     username: Option<String>,
-    message: String,
+    message: Option<String>,
     message_type: String,
     payin_system: Option<String>,
     amount: f64,
@@ -256,7 +256,7 @@ impl DonationAlertsService {
                                                     donation.username,
                                                     donation.currency,
                                                     donation.amount,
-                                                    Some(donation.message),
+                                                    donation.message,
                                                     &app,
                                                 )
                                                 .await;
