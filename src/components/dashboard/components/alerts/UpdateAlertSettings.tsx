@@ -46,7 +46,6 @@ const UpdateAlertSettings = () => {
 	return (
 		<AlertSettings
 			name={alert.name.toUpperCase()}
-			isDefault={alert.id === "ba234e82-7a86-4f77-850b-f2d739902595"}
 			onSave={async () => {
 				try {
 					if (command.id === alert.command_id) {

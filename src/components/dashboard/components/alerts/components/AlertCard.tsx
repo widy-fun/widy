@@ -13,7 +13,6 @@ import ConfigurationMenu from "../../../../ConfigurationMenu";
 
 const AlertCard = ({ alert }: { alert: IAlert }) => {
 	const [updateAlertSettings] = useUpdateAlertSettingsMutation();
-	const isDefault = alert.id === "ba234e82-7a86-4f77-850b-f2d739902595";
 	const eventsService = useAppEvents();
 	const { t } = useTranslation();
 	const theme = useTheme();
@@ -64,16 +63,14 @@ const AlertCard = ({ alert }: { alert: IAlert }) => {
 				<div
 					style={{ alignSelf: "center", justifySelf: "end", display: "flex" }}
 				>
-					{!isDefault && (
-						<Switch
-							checked={alert.status}
-							onChange={async (_, value) => {
-								await updateAlertSettings({
-									alert: { ...alert, status: value },
-								}).unwrap();
-							}}
-						/>
-					)}
+					<Switch
+						checked={alert.status}
+						onChange={async (_, value) => {
+							await updateAlertSettings({
+								alert: { ...alert, status: value },
+							}).unwrap();
+						}}
+					/>
 					<ConfigurationMenu
 						onConfirm={async () => {
 							await deleteAlertById({ id: alert.id }).unwrap();
@@ -81,7 +78,6 @@ const AlertCard = ({ alert }: { alert: IAlert }) => {
 						warning={t("sure_delete")}
 						configurePath={`/dashboard/alerts/${alert.id}`}
 						onTest={handleTestAlert}
-						isShowDelete={!isDefault}
 					/>
 				</div>
 			</div>

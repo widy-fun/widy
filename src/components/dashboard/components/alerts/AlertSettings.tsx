@@ -21,11 +21,9 @@ import ViewSettings from "./components/ViewSettings";
 
 const AlertSettings = ({
 	name,
-	isDefault,
 	onSave,
 }: {
 	name: string;
-	isDefault: boolean;
 	onSave: () => void;
 }) => {
 	const navigate = useNavigate();
@@ -76,13 +74,11 @@ const AlertSettings = ({
 						iconPosition="start"
 						label={t("alert.message")}
 					/>
-					{!isDefault && (
-						<Tab
-							icon={<SettingsIcon />}
-							iconPosition="start"
-							label={t("general")}
-						/>
-					)}
+					<Tab
+						icon={<SettingsIcon />}
+						iconPosition="start"
+						label={t("general")}
+					/>
 				</Tabs>
 			</Box>
 			<div style={{ marginTop: 20 }}>
