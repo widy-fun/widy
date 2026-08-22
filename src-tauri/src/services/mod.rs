@@ -1,3 +1,4 @@
+pub mod ai_assistant;
 pub mod axum_service;
 pub mod commands_service;
 pub mod config_service;

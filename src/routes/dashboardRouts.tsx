@@ -7,10 +7,12 @@ import MovieIcon from "@mui/icons-material/Movie";
 import NoAdultContentIcon from "@mui/icons-material/NoAdultContent";
 import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import SettingsIcon from "@mui/icons-material/Settings";
+import SmartToyIcon from "@mui/icons-material/SmartToy";
 import SportsMartialArtsIcon from "@mui/icons-material/SportsMartialArts";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import WidgetsIcon from "@mui/icons-material/Widgets";
 import Alerts from "../components/dashboard/components/alerts/Alerts";
+import Assistant from "../components/dashboard/components/assistant/Assistant";
 import Auction from "../components/dashboard/components/auction/Auction";
 import AuctionIcon from "../components/dashboard/components/auction/components/AuctionIcon";
 import Commands from "../components/dashboard/components/commands/Commands";
@@ -113,6 +115,12 @@ export const dashboardRouts = [
 		element: <Tts />,
 		icon: <VolumeUpIcon />,
 		name: "tts",
+	},
+	{
+		path: "assistant",
+		element: <Assistant />,
+		icon: <SmartToyIcon />,
+		name: "assistant",
 	},
 	{
 		path: "info",

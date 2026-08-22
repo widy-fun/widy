@@ -169,7 +169,10 @@ pub fn run() {
             twitch_bot_sign_out,
             kick_bot_sign_out,
             get_piper_voices,
-            get_initial_state
+            start_assistant,
+            get_input_devices,
+            get_initial_state,
+            stop_assistant
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

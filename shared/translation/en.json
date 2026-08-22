@@ -101,7 +101,8 @@
 		"nsfw": "NSFW",
 		"rewards": "Rewards",
 		"commands": "Commands",
-		"tts": "TTS"
+		"tts": "TTS",
+		"assistant": "Assistant"
 	},
 	"messages": {
 		"title": "Last messages"

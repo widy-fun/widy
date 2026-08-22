@@ -1,4 +1,5 @@
 use crate::error::AppError;
+use crate::services::ai_assistant::AiAssistantService;
 use crate::services::kick::{KickBotService, KickService};
 use crate::services::tts::TtsService;
 use crate::services::twitch::traits::TwitchApi;
@@ -173,6 +174,10 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
     let commands_service = CommandsService::new();
     commands_service.start(&app).await?;
     app.manage(commands_service);
+
+    //ai assistant
+    let ai_assistant_service = AiAssistantService::new();
+    app.manage(ai_assistant_service);
 
     Ok(())
 }

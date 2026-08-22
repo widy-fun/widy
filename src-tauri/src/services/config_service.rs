@@ -45,6 +45,7 @@ pub struct ConfigService {
     pub app_token: String,
     pub piper_voices_path: PathBuf,
     pub piper_path: PathBuf,
+    pub wake_word_path: PathBuf,
 }
 
 impl ConfigService {
@@ -69,6 +70,7 @@ impl ConfigService {
         )?;
         let widgets_path = resolve_path(app, "widgets", BaseDirectory::AppLocalData, "widgets")?;
         let piper_path = resolve_path(app, "piper", BaseDirectory::Resource, "piper")?;
+        let wake_word_path = resolve_path(app, "wake-word", BaseDirectory::Resource, "wake-word")?;
         let piper_voices_path = resolve_path(
             app,
             "piper-voices",
@@ -117,6 +119,7 @@ impl ConfigService {
             kick_bot_token_endpoint,
             piper_voices_path,
             piper_path,
+            wake_word_path,
         })
     }
 }

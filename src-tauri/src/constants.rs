@@ -6,3 +6,15 @@ pub const NSFW_LABELS: &[&str] = &["anus", "make_love", "nipple", "penis", "vagi
 pub const BOS: char = '^';
 pub const EOS: char = '$';
 pub const PAD: char = '_';
+pub const TARGET_SR: u32 = 16_000;
+
+// 80 ms @ 16 kHz.
+pub const FRAME_SIZE: usize = 1280;
+
+// Silero VAD frame.
+// Для v5 при 16 kHz допустимы 512/1024/1536.
+// Здесь используем 512.
+pub const VAD_FRAME: usize = 512;
+
+pub const VAD_THRESHOLD: f32 = 0.5;
+pub const WAKE_THRESHOLD: f32 = 0.5;

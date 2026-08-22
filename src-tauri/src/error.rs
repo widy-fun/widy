@@ -1,3 +1,5 @@
+use ndarray::ShapeError;
+use rubato::{ResampleError, ResamplerConstructionError, audioadapter_buffers::SizeError};
 use serde::Serialize;
 use thiserror::Error;
 use xcap::XCapError;
@@ -88,6 +90,42 @@ impl From<anchor_client::ClientError> for AppError {
 
 impl From<XCapError> for AppError {
     fn from(err: XCapError) -> Self {
+        AppError::Custom(err.to_string())
+    }
+}
+
+impl From<cpal::Error> for AppError {
+    fn from(err: cpal::Error) -> Self {
+        AppError::Custom(err.to_string())
+    }
+}
+
+impl From<ort::Error> for AppError {
+    fn from(err: ort::Error) -> Self {
+        AppError::Custom(err.to_string())
+    }
+}
+
+impl From<ShapeError> for AppError {
+    fn from(err: ShapeError) -> Self {
+        AppError::Custom(err.to_string())
+    }
+}
+
+impl From<ResamplerConstructionError> for AppError {
+    fn from(err: ResamplerConstructionError) -> Self {
+        AppError::Custom(err.to_string())
+    }
+}
+
+impl From<SizeError> for AppError {
+    fn from(err: SizeError) -> Self {
+        AppError::Custom(err.to_string())
+    }
+}
+
+impl From<ResampleError> for AppError {
+    fn from(err: ResampleError) -> Self {
         AppError::Custom(err.to_string())
     }
 }
