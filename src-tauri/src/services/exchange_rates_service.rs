@@ -73,13 +73,9 @@ impl ExchangeRatesService {
         target_currency: Currency,
         target_amount: f64,
     ) -> f64 {
-        let rates = if target_currency == Currency::BITS || target_currency == Currency::KICKS {
-            self.virtual_rates.clone()
-        } else {
-            match self.get_exchange_rates().await {
-                Some(rates) => rates,
-                _ => return 0.0,
-            }
+        let rates = match self.get_exchange_rates().await {
+            Some(rates) => rates,
+            _ => return 0.0,
         };
         if base_currency == Currency::USD {
             let target_rate = rates
@@ -89,11 +85,20 @@ impl ExchangeRatesService {
                 .unwrap_or(1.0);
             return target_amount / target_rate;
         }
-        let target_rate = rates
-            .get(target_currency.as_str())
-            .unwrap_or(&"1.0".to_string())
-            .parse::<f64>()
-            .unwrap_or(1.0);
+        let target_rate = if target_currency == Currency::BITS || target_currency == Currency::KICKS
+        {
+            self.virtual_rates
+                .get(target_currency.as_str())
+                .unwrap()
+                .parse::<f64>()
+                .unwrap()
+        } else {
+            rates
+                .get(target_currency.as_str())
+                .unwrap_or(&"1.0".to_string())
+                .parse::<f64>()
+                .unwrap_or(1.0)
+        };
         let base_rate = rates
             .get(base_currency.as_str())
             .unwrap_or(&"1.0".to_string())
