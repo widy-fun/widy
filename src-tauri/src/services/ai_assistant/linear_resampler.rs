@@ -3,14 +3,10 @@ use rubato::{
     Async, FixedAsync, SincInterpolationParameters, SincInterpolationType, WindowFunction,
 };
 
-pub struct LinearResampler {}
+pub struct LinearResampler;
 
 impl LinearResampler {
-    pub fn new() -> Self {
-        Self {}
-    }
-
-    pub fn stereo_to_mono(data: &[f32], channels: usize) -> Vec<f32> {
+    pub fn stereo_f32_to_mono(data: &[f32], channels: usize) -> Vec<f32> {
         if channels <= 1 {
             return data.to_vec();
         }
@@ -42,7 +38,7 @@ impl LinearResampler {
 
     pub fn create_resampler(input_sr: u32) -> Result<Async<f32>, AppError> {
         if input_sr == 0 {
-            return Err(AppError::Custom("Input sample rate".to_string()));
+            return Err(AppError::Audio("Input sample rate".to_string()));
         }
         let ratio = TARGET_SR as f64 / input_sr as f64;
 

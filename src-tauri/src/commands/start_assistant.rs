@@ -10,5 +10,5 @@ pub async fn start_assistant(
     ai_assistant_service: State<'_, AiAssistantService>,
     device_info: InputDeviceInfo,
 ) -> Result<(), AppError> {
-    ai_assistant_service.start(&app, device_info).await
+    ai_assistant_service.start(app, device_info).await
 }

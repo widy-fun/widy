@@ -1,12 +1,9 @@
 use std::path::PathBuf;
 
-use ndarray::{Array1, Array2, Array3, Array4};
+use ndarray::{Array2, Array3, Array4};
 use ort::{session::Session, value::TensorRef};
 
-use crate::{
-    constants::{TARGET_SR, VAD_FRAME},
-    error::AppError,
-};
+use crate::{error::AppError, services::ai_assistant::vad_engine::VadEngine};
 
 pub struct WakeResult {
     pub vad: f32,
@@ -14,27 +11,23 @@ pub struct WakeResult {
 }
 
 pub struct WakeEngine {
-    vad_leftover: Vec<f32>,
     mel: Session,
     embedding: Session,
-    vad: Session,
     wake: Session,
-    vad_h: Array3<f32>,
-    vad_c: Array3<f32>,
     mel_history: Vec<f32>,
     embedding_history: Vec<f32>,
     wake_frames: usize,
+    vad_engine: VadEngine,
 }
 
 impl WakeEngine {
     pub fn new(wake_word_path: PathBuf) -> Result<Self, AppError> {
+        let vad_engine = VadEngine::new(wake_word_path.clone())?;
         let mel =
             Session::builder()?.commit_from_file(wake_word_path.join("melspectrogram.onnx"))?;
 
         let embedding =
             Session::builder()?.commit_from_file(wake_word_path.join("embedding_model.onnx"))?;
-
-        let vad = Session::builder()?.commit_from_file(wake_word_path.join("silero_vad.onnx"))?;
 
         let wake =
             Session::builder()?.commit_from_file(wake_word_path.join("hey_jarvis_v0.1.onnx"))?;
@@ -44,19 +37,16 @@ impl WakeEngine {
         Ok(Self {
             mel,
             embedding,
-            vad,
+            vad_engine,
             wake,
-            vad_h: Array3::zeros((2, 1, 64)),
-            vad_c: Array3::zeros((2, 1, 64)),
             mel_history: Vec::with_capacity(97 * 32),
             embedding_history: Vec::with_capacity(120 * 96),
             wake_frames,
-            vad_leftover: vec![],
         })
     }
 
     pub fn process(&mut self, audio: &[f32]) -> Result<WakeResult, AppError> {
-        let vad_score = self.process_vad(audio)?;
+        let vad_score = self.vad_engine.process_vad(audio)?;
 
         if vad_score < 0.1 {
             return Ok(WakeResult {
@@ -159,55 +149,8 @@ impl WakeEngine {
         })
     }
 
-    fn process_vad(&mut self, audio: &[f32]) -> Result<f32, AppError> {
-        self.vad_leftover.extend_from_slice(audio);
-
-        let mut scores = Vec::new();
-        let mut offset = 0;
-
-        while self.vad_leftover.len() - offset >= VAD_FRAME {
-            let chunk = &self.vad_leftover[offset..offset + VAD_FRAME];
-
-            let input = Array2::from_shape_vec((1, VAD_FRAME), chunk.to_vec())?;
-            let sr = Array1::from_vec(vec![TARGET_SR as i64]);
-
-            let outputs = self.vad.run(ort::inputs! {
-                "input" => TensorRef::from_array_view(input.view())?,
-                "sr" => TensorRef::from_array_view(sr.view())?,
-                "h" => TensorRef::from_array_view(self.vad_h.view())?,
-                "c" => TensorRef::from_array_view(self.vad_c.view())?,
-            })?;
-
-            let (_, output) = outputs[0].try_extract_tensor::<f32>()?;
-            if let Some(score) = output.first() {
-                scores.push(*score);
-            }
-
-            let (_, h) = outputs[1].try_extract_tensor::<f32>()?;
-            let (_, c) = outputs[2].try_extract_tensor::<f32>()?;
-            self.vad_h = Array3::from_shape_vec((2, 1, 64), h.to_vec())?;
-            self.vad_c = Array3::from_shape_vec((2, 1, 64), c.to_vec())?;
-
-            offset += VAD_FRAME;
-        }
-
-        self.vad_leftover.drain(..offset);
-
-        if scores.is_empty() {
-            return Ok(0.0);
-        }
-        Ok(scores.into_iter().fold(0.0_f32, f32::max))
-    }
-
     pub fn reset_wake(&mut self) {
         self.mel_history.clear();
-
         self.embedding_history.clear();
-    }
-
-    fn reset_vad(&mut self) {
-        self.vad_h.fill(0.0);
-
-        self.vad_c.fill(0.0);
     }
 }

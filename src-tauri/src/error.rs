@@ -2,6 +2,7 @@ use ndarray::ShapeError;
 use rubato::{ResampleError, ResamplerConstructionError, audioadapter_buffers::SizeError};
 use serde::Serialize;
 use thiserror::Error;
+use whisper_rs::WhisperError;
 use xcap::XCapError;
 use zip::result::ZipError;
 
@@ -49,6 +50,15 @@ pub enum AppError {
 
     #[error("Piper error: {0}")]
     Piper(String),
+
+    #[error("STT error: {0}")]
+    STT(String),
+
+    #[error("Audio error: {0}")]
+    Audio(String),
+
+    #[error("LLM error: {0}")]
+    LLM(String),
 }
 
 impl From<reqwest::Error> for AppError {
@@ -96,7 +106,7 @@ impl From<XCapError> for AppError {
 
 impl From<cpal::Error> for AppError {
     fn from(err: cpal::Error) -> Self {
-        AppError::Custom(err.to_string())
+        AppError::Audio(err.to_string())
     }
 }
 
@@ -114,18 +124,30 @@ impl From<ShapeError> for AppError {
 
 impl From<ResamplerConstructionError> for AppError {
     fn from(err: ResamplerConstructionError) -> Self {
-        AppError::Custom(err.to_string())
+        AppError::Audio(err.to_string())
     }
 }
 
 impl From<SizeError> for AppError {
     fn from(err: SizeError) -> Self {
-        AppError::Custom(err.to_string())
+        AppError::Audio(err.to_string())
     }
 }
 
 impl From<ResampleError> for AppError {
     fn from(err: ResampleError) -> Self {
-        AppError::Custom(err.to_string())
+        AppError::Audio(err.to_string())
+    }
+}
+
+impl From<WhisperError> for AppError {
+    fn from(err: WhisperError) -> Self {
+        AppError::STT(err.to_string())
+    }
+}
+
+impl From<gemini_rust::ClientError> for AppError {
+    fn from(err: gemini_rust::ClientError) -> Self {
+        AppError::HttpRequest(err.to_string())
     }
 }

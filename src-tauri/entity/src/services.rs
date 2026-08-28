@@ -51,6 +51,10 @@ pub enum ServiceType {
     TwitchBot,
     #[sea_orm(string_value = "KickBot")]
     KickBot,
+    // #[sea_orm(string_value = "OpenAI")]
+    // OpenAI,
+    #[sea_orm(string_value = "Gemini")]
+    Gemini,
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
 #[serde(untagged)]
@@ -71,7 +75,8 @@ pub enum ServiceAuth {
     StreamLabs(StreamLabsAuth),
     DonatePay(DonatePayAuth),
     Destream(DestreamAuth),
-    Tribute(TributeAuth),
+    Tribute(ApiKeyAuth),
+    Gemini(ApiKeyAuth),
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -85,7 +90,7 @@ pub struct DonationAlertsAuth {
     pub token: String,
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct TributeAuth {
+pub struct ApiKeyAuth {
     pub api_key: String,
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

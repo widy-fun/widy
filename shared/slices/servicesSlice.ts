@@ -85,6 +85,11 @@ const initialState: ServicesState = {
 			color: "#9147ff",
 			authPath: "/twitch-bot/device-code",
 		},
+		[ServiceType.Gemini]: {
+			active: false,
+			color: "#121a3a",
+			authPath: "/gemini/api-key",
+		},
 	},
 };
 

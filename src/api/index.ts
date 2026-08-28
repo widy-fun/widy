@@ -112,6 +112,12 @@ export const api = createApi({
 			}),
 			invalidatesTags: ["Services"],
 		}),
+		geminiSignOut: builder.mutation<void, void>({
+			query: () => ({
+				command: "gemini_sign_out",
+			}),
+			invalidatesTags: ["Services"],
+		}),
 	}),
 });
 
@@ -128,4 +134,5 @@ export const {
 	useKickBotSignOutMutation,
 	useTwitchBotSignOutMutation,
 	useGetInitialStateQuery,
+	useGeminiSignOutMutation,
 } = api;

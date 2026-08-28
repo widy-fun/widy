@@ -172,7 +172,9 @@ pub fn run() {
             start_assistant,
             get_input_devices,
             get_initial_state,
-            stop_assistant
+            stop_assistant,
+            gemini_connect,
+            gemini_sign_out
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

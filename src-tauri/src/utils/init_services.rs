@@ -1,6 +1,8 @@
 use crate::error::AppError;
 use crate::services::ai_assistant::AiAssistantService;
+use crate::services::gemini::GeminiService;
 use crate::services::kick::{KickBotService, KickService};
+use crate::services::openai::OpenAiService;
 use crate::services::tts::TtsService;
 use crate::services::twitch::traits::TwitchApi;
 use crate::services::twitch::{TwitchBotService, TwitchService};
@@ -178,6 +180,15 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
     //ai assistant
     let ai_assistant_service = AiAssistantService::new();
     app.manage(ai_assistant_service);
+
+    //openai
+    let openai_service = OpenAiService::new();
+    app.manage(openai_service);
+
+    //gemini
+    let gemini_service = GeminiService::new();
+    let _ = gemini_service.connect(&app).await;
+    app.manage(gemini_service);
 
     Ok(())
 }

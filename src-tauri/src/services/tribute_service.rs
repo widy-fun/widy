@@ -5,7 +5,7 @@ use crate::{
     utils::send_request,
 };
 use entity::{
-    services::{ServiceAuth, ServiceType, TributeAuth},
+    services::{ApiKeyAuth, ServiceAuth, ServiceType},
     settings::Currency,
 };
 use eventsource_client::{self as es, Client};
@@ -74,7 +74,7 @@ impl TributeService {
             database_service
                 .update_service_auth(
                     ServiceType::Tribute,
-                    Some(ServiceAuth::Tribute(TributeAuth {
+                    Some(ServiceAuth::Tribute(ApiKeyAuth {
                         api_key: auth.api_key.clone(),
                     })),
                     true,

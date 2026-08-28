@@ -2,8 +2,8 @@ import { Button, TextField } from "@mui/material";
 import { showSnackBar } from "@widy/react";
 import {
 	AlertSeverity,
+	type IApiKeyAuth,
 	type ISerializedAppError,
-	type ITributeAuth,
 	ServiceType,
 } from "@widy/sdk";
 import { useState } from "react";
@@ -45,7 +45,7 @@ const ApiKey = () => {
 								}
 								await updateServiceAuth({
 									id: ServiceType.Tribute,
-									auth: { api_key: apiKey } as ITributeAuth,
+									auth: { api_key: apiKey } as IApiKeyAuth,
 									authorized: false,
 								}).unwrap();
 								await tributeConnect().unwrap();

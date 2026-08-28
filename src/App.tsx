@@ -16,6 +16,7 @@ import Donatello from "./components/donatello/Donatello";
 import DonatePay from "./components/donatepay/DonatePay";
 import Donatik from "./components/donatik/Donatik";
 import DonationAlerts from "./components/donationalerts/DonationAlerts";
+import Gemini from "./components/gemini/Gemini";
 import Kick from "./components/kick/Kick";
 import KickBot from "./components/kick-bot/KickBot";
 import StreamElements from "./components/streamelements/StreamElements";
@@ -114,6 +115,7 @@ function App() {
 					<Route path="/dashboard/*" element={<Dashboard />} />
 					<Route path="/tribute/*" element={<Tribute />} />
 					<Route path="/widget/:id" element={<WidgetControl />} />
+					<Route path="/gemini/*" element={<Gemini />} />
 				</Routes>
 			)}
 		</main>
