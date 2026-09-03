@@ -87,7 +87,12 @@ const usePlayMedia = () => {
 	useEffect(() => {
 		const unsubscribe = eventsService.subscribe<IClientMessage>(
 			AppEvent.Media,
-			handleNewMessage,
+			(message) => {
+				setTimeout(
+					() => handleNewMessage(message),
+					messagesRef.current.length ? 0 : 3000,
+				);
+			},
 		);
 
 		return () => unsubscribe();

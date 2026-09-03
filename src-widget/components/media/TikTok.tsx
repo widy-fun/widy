@@ -66,6 +66,12 @@ const TikTok = ({
 						data: messageId,
 					});
 					break;
+				case "onPlayerError":
+					eventsService.send<MessageId>({
+						event: AppEvent.MediaError,
+						data: messageId,
+					});
+					break;
 
 				default:
 					break;
