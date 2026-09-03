@@ -103,10 +103,8 @@ impl TributeService {
             .unwrap()
             .reconnect(
                 es::ReconnectOptions::reconnect(true)
-                    .retry_initial(false)
+                    .retry_initial(true)
                     .delay(Duration::from_secs(1))
-                    .backoff_factor(2)
-                    .delay_max(Duration::from_secs(60))
                     .build(),
             )
             .build();
