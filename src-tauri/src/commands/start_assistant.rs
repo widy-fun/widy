@@ -1,14 +1,14 @@
 use crate::{
     error::AppError,
-    services::ai_assistant::{AiAssistantService, InputDeviceInfo},
+    services::assistant::{AssistantService, InputDeviceInfo},
 };
 use tauri::{AppHandle, State};
 
 #[tauri::command]
 pub async fn start_assistant(
     app: AppHandle,
-    ai_assistant_service: State<'_, AiAssistantService>,
-    device_info: InputDeviceInfo,
+    assistant_service: State<'_, AssistantService>,
+    assistant_settings: entity::assistant_settings::Model,
 ) -> Result<(), AppError> {
-    ai_assistant_service.start(app, device_info).await
+    assistant_service.start(app, assistant_settings).await
 }

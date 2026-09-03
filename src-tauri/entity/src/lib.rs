@@ -1,4 +1,5 @@
 pub mod alerts;
+pub mod assistant_settings;
 pub mod auc_fighter_settings;
 pub mod auction_settings;
 pub mod commands;

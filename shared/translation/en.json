@@ -28,6 +28,8 @@
 	"remove": "Remove",
 	"removing": "Removing",
 	"search_voices": "Search voices",
+	"stopping": "Stopping",
+	"starting": "Starting",
 	"test": "Test",
 	"speakers": "Speakers",
 	"single_speaker": "Single speaker",
@@ -533,5 +535,13 @@
 		"high": "High",
 		"remove_voice": "Remove voice",
 		"sure_remove": "Are you sure want to remove voice?"
+	},
+	"assistant": {
+		"title": "Assistant",
+		"device": "Device",
+		"settings": "Settings",
+		"input_device": "Input device",
+		"provider": "Provider",
+		"model": "Model"
 	}
 }

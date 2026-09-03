@@ -453,7 +453,11 @@ impl From<ChatMessageData> for UnifiedChatMessage {
             .map(|b| UnifiedBadge {
                 id: b.name.clone(),
                 set_id: b.badge_type.clone(),
-                label: b.metadata.level.map(|l| format!("Level {}", l)),
+                label: b
+                    .metadata
+                    .as_ref()
+                    .and_then(|m| m.level)
+                    .map(|l| format!("Level {}", l)),
                 image_url: Some(b.image_url.clone()),
             })
             .collect();

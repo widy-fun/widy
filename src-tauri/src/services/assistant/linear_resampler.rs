@@ -59,4 +59,14 @@ impl LinearResampler {
             FixedAsync::Input,
         )?)
     }
+
+    pub fn pcm_f32_to_le_bytes(samples: &[f32]) -> Vec<u8> {
+        let mut bytes = Vec::with_capacity(samples.len() * 2);
+        for &s in samples {
+            let clamped = s.clamp(-1.0, 1.0);
+            let sample = (clamped * i16::MAX as f32) as i16;
+            bytes.extend_from_slice(&sample.to_le_bytes());
+        }
+        bytes
+    }
 }

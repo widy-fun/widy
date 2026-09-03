@@ -254,7 +254,7 @@ pub struct BadgeV2 {
     pub name: String,
     pub badge_type: String,
     pub image_url: String,
-    pub metadata: BadgeMetadata,
+    pub metadata: Option<BadgeMetadata>,
     pub selected: bool,
     pub sort_order: u32,
 }

@@ -58,7 +58,7 @@ impl TributeService {
             .await?;
         if let Some(entity::services::Model {
             id: ServiceType::Tribute,
-            auth: Some(ServiceAuth::Tribute(auth)),
+            auth: Some(ServiceAuth::ApiKey(auth)),
             ..
         }) = service
         {
@@ -74,7 +74,7 @@ impl TributeService {
             database_service
                 .update_service_auth(
                     ServiceType::Tribute,
-                    Some(ServiceAuth::Tribute(ApiKeyAuth {
+                    Some(ServiceAuth::ApiKey(ApiKeyAuth {
                         api_key: auth.api_key.clone(),
                     })),
                     true,

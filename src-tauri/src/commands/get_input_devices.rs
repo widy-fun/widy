@@ -1,13 +1,14 @@
-use tauri::State;
+use tauri::{AppHandle, State};
 
 use crate::{
     error::AppError,
-    services::ai_assistant::{AiAssistantService, InputDeviceInfo},
+    services::assistant::{AssistantService, InputDeviceInfo},
 };
 
 #[tauri::command]
 pub async fn get_input_devices(
-    ai_assistant_service: State<'_, AiAssistantService>,
+    app: AppHandle,
+    assistant_service: State<'_, AssistantService>,
 ) -> Result<Vec<InputDeviceInfo>, AppError> {
-    ai_assistant_service.get_input_devices()
+    assistant_service.get_input_devices(&app).await
 }

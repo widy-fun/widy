@@ -1,9 +1,9 @@
-use crate::{error::AppError, services::ai_assistant::AiAssistantService};
+use crate::{error::AppError, services::assistant::AssistantService};
 use tauri::State;
 
 #[tauri::command]
 pub async fn stop_assistant(
-    ai_assistant_service: State<'_, AiAssistantService>,
+    assistant_service: State<'_, AssistantService>,
 ) -> Result<(), AppError> {
-    ai_assistant_service.stop()
+    assistant_service.stop()
 }

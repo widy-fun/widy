@@ -1,8 +1,9 @@
+use foundry_local_sdk::FoundryLocalError;
 use ndarray::ShapeError;
 use rubato::{ResampleError, ResamplerConstructionError, audioadapter_buffers::SizeError};
 use serde::Serialize;
 use thiserror::Error;
-use whisper_rs::WhisperError;
+use tokio::task::JoinError;
 use xcap::XCapError;
 use zip::result::ZipError;
 
@@ -140,14 +141,14 @@ impl From<ResampleError> for AppError {
     }
 }
 
-impl From<WhisperError> for AppError {
-    fn from(err: WhisperError) -> Self {
-        AppError::STT(err.to_string())
+impl From<FoundryLocalError> for AppError {
+    fn from(err: FoundryLocalError) -> Self {
+        AppError::Custom(err.to_string())
     }
 }
 
-impl From<gemini_rust::ClientError> for AppError {
-    fn from(err: gemini_rust::ClientError) -> Self {
-        AppError::HttpRequest(err.to_string())
+impl From<JoinError> for AppError {
+    fn from(err: JoinError) -> Self {
+        AppError::Custom(err.to_string())
     }
 }

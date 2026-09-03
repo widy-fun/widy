@@ -3,7 +3,9 @@ use std::path::PathBuf;
 use ndarray::{Array2, Array3, Array4};
 use ort::{session::Session, value::TensorRef};
 
-use crate::{error::AppError, services::ai_assistant::vad_engine::VadEngine};
+use crate::{
+    error::AppError, services::assistant::vad_engine::VadEngine, utils::log_and_wrap_error,
+};
 
 pub struct WakeResult {
     pub vad: f32,
@@ -21,16 +23,29 @@ pub struct WakeEngine {
 }
 
 impl WakeEngine {
-    pub fn new(wake_word_path: PathBuf) -> Result<Self, AppError> {
-        let vad_engine = VadEngine::new(wake_word_path.clone())?;
-        let mel =
-            Session::builder()?.commit_from_file(wake_word_path.join("melspectrogram.onnx"))?;
-
-        let embedding =
-            Session::builder()?.commit_from_file(wake_word_path.join("embedding_model.onnx"))?;
-
+    pub async fn new(wake_word_path: PathBuf) -> Result<Self, AppError> {
+        let vad_engine = VadEngine::new(wake_word_path.clone()).await?;
+        let wake_word_path_clone = wake_word_path.clone();
+        let mel = tokio::task::spawn_blocking(move || -> Result<Session, AppError> {
+            Ok(Session::builder()?
+                .commit_from_file(wake_word_path_clone.join("melspectrogram.onnx"))?)
+        })
+        .await?
+        .map_err(|e| log_and_wrap_error("Build melspectrogram session", e))?;
+        let wake_word_path_clone = wake_word_path.clone();
+        let embedding = tokio::task::spawn_blocking(move || -> Result<Session, AppError> {
+            Ok(Session::builder()?
+                .commit_from_file(wake_word_path_clone.join("embedding_model.onnx"))?)
+        })
+        .await?
+        .map_err(|e| log_and_wrap_error("Build embedding session", e))?;
         let wake =
-            Session::builder()?.commit_from_file(wake_word_path.join("hey_jarvis_v0.1.onnx"))?;
+            tokio::task::spawn_blocking(move || -> Result<Session, AppError> {
+                Ok(Session::builder()?
+                    .commit_from_file(wake_word_path.join("hey_jarvis_v0.1.onnx"))?)
+            })
+            .await?
+            .map_err(|e| log_and_wrap_error("Build hey_jarvis session", e))?;
 
         let wake_frames = 16;
 

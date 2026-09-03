@@ -39,6 +39,7 @@ export const api = createApi({
 		"Nsfw-Settings",
 		"Rewards",
 		"Commands",
+		"Assistant-Settings",
 	],
 	endpoints: (builder) => ({
 		getInitialState: builder.query<IInitialState, void>({

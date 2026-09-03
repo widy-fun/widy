@@ -1,4 +1,9 @@
-import { IInputDeviceInfo } from "@widy/sdk";
+import {
+	AssistantProvider,
+	IAssistantSettings,
+	IAssistantStatus,
+	IInputDeviceInfo,
+} from "@widy/sdk";
 import { api } from ".";
 
 export const assistantApi = api.injectEndpoints({
@@ -8,7 +13,10 @@ export const assistantApi = api.injectEndpoints({
 				command: "get_input_devices",
 			}),
 		}),
-		startAssistant: builder.mutation<void, { deviceInfo: IInputDeviceInfo }>({
+		startAssistant: builder.mutation<
+			void,
+			{ assistantSettings: IAssistantSettings }
+		>({
 			query: (args) => ({
 				command: "start_assistant",
 				args,
@@ -19,10 +27,44 @@ export const assistantApi = api.injectEndpoints({
 				command: "stop_assistant",
 			}),
 		}),
+		getAssistantSettings: builder.query<IAssistantSettings, void>({
+			query: () => ({
+				command: "get_assistant_settings",
+			}),
+			providesTags: ["Assistant-Settings"],
+		}),
+		getAssistantProviderModels: builder.query<
+			string[],
+			{ provider: AssistantProvider }
+		>({
+			query: (args) => ({
+				command: "get_assistant_provider_models",
+				args,
+			}),
+		}),
+		getAssistantStatus: builder.query<IAssistantStatus, void>({
+			query: () => ({
+				command: "get_assistant_status",
+			}),
+		}),
+		updateAssistantSettings: builder.mutation<
+			void,
+			{ assistantSettings: IAssistantSettings }
+		>({
+			query: (args) => ({
+				command: "update_assistant_settings",
+				args,
+			}),
+			invalidatesTags: ["Assistant-Settings"],
+		}),
 	}),
 });
 export const {
 	useGetInputDevicesQuery,
 	useStartAssistantMutation,
 	useStopAssistantMutation,
+	useGetAssistantSettingsQuery,
+	useUpdateAssistantSettingsMutation,
+	useGetAssistantProviderModelsQuery,
+	useGetAssistantStatusQuery,
 } = assistantApi;

@@ -1,5 +1,5 @@
 use crate::error::AppError;
-use crate::services::ai_assistant::AiAssistantService;
+use crate::services::assistant::AssistantService;
 use crate::services::gemini::GeminiService;
 use crate::services::kick::{KickBotService, KickService};
 use crate::services::openai::OpenAiService;
@@ -178,8 +178,8 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
     app.manage(commands_service);
 
     //ai assistant
-    let ai_assistant_service = AiAssistantService::new();
-    app.manage(ai_assistant_service);
+    let assistant_service = AssistantService::new();
+    app.manage(assistant_service);
 
     //openai
     let openai_service = OpenAiService::new();
