@@ -40,7 +40,7 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
     if let Err(_) = response {
         return Err(AppError::Internet("Not connected".to_string()));
     }
-    app.manage(reqwest_client);
+    app.manage(reqwest_client.clone());
 
     //config
     let config_service = ConfigService::new(&app)?;
@@ -89,7 +89,10 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
     app.manage(media_service);
 
     //twitch
-    let twitch_service = TwitchService::new(config_service.twitch_client_id.clone());
+    let twitch_service = TwitchService::new(
+        config_service.twitch_client_id.clone(),
+        reqwest_client.clone(),
+    );
     let _ = twitch_service.connect(&app).await;
     app.manage(twitch_service.clone());
 
@@ -99,6 +102,7 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
         twitch_service.auth_endpoint(),
         twitch_service.api_endpoint(),
         twitch_service.eventsub_endpoint(),
+        reqwest_client.clone(),
     );
     let _ = twitch_bot_service.connect(&app).await;
     app.manage(twitch_bot_service);
@@ -109,6 +113,7 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
         config_service.kick_token_endpoint,
         config_service.kick_redirect_uri,
         config_service.app_token.clone(),
+        reqwest_client.clone(),
     );
     let _ = kick_service.connect(&app).await;
     app.manage(kick_service);
@@ -119,6 +124,7 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
         config_service.kick_bot_token_endpoint,
         config_service.kick_bot_redirect_uri,
         config_service.app_token,
+        reqwest_client.clone(),
     );
     let _ = kick_bot_service.connect(&app).await;
     app.manage(kick_bot_service);

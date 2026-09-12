@@ -9,6 +9,7 @@ interface ServicesState {
 			color: string;
 			authPath: string;
 			settingsPath?: string;
+			isIntegration?: boolean;
 		}
 	>;
 }
@@ -19,61 +20,73 @@ const initialState: ServicesState = {
 			active: false,
 			color: "#2701fb",
 			authPath: "/streamelements/token",
+			isIntegration: true,
 		},
 		[ServiceType.Twitch]: {
 			active: false,
 			color: "#9147ff",
 			authPath: "/twitch/device-code",
+			isIntegration: true,
 		},
 		[ServiceType.WidySol]: {
 			active: false,
 			color: "#370161",
 			authPath: `/widy/create-donation-account/${WidyNetwork.Sol}`,
+			isIntegration: true,
 		},
 		[ServiceType.WidyTon]: {
 			active: false,
 			color: "#0098ea",
 			authPath: `/widy/create-donation-account/${WidyNetwork.Ton}`,
+			isIntegration: true,
 		},
 		[ServiceType.DonationAlerts]: {
 			active: false,
 			color: "#f57d07",
 			authPath: "/donationalerts/token",
+			isIntegration: true,
 		},
 		[ServiceType.StreamLabs]: {
 			active: false,
 			color: "#80f5d2",
 			authPath: "/streamlabs/token",
+			isIntegration: true,
 		},
 		[ServiceType.Donatello]: {
 			active: false,
 			color: "#3579f6",
 			authPath: "/donatello/token",
+			isIntegration: true,
 		},
 		[ServiceType.Donatik]: {
 			active: false,
 			color: "#7a44ed",
 			authPath: "/donatik/token",
+			isIntegration: true,
 		},
 		[ServiceType.DonatePay]: {
 			active: false,
 			color: "#44ab4f",
 			authPath: "/donatepay/token",
+			isIntegration: true,
 		},
 		[ServiceType.Destream]: {
 			active: false,
 			color: "#f05a00",
 			authPath: "/destream/overlay-id",
+			isIntegration: true,
 		},
 		[ServiceType.Tribute]: {
 			active: false,
 			color: "#2692ffb2",
 			authPath: "/tribute/api-key",
+			isIntegration: true,
 		},
 		[ServiceType.Kick]: {
 			active: false,
 			color: "#53fc18",
 			authPath: "/kick/authorize",
+			isIntegration: true,
 		},
 		[ServiceType.KickBot]: {
 			active: false,

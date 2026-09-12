@@ -143,6 +143,21 @@ const AlertView = ({
 				</Alert>
 			);
 		}
+		case MessageType.AssistantAction: {
+			return (
+				<Alert
+					alert={alert}
+					base={base}
+					width={width}
+					height={height}
+					backgroundColor={backgroundColor}
+					videoSrcObject={videoSrcObject}
+					isShowVideoElement={isShowVideoElement}
+				>
+					{""}
+				</Alert>
+			);
+		}
 	}
 };
 export default AlertView;

@@ -118,7 +118,9 @@
 		"subscribed": "{{user_name}} subscribed",
 		"gifted_subscriptions": "{{user_name}} gift {{total}} subscriptions",
 		"raided_with": "{{user_name}} raided with {{viewers}} viewers",
-		"command_action": "{{user_name}} used command {{command_name}}"
+		"command_action": "{{user_name}} used command {{command_name}}",
+		"assistant_ban_user": "Assistant banned {{user_name}}",
+		"assistant_alert": "Assistant alert"
 	},
 	"filter": {
 		"title": "Filter messages",
@@ -127,7 +129,8 @@
 		"exclude_subscriptions": "Exclude subscriptions",
 		"exclude_raids": "Exclude raids",
 		"exclude_redemptions": "Exclude redemptions",
-		"exclude_commands_actions": "Exclude commands actions"
+		"exclude_commands_actions": "Exclude commands actions",
+		"exclude_assistant_actions": "Exclude assistant actions"
 	},
 	"settings": {
 		"title": "Settings",
@@ -260,7 +263,8 @@
 		"duration": "Duration",
 		"delay": "Delay",
 		"Redemption": "Redemption",
-		"CommandAction": "Command action"
+		"CommandAction": "Command action",
+		"AssistantAction": "Assistant action"
 	},
 	"alert_variant": {
 		"Image": "Image",
@@ -542,6 +546,8 @@
 		"settings": "Settings",
 		"input_device": "Input device",
 		"provider": "Provider",
-		"model": "Model"
+		"model": "Model",
+		"stt_language": "Your voice language",
+		"stt_model": "STT model"
 	}
 }

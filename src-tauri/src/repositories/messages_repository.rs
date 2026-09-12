@@ -1,6 +1,7 @@
 use async_trait::async_trait;
 use entity::{
-    commands_actions, donations, followers, messages::*, raids, redemptions, subscriptions,
+    assistant_actions, commands_actions, donations, followers, messages::*, raids, redemptions,
+    subscriptions,
 };
 
 use crate::{error::AppError, services::DatabaseService, utils::log_and_wrap_error};
@@ -18,6 +19,7 @@ pub trait MessagesRepository: Send + Sync {
         exclude_raids: &bool,
         exclude_redemptions: &bool,
         exclude_commands_actions: &bool,
+        exclude_assistant_actions: &bool,
     ) -> Result<Vec<ClientMessage>, AppError>;
 }
 
@@ -33,6 +35,7 @@ impl MessagesRepository for DatabaseService {
         exclude_raids: &bool,
         exclude_redemptions: &bool,
         exclude_commands_actions: &bool,
+        exclude_assistant_actions: &bool,
     ) -> Result<Vec<ClientMessage>, AppError> {
         let mut query = Entity::find()
             .left_join(donations::Entity)
@@ -40,7 +43,8 @@ impl MessagesRepository for DatabaseService {
             .left_join(subscriptions::Entity)
             .left_join(redemptions::Entity)
             .left_join(raids::Entity)
-            .left_join(commands_actions::Entity);
+            .left_join(commands_actions::Entity)
+            .left_join(assistant_actions::Entity);
 
         if *exclude_donations {
             query = query.filter(donations::Column::Id.is_null());
@@ -59,6 +63,9 @@ impl MessagesRepository for DatabaseService {
         }
         if *exclude_commands_actions {
             query = query.filter(commands_actions::Column::Id.is_null());
+        }
+        if *exclude_assistant_actions {
+            query = query.filter(assistant_actions::Column::Id.is_null());
         }
         let client_messages: Vec<ClientMessage> = query
             .order_by_desc(Column::CreatedAt)

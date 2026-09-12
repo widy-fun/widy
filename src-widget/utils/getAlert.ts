@@ -1,4 +1,4 @@
-import { IClientMessage } from "@widy/sdk";
+import { IAlert, IClientMessage } from "@widy/sdk";
 
 const getAlert = ({ message }: { message: IClientMessage }) => {
 	const urlParams = new URLSearchParams(window.location.search);
@@ -9,7 +9,8 @@ const getAlert = ({ message }: { message: IClientMessage }) => {
 		message.subscription?.alert ||
 		message.raid?.alert ||
 		message.redemption?.alert ||
-		message.command_action?.alert;
+		message.command_action?.alert ||
+		(message.assistant_action?.data as IAlert);
 	if (group_id !== alert?.group_id) {
 		return;
 	}

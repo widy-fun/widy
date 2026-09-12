@@ -1,8 +1,6 @@
-use std::{path::PathBuf, sync::Arc};
+use std::sync::Arc;
 
-use foundry_local_sdk::{
-    FoundryLocalConfig, FoundryLocalManager, LiveAudioTranscriptionSession, Model,
-};
+use foundry_local_sdk::{LiveAudioTranscriptionSession, Model, openai::AudioClient};
 use futures::StreamExt;
 use tauri::{AppHandle, Manager};
 
@@ -18,35 +16,14 @@ use tokio::sync::mpsc::Receiver;
 pub enum Transcribe {
     Start,
     Audio(Vec<f32>),
-    End,
+    Stop,
     Cancel,
 }
 
 pub struct SttService;
 
 impl SttService {
-    pub async fn load_model(
-        foundry_local_cache_path: PathBuf,
-        alias: &str,
-    ) -> Result<Arc<Model>, AppError> {
-        let manager = FoundryLocalManager::create(
-            FoundryLocalConfig::new("widy")
-                .model_cache_dir(foundry_local_cache_path.to_string_lossy()),
-        )
-        .map_err(|e| log_and_wrap_error("Foundry local manager", e))?;
-        let model = manager
-            .catalog()
-            .get_model(alias)
-            .await
-            .map_err(|e| log_and_wrap_error("Get foundry local model", e))?;
-        model
-            .load()
-            .await
-            .map_err(|e| log_and_wrap_error("Load foundry local model", e))?;
-        Ok(model)
-    }
-
-    pub async fn start_transcription_session(
+    pub fn start_transcription_session(
         model: Arc<Model>,
         language: String,
         app: AppHandle,
@@ -60,21 +37,16 @@ impl SttService {
             while let Some(chunk) = transcribe_rx.recv().await {
                 match chunk {
                     Transcribe::Start => {
-                        let mut new_session = audio_client.create_live_transcription_session();
-                        new_session.settings.language = Some(language.as_str().into());
-
-                        if let Err(e) = new_session.start(None).await {
-                            log_and_wrap_error("Start transcription session", e);
-                            assistant_service
-                                .cancellation_token
-                                .lock()
-                                .unwrap()
-                                .cancel();
-                            continue;
+                        if let Some(old) = session.take() {
+                            log::warn!(
+                                "Received Start while a session was active; stopping previous session"
+                            );
+                            Self::stop_session(old, "Stop previous session on restart").await;
                         }
 
-                        let _ = SttService::transcribe(app.clone(), &new_session).await;
-                        session = Some(new_session);
+                        session =
+                            Self::start_session(&audio_client, &language, &app, &assistant_service)
+                                .await;
                     }
                     Transcribe::Audio(frame) => {
                         if let Some(session) = session.as_mut() {
@@ -86,32 +58,77 @@ impl SttService {
                             log::warn!("Audio frame received before session start");
                         }
                     }
-                    Transcribe::End => {
+                    Transcribe::Stop => {
                         if let Some(session) = session.take() {
-                            if let Err(e) = session.stop(None).await {
-                                log_and_wrap_error("End audio session", e);
-                            }
+                            Self::stop_session(session, "End audio session").await;
                         }
                     }
                     Transcribe::Cancel => {
                         if let Some(session) = session.take() {
-                            let _ = session
-                                .stop(None)
-                                .await
-                                .map_err(|e| log_and_wrap_error("Cancel session", e));
+                            Self::stop_session(session, "Cancel session").await;
                         }
-                        let _ = model
-                            .unload()
-                            .await
-                            .map_err(|e| log_and_wrap_error("Unload model", e));
-                        let mut status = assistant_service.status.lock().unwrap();
-                        *status = AssistantServiceStatus::Stopped;
+
+                        if let Err(e) = model.unload().await {
+                            log_and_wrap_error("Unload model", e);
+                        }
+
+                        Self::set_status(&assistant_service, AssistantServiceStatus::Stopped);
                     }
                 }
             }
         });
 
         Ok(())
+    }
+
+    async fn start_session(
+        audio_client: &AudioClient,
+        language: &str,
+        app: &AppHandle,
+        assistant_service: &AssistantService,
+    ) -> Option<LiveAudioTranscriptionSession> {
+        let mut new_session = audio_client.create_live_transcription_session();
+        new_session.settings.language = Some(language.into());
+
+        if let Err(e) = new_session.start(None).await {
+            log_and_wrap_error("Start transcription session", e);
+            Self::cancel_token(assistant_service);
+            return None;
+        }
+        if let Err(e) = SttService::transcribe(app.clone(), &new_session).await {
+            log_and_wrap_error("Start STT transcription listener", e);
+            Self::stop_session(new_session, "Stop session after listener failure").await;
+            Self::cancel_token(assistant_service);
+            return None;
+        }
+
+        Some(new_session)
+    }
+
+    async fn stop_session(session: LiveAudioTranscriptionSession, context: &str) {
+        if let Err(e) = session.stop(None).await {
+            log_and_wrap_error(context, e);
+        }
+    }
+
+    fn cancel_token(assistant_service: &AssistantService) {
+        match assistant_service.cancellation_token.lock() {
+            Ok(token) => token.cancel(),
+            Err(poisoned) => {
+                log::error!("Cancellation token mutex poisoned, recovering");
+                poisoned.into_inner().cancel();
+            }
+        }
+    }
+
+    fn set_status(assistant_service: &AssistantService, new_status: AssistantServiceStatus) {
+        match assistant_service.status.lock() {
+            Ok(mut status) => *status = new_status,
+            Err(poisoned) => {
+                log::error!("Status mutex poisoned, recovering");
+                *poisoned.into_inner() = new_status;
+            }
+        }
     }
 
     async fn transcribe(
@@ -130,9 +147,9 @@ impl SttService {
                                 if !text.is_empty() {
                                     log::info!("{text}");
                                     let _ = assistant_service
-                                        .ask_llm(&app, text)
+                                        .handle_tool_calling(&app, text, true)
                                         .await
-                                        .map_err(|e| log_and_wrap_error("Ask LLM", e));
+                                        .map_err(|e| log_and_wrap_error("Handle tool calling", e));
                                 }
                             }
                         }

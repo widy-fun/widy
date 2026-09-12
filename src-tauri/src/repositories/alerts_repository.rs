@@ -8,6 +8,7 @@ use uuid::Uuid;
 #[async_trait]
 pub trait AlertsRepository: Send + Sync {
     async fn get_alerts(&self) -> Result<Vec<Alert>, AppError>;
+    async fn get_alerts_by_type(&self, r#type: MessageType) -> Result<Vec<Alert>, AppError>;
     async fn get_grater_amount_alert(
         &self,
         amount: f64,
@@ -20,6 +21,11 @@ pub trait AlertsRepository: Send + Sync {
     ) -> Result<Option<Alert>, AppError>;
     async fn get_random_alert(&self, r#type: MessageType) -> Result<Option<Alert>, AppError>;
     async fn get_alert_by_id(&self, id: Uuid) -> Result<Option<Alert>, AppError>;
+    async fn get_alert_by_name(
+        &self,
+        name: String,
+        r#type: MessageType,
+    ) -> Result<Option<Alert>, AppError>;
     async fn update_alert_settings(&self, alert: Model) -> Result<(), AppError>;
     async fn create_alert(&self, alert: Model) -> Result<(), AppError>;
     async fn delete_alert_by_id(&self, id: Uuid) -> Result<(), AppError>;
@@ -75,12 +81,33 @@ impl AlertsRepository for DatabaseService {
             .await
             .map_err(|e| log_and_wrap_error("Get alerts settings error", e))
     }
+    async fn get_alerts_by_type(&self, r#type: MessageType) -> Result<Vec<Alert>, AppError> {
+        Entity::find()
+            .filter(Column::Type.eq(r#type))
+            .into_partial_model()
+            .all(&self.connection)
+            .await
+            .map_err(|e| log_and_wrap_error("Get alerts by type error", e))
+    }
     async fn get_alert_by_id(&self, id: Uuid) -> Result<Option<Alert>, AppError> {
         Entity::find_by_id(id)
             .into_partial_model()
             .one(&self.connection)
             .await
             .map_err(|e| log_and_wrap_error("Get alert by id error", e))
+    }
+    async fn get_alert_by_name(
+        &self,
+        name: String,
+        r#type: MessageType,
+    ) -> Result<Option<Alert>, AppError> {
+        Entity::find()
+            .filter(Column::Name.eq(name))
+            .filter(Column::Type.eq(r#type))
+            .into_partial_model()
+            .one(&self.connection)
+            .await
+            .map_err(|e| log_and_wrap_error("Get alert by name error", e))
     }
     async fn update_alert_settings(&self, alert: Model) -> Result<(), AppError> {
         Entity::update(ActiveModel {

@@ -1,4 +1,3 @@
-use entity::services::ServiceType;
 use tauri::{AppHandle, State};
 use uuid::Uuid;
 
@@ -13,8 +12,6 @@ pub async fn twitch_remove_custom_reward(
     twitch_service: State<'_, TwitchService>,
     id: Uuid,
 ) -> Result<(), AppError> {
-    let auth = twitch_service.get_auth(&app, ServiceType::Twitch).await?;
-    twitch_service.remove_custom_reward(&app, &auth, id).await?;
-
+    twitch_service.remove_custom_reward(&app, id).await?;
     return Ok(());
 }

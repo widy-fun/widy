@@ -14,6 +14,8 @@ const getColorByMessageType = (type: MessageType) => {
 			return "#5C7E8C";
 		case MessageType.CommandAction:
 			return "#00fc86";
+		case MessageType.AssistantAction:
+			return "#459b14";
 	}
 };
 export default getColorByMessageType;

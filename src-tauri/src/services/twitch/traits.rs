@@ -20,8 +20,8 @@ use crate::{
     services::{
         DatabaseService,
         twitch::models::{
-            AddTwitchRewardBody, BadgeInfoResponse, ChatMessageCondition, CheerCondition,
-            Condition, FollowCondition, RaidCondition, RedemptionCondition,
+            AddTwitchRewardBody, BadgeInfoResponse, BanUserBody, BanUserData, ChatMessageCondition,
+            CheerCondition, Condition, FollowCondition, RaidCondition, RedemptionCondition,
             SendChatAnnouncementBody, SendChatMessageBody, SubscriptionCondition,
             SubscriptionRequestBody, SubscriptionType, Transport, TwitchDeviceCodeResponse,
             TwitchRefreshTokenResponse, TwitchTokenInfo, TwitchTokenResponse,
@@ -47,6 +47,10 @@ pub trait TwitchApi: Send + Sync {
     fn api_endpoint(&self) -> String;
 
     fn expire_at(&self) -> Arc<AtomicU64>;
+
+    fn reqwest_client(&self) -> &reqwest::Client;
+
+    fn service_type(&self) -> ServiceType;
 
     async fn send_twitch_request<T: DeserializeOwned>(
         &self,
@@ -80,13 +84,8 @@ pub trait TwitchApi: Send + Sync {
         Ok(auth)
     }
 
-    async fn get_auth(
-        &self,
-        app: &AppHandle,
-        service_type: ServiceType,
-    ) -> Result<TwitchAuth, AppError> {
-        let reqwest_client = app.state::<reqwest::Client>();
-        let auth = self.get_database_auth(app, service_type.clone()).await?;
+    async fn get_auth(&self, app: &AppHandle) -> Result<TwitchAuth, AppError> {
+        let auth = self.get_database_auth(app, self.service_type()).await?;
         let expire_at = self.expire_at().load(Ordering::Relaxed);
         let now = SystemTime::now()
             .duration_since(UNIX_EPOCH)
@@ -97,25 +96,23 @@ pub trait TwitchApi: Send + Sync {
         }
 
         if cfg!(debug_assertions) {
-            return self.get_token_mock(&reqwest_client).await;
+            return self.get_token_mock().await;
         }
 
-        self.refresh_and_update_auth(app, &auth, service_type).await
+        self.refresh_and_update_auth(app, &auth).await
     }
 
     async fn refresh_and_update_auth(
         &self,
         app: &AppHandle,
         old_auth: &TwitchAuth,
-        service_type: ServiceType,
     ) -> Result<TwitchAuth, AppError> {
         if cfg!(debug_assertions) {
             return Ok(old_auth.clone());
         }
-        let reqwest_client = app.state::<reqwest::Client>();
         let database_service = app.state::<DatabaseService>();
         match self
-            .refresh_token(&self.client_id(), &old_auth.refresh_token, &reqwest_client)
+            .refresh_token(&self.client_id(), &old_auth.refresh_token)
             .await
         {
             Ok(response) => {
@@ -136,14 +133,13 @@ pub trait TwitchApi: Send + Sync {
                     Some(ServiceAuth::Twitch(new_auth.clone())),
                     true,
                     false,
-                    service_type,
                 )
                 .await?;
                 Ok(new_auth)
             }
             Err(e) => {
                 if let AppError::HttpStatus { status: 401, .. } = e {
-                    self.set_authorized(&database_service, None, false, true, service_type)
+                    self.set_authorized(&database_service, None, false, true)
                         .await?;
                 }
                 Err(e)
@@ -151,11 +147,9 @@ pub trait TwitchApi: Send + Sync {
         }
     }
 
-    async fn get_device_code(
-        &self,
-        reqwest_client: &reqwest::Client,
-    ) -> Result<TwitchDeviceCodeResponse, AppError> {
-        let request = reqwest_client
+    async fn get_device_code(&self) -> Result<TwitchDeviceCodeResponse, AppError> {
+        let request = self
+            .reqwest_client()
             .post("https://id.twitch.tv/oauth2/device")
             .form(&[("client_id", self.client_id()), ("scopes", self.scopes())]);
 
@@ -169,13 +163,14 @@ pub trait TwitchApi: Send + Sync {
 
     async fn get_chanel_badges(
         &self,
-        access_token: &String,
         broadcaster_id: &String,
-        reqwest_client: &reqwest::Client,
+        app: &AppHandle,
     ) -> Result<BadgeInfoResponse, AppError> {
-        let request = reqwest_client
+        let auth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
             .get(format!("{}/chat/badges", self.api_endpoint()))
-            .bearer_auth(access_token)
+            .bearer_auth(auth.access_token)
             .header(
                 "Client-Id",
                 std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap_or(self.client_id()),
@@ -190,14 +185,12 @@ pub trait TwitchApi: Send + Sync {
         Ok(chanel_badges)
     }
 
-    async fn get_global_badges(
-        &self,
-        access_token: &String,
-        reqwest_client: &reqwest::Client,
-    ) -> Result<BadgeInfoResponse, AppError> {
-        let request = reqwest_client
+    async fn get_global_badges(&self, app: &AppHandle) -> Result<BadgeInfoResponse, AppError> {
+        let auth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
             .get(format!("{}/chat/badges/global", self.api_endpoint()))
-            .bearer_auth(access_token)
+            .bearer_auth(auth.access_token)
             .header(
                 "Client-Id",
                 std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap_or(self.client_id()),
@@ -211,16 +204,13 @@ pub trait TwitchApi: Send + Sync {
         Ok(global_badges)
     }
 
-    async fn get_token(
-        &self,
-        device_code: String,
-        reqwest_client: &reqwest::Client,
-    ) -> Result<TwitchAuth, AppError> {
+    async fn get_token(&self, device_code: String) -> Result<TwitchAuth, AppError> {
         if cfg!(debug_assertions) {
-            return self.get_token_mock(reqwest_client).await;
+            return self.get_token_mock().await;
         }
 
-        let request = reqwest_client
+        let request = self
+            .reqwest_client()
             .post("https://id.twitch.tv/oauth2/token")
             .form(&[
                 ("client_id", self.client_id()),
@@ -241,7 +231,6 @@ pub trait TwitchApi: Send + Sync {
             .validate_token(
                 &token_response.access_token,
                 &"https://id.twitch.tv/oauth2".to_string(),
-                reqwest_client,
             )
             .await?;
 
@@ -256,15 +245,12 @@ pub trait TwitchApi: Send + Sync {
         Ok(auth)
     }
 
-    async fn get_token_mock(
-        &self,
-        reqwest_client: &reqwest::Client,
-    ) -> Result<TwitchAuth, AppError> {
+    async fn get_token_mock(&self) -> Result<TwitchAuth, AppError> {
         let user_id = load_env!("TWITCH_USER_ID_MOCK");
         let client_id = load_env!("TWITCH_CLIENT_ID_MOCK");
         let client_secret = load_env!("TWITCH_CLIENT_SECRET_MOCK");
-
-        let request = reqwest_client
+        let request = self
+            .reqwest_client()
             .post(format!("{}/authorize", self.auth_endpoint()))
             .query(&[
                 ("client_id", client_id),
@@ -294,9 +280,9 @@ pub trait TwitchApi: Send + Sync {
         &self,
         client_id: &String,
         refresh_token: &String,
-        reqwest_client: &reqwest::Client,
     ) -> Result<TwitchRefreshTokenResponse, AppError> {
-        let request = reqwest_client
+        let request = self
+            .reqwest_client()
             .post(format!("{}/token", self.auth_endpoint()))
             .form(&[
                 ("grant_type", "refresh_token".to_string()),
@@ -319,9 +305,9 @@ pub trait TwitchApi: Send + Sync {
         &self,
         token: &String,
         auth_endpoint: &String,
-        reqwest_client: &reqwest::Client,
     ) -> Result<TwitchTokenInfo, AppError> {
-        let request = reqwest_client
+        let request = self
+            .reqwest_client()
             .get(format!("{}/validate", auth_endpoint))
             .header("Authorization", format!("OAuth {}", token));
 
@@ -336,11 +322,10 @@ pub trait TwitchApi: Send + Sync {
     async fn add_custom_reward(
         &self,
         app: &AppHandle,
-        auth: &TwitchAuth,
         reward: &entity::rewards::Reward,
     ) -> Result<(), AppError> {
+        let auth = self.get_auth(app).await?;
         let database_service = app.state::<DatabaseService>();
-        let reqwest_client = app.state::<reqwest::Client>();
         let twitch_reward_body = AddTwitchRewardBody {
             title: reward.title.clone(),
             cost: reward.cost,
@@ -357,7 +342,8 @@ pub trait TwitchApi: Send + Sync {
             should_redemptions_skip_request_queue: reward.should_redemptions_skip_request_queue,
         };
 
-        let request = reqwest_client
+        let request = self
+            .reqwest_client()
             .post(format!(
                 "{}/channel_points/custom_rewards",
                 self.api_endpoint()
@@ -392,20 +378,16 @@ pub trait TwitchApi: Send + Sync {
         Ok(())
     }
 
-    async fn remove_custom_reward(
-        &self,
-        app: &AppHandle,
-        auth: &TwitchAuth,
-        id: Uuid,
-    ) -> Result<(), AppError> {
+    async fn remove_custom_reward(&self, app: &AppHandle, id: Uuid) -> Result<(), AppError> {
+        let auth = self.get_auth(app).await?;
         let database_service = app.state::<DatabaseService>();
-        let reqwest_client = app.state::<reqwest::Client>();
         let reward = database_service
             .get_reward_by_id(id)
             .await?
             .ok_or(AppError::DbError("Reward not found".to_string()))?;
 
-        let request = reqwest_client
+        let request = self
+            .reqwest_client()
             .delete(format!(
                 "{}/channel_points/custom_rewards",
                 self.api_endpoint()
@@ -434,13 +416,7 @@ pub trait TwitchApi: Send + Sync {
         Ok(())
     }
 
-    async fn create_subscriptions(
-        &self,
-        session_id: &String,
-        access_token: &String,
-        user_id: &String,
-        reqwest_client: &reqwest::Client,
-    ) {
+    async fn create_subscriptions(&self, session_id: &String, user_id: &String, app: &AppHandle) {
         let transport = Transport {
             method: "websocket".to_string(),
             session_id: session_id.clone(),
@@ -453,7 +429,6 @@ pub trait TwitchApi: Send + Sync {
         for subscribe_type in subscribes_types {
             let _ = self
                 .create_subscription(
-                    &access_token,
                     SubscriptionRequestBody {
                         r#type: subscribe_type,
                         version: "1".to_string(),
@@ -464,13 +439,12 @@ pub trait TwitchApi: Send + Sync {
                         }),
                         transport: transport.clone(),
                     },
-                    reqwest_client,
+                    app,
                 )
                 .await;
         }
         let _ = self
             .create_subscription(
-                &access_token,
                 SubscriptionRequestBody {
                     r#type: SubscriptionType::to_string(SubscriptionType::ChannelFollow),
                     version: "2".to_string(),
@@ -482,12 +456,11 @@ pub trait TwitchApi: Send + Sync {
                     }),
                     transport: transport.clone(),
                 },
-                reqwest_client,
+                app,
             )
             .await;
         let _ = self
             .create_subscription(
-                &access_token,
                 SubscriptionRequestBody {
                     r#type: SubscriptionType::to_string(SubscriptionType::ChannelRaid),
                     version: "1".to_string(),
@@ -498,12 +471,11 @@ pub trait TwitchApi: Send + Sync {
                     }),
                     transport: transport.clone(),
                 },
-                reqwest_client,
+                app,
             )
             .await;
         let _ = self
             .create_subscription(
-                &access_token,
                 SubscriptionRequestBody {
                     r#type: SubscriptionType::to_string(SubscriptionType::ChannelCheer),
                     version: "1".to_string(),
@@ -514,12 +486,11 @@ pub trait TwitchApi: Send + Sync {
                     }),
                     transport: transport.clone(),
                 },
-                reqwest_client,
+                app,
             )
             .await;
         let _ = self
             .create_subscription(
-                &access_token,
                 SubscriptionRequestBody {
                     r#type: SubscriptionType::to_string(
                         SubscriptionType::ChannelPointsCustomRewardRedemptionAdd,
@@ -532,12 +503,11 @@ pub trait TwitchApi: Send + Sync {
                     }),
                     transport: transport.clone(),
                 },
-                reqwest_client,
+                app,
             )
             .await;
         let _ = self
             .create_subscription(
-                &access_token,
                 SubscriptionRequestBody {
                     r#type: SubscriptionType::to_string(SubscriptionType::ChannelChatMessage),
                     version: "1".to_string(),
@@ -549,12 +519,11 @@ pub trait TwitchApi: Send + Sync {
                     }),
                     transport: transport.clone(),
                 },
-                reqwest_client,
+                app,
             )
             .await;
         let _ = self
             .create_subscription(
-                &access_token,
                 SubscriptionRequestBody {
                     r#type: SubscriptionType::to_string(SubscriptionType::ChannelChatMessageDelete),
                     version: "1".to_string(),
@@ -566,12 +535,11 @@ pub trait TwitchApi: Send + Sync {
                     }),
                     transport: transport.clone(),
                 },
-                reqwest_client,
+                app,
             )
             .await;
         let _ = self
             .create_subscription(
-                &access_token,
                 SubscriptionRequestBody {
                     r#type: SubscriptionType::to_string(
                         SubscriptionType::ChannelChatClearUserMessages,
@@ -585,23 +553,24 @@ pub trait TwitchApi: Send + Sync {
                     }),
                     transport: transport.clone(),
                 },
-                reqwest_client,
+                app,
             )
             .await;
     }
 
     async fn create_subscription(
         &self,
-        token: &String,
         body: SubscriptionRequestBody,
-        reqwest_client: &reqwest::Client,
+        app: &AppHandle,
     ) -> Result<Option<String>, AppError> {
-        let request = reqwest_client
+        let auth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
             .post(format!(
                 "{}/eventsub/subscriptions",
                 self.eventsub_endpoint()
             ))
-            .bearer_auth(token)
+            .bearer_auth(auth.access_token)
             .header("Client-Id", self.client_id())
             .header("Content-Type", "application/json")
             .json(&body);
@@ -621,16 +590,17 @@ pub trait TwitchApi: Send + Sync {
     #[allow(dead_code)]
     async fn delete_subscription(
         &self,
-        token: &String,
         subscription_id: String,
-        reqwest_client: &reqwest::Client,
+        app: &AppHandle,
     ) -> Result<(), AppError> {
-        let request = reqwest_client
+        let auth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
             .delete(format!(
                 "{}/eventsub/subscriptions",
                 self.eventsub_endpoint()
             ))
-            .header("Authorization", format!("Bearer {}", token))
+            .header("Authorization", format!("Bearer {}", auth.access_token))
             .header("Client-Id", self.client_id())
             .query(&[("id", subscription_id)]);
 
@@ -647,29 +617,29 @@ pub trait TwitchApi: Send + Sync {
         auth: Option<ServiceAuth>,
         authorized: bool,
         is_close_connection: bool,
-        service_type: ServiceType,
     ) -> Result<(), AppError> {
         if is_close_connection {
             self.cancellation_token().cancel();
         }
         database_service
-            .update_service_auth(service_type, auth, authorized)
+            .update_service_auth(self.service_type(), auth, authorized)
             .await
     }
 
     async fn send_chat_message(
         &self,
-        reqwest_client: &reqwest::Client,
-        access_token: String,
         message: String,
         broadcaster_id: String,
         sender_id: String,
         reply_parent_message_id: Option<String>,
         client_id: String,
+        app: &AppHandle,
     ) -> Result<(), AppError> {
-        let request = reqwest_client
+        let auth: TwitchAuth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
             .post(format!("{}/chat/messages", self.api_endpoint()))
-            .bearer_auth(access_token)
+            .bearer_auth(auth.access_token)
             .header("Client-Id", client_id)
             .header("Content-Type", "application/json")
             .json(&SendChatMessageBody {
@@ -690,16 +660,17 @@ pub trait TwitchApi: Send + Sync {
 
     async fn send_chat_announcement(
         &self,
-        reqwest_client: &reqwest::Client,
-        access_token: String,
         message: String,
         broadcaster_id: String,
         moderator_id: String,
         client_id: String,
+        app: &AppHandle,
     ) -> Result<(), AppError> {
-        let request = reqwest_client
+        let auth: TwitchAuth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
             .post(format!("{}/chat/announcements", self.api_endpoint()))
-            .bearer_auth(access_token)
+            .bearer_auth(auth.access_token)
             .query(&[
                 ("broadcaster_id", broadcaster_id),
                 ("moderator_id", moderator_id),
@@ -719,9 +690,42 @@ pub trait TwitchApi: Send + Sync {
         Ok(())
     }
 
-    async fn sign_out(&self, app: &AppHandle, service_type: ServiceType) -> Result<(), AppError> {
+    async fn ban_user(
+        &self,
+        client_id: String,
+        broadcaster_id: String,
+        user_id: String,
+        app: &AppHandle,
+    ) -> Result<(), AppError> {
+        let auth: TwitchAuth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
+            .post(format!("{}/moderation/bans", self.api_endpoint()))
+            .bearer_auth(auth.access_token)
+            .header("Client-Id", client_id)
+            .header("Content-Type", "application/json")
+            .query(&[
+                ("broadcaster_id", broadcaster_id.clone()),
+                ("moderator_id", broadcaster_id),
+            ])
+            .json(&BanUserBody {
+                data: BanUserData {
+                    user_id,
+                    duration: None,
+                    reason: None,
+                },
+            });
+
+        let _ = self
+            .send_twitch_request::<serde_json::Value>(request, "chat message")
+            .await?;
+
+        Ok(())
+    }
+
+    async fn sign_out(&self, app: &AppHandle) -> Result<(), AppError> {
         let database_service = app.state::<DatabaseService>();
-        self.set_authorized(&database_service, None, false, true, service_type)
+        self.set_authorized(&database_service, None, false, true)
             .await
     }
 }

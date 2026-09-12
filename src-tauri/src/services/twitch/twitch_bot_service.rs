@@ -15,6 +15,8 @@ pub struct TwitchBotService {
     pub session_id: Arc<Mutex<Option<String>>>,
     expire_at: Arc<AtomicU64>,
     cancellation_token: Arc<Mutex<CancellationToken>>,
+    reqwest_client: reqwest::Client,
+    service_type: ServiceType,
 }
 
 impl TwitchBotService {
@@ -23,6 +25,7 @@ impl TwitchBotService {
         auth_endpoint: String,
         api_endpoint: String,
         eventsub_endpoint: String,
+        reqwest_client: reqwest::Client,
     ) -> Self {
         let scopes =
             "user:read:email user:read:chat user:write:chat user:bot channel:bot moderator:manage:announcements".to_string();
@@ -36,14 +39,13 @@ impl TwitchBotService {
             session_id: Arc::new(Mutex::new(None)),
             expire_at: Arc::new(AtomicU64::new(0)),
             cancellation_token: Arc::new(Mutex::new(CancellationToken::new())),
+            reqwest_client,
+            service_type: ServiceType::TwitchBot,
         }
     }
 
     pub async fn connect(&self, app: &AppHandle) -> Result<(), AppError> {
-        let auth = self.get_database_auth(app, ServiceType::TwitchBot).await?;
-        let _ = self
-            .refresh_and_update_auth(&app, &auth, ServiceType::TwitchBot)
-            .await?;
+        let _ = self.get_auth(app).await?;
         Ok(())
     }
 }
@@ -82,5 +84,13 @@ impl TwitchApi for TwitchBotService {
 
     fn api_endpoint(&self) -> String {
         self.api_endpoint.clone()
+    }
+
+    fn reqwest_client(&self) -> &reqwest::Client {
+        &self.reqwest_client
+    }
+
+    fn service_type(&self) -> ServiceType {
+        self.service_type.clone()
     }
 }

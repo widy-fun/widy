@@ -1,7 +1,4 @@
-use crate::{
-    error::AppError,
-    services::assistant::{AssistantService, InputDeviceInfo},
-};
+use crate::{error::AppError, services::assistant::AssistantService};
 use tauri::{AppHandle, State};
 
 #[tauri::command]

@@ -66,6 +66,20 @@ eventsService.subscribe<IClientMessage>(AppEvent.Goal, () => {
 });
 
 eventsService.subscribe<IClientMessage>(
+	AppEvent.AssistantStartTranscribe,
+	() => {
+		new Audio("/start_recording.mp3").play();
+	},
+);
+
+eventsService.subscribe<IClientMessage>(
+	AppEvent.AssistantStopTranscribe,
+	() => {
+		new Audio("/stop_recording.mp3").play();
+	},
+);
+
+eventsService.subscribe<IClientMessage>(
 	AppEvent.Redemption,
 	async (message) => {
 		if (message.redemption?.type === RewardType.Auction) {

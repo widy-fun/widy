@@ -84,3 +84,17 @@ pub enum RewardType {
     #[sea_orm(string_value = "TTS")]
     TTS,
 }
+
+impl TryFrom<String> for Platform {
+    type Error = String;
+
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        match value.as_str() {
+            "Twitch" => Ok(Platform::Twitch),
+            "Kick" => Ok(Platform::Kick),
+            "twitch" => Ok(Platform::Twitch),
+            "kick" => Ok(Platform::Kick),
+            other => Err(format!("Unknown platform: {other}")),
+        }
+    }
+}

@@ -21,6 +21,8 @@ pub struct Model {
     pub redemption: HasOne<super::redemptions::Entity>,
     #[sea_orm(has_one)]
     pub command_action: HasOne<super::commands_actions::Entity>,
+    #[sea_orm(has_one)]
+    pub assistant_action: HasOne<super::assistant_actions::Entity>,
 }
 
 impl ActiveModelBehavior for ActiveModel {}
@@ -40,6 +42,8 @@ pub enum MessageType {
     Redemption,
     #[sea_orm(string_value = "CommandAction")]
     CommandAction,
+    #[sea_orm(string_value = "AssistantAction")]
+    AssistantAction,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, DerivePartialModel)]
@@ -67,6 +71,9 @@ pub struct ClientMessage {
     #[sea_orm(nested)]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub command_action: Option<super::commands_actions::CommandAction>,
+    #[sea_orm(nested)]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub assistant_action: Option<super::assistant_actions::AssistantAction>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -78,4 +85,5 @@ pub struct MessagesFilter {
     pub exclude_raids: bool,
     pub exclude_redemptions: bool,
     pub exclude_commands_actions: bool,
+    pub exclude_assistant_actions: bool,
 }

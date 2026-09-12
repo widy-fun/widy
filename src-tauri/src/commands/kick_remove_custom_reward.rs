@@ -1,4 +1,3 @@
-use entity::services::ServiceType;
 use tauri::{AppHandle, State};
 use uuid::Uuid;
 
@@ -13,7 +12,6 @@ pub async fn kick_remove_custom_reward(
     kick_service: State<'_, KickService>,
     id: Uuid,
 ) -> Result<(), AppError> {
-    let auth = kick_service.get_auth(&app, ServiceType::Kick).await?;
-    kick_service.remove_custom_reward(&app, &auth, id).await?;
+    kick_service.remove_custom_reward(&app, id).await?;
     return Ok(());
 }

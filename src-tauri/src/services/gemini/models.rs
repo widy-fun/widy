@@ -2,6 +2,8 @@ use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
 
+use crate::services::assistant::models::Tool;
+
 #[derive(Debug, Clone, Deserialize)]
 
 pub struct ModelsResponse {
@@ -23,7 +25,7 @@ pub struct Model {
 pub struct InteractionsBody {
     pub model: Option<String>,
     pub input: String,
-    pub tools: Option<Vec<Tool>>,
+    pub tools: Option<Vec<GeminiTool>>,
     pub generation_config: Option<GenerationConfig>,
 }
 
@@ -43,7 +45,7 @@ pub struct AllowedTools {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Tool {
+pub struct GeminiTool {
     #[serde(rename = "type")]
     pub tool_type: String,
 
@@ -68,6 +70,54 @@ pub struct JsonSchema {
 pub struct Property {
     #[serde(rename = "type")]
     pub r#type: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    #[serde(rename = "enum", skip_serializing_if = "Option::is_none")]
+    pub enum_values: Option<Vec<String>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub items: Option<Box<Property>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub properties: Option<HashMap<String, Property>>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub required: Option<Vec<String>>,
+}
+
+impl From<Tool> for GeminiTool {
+    fn from(tool: Tool) -> GeminiTool {
+        GeminiTool {
+            tool_type: tool.r#type,
+            name: tool.function.name,
+            description: tool.function.description,
+            parameters: JsonSchema {
+                r#type: tool.function.parameters.r#type,
+                properties: tool
+                    .function
+                    .parameters
+                    .properties
+                    .into_iter()
+                    .map(|(k, v)| {
+                        (
+                            k,
+                            Property {
+                                r#type: v.r#type,
+                                description: Some(v.description),
+                                enum_values: None,
+                                items: None,
+                                properties: None,
+                                required: None,
+                            },
+                        )
+                    })
+                    .collect(),
+                required: tool.function.parameters.required,
+            },
+        }
+    }
 }
 
 #[derive(Debug, Deserialize)]

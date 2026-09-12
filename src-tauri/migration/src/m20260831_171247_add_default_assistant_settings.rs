@@ -1,4 +1,4 @@
-use entity::assistant_settings::AssistantProvider;
+use entity::assistant_settings::ToolCallingProvider;
 use sea_orm_migration::prelude::*;
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -10,13 +10,29 @@ impl MigrationTrait for Migration {
             .exec_stmt(
                 Query::insert()
                     .into_table("assistant_settings")
-                    .columns(["id", "provider", "model", "language", "device_id"])
+                    .columns([
+                        "id",
+                        "tool_calling_provider",
+                        "tool_calling_model",
+                        "stt_model",
+                        "stt_language",
+                        "device_id",
+                        "enable_on_start",
+                        "vad_threshold",
+                        "wake_threshold",
+                        "silence_hangover_frames",
+                    ])
                     .values_panic([
                         1.into(),
-                        AssistantProvider::Gemini.into(),
+                        ToolCallingProvider::Gemini.into(),
                         "gemini-3.6-flash".into(),
+                        "nemotron-3.5-asr-streaming-0.6b".into(),
                         "en".into(),
                         "0".into(),
+                        false.into(),
+                        0.4.into(),
+                        0.3.into(),
+                        40.into(),
                     ])
                     .to_owned(),
             )

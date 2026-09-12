@@ -25,7 +25,7 @@ use entity::{
     raids,
     redemptions::Redemption,
     rewards::Platform,
-    services::{ServiceType, TwitchAuth},
+    services::ServiceType,
     settings::Currency,
     subscriptions::{self},
 };
@@ -45,13 +45,15 @@ pub struct TwitchService {
     auth_endpoint: String,
     eventsub_endpoint: String,
     pub session_id: Arc<Mutex<Option<String>>>,
-    pub chat_messages_buffer: Arc<Mutex<ItemsBuffer<String>>>,
+    pub chat_messages_buffer: Arc<Mutex<ItemsBuffer<UnifiedChatMessage>>>,
     expire_at: Arc<AtomicU64>,
     cancellation_token: Arc<Mutex<CancellationToken>>,
+    reqwest_client: reqwest::Client,
+    service_type: ServiceType,
 }
 
 impl TwitchService {
-    pub fn new(client_id: String) -> Self {
+    pub fn new(client_id: String, reqwest_client: reqwest::Client) -> Self {
         #[cfg(not(debug_assertions))]
         let auth_endpoint = "https://id.twitch.tv/oauth2".to_string();
         #[cfg(debug_assertions)]
@@ -84,6 +86,8 @@ impl TwitchService {
             expire_at: Arc::new(AtomicU64::new(0)),
             chat_messages_buffer: Arc::new(Mutex::new(ItemsBuffer::new(1001))),
             cancellation_token: Arc::new(Mutex::new(CancellationToken::new())),
+            reqwest_client,
+            service_type: ServiceType::Twitch,
         }
     }
 
@@ -92,25 +96,11 @@ impl TwitchService {
             let mut cancellation_token = self.cancellation_token.lock().unwrap();
             *cancellation_token = CancellationToken::new();
         }
-        let reqwest_client = app.state::<reqwest::Client>();
-        let auth = self.get_database_auth(app, ServiceType::Twitch).await?;
-        let auth = self
-            .refresh_and_update_auth(&app, &auth, ServiceType::Twitch)
-            .await?;
-
-        let chanel_badges = self
-            .get_chanel_badges(
-                &auth.access_token.clone(),
-                &auth.user_id.clone(),
-                &reqwest_client,
-            )
-            .await?;
-
-        let global_badges = self
-            .get_global_badges(&auth.access_token.clone(), &reqwest_client)
-            .await?;
+        let auth = self.get_auth(app).await?;
+        let chanel_badges = self.get_chanel_badges(&auth.user_id.clone(), app).await?;
+        let global_badges = self.get_global_badges(app).await?;
         let all_badges_info = [chanel_badges.data, global_badges.data].concat();
-        self.run_websocket_client(app.clone(), auth, all_badges_info)
+        self.run_websocket_client(app.clone(), all_badges_info, auth.user_id)
             .await;
         Ok(())
     }
@@ -118,12 +108,11 @@ impl TwitchService {
     async fn run_websocket_client(
         &self,
         app: AppHandle,
-        auth: TwitchAuth,
         all_badges_info: Vec<BadgeInfo>,
+        user_id: String,
     ) {
         tauri::async_runtime::spawn(async move {
             let twitch_service = app.state::<TwitchService>();
-            let reqwest_client = app.state::<reqwest::Client>();
 
             let cancellation_token = twitch_service.cancellation_token();
             let mut current_url = twitch_service.websocket_eventsub_url.clone();
@@ -172,9 +161,8 @@ impl TwitchService {
                                             twitch_service
                                                 .create_subscriptions(
                                                     &session_id,
-                                                    &auth.access_token,
-                                                    &auth.user_id,
-                                                    &reqwest_client,
+                                                    &user_id,
+                                                    &app
                                                 )
                                                 .await;
                                         }
@@ -426,7 +414,7 @@ impl TwitchService {
                     );
                     {
                         let mut chat_messages_buffer = self.chat_messages_buffer.lock().unwrap();
-                        chat_messages_buffer.push(message.clone().content.text);
+                        chat_messages_buffer.push(message.clone());
                     }
                     let _ = EventsService::chat_message(message.clone(), app).await;
                     let _ = CommandsService::twitch_chat_message_trigger(message, app).await;
@@ -526,6 +514,14 @@ impl TwitchApi for TwitchService {
 
     fn api_endpoint(&self) -> String {
         self.api_endpoint.clone()
+    }
+
+    fn reqwest_client(&self) -> &reqwest::Client {
+        &self.reqwest_client
+    }
+
+    fn service_type(&self) -> ServiceType {
+        self.service_type.clone()
     }
 }
 

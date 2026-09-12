@@ -1,5 +1,10 @@
 import type { IAlert, IClientMessage, ISettings, MessageId } from "@widy/sdk";
-import { AlertVariant, AppEvent, RewardType } from "@widy/sdk";
+import {
+	AlertVariant,
+	AppEvent,
+	AssistantActionType,
+	RewardType,
+} from "@widy/sdk";
 import { useCallback, useEffect, useRef, useState } from "react";
 import useAppEvents from "../../shared/hooks/useAppEvents";
 import getAlert from "../utils/getAlert";
@@ -254,6 +259,19 @@ const usePlayAlert = () => {
 			AppEvent.CommandAction,
 			(message) => {
 				if (message.command_action?.alert) {
+					handleNewMessage(message);
+				}
+			},
+		);
+
+		return () => unsubscribe();
+	}, [handleNewMessage]);
+
+	useEffect(() => {
+		const unsubscribe = eventsService.subscribe<IClientMessage>(
+			AppEvent.AssistantAction,
+			(message) => {
+				if (message.assistant_action?.type === AssistantActionType.PlayAlert) {
 					handleNewMessage(message);
 				}
 			},

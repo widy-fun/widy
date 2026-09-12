@@ -41,6 +41,7 @@ mod m20260712_151607_create_table_commands_actions;
 mod m20260828_114606_add_gemini_service;
 mod m20260831_170548_create_table_assistant_settings;
 mod m20260831_171247_add_default_assistant_settings;
+mod m20260910_200706_create_table_assistant_actions;
 
 pub struct Migrator;
 
@@ -90,6 +91,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20260828_114606_add_gemini_service::Migration),
             Box::new(m20260831_170548_create_table_assistant_settings::Migration),
             Box::new(m20260831_171247_add_default_assistant_settings::Migration),
+            Box::new(m20260910_200706_create_table_assistant_actions::Migration),
         ]
     }
 }

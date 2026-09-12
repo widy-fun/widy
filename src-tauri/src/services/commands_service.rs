@@ -2,7 +2,6 @@ use entity::{
     commands::{Command, PostType},
     commands_actions::CommandAction,
     rewards::Platform,
-    services::ServiceType,
 };
 use std::{
     collections::HashMap,
@@ -65,9 +64,7 @@ impl CommandsService {
         app: &AppHandle,
     ) -> Result<(), AppError> {
         let kick_bot_service = app.state::<KickBotService>();
-        let kick_service = app.state::<KickService>();
         let commands_service = app.state::<CommandsService>();
-        let reqwest_client = app.state::<reqwest::Client>();
         let text = message.content.text;
         let mut parts = text.splitn(2, char::is_whitespace);
         let trigger = parts.next().unwrap_or("");
@@ -110,14 +107,12 @@ impl CommandsService {
                 }
                 None => None,
             };
-            let auth = kick_service.get_auth(app, ServiceType::Kick).await?;
             let _ = kick_bot_service
                 .post_chat_message(
-                    &reqwest_client,
-                    auth.access_token,
                     chat_bot.message,
                     broadcaster_user_id,
                     reply_to_message_id,
+                    app,
                 )
                 .await;
         }
@@ -176,7 +171,6 @@ impl CommandsService {
         let twitch_bot_service = app.state::<TwitchBotService>();
         let twitch_service = app.state::<TwitchService>();
         let commands_service = app.state::<CommandsService>();
-        let reqwest_client = app.state::<reqwest::Client>();
         let text = message.content.text;
         let mut parts = text.splitn(2, char::is_whitespace);
         let trigger = parts.next().unwrap_or("");
@@ -214,20 +208,17 @@ impl CommandsService {
                 }
                 None => None,
             };
-            let auth = twitch_service.get_auth(app, ServiceType::Twitch).await?;
-            let bot_auth = twitch_bot_service
-                .get_auth(app, ServiceType::TwitchBot)
-                .await?;
+            let auth = twitch_service.get_auth(app).await?;
+            let bot_auth = twitch_bot_service.get_auth(app).await?;
 
             let _ = twitch_bot_service
                 .send_chat_message(
-                    &reqwest_client,
-                    bot_auth.access_token,
                     chat_bot.message,
                     auth.user_id,
                     bot_auth.user_id,
                     reply_to_message_id,
                     twitch_bot_service.client_id(),
+                    app,
                 )
                 .await;
         }
@@ -374,24 +365,14 @@ impl CommandsService {
     ) -> Result<(), AppError> {
         let kick_bot_service = app.state::<KickBotService>();
         let kick_service = app.state::<KickService>();
-        let auth = kick_service.get_auth(app, ServiceType::Kick).await?;
         let chat_messages_buffer = { kick_service.chat_messages_buffer.lock().unwrap().clone() };
         if chat_messages_buffer.is_message_not_lines_passed(message.clone(), lines_passed as usize)
         {
             return Err(AppError::Custom("Bot message not passed lines".to_string()));
         }
-        let reqwest_client = app.state::<reqwest::Client>();
-        let user_info = kick_service
-            .get_user_info(&reqwest_client, &auth.access_token)
-            .await?;
+        let user_info = kick_service.get_user_info(app).await?;
         kick_bot_service
-            .post_chat_message(
-                &reqwest_client,
-                auth.access_token,
-                message,
-                user_info.user_id,
-                None,
-            )
+            .post_chat_message(message, user_info.user_id, None, app)
             .await?;
 
         Ok(())
@@ -404,26 +385,22 @@ impl CommandsService {
     ) -> Result<(), AppError> {
         let twitch_bot_service = app.state::<TwitchBotService>();
         let twitch_service = app.state::<TwitchService>();
-        let bot_auth = twitch_bot_service
-            .get_auth(app, ServiceType::TwitchBot)
-            .await?;
-        let auth = twitch_service.get_auth(app, ServiceType::Twitch).await?;
+        let bot_auth = twitch_bot_service.get_auth(app).await?;
+        let auth = twitch_service.get_auth(app).await?;
         let chat_messages_buffer = { twitch_service.chat_messages_buffer.lock().unwrap().clone() };
         if chat_messages_buffer.is_message_not_lines_passed(message.clone(), lines_passed as usize)
         {
             return Err(AppError::Custom("Bot message not passed lines".to_string()));
         }
-        let reqwest_client = app.state::<reqwest::Client>();
 
         twitch_bot_service
             .send_chat_message(
-                &reqwest_client,
-                bot_auth.access_token,
                 message,
                 auth.user_id,
                 bot_auth.user_id,
                 None,
                 twitch_bot_service.client_id(),
+                app,
             )
             .await?;
 
@@ -437,25 +414,21 @@ impl CommandsService {
     ) -> Result<(), AppError> {
         let twitch_bot_service = app.state::<TwitchBotService>();
         let twitch_service = app.state::<TwitchService>();
-        let bot_auth = twitch_bot_service
-            .get_auth(app, ServiceType::TwitchBot)
-            .await?;
-        let auth = twitch_service.get_auth(app, ServiceType::Twitch).await?;
+        let bot_auth = twitch_bot_service.get_auth(app).await?;
+        let auth = twitch_service.get_auth(app).await?;
         let chat_messages_buffer = { twitch_service.chat_messages_buffer.lock().unwrap().clone() };
         if chat_messages_buffer.is_message_not_lines_passed(message.clone(), lines_passed as usize)
         {
             return Err(AppError::Custom("Bot message not passed lines".to_string()));
         }
-        let reqwest_client = app.state::<reqwest::Client>();
 
         twitch_bot_service
             .send_chat_announcement(
-                &reqwest_client,
-                bot_auth.access_token,
                 message,
                 auth.user_id,
                 bot_auth.user_id,
                 twitch_bot_service.client_id(),
+                app,
             )
             .await?;
 

@@ -1,8 +1,8 @@
 import {
-	AssistantProvider,
 	IAssistantSettings,
 	IAssistantStatus,
 	IInputDeviceInfo,
+	ToolCallingProvider,
 } from "@widy/sdk";
 import { api } from ".";
 
@@ -21,6 +21,7 @@ export const assistantApi = api.injectEndpoints({
 				command: "start_assistant",
 				args,
 			}),
+			invalidatesTags: ["Assistant-Settings"],
 		}),
 		stopAssistant: builder.mutation<void, void>({
 			query: () => ({
@@ -35,7 +36,7 @@ export const assistantApi = api.injectEndpoints({
 		}),
 		getAssistantProviderModels: builder.query<
 			string[],
-			{ provider: AssistantProvider }
+			{ provider: ToolCallingProvider }
 		>({
 			query: (args) => ({
 				command: "get_assistant_provider_models",

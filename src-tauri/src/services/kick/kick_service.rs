@@ -43,9 +43,11 @@ pub struct KickService {
     pub scopes: String,
     pub app_token: String,
     pub auth_session: Mutex<Option<KickAuthSession>>,
-    pub chat_messages_buffer: Arc<Mutex<ItemsBuffer<String>>>,
+    pub chat_messages_buffer: Arc<Mutex<ItemsBuffer<UnifiedChatMessage>>>,
     expire_at: Arc<AtomicU64>,
     cancellation_token: Arc<Mutex<CancellationToken>>,
+    reqwest_client: reqwest::Client,
+    service_type: ServiceType,
 }
 
 impl KickService {
@@ -54,6 +56,7 @@ impl KickService {
         kick_token_endpoint: String,
         kick_redirect_uri: String,
         app_token: String,
+        reqwest_client: reqwest::Client,
     ) -> Self {
         let scopes = "user:read channel:read channel:write channel:rewards:read channel:rewards:write chat:write events:subscribe moderation:ban moderation:chat_message:manage kicks:read".to_string();
 
@@ -67,6 +70,8 @@ impl KickService {
             chat_messages_buffer: Arc::new(Mutex::new(ItemsBuffer::new(1001))),
             expire_at: Arc::new(AtomicU64::new(0)),
             cancellation_token: Arc::new(Mutex::new(CancellationToken::new())),
+            reqwest_client,
+            service_type: ServiceType::Kick,
         }
     }
 
@@ -75,17 +80,8 @@ impl KickService {
             let mut cancellation_token = self.cancellation_token.lock().unwrap();
             *cancellation_token = CancellationToken::new();
         }
-        let auth = self.get_database_auth(app, ServiceType::Kick).await?;
-        let auth = self
-            .refresh_and_update_auth(&app, &auth, ServiceType::Kick)
-            .await?;
-        let reqwest_client = app.state::<reqwest::Client>();
-        let user_info = self
-            .get_user_info(&reqwest_client, &auth.access_token)
-            .await?;
-        let chanel_info_response = self
-            .get_chanel_info(&reqwest_client, &user_info.name)
-            .await?;
+        let user_info = self.get_user_info(app).await?;
+        let chanel_info_response = self.get_chanel_info(&user_info.name).await?;
 
         let app_clone = app.clone();
         self.run_websocket_client(app_clone, chanel_info_response)
@@ -293,7 +289,7 @@ impl KickService {
                     let message = UnifiedChatMessage::from(data.clone());
                     {
                         let mut chat_messages_buffer = self.chat_messages_buffer.lock().unwrap();
-                        chat_messages_buffer.push(message.clone().content.text);
+                        chat_messages_buffer.push(message.clone());
                     }
                     let _ = EventsService::chat_message(message.clone(), app).await;
                     let _ = CommandsService::kick_chat_message_trigger(message, app).await;
@@ -395,6 +391,14 @@ impl KickApi for KickService {
 
     fn expire_at(&self) -> Arc<AtomicU64> {
         self.expire_at.clone()
+    }
+
+    fn reqwest_client(&self) -> &reqwest::Client {
+        &self.reqwest_client
+    }
+
+    fn service_type(&self) -> ServiceType {
+        self.service_type.clone()
     }
 }
 

@@ -12,10 +12,15 @@ impl MigrationTrait for Migration {
                     .table("assistant_settings")
                     .if_not_exists()
                     .col(pk_auto("id"))
-                    .col(string("provider"))
-                    .col(string("model"))
-                    .col(string("language"))
+                    .col(string("tool_calling_provider"))
+                    .col(string("tool_calling_model"))
+                    .col(string("stt_model"))
+                    .col(string("stt_language"))
                     .col(string("device_id"))
+                    .col(boolean("enable_on_start"))
+                    .col(float("vad_threshold"))
+                    .col(float("wake_threshold"))
+                    .col(integer("silence_hangover_frames"))
                     .to_owned(),
             )
             .await

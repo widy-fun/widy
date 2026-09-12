@@ -27,6 +27,7 @@ pub async fn get_messages(
             &filter.exclude_raids,
             &filter.exclude_redemptions,
             &filter.exclude_commands_actions,
+            &filter.exclude_assistant_actions,
         )
         .await?;
     let settings = database_service

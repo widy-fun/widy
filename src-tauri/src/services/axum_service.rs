@@ -65,6 +65,7 @@ struct DonationsQuery {
     pub exclude_raids: bool,
     pub exclude_redemptions: bool,
     pub exclude_commands_actions: bool,
+    pub exclude_assistant_actions: bool,
 }
 #[derive(Debug, Deserialize)]
 struct GoalsQuery {
@@ -244,6 +245,7 @@ impl AxumService {
                 &params.exclude_raids,
                 &params.exclude_redemptions,
                 &params.exclude_commands_actions,
+                &params.exclude_assistant_actions,
             )
             .await
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
@@ -346,10 +348,9 @@ impl AxumService {
         Query(params): Query<KickAuthCallbackQuery>,
         State(state): State<AxumState>,
     ) -> Result<Redirect, StatusCode> {
-        let reqwest_client = state.app.state::<reqwest::Client>();
         let kick_service = state.app.state::<KickService>();
         let database_service = state.app.state::<DatabaseService>();
-        let auth = kick_service.tokens(&reqwest_client, params).await?;
+        let auth = kick_service.tokens(params).await?;
         let _ = database_service
             .update_service_auth(ServiceType::Kick, Some(ServiceAuth::Kick(auth)), true)
             .await;
@@ -361,10 +362,9 @@ impl AxumService {
         Query(params): Query<KickAuthCallbackQuery>,
         State(state): State<AxumState>,
     ) -> Result<Redirect, StatusCode> {
-        let reqwest_client = state.app.state::<reqwest::Client>();
         let kick_bot_service = state.app.state::<KickBotService>();
         let database_service = state.app.state::<DatabaseService>();
-        let auth = kick_bot_service.tokens(&reqwest_client, params).await?;
+        let auth = kick_bot_service.tokens(params).await?;
         let _ = database_service
             .update_service_auth(ServiceType::KickBot, Some(ServiceAuth::Kick(auth)), true)
             .await;

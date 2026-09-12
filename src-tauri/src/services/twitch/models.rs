@@ -513,3 +513,14 @@ pub enum Payload {
     Event(EventPayload),
     Generic(serde_json::Value),
 }
+
+#[derive(Debug, Clone, Serialize)]
+pub struct BanUserBody {
+    pub data: BanUserData,
+}
+#[derive(Debug, Clone, Serialize)]
+pub struct BanUserData {
+    pub user_id: String,
+    pub duration: Option<u64>,
+    pub reason: Option<String>,
+}

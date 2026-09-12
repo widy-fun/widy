@@ -1,4 +1,5 @@
 pub mod alerts_repository;
+pub mod assistant_actions_repository;
 pub mod assistant_settings_repository;
 pub mod auc_fighter_settings_repository;
 pub mod auction_settings_repository;
@@ -20,6 +21,7 @@ pub mod subscriptions_repository;
 pub mod widgets_repository;
 
 pub use alerts_repository::*;
+pub use assistant_actions_repository::*;
 pub use assistant_settings_repository::*;
 pub use auc_fighter_settings_repository::*;
 pub use auction_settings_repository::*;

@@ -8,6 +8,7 @@ import RaidMessageCard from "../../shared/components/RaidMessageCard";
 import RedemptionMessageCard from "../../shared/components/RedemptionMessageCard";
 import RedemptionTtsMessageCard from "../../shared/components/RedemptionTtsMessageCard";
 import SubscriptionMessageCard from "../../shared/components/SubscriptionMessageCard";
+import getMessageComponentByAssistantActionType from "./getMessageComponentByAssistantActionType";
 
 const getMessageComponentByMessageType = ({
 	message,
@@ -77,6 +78,13 @@ const getMessageComponentByMessageType = ({
 					isMediaPlaying={isMediaPlaying}
 				/>
 			);
+		}
+		case MessageType.AssistantAction: {
+			return getMessageComponentByAssistantActionType({
+				message,
+				isAlertPlaying,
+				isMediaPlaying,
+			});
 		}
 
 		default:

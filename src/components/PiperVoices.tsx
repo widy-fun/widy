@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { AutoSizer, List, type ListRowProps } from "react-virtualized";
 import { useGetPiperVoicesQuery } from "../api/ttsApi";
 import { SCROLLBAR_STYLES } from "../constants";
-import readPipersVoicesDir from "../helpers/readPipersVoicesDir";
+import readAppLocalDirEntrys from "../helpers/readAppLocalDirEntrys";
 import PiperVoiceCard from "./PiperVoiceCard";
 
 const ROW_HEIGHT = 165;
@@ -96,7 +96,7 @@ const PiperVoices = ({
 	};
 
 	useEffect(() => {
-		readPipersVoicesDir().then(setDownloadedModels);
+		readAppLocalDirEntrys("piper-voices").then(setDownloadedModels);
 	}, []);
 
 	useEffect(() => {

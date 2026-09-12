@@ -1,5 +1,7 @@
 use std::collections::VecDeque;
 
+use crate::services::UnifiedChatMessage;
+
 #[derive(Clone, Debug)]
 pub struct ItemsBuffer<T> {
     capacity: usize,
@@ -49,12 +51,12 @@ pub trait ChatMessageBuffer {
     fn is_message_not_lines_passed(&self, message: String, lines_passed: usize) -> bool;
 }
 
-impl ChatMessageBuffer for ItemsBuffer<String> {
+impl ChatMessageBuffer for ItemsBuffer<UnifiedChatMessage> {
     fn is_message_not_lines_passed(&self, message: String, lines_passed: usize) -> bool {
         self.items
             .iter()
             .rev()
             .take(lines_passed)
-            .any(|s| *s == message)
+            .any(|s| *s.content.text == message)
     }
 }

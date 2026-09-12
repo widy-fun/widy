@@ -73,7 +73,6 @@ espeak-ng = "0.1.3"
 hound = "3.5.1"
 tauri-plugin-upload = "2"
 cpal = "0.18.2"
-rubato = "5.0.0"
 foundry-local-sdk = "1.2.3"
 
 

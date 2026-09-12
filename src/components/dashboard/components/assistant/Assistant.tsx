@@ -2,10 +2,10 @@ import { Button, MenuItem, Select } from "@mui/material";
 import { showSnackBar } from "@widy/react";
 import {
 	AlertSeverity,
-	AssistantProvider,
 	AssistantServiceStatus,
 	type IAssistantSettings,
 	type ISerializedAppError,
+	ToolCallingProvider,
 } from "@widy/sdk";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -18,6 +18,7 @@ import {
 	useStartAssistantMutation,
 	useStopAssistantMutation,
 } from "../../../../api/assistantApi";
+import { NEMOTRON_3_5_ASR_LANGUAGES, STT_MODELS } from "../../../../constants";
 import styles from "../settings/Settings.module.css";
 
 const Assistant = () => {
@@ -34,8 +35,9 @@ const Assistant = () => {
 	const [assistantSettings, setAssistantSettings] =
 		useState<IAssistantSettings>();
 	const { data: settings } = useGetAssistantSettingsQuery();
-	const { data: models } = useGetAssistantProviderModelsQuery({
-		provider: assistantSettings?.provider ?? AssistantProvider.Gemini,
+	const { data: tool_calling_models } = useGetAssistantProviderModelsQuery({
+		provider:
+			assistantSettings?.tool_calling_provider ?? ToolCallingProvider.Gemini,
 	});
 
 	useEffect(() => {
@@ -50,6 +52,25 @@ const Assistant = () => {
 		}
 	}, [settings, devices]);
 
+	useEffect(() => {
+		if (
+			assistantSettings &&
+			tool_calling_models &&
+			!tool_calling_models.includes(assistantSettings.tool_calling_model)
+		) {
+			setAssistantSettings((prev) =>
+				prev
+					? {
+							...prev,
+							tool_calling_model: tool_calling_models[0],
+						}
+					: prev,
+			);
+		}
+	}, [tool_calling_models, assistantSettings]);
+
+	const isStopped = assistant?.status === AssistantServiceStatus.Stopped;
+
 	return (
 		devices &&
 		assistantSettings && (
@@ -62,6 +83,7 @@ const Assistant = () => {
 								<span>{t("assistant.input_device")}:</span>
 							</div>
 							<Select
+								disabled={!isStopped}
 								sx={{ width: 150 }}
 								value={
 									devices.find((d) => d.id === assistantSettings.device_id)
@@ -89,53 +111,125 @@ const Assistant = () => {
 							</Select>
 						</div>
 					</div>
+					<div className={styles.settingsContainer}>
+						<div className={styles.settings}>
+							<div className={styles.label}>
+								<span>{t("assistant.stt_model")}:</span>
+							</div>
+							<Select
+								disabled={!isStopped}
+								sx={{ width: 150 }}
+								value={assistantSettings.stt_model}
+							>
+								{Object.keys(STT_MODELS).map((model) => (
+									<MenuItem
+										value={model}
+										key={model}
+										onClick={() => {
+											setAssistantSettings((prev) =>
+												prev
+													? {
+															...prev,
+															stt_model: model,
+														}
+													: prev,
+											);
+										}}
+									>
+										{model}
+									</MenuItem>
+								))}
+							</Select>
+						</div>
+					</div>
+					<div className={styles.settingsContainer}>
+						<div className={styles.settings}>
+							<div className={styles.label}>
+								<span>{t("assistant.stt_language")}:</span>
+							</div>
+							<Select
+								disabled={!isStopped}
+								sx={{ width: 150 }}
+								value={assistantSettings.stt_language}
+							>
+								{Object.keys(NEMOTRON_3_5_ASR_LANGUAGES).map((stt_language) => (
+									<MenuItem
+										value={stt_language}
+										key={stt_language}
+										onClick={() => {
+											setAssistantSettings((prev) =>
+												prev
+													? {
+															...prev,
+															stt_language,
+														}
+													: prev,
+											);
+										}}
+									>
+										{NEMOTRON_3_5_ASR_LANGUAGES[stt_language]}
+									</MenuItem>
+								))}
+							</Select>
+						</div>
+					</div>
 
 					<div className={styles.settings}>
 						<div className={styles.label}>
 							<span>{t("assistant.provider")}:</span>
 						</div>
-						<Select sx={{ width: 150 }} value={assistantSettings.provider}>
-							{Object.values(AssistantProvider).map((provider) => (
-								<MenuItem
-									value={provider}
-									key={provider}
-									onClick={() => {
-										setAssistantSettings((prev) =>
-											prev
-												? {
-														...prev,
-														provider,
-													}
-												: prev,
-										);
-									}}
-								>
-									{provider}
-								</MenuItem>
-							))}
+						<Select
+							disabled={!isStopped}
+							sx={{ width: 150 }}
+							value={assistantSettings.tool_calling_provider}
+						>
+							{Object.values(ToolCallingProvider).map(
+								(tool_calling_provider) => (
+									<MenuItem
+										value={tool_calling_provider}
+										key={tool_calling_provider}
+										onClick={async () => {
+											setAssistantSettings((prev) =>
+												prev
+													? {
+															...prev,
+															tool_calling_provider,
+														}
+													: prev,
+											);
+										}}
+									>
+										{tool_calling_provider}
+									</MenuItem>
+								),
+							)}
 						</Select>
 					</div>
 					<div className={styles.settings}>
 						<div className={styles.label}>
 							<span>{t("assistant.model")}:</span>
 						</div>
-						<Select sx={{ width: 150 }} value={assistantSettings.model}>
-							{models?.map((model) => (
+						<Select
+							disabled={!isStopped}
+							sx={{ width: 150 }}
+							value={assistantSettings.tool_calling_model}
+						>
+							{tool_calling_models?.map((tool_calling_model) => (
 								<MenuItem
-									value={model}
-									key={model}
+									value={tool_calling_model}
+									key={tool_calling_model}
 									onClick={() => {
 										setAssistantSettings((prev) =>
 											prev
 												? {
 														...prev,
-														model,
+														tool_calling_model,
 													}
 												: prev,
 										);
 									}}
 								>
-									{model}
+									{tool_calling_model}
 								</MenuItem>
 							))}
 						</Select>
@@ -145,11 +239,12 @@ const Assistant = () => {
 							variant="contained"
 							disabled={
 								assistant?.status === AssistantServiceStatus.Starting ||
-								assistant?.status === AssistantServiceStatus.Stopping
+								assistant?.status === AssistantServiceStatus.Stopping ||
+								assistant?.status === AssistantServiceStatus.DownloadingModel
 							}
 							onClick={async () => {
 								try {
-									if (assistant?.status === AssistantServiceStatus.Stopped) {
+									if (isStopped) {
 										await startAssistant({
 											assistantSettings,
 										}).unwrap();
@@ -158,13 +253,6 @@ const Assistant = () => {
 									) {
 										await stopAssistant().unwrap();
 									}
-
-									dispatch(
-										showSnackBar({
-											message: t("success"),
-											alertSeverity: AlertSeverity.success,
-										}),
-									);
 								} catch (error) {
 									const err = error as ISerializedAppError;
 									dispatch(
@@ -176,14 +264,15 @@ const Assistant = () => {
 								}
 							}}
 						>
-							{assistant?.status === AssistantServiceStatus.Stopped &&
-								t("start")}
+							{isStopped && t("start")}
 							{assistant?.status === AssistantServiceStatus.Started &&
 								t("stop")}
 							{assistant?.status === AssistantServiceStatus.Stopping &&
 								t("stopping")}
 							{assistant?.status === AssistantServiceStatus.Starting &&
 								t("starting")}
+							{assistant?.status === AssistantServiceStatus.DownloadingModel &&
+								t("downloading")}
 						</Button>
 					</div>
 				</div>

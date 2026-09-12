@@ -1,65 +1,8 @@
-use crate::{constants::TARGET_SR, error::AppError};
-use rubato::{
-    Async, FixedAsync, SincInterpolationParameters, SincInterpolationType, WindowFunction,
-};
+use crate::constants::TARGET_SR;
 
 pub struct LinearResampler;
 
 impl LinearResampler {
-    pub fn stereo_f32_to_mono(data: &[f32], channels: usize) -> Vec<f32> {
-        if channels <= 1 {
-            return data.to_vec();
-        }
-
-        data.chunks_exact(channels)
-            .map(|frame| frame.iter().sum::<f32>() / channels as f32)
-            .collect()
-    }
-
-    pub fn stereo_i16_to_mono(data: &[i16], channels: usize) -> Vec<f32> {
-        data.chunks(channels)
-            .map(|frame| {
-                let sum: f32 = frame.iter().map(|x| *x as f32 / 32768.0).sum();
-
-                sum / channels as f32
-            })
-            .collect()
-    }
-
-    pub fn stereo_u16_to_mono(data: &[u16], channels: usize) -> Vec<f32> {
-        data.chunks(channels)
-            .map(|frame| {
-                let sum: f32 = frame.iter().map(|x| (*x as f32 - 32768.0) / 32768.0).sum();
-
-                sum / channels as f32
-            })
-            .collect()
-    }
-
-    pub fn create_resampler(input_sr: u32) -> Result<Async<f32>, AppError> {
-        if input_sr == 0 {
-            return Err(AppError::Audio("Input sample rate".to_string()));
-        }
-        let ratio = TARGET_SR as f64 / input_sr as f64;
-
-        let params = SincInterpolationParameters {
-            sinc_len: 128,
-            f_cutoff: Some(0.95),
-            interpolation: SincInterpolationType::Linear,
-            oversampling_factor: 256,
-            window: WindowFunction::BlackmanHarris2,
-        };
-
-        Ok(Async::<f32>::new_sinc(
-            ratio,
-            2.0,
-            &params,
-            1024,
-            1,
-            FixedAsync::Input,
-        )?)
-    }
-
     pub fn pcm_f32_to_le_bytes(samples: &[f32]) -> Vec<u8> {
         let mut bytes = Vec::with_capacity(samples.len() * 2);
         for &s in samples {
@@ -68,5 +11,44 @@ impl LinearResampler {
             bytes.extend_from_slice(&sample.to_le_bytes());
         }
         bytes
+    }
+
+    pub fn convert_audio(data: &[f32], channels: u16, sample_rate: u32) -> Vec<f32> {
+        let mono: Vec<f32> = if channels > 1 {
+            data.chunks(channels as usize)
+                .map(|frame| frame.iter().sum::<f32>() / channels as f32)
+                .collect()
+        } else {
+            data.to_vec()
+        };
+
+        let resampled = if sample_rate != TARGET_SR {
+            LinearResampler::resample(&mono, sample_rate, TARGET_SR)
+        } else {
+            mono
+        };
+
+        resampled
+    }
+
+    fn resample(input: &[f32], from_rate: u32, to_rate: u32) -> Vec<f32> {
+        if from_rate == to_rate || input.is_empty() {
+            return input.to_vec();
+        }
+
+        let ratio = from_rate as f64 / to_rate as f64;
+        let out_len = (input.len() as f64 / ratio).ceil() as usize;
+        let mut output = Vec::with_capacity(out_len);
+
+        for i in 0..out_len {
+            let src_idx = i as f64 * ratio;
+            let idx = src_idx as usize;
+            let frac = src_idx - idx as f64;
+            let s0 = input[idx.min(input.len() - 1)];
+            let s1 = input[(idx + 1).min(input.len() - 1)];
+            output.push(s0 + (s1 - s0) * frac as f32);
+        }
+
+        output
     }
 }

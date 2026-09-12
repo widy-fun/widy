@@ -1,4 +1,3 @@
-use entity::services::ServiceType;
 use tauri::{AppHandle, State};
 
 use crate::{
@@ -12,10 +11,6 @@ pub async fn twitch_add_custom_reward(
     twitch_service: State<'_, TwitchService>,
     reward: entity::rewards::Reward,
 ) -> Result<(), AppError> {
-    let auth = twitch_service.get_auth(&app, ServiceType::Twitch).await?;
-    twitch_service
-        .add_custom_reward(&app, &auth, &reward)
-        .await?;
-
+    twitch_service.add_custom_reward(&app, &reward).await?;
     return Ok(());
 }

@@ -333,3 +333,11 @@ pub struct KickAuthSession {
     pub state: String,
     pub code_verifier: String,
 }
+
+#[derive(Debug, Clone, Serialize)]
+pub struct BanUserBody {
+    pub broadcaster_user_id: u64,
+    pub duration: Option<u64>,
+    pub reason: Option<String>,
+    pub user_id: u64,
+}

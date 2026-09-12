@@ -26,8 +26,9 @@ use crate::{
         kick::{
             KickAuthSession,
             models::{
-                AddKickRewardBody, ChanelInfoResponse, KickTokenExchangeBody, PostChatMessageBody,
-                PostChatMessageType, RefreshTokenBody, UserInfo, UserInfoResponse,
+                AddKickRewardBody, BanUserBody, ChanelInfoResponse, KickTokenExchangeBody,
+                PostChatMessageBody, PostChatMessageType, RefreshTokenBody, UserInfo,
+                UserInfoResponse,
             },
         },
     },
@@ -37,6 +38,10 @@ use crate::{
 #[async_trait]
 pub trait KickApi: Send + Sync {
     fn kick_token_endpoint(&self) -> String;
+
+    fn reqwest_client(&self) -> &reqwest::Client;
+
+    fn service_type(&self) -> ServiceType;
 
     fn cancellation_token(&self) -> CancellationToken;
 
@@ -84,12 +89,8 @@ pub trait KickApi: Send + Sync {
         Ok(auth)
     }
 
-    async fn get_auth(
-        &self,
-        app: &AppHandle,
-        service_type: ServiceType,
-    ) -> Result<KickAuth, AppError> {
-        let auth = self.get_database_auth(app, service_type.clone()).await?;
+    async fn get_auth(&self, app: &AppHandle) -> Result<KickAuth, AppError> {
+        let auth = self.get_database_auth(app, self.service_type()).await?;
         let expire_at = self.expire_at().load(Ordering::Relaxed);
         let now = SystemTime::now()
             .duration_since(UNIX_EPOCH)
@@ -98,21 +99,16 @@ pub trait KickApi: Send + Sync {
         if expire_at > now.as_secs() {
             return Ok(auth);
         }
-        self.refresh_and_update_auth(app, &auth, service_type).await
+        self.refresh_and_update_auth(app, &auth).await
     }
 
     async fn refresh_and_update_auth(
         &self,
         app: &AppHandle,
         old_auth: &KickAuth,
-        service_type: ServiceType,
     ) -> Result<KickAuth, AppError> {
-        let reqwest_client = app.state::<reqwest::Client>();
         let database_service = app.state::<DatabaseService>();
-        match self
-            .refresh_token(&reqwest_client, old_auth.refresh_token.clone())
-            .await
-        {
+        match self.refresh_token(old_auth.refresh_token.clone()).await {
             Ok(new_auth) => {
                 let now = SystemTime::now()
                     .duration_since(UNIX_EPOCH)
@@ -124,14 +120,13 @@ pub trait KickApi: Send + Sync {
                     Some(ServiceAuth::Kick(new_auth.clone())),
                     true,
                     false,
-                    service_type,
                 )
                 .await?;
                 Ok(new_auth)
             }
             Err(e) => {
                 if let AppError::HttpStatus { status: 401, .. } = e {
-                    self.set_authorized(&database_service, None, false, true, service_type)
+                    self.set_authorized(&database_service, None, false, true)
                         .await?;
                 }
                 Err(e.into())
@@ -139,18 +134,15 @@ pub trait KickApi: Send + Sync {
         }
     }
 
-    async fn refresh_token(
-        &self,
-        reqwest_client: &reqwest::Client,
-        refresh_token: String,
-    ) -> Result<KickAuth, AppError> {
-        let request = reqwest_client
-            .post(self.kick_token_endpoint())
-            .json(&RefreshTokenBody {
-                grant_type: GrantType::RefreshToken,
-                refresh_token,
-                app_token: self.app_token(),
-            });
+    async fn refresh_token(&self, refresh_token: String) -> Result<KickAuth, AppError> {
+        let request =
+            self.reqwest_client()
+                .post(self.kick_token_endpoint())
+                .json(&RefreshTokenBody {
+                    grant_type: GrantType::RefreshToken,
+                    refresh_token,
+                    app_token: self.app_token(),
+                });
 
         let refresh_token_response = self
             .send_kick_request::<KickAuth>(request, "refresh token")
@@ -166,13 +158,12 @@ pub trait KickApi: Send + Sync {
         auth: Option<ServiceAuth>,
         authorized: bool,
         is_close_connection: bool,
-        service_type: ServiceType,
     ) -> Result<(), AppError> {
         if is_close_connection {
             self.cancellation_token().cancel();
         }
         database_service
-            .update_service_auth(service_type, auth, authorized)
+            .update_service_auth(self.service_type(), auth, authorized)
             .await
     }
 
@@ -212,12 +203,10 @@ pub trait KickApi: Send + Sync {
         URL_SAFE_NO_PAD.encode(hash)
     }
 
-    async fn get_chanel_info(
-        &self,
-        reqwest_client: &reqwest::Client,
-        name: &String,
-    ) -> Result<ChanelInfoResponse, AppError> {
-        let request = reqwest_client.get(format!("https://kick.com/api/v2/channels/{}", name));
+    async fn get_chanel_info(&self, name: &String) -> Result<ChanelInfoResponse, AppError> {
+        let request = self
+            .reqwest_client()
+            .get(format!("https://kick.com/api/v2/channels/{}", name));
 
         let chanel_info_response = self
             .send_kick_request::<ChanelInfoResponse>(request, "channel info")
@@ -227,14 +216,12 @@ pub trait KickApi: Send + Sync {
         Ok(chanel_info_response)
     }
 
-    async fn get_user_info(
-        &self,
-        reqwest_client: &reqwest::Client,
-        access_token: &String,
-    ) -> Result<UserInfo, AppError> {
-        let request = reqwest_client
+    async fn get_user_info(&self, app: &AppHandle) -> Result<UserInfo, AppError> {
+        let auth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
             .get("https://api.kick.com/public/v1/users")
-            .bearer_auth(access_token);
+            .bearer_auth(auth.access_token);
 
         let user_info = self
             .send_kick_request::<UserInfoResponse>(request, "user info")
@@ -251,11 +238,10 @@ pub trait KickApi: Send + Sync {
     async fn add_custom_reward(
         &self,
         app: &AppHandle,
-        auth: &KickAuth,
         reward: &entity::rewards::Reward,
     ) -> Result<(), AppError> {
+        let auth = self.get_auth(app).await?;
         let database_service = app.state::<DatabaseService>();
-        let reqwest_client = app.state::<reqwest::Client>();
         let twitch_reward_body = AddKickRewardBody {
             title: reward.title.clone(),
             cost: reward.cost,
@@ -266,7 +252,8 @@ pub trait KickApi: Send + Sync {
             should_redemptions_skip_request_queue: reward.should_redemptions_skip_request_queue,
         };
 
-        let request = reqwest_client
+        let request = self
+            .reqwest_client()
             .post("https://api.kick.com/public/v1/channels/rewards")
             .bearer_auth(&auth.access_token)
             .json(&twitch_reward_body);
@@ -294,20 +281,16 @@ pub trait KickApi: Send + Sync {
         Ok(())
     }
 
-    async fn remove_custom_reward(
-        &self,
-        app: &AppHandle,
-        auth: &KickAuth,
-        id: Uuid,
-    ) -> Result<(), AppError> {
+    async fn remove_custom_reward(&self, app: &AppHandle, id: Uuid) -> Result<(), AppError> {
+        let auth = self.get_auth(app).await?;
         let database_service = app.state::<DatabaseService>();
-        let reqwest_client = app.state::<reqwest::Client>();
         let reward = database_service
             .get_reward_by_id(id)
             .await?
             .ok_or(AppError::HttpRequest("Reward not found".to_string()))?;
 
-        let request = reqwest_client
+        let request = self
+            .reqwest_client()
             .delete(format!(
                 "https://api.kick.com/public/v1/channels/rewards/{}",
                 reward.external_id.ok_or(AppError::HttpRequest(
@@ -327,15 +310,16 @@ pub trait KickApi: Send + Sync {
 
     async fn post_chat_message(
         &self,
-        reqwest_client: &reqwest::Client,
-        access_token: String,
         content: String,
         broadcaster_user_id: u64,
         reply_to_message_id: Option<String>,
+        app: &AppHandle,
     ) -> Result<(), AppError> {
-        let request = reqwest_client
+        let auth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
             .post("https://api.kick.com/public/v1/chat")
-            .bearer_auth(access_token)
+            .bearer_auth(auth.access_token)
             .json(&PostChatMessageBody {
                 broadcaster_user_id,
                 content,
@@ -350,11 +334,32 @@ pub trait KickApi: Send + Sync {
         Ok(())
     }
 
-    async fn tokens(
+    async fn ban_user(
         &self,
-        reqwest_client: &reqwest::Client,
-        params: KickAuthCallbackQuery,
-    ) -> Result<KickAuth, StatusCode> {
+        user_id: u64,
+        broadcaster_user_id: u64,
+        app: &AppHandle,
+    ) -> Result<(), AppError> {
+        let auth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
+            .post("https://api.kick.com/public/v1/moderation/bans")
+            .bearer_auth(auth.access_token)
+            .json(&BanUserBody {
+                broadcaster_user_id,
+                duration: None,
+                reason: None,
+                user_id,
+            });
+
+        let _ = self
+            .send_kick_request::<serde_json::Value>(request, "ban user")
+            .await?;
+
+        Ok(())
+    }
+
+    async fn tokens(&self, params: KickAuthCallbackQuery) -> Result<KickAuth, StatusCode> {
         let auth_session = {
             let mut auth_session_guard = self.auth_session();
             let session = match auth_session_guard.clone() {
@@ -369,7 +374,8 @@ pub trait KickApi: Send + Sync {
             return Err(StatusCode::BAD_REQUEST);
         }
 
-        let response = reqwest_client
+        let response = self
+            .reqwest_client()
             .post(&self.kick_token_endpoint())
             .json(&KickTokenExchangeBody {
                 code: params.code,
@@ -392,9 +398,9 @@ pub trait KickApi: Send + Sync {
         Ok(auth)
     }
 
-    async fn sign_out(&self, app: &AppHandle, service_type: ServiceType) -> Result<(), AppError> {
+    async fn sign_out(&self, app: &AppHandle) -> Result<(), AppError> {
         let database_service = app.state::<DatabaseService>();
-        self.set_authorized(&database_service, None, false, true, service_type)
+        self.set_authorized(&database_service, None, false, true)
             .await
     }
 }

@@ -1,4 +1,3 @@
-use entity::services::ServiceType;
 use tauri::{AppHandle, State};
 
 use crate::{
@@ -12,7 +11,6 @@ pub async fn kick_add_custom_reward(
     kick_service: State<'_, KickService>,
     reward: entity::rewards::Reward,
 ) -> Result<(), AppError> {
-    let auth = kick_service.get_auth(&app, ServiceType::Kick).await?;
-    kick_service.add_custom_reward(&app, &auth, &reward).await?;
+    kick_service.add_custom_reward(&app, &reward).await?;
     Ok(())
 }

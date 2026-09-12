@@ -9,17 +9,24 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: u8,
-    pub provider: AssistantProvider,
-    pub model: String,
-    pub language: String,
+    pub tool_calling_provider: ToolCallingProvider,
+    pub tool_calling_model: String,
+    pub stt_model: String,
+    pub stt_language: String,
     pub device_id: String,
+    pub enable_on_start: bool,
+    pub vad_threshold: f32,
+    pub wake_threshold: f32,
+    pub silence_hangover_frames: u32,
 }
 
 impl ActiveModelBehavior for ActiveModel {}
 
 #[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Eq, Deserialize, Serialize)]
 #[sea_orm(rs_type = "String", db_type = "Text")]
-pub enum AssistantProvider {
+pub enum ToolCallingProvider {
     #[sea_orm(string_value = "Gemini")]
     Gemini,
+    #[sea_orm(string_value = "Local")]
+    Local,
 }

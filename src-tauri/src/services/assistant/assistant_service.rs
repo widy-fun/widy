@@ -1,42 +1,41 @@
 use std::{
-    collections::{HashMap, VecDeque},
+    collections::VecDeque,
+    path::PathBuf,
     str::FromStr,
     sync::{Arc, Mutex},
-    time::Duration,
 };
 
 use cpal::{
-    DeviceId, SampleFormat, Stream, StreamConfig,
+    DeviceId, SampleFormat, Stream,
     traits::{DeviceTrait, HostTrait, StreamTrait},
 };
-use entity::{
-    assistant_settings::AssistantProvider,
-    services::{ServiceAuth, ServiceType},
-};
-use rubato::{Async, Resampler, audioadapter_buffers::direct::SequentialSliceOfVecs};
+use entity::{assistant_settings::ToolCallingProvider, messages::MessageType};
+use foundry_local_sdk::{FoundryLocalConfig, FoundryLocalManager, LogLevel, Model};
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
 use tokio::sync::mpsc::{self, Sender};
 use tokio_util::sync::CancellationToken;
 
 use crate::{
-    constants::{
-        FRAME_SIZE, MAX_UTTERANCE_FRAMES, SILENCE_HANGOVER_FRAMES, TARGET_SR, VAD_THRESHOLD,
-        WAKE_THRESHOLD,
-    },
     error::AppError,
-    repositories::{AssistantSettingsRepository, ServicesRepository},
+    repositories::{AlertsRepository, AssistantSettingsRepository},
     services::{
-        ConfigService, DatabaseService,
+        AppEvent, ConfigService, DatabaseService, EventMessage, WebSocketBroadcaster,
         assistant::{
             linear_resampler::LinearResampler,
             stt_service::{SttService, Transcribe},
+            tool_calling_service::ToolCallingService,
+            vad_engine::VadEngine,
             wake_engine::WakeEngine,
         },
-        gemini::{GeminiService, models::InteractionsBody, traits::GeminiApi},
+        gemini::GeminiService,
+        kick::KickService,
+        twitch::TwitchService,
     },
-    utils::log_and_wrap_error,
+    utils::{invoke_tool, log_and_wrap_error},
 };
+
+const FRAME_SIZE: usize = 1280;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 
@@ -45,6 +44,7 @@ pub enum AssistantServiceStatus {
     Stopping,
     Starting,
     Started,
+    DownloadingModel,
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct InputDeviceInfo {
@@ -62,6 +62,7 @@ pub struct AssistantStatus {
 pub struct AssistantService {
     pub cancellation_token: Arc<Mutex<CancellationToken>>,
     pub status: Arc<Mutex<AssistantServiceStatus>>,
+    pub tool_calling_model: Arc<Mutex<Option<Arc<Model>>>>,
 }
 
 impl AssistantService {
@@ -69,6 +70,7 @@ impl AssistantService {
         Self {
             cancellation_token: Arc::new(Mutex::new(CancellationToken::new())),
             status: Arc::new(Mutex::new(AssistantServiceStatus::Stopped)),
+            tool_calling_model: Arc::new(Mutex::new(None)),
         }
     }
 
@@ -78,6 +80,7 @@ impl AssistantService {
         assistant_settings: entity::assistant_settings::Model,
     ) -> Result<(), AppError> {
         let database_service = app.state::<DatabaseService>();
+        let config_service = app.state::<ConfigService>();
         database_service
             .update_assistant_settings(assistant_settings.clone())
             .await?;
@@ -95,8 +98,18 @@ impl AssistantService {
             let mut cancellation_token = self.cancellation_token.lock().unwrap();
             *cancellation_token = CancellationToken::new();
         }
+        if assistant_settings.tool_calling_provider == ToolCallingProvider::Local {
+            let tool_calling_model = self
+                .load_model(
+                    &assistant_settings.tool_calling_model,
+                    config_service.foundry_path.clone(),
+                )
+                .await?;
+            *self.tool_calling_model.lock().unwrap() = Some(tool_calling_model);
+        }
         tauri::async_runtime::spawn(async move {
             let assistant_service = app.state::<AssistantService>();
+
             if let Err(e) = assistant_service
                 .build(app.clone(), assistant_settings)
                 .await
@@ -115,40 +128,51 @@ impl AssistantService {
         assistant_settings: entity::assistant_settings::Model,
     ) -> Result<(), AppError> {
         let config_service = app.state::<ConfigService>();
+        let websocket_broadcaster: tauri::State<'_, WebSocketBroadcaster> =
+            app.state::<WebSocketBroadcaster>();
         let device = self
             .get_input_devices(&app)
             .await?
             .iter()
             .find(|d| d.id == assistant_settings.device_id)
             .cloned()
-            .ok_or(AppError::Custom("Not found input device".to_string()))?;
+            .ok_or(AppError::Audio("Not found input device".to_string()))?;
 
         let wake_engine = WakeEngine::new(config_service.wake_word_path.clone()).await?;
 
-        let model = SttService::load_model(
-            config_service.foundry_local_cache_path.clone(),
-            "nemotron-speech-streaming-en-0.6b",
-        )
-        .await?;
+        let vad_engine = VadEngine::new(config_service.wake_word_path.clone()).await?;
 
-        let (input_tx, input_rx) = mpsc::channel::<Vec<f32>>(32);
+        let (input_tx, input_rx) = mpsc::channel::<Vec<f32>>(100);
 
         let (transcribe_tx, transcribe_rx) = mpsc::channel::<Transcribe>(256);
 
-        let (stream, input_sr) = self.build_audio_input_stream(device, input_tx)?;
+        let input_stream = self.build_audio_input_stream(device, input_tx)?;
 
-        stream.play()?;
+        let model = self
+            .load_model(
+                &assistant_settings.stt_model,
+                config_service.foundry_path.clone(),
+            )
+            .await?;
 
         SttService::start_transcription_session(
             model,
-            assistant_settings.language,
-            app,
+            assistant_settings.stt_language.clone(),
+            app.clone(),
             transcribe_rx,
+        )?;
+
+        input_stream.play()?;
+
+        self.run_audio_loop(
+            input_rx,
+            wake_engine,
+            vad_engine,
+            transcribe_tx,
+            &websocket_broadcaster,
+            assistant_settings,
         )
         .await?;
-
-        self.run_audio_loop(input_rx, input_sr, wake_engine, transcribe_tx)
-            .await?;
 
         Ok(())
     }
@@ -157,7 +181,7 @@ impl AssistantService {
         &self,
         device: InputDeviceInfo,
         input_tx: Sender<Vec<f32>>,
-    ) -> Result<(Stream, u32), AppError> {
+    ) -> Result<Stream, AppError> {
         let host = cpal::default_host();
         let device = host
             .device_by_id(
@@ -165,23 +189,32 @@ impl AssistantService {
                     .map_err(|e| log_and_wrap_error("Get input device by id error", e))?,
             )
             .ok_or(AppError::Audio("Device id not found".to_string()))?;
-        let supported = device.default_input_config()?;
-        let input_sr = supported.sample_rate();
-        let channels = supported.channels() as usize;
-        let format = supported.sample_format();
-        let config: StreamConfig = supported.clone().into();
-        let err_fn = |e| {
-            log::error!("Audio error: {}", e);
+
+        let default_config = device.default_input_config()?;
+        let device_rate = default_config.sample_rate();
+        let device_channels = default_config.channels();
+        let sample_format = default_config.sample_format();
+
+        let mic_config = cpal::StreamConfig {
+            channels: device_channels,
+            sample_rate: device_rate,
+            buffer_size: cpal::BufferSize::Default,
         };
-        let stream = match format {
+        let err_fn = |_| {
+            // log::error!("Microphone stream error: {}", e);
+        };
+        let input_stream = match sample_format {
             SampleFormat::F32 => {
                 let tx = input_tx.clone();
 
                 device.build_input_stream(
-                    config,
+                    mic_config,
                     move |data: &[f32], _| {
-                        let mono = LinearResampler::stereo_f32_to_mono(data, channels);
-                        let _ = tx.try_send(mono);
+                        let bytes =
+                            LinearResampler::convert_audio(data, device_channels, device_rate);
+                        if !bytes.is_empty() {
+                            let _ = tx.try_send(bytes);
+                        }
                     },
                     err_fn,
                     None,
@@ -192,10 +225,15 @@ impl AssistantService {
                 let tx = input_tx.clone();
 
                 device.build_input_stream(
-                    config,
+                    mic_config,
                     move |data: &[i16], _| {
-                        let mono: Vec<f32> = LinearResampler::stereo_i16_to_mono(data, channels);
-                        let _ = tx.try_send(mono);
+                        let samples: Vec<f32> =
+                            data.iter().map(|&s| s as f32 / i16::MAX as f32).collect();
+                        let bytes =
+                            LinearResampler::convert_audio(&samples, device_channels, device_rate);
+                        if !bytes.is_empty() {
+                            let _ = tx.try_send(bytes);
+                        }
                     },
                     err_fn,
                     None,
@@ -206,38 +244,43 @@ impl AssistantService {
                 let tx = input_tx.clone();
 
                 device.build_input_stream(
-                    config,
+                    mic_config,
                     move |data: &[u16], _| {
-                        let mono: Vec<f32> = LinearResampler::stereo_u16_to_mono(data, channels);
-                        let _ = tx.try_send(mono);
+                        let samples: Vec<f32> = data
+                            .iter()
+                            .map(|&s| (s as f32 / u16::MAX as f32) * 2.0 - 1.0)
+                            .collect();
+                        let bytes =
+                            LinearResampler::convert_audio(&samples, device_channels, device_rate);
+                        if !bytes.is_empty() {
+                            let _ = tx.try_send(bytes);
+                        }
                     },
                     err_fn,
                     None,
                 )?
             }
 
-            _ => return Err(AppError::Audio("Stream error".to_string())),
+            _ => {
+                return Err(AppError::Audio(
+                    "Unsupported input sample format".to_string(),
+                ));
+            }
         };
-        Ok((stream, input_sr))
+        Ok(input_stream)
     }
 
     async fn run_audio_loop(
         &self,
         mut rx: mpsc::Receiver<Vec<f32>>,
-        input_sr: u32,
         mut wake_engine: WakeEngine,
+        mut vad_engine: VadEngine,
         transcribe_tx: Sender<Transcribe>,
+        websocket_broadcaster: &tauri::State<'_, WebSocketBroadcaster>,
+        assistant_settings: entity::assistant_settings::Model,
     ) -> Result<(), AppError> {
-        let mut resampler = if input_sr != TARGET_SR {
-            Some(LinearResampler::create_resampler(input_sr)?)
-        } else {
-            None
-        };
-
-        let mut raw_buffer: VecDeque<f32> = VecDeque::new();
         let mut audio_buffer: VecDeque<f32> = VecDeque::new();
         let mut is_recording = false;
-        let mut speech_len: usize = 0; // no longer need to store the samples, just track length
         let mut silence_frames: u32 = 0;
         let cancellation_token = { self.cancellation_token.lock().unwrap().clone() };
         log::info!("Start AI assistant.");
@@ -245,12 +288,13 @@ impl AssistantService {
             let mut status = self.status.lock().unwrap();
             *status = AssistantServiceStatus::Started;
         }
+
         loop {
             tokio::select! {
                 res = rx.recv() => {
                     match res {
                         Some(chunk) => {
-                            self.process_audio_chunk(&chunk, &mut resampler, &mut raw_buffer, &mut audio_buffer, &mut wake_engine, &mut is_recording, &mut speech_len, &mut silence_frames, &transcribe_tx).await?;
+                            self.process_audio_chunk(&chunk,  &mut audio_buffer, &mut wake_engine, &mut vad_engine, &mut is_recording,  &mut silence_frames, &transcribe_tx,websocket_broadcaster,&assistant_settings).await?;
                         }
                         None => {
                             break;
@@ -260,11 +304,13 @@ impl AssistantService {
                 _ = cancellation_token.cancelled() => {
                             log::info!("Stopping AI assistant.");
                             let _= transcribe_tx.send(Transcribe::Cancel).await;
+                            let tool_calling_model = self.tool_calling_model.lock().unwrap().clone();
+                              if let Some(tool_calling_model) = tool_calling_model {
+                                     tool_calling_model.unload().await?;
+                              }
                             break;
                         }
-                _ = tokio::time::sleep(Duration::from_millis(100)) => {
-                    continue;
-                }
+
             }
         }
 
@@ -274,69 +320,57 @@ impl AssistantService {
     pub async fn process_audio_chunk(
         &self,
         chunk: &Vec<f32>,
-        resampler: &mut Option<Async<f32>>,
-        raw_buffer: &mut VecDeque<f32>,
         audio_buffer: &mut VecDeque<f32>,
         wake_engine: &mut WakeEngine,
+        vad_engine: &mut VadEngine,
         is_recording: &mut bool,
-        speech_len: &mut usize,
         silence_frames: &mut u32,
         transcribe_tx: &Sender<Transcribe>,
+        websocket_broadcaster: &tauri::State<'_, WebSocketBroadcaster>,
+        assistant_settings: &entity::assistant_settings::Model,
     ) -> Result<(), AppError> {
-        if let Some(resampler) = resampler.as_mut() {
-            raw_buffer.extend(chunk);
-
-            while raw_buffer.len() >= resampler.input_frames_next() {
-                let needed = resampler.input_frames_next();
-                let input_chunk: Vec<f32> = raw_buffer.drain(..needed).collect();
-                let input_channels: Vec<Vec<f32>> = vec![input_chunk];
-
-                let input_adapter = SequentialSliceOfVecs::new(&input_channels, 1, needed)?;
-
-                let out_frames = resampler.output_frames_next();
-                let mut output_channels: Vec<Vec<f32>> = vec![vec![0.0f32; out_frames]; 1];
-                let mut output_adapter =
-                    SequentialSliceOfVecs::new_mut(&mut output_channels, 1, out_frames)?;
-
-                resampler.process_into_buffer(&input_adapter, &mut output_adapter, None)?;
-
-                audio_buffer.extend(output_channels[0].iter().copied());
-            }
-        } else {
-            audio_buffer.extend(chunk);
-        }
-
+        audio_buffer.extend(chunk);
         while audio_buffer.len() >= FRAME_SIZE {
             let frame: Vec<f32> = audio_buffer.drain(..FRAME_SIZE).collect();
-
-            let result = wake_engine.process(&frame)?;
-
-            if result.vad >= VAD_THRESHOLD && result.wake >= WAKE_THRESHOLD {
+            let vad_score = vad_engine.process(&frame)?;
+            let wake_score = match vad_score {
+                v if *is_recording || v < 0.1 => 0.0,
+                _ => wake_engine.process(&frame)?,
+            };
+            if vad_score >= assistant_settings.vad_threshold
+                && wake_score >= assistant_settings.wake_threshold
+            {
+                websocket_broadcaster.broadcast_event_message(&EventMessage {
+                    event: AppEvent::AssistantStartTranscribe,
+                    data: true,
+                });
                 wake_engine.reset_wake();
                 *is_recording = true;
-                *speech_len = 0;
                 *silence_frames = 0;
                 let _ = transcribe_tx.send(Transcribe::Start).await;
                 log::info!("Start transcribe.");
             }
 
             if *is_recording {
-                *speech_len += frame.len();
                 let _ = transcribe_tx.send(Transcribe::Audio(frame)).await;
 
-                if result.vad >= VAD_THRESHOLD {
+                if vad_score >= assistant_settings.vad_threshold {
                     *silence_frames = 0;
                 } else {
                     *silence_frames += 1;
                 }
 
-                let hit_silence_end = *silence_frames >= SILENCE_HANGOVER_FRAMES;
-                let hit_max_len = *speech_len >= MAX_UTTERANCE_FRAMES;
+                let hit_silence_end = *silence_frames >= assistant_settings.silence_hangover_frames;
 
-                if hit_silence_end || hit_max_len {
-                    let _ = transcribe_tx.send(Transcribe::End).await;
+                if hit_silence_end {
+                    let _ = transcribe_tx.send(Transcribe::Stop).await;
+                    vad_engine.reset_vad();
                     *is_recording = false;
                     *silence_frames = 0;
+                    websocket_broadcaster.broadcast_event_message(&EventMessage {
+                        event: AppEvent::AssistantStopTranscribe,
+                        data: true,
+                    });
                 }
             }
         }
@@ -356,7 +390,7 @@ impl AssistantService {
         let mut input_devices_info: Vec<InputDeviceInfo> = vec![];
         let default_device = host
             .default_input_device()
-            .ok_or(AppError::Custom("Not found default device".to_string()))?;
+            .ok_or(AppError::Audio("Not found default device".to_string()))?;
         let devices = host.input_devices()?.collect::<Vec<_>>();
         for device in devices {
             let id = device.id()?.to_string();
@@ -371,42 +405,106 @@ impl AssistantService {
         Ok(input_devices_info)
     }
 
-    pub async fn ask_llm(&self, app: &AppHandle, text: &str) -> Result<(), AppError> {
-        let gemini_service = app.state::<GeminiService>();
+    pub async fn handle_tool_calling(
+        &self,
+        app: &AppHandle,
+        text: &str,
+        needs_clarification: bool,
+    ) -> Result<(), AppError> {
         let database_service = app.state::<DatabaseService>();
         let assistant_settings = database_service
             .get_assistant_settings()
             .await?
             .ok_or(AppError::Custom("Not found assistant settings".to_string()))?;
-        let reqwest_client = app.state::<reqwest::Client>();
-        match assistant_settings.provider {
-            AssistantProvider::Gemini => {
-                let service = database_service
-                    .get_service_with_auth_by_id(ServiceType::Gemini)
+        let tool_calls = match assistant_settings.tool_calling_provider {
+            ToolCallingProvider::Gemini => {
+                let gemini_service = app.state::<GeminiService>();
+                gemini_service
+                    .handle_tool_calling(app, assistant_settings.tool_calling_model, text)
                     .await?
-                    .ok_or(AppError::Custom("Not found gemini service".to_string()))?;
-                if let Some(ServiceAuth::ApiKey(auth)) = service.auth {
-                    let interaction_response = gemini_service
-                        .interactions(
-                            &reqwest_client,
-                            auth.api_key,
-                            InteractionsBody {
-                                model: Some(assistant_settings.model),
-                                input: text.to_string(),
-                                generation_config: None,
-                                tools: Some(gemini_service.get_tools()),
-                            },
-                        )
-                        .await?
-                        .ok_or(AppError::Custom("Not found tools".to_string()))?;
-                    if let Some(steps) = interaction_response.steps {
-                        for step in steps {
-                            self.invoke_tool(
-                                &step.name.unwrap_or("default".to_string()),
-                                step.arguments.unwrap_or(HashMap::new()),
-                            );
+            }
+            ToolCallingProvider::Local => {
+                let tool_calling_model = self
+                    .tool_calling_model
+                    .lock()
+                    .unwrap()
+                    .clone()
+                    .ok_or(AppError::Custom("Tool calling model empty".to_string()))?;
+                ToolCallingService::handle_tool_calling(tool_calling_model, text).await?
+            }
+        };
+        for tool_call in tool_calls {
+            match tool_call.name.as_str() {
+                "ban_user" if needs_clarification => {
+                    let platform = tool_call
+                        .arguments
+                        .get("platform")
+                        .cloned()
+                        .unwrap_or_default();
+                    let users: Vec<String> = match platform.as_str().to_lowercase().as_str() {
+                        "twitch" => {
+                            let twitch_service = app.state::<TwitchService>();
+                            twitch_service
+                                .chat_messages_buffer
+                                .lock()
+                                .unwrap()
+                                .clone()
+                                .iter()
+                                .map(|m| m.sender.username.clone())
+                                .collect()
                         }
-                    }
+                        "kick" => {
+                            let kick_service = app.state::<KickService>();
+                            kick_service
+                                .chat_messages_buffer
+                                .lock()
+                                .unwrap()
+                                .clone()
+                                .iter()
+                                .map(|m| m.sender.username.clone())
+                                .collect()
+                        }
+                        _ => {
+                            vec![]
+                        }
+                    };
+
+                    let text_clarification = format!(
+                        "Please select the user you want to ban from this list: {}",
+                        users.join(", ")
+                    );
+                    let _ = Box::pin(self.handle_tool_calling(
+                        app,
+                        &format!("{} {}", text, text_clarification),
+                        false,
+                    ))
+                    .await
+                    .map_err(|e| log_and_wrap_error("Ban user clarification", e));
+                }
+                "play_alert" if needs_clarification => {
+                    let database_service = app.state::<DatabaseService>();
+                    let alerts_names: Vec<String> = database_service
+                        .get_alerts_by_type(MessageType::AssistantAction)
+                        .await?
+                        .into_iter()
+                        .map(|a| a.name)
+                        .collect();
+                    let text_clarification = format!(
+                        "Please select the alert you want run from this list: {}",
+                        alerts_names.join(", ")
+                    );
+                    let _ = Box::pin(self.handle_tool_calling(
+                        app,
+                        &format!("{} {}", text, text_clarification),
+                        false,
+                    ))
+                    .await
+                    .map_err(|e| log_and_wrap_error("Play alert clarification", e));
+                }
+                _ => {
+                    let _ = invoke_tool(app, tool_call)
+                        .await
+                        .map_err(|e| log_and_wrap_error("Invoke tool", e));
                 }
             }
         }
@@ -417,32 +515,43 @@ impl AssistantService {
     pub async fn get_assistant_provider_models(
         &self,
         app: &AppHandle,
-        provider: AssistantProvider,
+        provider: ToolCallingProvider,
     ) -> Result<Vec<String>, AppError> {
         match provider {
-            AssistantProvider::Gemini => {
+            ToolCallingProvider::Gemini => {
                 let gemini_service = app.state::<GeminiService>();
                 return Ok(gemini_service.models.lock().unwrap().clone());
             }
-            _ => return Ok(vec![]),
-        }
-    }
-
-    fn invoke_tool(&self, name: &str, arguments: HashMap<String, String>) {
-        match name {
-            "ban_user" => {
-                println!("ban_user");
-            }
-            "pin_message" => {
-                println!("pin_message");
-            }
-            _ => {}
+            ToolCallingProvider::Local => return Ok(vec!["qwen2.5-0.5b".to_string()]),
         }
     }
 
     pub fn get_assistant_status(&self) -> Result<AssistantStatus, AppError> {
         let status = self.status.lock().unwrap().clone();
         Ok(AssistantStatus { status })
+    }
+
+    async fn load_model(&self, alias: &str, foundry_path: PathBuf) -> Result<Arc<Model>, AppError> {
+        let manager = FoundryLocalManager::create(
+            FoundryLocalConfig::new("widy")
+                .app_data_dir(foundry_path.to_string_lossy())
+                .log_level(LogLevel::Fatal),
+        )
+        .map_err(|e| log_and_wrap_error("Foundry local manager", e))?;
+        let model = manager
+            .catalog()
+            .get_model(alias)
+            .await
+            .map_err(|e| log_and_wrap_error("Get foundry local model", e))?;
+        if !model.is_cached().await? {
+            *self.status.lock().unwrap() = AssistantServiceStatus::DownloadingModel;
+            model.download(Some(|_| {})).await?;
+        }
+        model
+            .load()
+            .await
+            .map_err(|e| log_and_wrap_error("Load foundry local model", e))?;
+        Ok(model)
     }
 
     pub fn stop(&self) -> Result<(), AppError> {

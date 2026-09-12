@@ -20,14 +20,19 @@ impl AssistantSettingsRepository for DatabaseService {
     async fn update_assistant_settings(&self, assistant_settings: Model) -> Result<(), AppError> {
         Entity::update(ActiveModel {
             id: Set(assistant_settings.id),
-            provider: Set(assistant_settings.provider),
-            model: Set(assistant_settings.model),
-            language: Set(assistant_settings.language),
+            tool_calling_provider: Set(assistant_settings.tool_calling_provider),
+            tool_calling_model: Set(assistant_settings.tool_calling_model),
+            stt_model: Set(assistant_settings.stt_model),
+            stt_language: Set(assistant_settings.stt_language),
             device_id: Set(assistant_settings.device_id),
+            enable_on_start: Set(assistant_settings.enable_on_start),
+            vad_threshold: Set(assistant_settings.vad_threshold),
+            wake_threshold: Set(assistant_settings.wake_threshold),
+            silence_hangover_frames: Set(assistant_settings.silence_hangover_frames),
         })
         .exec(&self.connection)
         .await
-        .map_err(|e| log_and_wrap_error("Update assistant errorr", e))?;
+        .map_err(|e| log_and_wrap_error("Update assistant settings error", e))?;
         Ok(())
     }
 }

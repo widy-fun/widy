@@ -1,10 +1,6 @@
-use std::collections::HashMap;
-
 use crate::{
     error::AppError,
-    services::gemini::models::{
-        InteractionResponse, InteractionsBody, JsonSchema, ModelsResponse, Property, Tool,
-    },
+    services::gemini::models::{InteractionResponse, InteractionsBody, ModelsResponse},
     utils::send_request,
 };
 use async_trait::async_trait;
@@ -41,62 +37,5 @@ pub trait GeminiApi: Send + Sync {
         let response =
             send_request::<InteractionResponse>(request, "model interactions", "Gemini").await?;
         Ok(response)
-    }
-
-    fn get_tools(&self) -> Vec<Tool> {
-        vec![
-            Tool {
-                tool_type: "function".into(),
-                name: "ban_user".into(),
-                description: "Ban a user from the server/channel".into(),
-
-                parameters: JsonSchema {
-                    r#type: "object".into(),
-
-                    properties: HashMap::from([
-                        (
-                            "user_id".into(),
-                            Property {
-                                r#type: "string".into(),
-                            },
-                        ),
-                        (
-                            "reason".into(),
-                            Property {
-                                r#type: "string".into(),
-                            },
-                        ),
-                    ]),
-
-                    required: vec!["user_id".into()],
-                },
-            },
-            Tool {
-                tool_type: "function".into(),
-                name: "pin_message".into(),
-                description: "Pin a message in a channel".into(),
-
-                parameters: JsonSchema {
-                    r#type: "object".into(),
-
-                    properties: HashMap::from([
-                        (
-                            "channel_id".into(),
-                            Property {
-                                r#type: "string".into(),
-                            },
-                        ),
-                        (
-                            "message".into(),
-                            Property {
-                                r#type: "string".into(),
-                            },
-                        ),
-                    ]),
-
-                    required: vec!["channel_id".into(), "message".into()],
-                },
-            },
-        ]
     }
 }

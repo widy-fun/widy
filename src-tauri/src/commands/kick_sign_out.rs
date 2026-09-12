@@ -1,4 +1,3 @@
-use entity::services::ServiceType;
 use tauri::{AppHandle, State};
 
 use crate::{
@@ -11,5 +10,5 @@ pub async fn kick_sign_out(
     app: AppHandle,
     kick_service: State<'_, KickService>,
 ) -> Result<(), AppError> {
-    kick_service.sign_out(&app, ServiceType::Kick).await
+    kick_service.sign_out(&app).await
 }

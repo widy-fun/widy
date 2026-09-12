@@ -1,6 +1,7 @@
 use chrono::Utc;
 use entity::{
     alerts::TtsType,
+    assistant_actions::AssistantAction,
     commands::{TtsAction, UserLevel},
     commands_actions::{CommandAction, Tts},
     donations::Donation,
@@ -22,8 +23,9 @@ use uuid::Uuid;
 use crate::{
     error::AppError,
     repositories::{
-        CommandsActionsRepository, DonationsRepository, FollowsRepository, GoalsRepository,
-        RaidsRepository, RedemptionsRepository, SettingsRepository, SubscriptionsRepository,
+        AssistantActionsRepository, CommandsActionsRepository, DonationsRepository,
+        FollowsRepository, GoalsRepository, RaidsRepository, RedemptionsRepository,
+        SettingsRepository, SubscriptionsRepository,
     },
     services::{
         DatabaseService, EventMessage, ExchangeRatesService, MediaService, WebSocketBroadcaster,
@@ -81,6 +83,9 @@ pub enum AppEvent {
     ReplayTts,
     SkipTts,
     SkipPlayingTts,
+    AssistantStartTranscribe,
+    AssistantStopTranscribe,
+    AssistantAction,
 }
 impl AppEvent {
     pub fn as_str(e: AppEvent) -> &'static str {
@@ -132,6 +137,9 @@ impl AppEvent {
             AppEvent::ReplayTts => "ReplayTts",
             AppEvent::SkipTts => "SkipTts",
             AppEvent::SkipPlayingTts => "SkipPlayingTts",
+            AppEvent::AssistantStartTranscribe => "AssistantStartTranscribe",
+            AppEvent::AssistantStopTranscribe => "AssistantStopTranscribe",
+            AppEvent::AssistantAction => "AssistantAction",
         }
     }
 }
@@ -474,6 +482,7 @@ impl EventsService {
             raid: None,
             redemption: None,
             command_action: None,
+            assistant_action: None,
             donation: Some(Donation {
                 id,
                 user_name,
@@ -553,6 +562,7 @@ impl EventsService {
             raid: None,
             redemption: None,
             command_action: None,
+            assistant_action: None,
             subscription: Some(subscription.clone()),
         };
         let event_message = EventMessage {
@@ -643,6 +653,7 @@ impl EventsService {
             follow: None,
             subscription: None,
             command_action: None,
+            assistant_action: None,
             redemption: Some(Redemption {
                 media,
                 tts,
@@ -683,6 +694,7 @@ impl EventsService {
             subscription: None,
             redemption: None,
             raid: None,
+            assistant_action: None,
             command_action: Some(command_action),
         };
         let _ = database_service
@@ -695,6 +707,44 @@ impl EventsService {
         websocket_broadcaster.broadcast_event_message(&event_message);
         let event_message = EventMessage {
             event: AppEvent::CommandAction,
+            data: client_message.clone(),
+        };
+        websocket_broadcaster.broadcast_event_message(&event_message);
+
+        Ok(())
+    }
+
+    pub async fn assistant_action(
+        assistant_action: AssistantAction,
+        app: &AppHandle,
+    ) -> Result<(), AppError> {
+        let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
+        let database_service = app.state::<DatabaseService>();
+        let created_at = Utc::now().timestamp();
+        let client_message = ClientMessage {
+            id: assistant_action.message_id,
+            r#type: MessageType::AssistantAction,
+            created_at,
+            donation: None,
+            follow: None,
+            subscription: None,
+            redemption: None,
+            raid: None,
+            command_action: None,
+            assistant_action: Some(assistant_action),
+        };
+
+        let _ = database_service
+            .save_assistant_action_message(client_message.clone())
+            .await;
+
+        let event_message = EventMessage {
+            event: AppEvent::Message,
+            data: client_message.clone(),
+        };
+        websocket_broadcaster.broadcast_event_message(&event_message);
+        let event_message = EventMessage {
+            event: AppEvent::AssistantAction,
             data: client_message.clone(),
         };
         websocket_broadcaster.broadcast_event_message(&event_message);
@@ -753,6 +803,7 @@ impl EventsService {
             subscription: None,
             redemption: None,
             raid: None,
+            assistant_action: None,
             command_action: Some(command_action),
         };
 
@@ -788,6 +839,7 @@ impl EventsService {
             raid: None,
             redemption: None,
             command_action: None,
+            assistant_action: None,
             follow: Some(follow),
         };
         let event_message = EventMessage {
@@ -817,6 +869,7 @@ impl EventsService {
             subscription: None,
             redemption: None,
             command_action: None,
+            assistant_action: None,
             raid: Some(raid),
         };
         let event_message = EventMessage {

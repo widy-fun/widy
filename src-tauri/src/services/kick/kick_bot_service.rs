@@ -18,6 +18,8 @@ pub struct KickBotService {
     pub auth_session: Mutex<Option<KickAuthSession>>,
     expire_at: Arc<AtomicU64>,
     cancellation_token: Arc<Mutex<CancellationToken>>,
+    reqwest_client: reqwest::Client,
+    service_type: ServiceType,
 }
 
 impl KickBotService {
@@ -26,6 +28,7 @@ impl KickBotService {
         kick_bot_token_endpoint: String,
         kick_bot_redirect_uri: String,
         app_token: String,
+        reqwest_client: reqwest::Client,
     ) -> Self {
         let scopes = "user:read moderation:chat_message:manage chat:write".to_string();
 
@@ -38,14 +41,13 @@ impl KickBotService {
             auth_session: Mutex::new(None),
             expire_at: Arc::new(AtomicU64::new(0)),
             cancellation_token: Arc::new(Mutex::new(CancellationToken::new())),
+            reqwest_client,
+            service_type: ServiceType::KickBot,
         }
     }
 
     pub async fn connect(&self, app: &AppHandle) -> Result<(), AppError> {
-        let auth = self.get_database_auth(app, ServiceType::Kick).await?;
-        let _ = self
-            .refresh_and_update_auth(&app, &auth, ServiceType::Kick)
-            .await?;
+        let _ = self.get_auth(app).await?;
         Ok(())
     }
 }
@@ -81,5 +83,13 @@ impl KickApi for KickBotService {
 
     fn expire_at(&self) -> Arc<AtomicU64> {
         self.expire_at.clone()
+    }
+
+    fn reqwest_client(&self) -> &reqwest::Client {
+        &self.reqwest_client
+    }
+
+    fn service_type(&self) -> ServiceType {
+        self.service_type.clone()
     }
 }

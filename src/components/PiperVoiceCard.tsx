@@ -8,7 +8,7 @@ import {
 	Switch,
 	Typography,
 } from "@mui/material";
-import { remove,mkdir } from "@tauri-apps/plugin-fs";
+import { mkdir, remove } from "@tauri-apps/plugin-fs";
 import { download } from "@tauri-apps/plugin-upload";
 import { showSnackBar } from "@widy/react";
 import { AlertSeverity, type IPiperVoice } from "@widy/sdk";
@@ -16,7 +16,7 @@ import { type Dispatch, type SetStateAction, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import formatBytes from "../helpers/formatBytes";
-import readPipersVoicesDir from "../helpers/readPipersVoicesDir";
+import readAppLocalDirEntrys from "../helpers/readAppLocalDirEntrys";
 import type { AppState } from "../store";
 import WarningDialog from "./WarningDialog";
 
@@ -57,7 +57,7 @@ const PiperVoiceCard = ({
 		f.endsWith(".onnx.json"),
 	);
 
-	const piperVoicesPath=`${appDataDir}/piper-voices`;
+	const piperVoicesPath = `${appDataDir}/piper-voices`;
 
 	const configFilePath = `${piperVoicesPath}/${voice.key}.onnx.json`;
 
@@ -81,11 +81,11 @@ const PiperVoiceCard = ({
 			);
 			return;
 		}
-		
+
 		setDownloading(true);
-		
+
 		try {
-			await mkdir(piperVoicesPath,{recursive:true});
+			await mkdir(piperVoicesPath, { recursive: true });
 			await Promise.all([
 				download(
 					`${baseUrl}/${huggingFaceModelFilePath}?download=true`,
@@ -106,7 +106,7 @@ const PiperVoiceCard = ({
 			console.error(`Failed to download voice ${voice.key}`, err);
 		} finally {
 			setDownloading(false);
-			readPipersVoicesDir().then(setDownloadedModels);
+			readAppLocalDirEntrys("piper-voices").then(setDownloadedModels);
 		}
 	};
 
@@ -125,7 +125,7 @@ const PiperVoiceCard = ({
 			console.error(`Failed to remove voice ${voice.key}`, err);
 		} finally {
 			setRemoving(false);
-			readPipersVoicesDir().then(setDownloadedModels);
+			readAppLocalDirEntrys("piper-voices").then(setDownloadedModels);
 			onRemove();
 			setDialogOpen(false);
 		}

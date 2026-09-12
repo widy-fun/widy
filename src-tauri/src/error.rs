@@ -1,6 +1,8 @@
+use std::num::ParseIntError;
+
 use foundry_local_sdk::FoundryLocalError;
 use ndarray::ShapeError;
-use rubato::{ResampleError, ResamplerConstructionError, audioadapter_buffers::SizeError};
+use ort::session::builder::SessionBuilder;
 use serde::Serialize;
 use thiserror::Error;
 use tokio::task::JoinError;
@@ -58,8 +60,8 @@ pub enum AppError {
     #[error("Audio error: {0}")]
     Audio(String),
 
-    #[error("LLM error: {0}")]
-    LLM(String),
+    #[error("Ort error: {0}")]
+    Ort(String),
 }
 
 impl From<reqwest::Error> for AppError {
@@ -113,7 +115,7 @@ impl From<cpal::Error> for AppError {
 
 impl From<ort::Error> for AppError {
     fn from(err: ort::Error) -> Self {
-        AppError::Custom(err.to_string())
+        AppError::Ort(err.to_string())
     }
 }
 
@@ -123,32 +125,32 @@ impl From<ShapeError> for AppError {
     }
 }
 
-impl From<ResamplerConstructionError> for AppError {
-    fn from(err: ResamplerConstructionError) -> Self {
-        AppError::Audio(err.to_string())
-    }
-}
-
-impl From<SizeError> for AppError {
-    fn from(err: SizeError) -> Self {
-        AppError::Audio(err.to_string())
-    }
-}
-
-impl From<ResampleError> for AppError {
-    fn from(err: ResampleError) -> Self {
-        AppError::Audio(err.to_string())
-    }
-}
-
 impl From<FoundryLocalError> for AppError {
     fn from(err: FoundryLocalError) -> Self {
-        AppError::Custom(err.to_string())
+        AppError::Ort(err.to_string())
     }
 }
 
 impl From<JoinError> for AppError {
     fn from(err: JoinError) -> Self {
         AppError::Custom(err.to_string())
+    }
+}
+
+impl From<serde_json::Error> for AppError {
+    fn from(err: serde_json::Error) -> Self {
+        AppError::ParseError(err.to_string())
+    }
+}
+
+impl From<ParseIntError> for AppError {
+    fn from(err: ParseIntError) -> Self {
+        AppError::Custom(err.to_string())
+    }
+}
+
+impl From<ort::Error<SessionBuilder>> for AppError {
+    fn from(err: ort::Error<SessionBuilder>) -> Self {
+        AppError::Ort(err.to_string())
     }
 }

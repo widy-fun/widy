@@ -33,65 +33,67 @@ const Integrations = () => {
 			</AccordionSummary>
 			<AccordionDetails>
 				<Box sx={{ display: "grid", gap: 1 }}>
-					{data?.map((service) =>
-						!service.authorized ? (
-							<Button
-								key={service.id}
-								variant="contained"
-								sx={{ backgroundColor: services[service.id].color }}
-								onClick={() => navigate(services[service.id].authPath)}
-							>
-								{service.id}
-							</Button>
-						) : (
-							<div
-								style={{ display: "flex", justifyContent: "space-between" }}
-								key={service.id}
-							>
-								<div>
-									<span>{service.id}:</span>
-									<Switch
-										checked={services[service.id].active}
-										onChange={async (_, value) => {
-											try {
-												dispatch(
-													setServiceActive({
-														service: service.id,
-														active: value,
-													}),
-												);
-											} catch {
-												dispatch(
-													showSnackBar({
-														message: t("error.request_error"),
-														alertSeverity: AlertSeverity.error,
-													}),
-												);
-												dispatch(
-													setServiceActive({
-														service: service.id,
-														active: false,
-													}),
-												);
-											}
-										}}
-									/>
+					{data
+						?.filter((service) => services[service.id].isIntegration)
+						.map((service) =>
+							!service.authorized ? (
+								<Button
+									key={service.id}
+									variant="contained"
+									sx={{ backgroundColor: services[service.id].color }}
+									onClick={() => navigate(services[service.id].authPath)}
+								>
+									{service.id}
+								</Button>
+							) : (
+								<div
+									style={{ display: "flex", justifyContent: "space-between" }}
+									key={service.id}
+								>
+									<div>
+										<span>{service.id}:</span>
+										<Switch
+											checked={services[service.id].active}
+											onChange={async (_, value) => {
+												try {
+													dispatch(
+														setServiceActive({
+															service: service.id,
+															active: value,
+														}),
+													);
+												} catch {
+													dispatch(
+														showSnackBar({
+															message: t("error.request_error"),
+															alertSeverity: AlertSeverity.error,
+														}),
+													);
+													dispatch(
+														setServiceActive({
+															service: service.id,
+															active: false,
+														}),
+													);
+												}
+											}}
+										/>
+									</div>
+									{!!service.settings && (
+										<IconButton
+											onClick={() => {
+												const path = services[service.id].settingsPath;
+												if (path) {
+													navigate(path);
+												}
+											}}
+										>
+											<SettingsIcon />
+										</IconButton>
+									)}
 								</div>
-								{!!service.settings && (
-									<IconButton
-										onClick={() => {
-											const path = services[service.id].settingsPath;
-											if (path) {
-												navigate(path);
-											}
-										}}
-									>
-										<SettingsIcon />
-									</IconButton>
-								)}
-							</div>
-						),
-					)}
+							),
+						)}
 				</Box>
 			</AccordionDetails>
 		</Accordion>

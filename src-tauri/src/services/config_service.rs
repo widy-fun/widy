@@ -46,8 +46,7 @@ pub struct ConfigService {
     pub piper_voices_path: PathBuf,
     pub piper_path: PathBuf,
     pub wake_word_path: PathBuf,
-    pub foundry_local_cache_path: PathBuf,
-    pub llm_path: PathBuf,
+    pub foundry_path: PathBuf,
 }
 
 impl ConfigService {
@@ -71,13 +70,7 @@ impl ConfigService {
             "nsfw model",
         )?;
         let widgets_path = resolve_path(app, "widgets", BaseDirectory::AppLocalData, "widgets")?;
-        let foundry_local_cache_path = resolve_path(
-            app,
-            "foundry_local_cache",
-            BaseDirectory::AppLocalData,
-            "foundry_local_cache",
-        )?;
-        let llm_path = resolve_path(app, "llm", BaseDirectory::AppLocalData, "llm")?;
+        let foundry_path = resolve_path(app, "foundry", BaseDirectory::AppLocalData, "foundry")?;
         let piper_path = resolve_path(app, "piper", BaseDirectory::Resource, "piper")?;
         let wake_word_path = resolve_path(app, "wake-word", BaseDirectory::Resource, "wake-word")?;
         let piper_voices_path = resolve_path(
@@ -129,8 +122,7 @@ impl ConfigService {
             piper_voices_path,
             piper_path,
             wake_word_path,
-            foundry_local_cache_path,
-            llm_path,
+            foundry_path,
         })
     }
 }
