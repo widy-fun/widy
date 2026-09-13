@@ -113,6 +113,9 @@ jobs:
           }
           Write-Host "WIDY_VC_REDIST_DIRS=$dirs"
           Add-Content -Path $env:GITHUB_ENV -Value "WIDY_VC_REDIST_DIRS=$dirs"
+      - name: build foundry-local-sdk
+        working-directory: src-tauri
+        run: cargo build -p foundry-local-sdk --release
       - uses: tauri-apps/tauri-action@84b9d35b5fc46c1e45415bdb6144030364f7ebc5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

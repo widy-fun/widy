@@ -44,13 +44,12 @@ fn stage_vc_runtime_dlls() {
         }
     }
 
-    // Fail the build rather than ship an installer that regresses issue #1527.
     for required in ["msvcp140.dll", "vcruntime140.dll"] {
         if !copied.iter().any(|n| n == required) {
             panic!(
                 "WIDY_VC_REDIST_DIRS is set but {required} was not found in it; \
                  the app-local VC++ runtime would be incomplete and Widy would \
-                 crash on machines without a current redist (issue #1527)"
+                 crash on machines without a current redist"
             );
         }
     }
@@ -63,17 +62,13 @@ fn stage_vc_runtime_dlls() {
 fn stage_foundry_local_dlls() {
     use std::path::PathBuf;
 
-    // Only needed on Windows.
-    if std::env::var("CARGO_CFG_TARGET_OS").as_deref() != Ok("windows") {
-        return;
-    }
-
     let manifest_dir =
         PathBuf::from(std::env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR not set"));
 
     let target_dir = manifest_dir
         .parent()
         .expect("src-tauri should have a parent directory")
+        .join("src-tauri")
         .join("target");
 
     let profile = std::env::var("PROFILE").unwrap_or_else(|_| "debug".into());
@@ -83,13 +78,6 @@ fn stage_foundry_local_dlls() {
     let dest = manifest_dir.join("thirdparty-libs");
 
     std::fs::create_dir_all(&dest).expect("create thirdparty-libs staging dir");
-
-    let required = [
-        "Microsoft.AI.Foundry.Local.Core.dll",
-        "onnxruntime_providers_shared.dll",
-        "onnxruntime-genai.dll",
-        "onnxruntime.dll",
-    ];
 
     let mut foundry_out = None;
 
@@ -119,27 +107,33 @@ fn stage_foundry_local_dlls() {
         return;
     };
 
-    let mut copied = 0;
+    println!("cargo:rerun-if-changed={}", foundry_out.display());
 
-    for name in required {
-        let src = foundry_out.join(name);
+    let mut copied = 0usize;
+    for entry in std::fs::read_dir(&foundry_out)
+        .unwrap_or_else(|e| panic!("read {}: {e}", foundry_out.display()))
+        .flatten()
+    {
+        let src = entry.path();
 
-        if !src.exists() {
-            panic!("Foundry Local SDK library not found: {}", src.display());
+        if !entry.file_type().map(|t| t.is_file()).unwrap_or(false) {
+            continue;
         }
 
-        let dst = dest.join(name);
+        let name = src
+            .file_name()
+            .and_then(|s| s.to_str())
+            .unwrap_or("")
+            .to_string();
 
-        std::fs::copy(&src, &dst).unwrap_or_else(|e| {
-            panic!("Failed to copy {} -> {}: {e}", src.display(), dst.display())
-        });
-
-        println!("cargo:warning=Staged Foundry Local library: {}", name);
-
+        std::fs::copy(&src, dest.join(&name))
+            .unwrap_or_else(|e| panic!("copy {}: {e}", src.display()));
         copied += 1;
     }
 
-    println!("cargo:warning=Staged {} Foundry Local DLL(s)", copied);
-
-    println!("cargo:rerun-if-changed={}", foundry_out.display());
+    println!(
+        "cargo:warning=Staged {} foundry-local-sdk file(s) from {}",
+        copied,
+        foundry_out.display()
+    );
 }
