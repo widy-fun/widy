@@ -3,6 +3,7 @@ import type {
 	IDestreamAuth,
 	IDonatePayAuth,
 	IDonationAlertsAuth,
+	IKickSessionToken,
 	IService,
 	IStreamElementsAuth,
 	IStreamLabsAuth,
@@ -48,6 +49,7 @@ export const servicesApi = api.injectEndpoints({
 					| IDonatePayAuth
 					| IDestreamAuth
 					| IApiKeyAuth
+					| IKickSessionToken
 					| undefined;
 				id: ServiceType;
 				authorized: boolean;

@@ -1,8 +1,9 @@
 use crate::error::AppError;
 use crate::services::assistant::AssistantService;
+use crate::services::claude::ClaudeService;
 use crate::services::gemini::GeminiService;
-use crate::services::kick::{KickBotService, KickService};
-use crate::services::openai::OpenAiService;
+use crate::services::kick::{KickBotService, KickService, KickSessionService};
+use crate::services::openai::OpenAIService;
 use crate::services::tts::TtsService;
 use crate::services::twitch::traits::TwitchApi;
 use crate::services::twitch::{TwitchBotService, TwitchService};
@@ -129,6 +130,11 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
     let _ = kick_bot_service.connect(&app).await;
     app.manage(kick_bot_service);
 
+    //kick session
+    let kick_session_service = KickSessionService::new(reqwest_client.clone());
+    let _ = kick_session_service.connect(&app).await;
+    app.manage(kick_session_service);
+
     //stream elements
     let stream_elements_service = StreamElementsService::new();
     app.manage(stream_elements_service);
@@ -188,13 +194,19 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
     app.manage(assistant_service);
 
     //openai
-    let openai_service = OpenAiService::new();
+    let openai_service = OpenAIService::new();
+    let _ = openai_service.connect(&app).await;
     app.manage(openai_service);
 
     //gemini
     let gemini_service = GeminiService::new();
     let _ = gemini_service.connect(&app).await;
     app.manage(gemini_service);
+
+    //claude
+    let claude_service = ClaudeService::new();
+    let _ = claude_service.connect(&app).await;
+    app.manage(claude_service);
 
     Ok(())
 }

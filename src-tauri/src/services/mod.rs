@@ -1,5 +1,6 @@
 pub mod assistant;
 pub mod axum_service;
+pub mod claude;
 pub mod commands_service;
 pub mod config_service;
 pub mod database_service;

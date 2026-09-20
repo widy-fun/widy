@@ -1,11 +1,14 @@
 import { ServiceType } from "@widy/sdk";
 import {
+	useClaudeSignOutMutation,
 	useDestreamSignOutMutation,
 	useDonatePaySignOutMutation,
 	useDonationAlertsSignOutMutation,
 	useGeminiSignOutMutation,
 	useKickBotSignOutMutation,
+	useKickSessionSignOutMutation,
 	useKickSignOutMutation,
+	useOpenaiSignOutMutation,
 	useStreamLabsSignOutMutation,
 	useTributeSignOutMutation,
 	useTwitchBotSignOutMutation,
@@ -29,6 +32,9 @@ const useSignOut = (id: ServiceType) => {
 	const [kickBotSignOut] = useKickBotSignOutMutation();
 	const [twitchBotSignOut] = useTwitchBotSignOutMutation();
 	const [geminiSignOut] = useGeminiSignOutMutation();
+	const [openaiSignOut] = useOpenaiSignOutMutation();
+	const [claudeSignOut] = useClaudeSignOutMutation();
+	const [kickSessionSignOut] = useKickSessionSignOutMutation();
 
 	switch (id) {
 		case ServiceType.Streamelements:
@@ -59,6 +65,12 @@ const useSignOut = (id: ServiceType) => {
 			return twitchBotSignOut;
 		case ServiceType.Gemini:
 			return geminiSignOut;
+		case ServiceType.OpenAI:
+			return openaiSignOut;
+		case ServiceType.Claude:
+			return claudeSignOut;
+		case ServiceType.KickSession:
+			return kickSessionSignOut;
 		default:
 			return () => null;
 	}

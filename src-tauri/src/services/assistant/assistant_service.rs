@@ -1,5 +1,5 @@
 use std::{
-    collections::VecDeque,
+    collections::{HashSet, VecDeque},
     path::PathBuf,
     str::FromStr,
     sync::{Arc, Mutex},
@@ -9,7 +9,10 @@ use cpal::{
     DeviceId, SampleFormat, Stream,
     traits::{DeviceTrait, HostTrait, StreamTrait},
 };
-use entity::{assistant_settings::ToolCallingProvider, messages::MessageType};
+use entity::{
+    assistant_settings::{ToolCallingModel, ToolCallingProvider},
+    messages::MessageType,
+};
 use foundry_local_sdk::{FoundryLocalConfig, FoundryLocalManager, LogLevel, Model};
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
@@ -20,7 +23,7 @@ use crate::{
     error::AppError,
     repositories::{AlertsRepository, AssistantSettingsRepository},
     services::{
-        AppEvent, ConfigService, DatabaseService, EventMessage, WebSocketBroadcaster,
+        ConfigService, DatabaseService,
         assistant::{
             linear_resampler::LinearResampler,
             stt_service::{SttService, Transcribe},
@@ -28,9 +31,11 @@ use crate::{
             vad_engine::VadEngine,
             wake_engine::WakeEngine,
         },
+        claude::ClaudeService,
         gemini::GeminiService,
-        kick::KickService,
-        twitch::TwitchService,
+        kick::{KickService, KickSessionService, traits::KickSessionApi},
+        openai::OpenAIService,
+        twitch::{TwitchService, traits::TwitchApi},
     },
     utils::{invoke_tool, log_and_wrap_error},
 };
@@ -63,6 +68,7 @@ pub struct AssistantService {
     pub cancellation_token: Arc<Mutex<CancellationToken>>,
     pub status: Arc<Mutex<AssistantServiceStatus>>,
     pub tool_calling_model: Arc<Mutex<Option<Arc<Model>>>>,
+    tool_calling_models: Vec<ToolCallingModel>,
 }
 
 impl AssistantService {
@@ -71,6 +77,124 @@ impl AssistantService {
             cancellation_token: Arc::new(Mutex::new(CancellationToken::new())),
             status: Arc::new(Mutex::new(AssistantServiceStatus::Stopped)),
             tool_calling_model: Arc::new(Mutex::new(None)),
+            tool_calling_models: vec![
+                ToolCallingModel {
+                    id: "qwen2.5-0.5b".into(),
+                    display_name: "qwen2.5-0.5b (1.0 GB)".into(),
+                },
+                // Qwen3
+                ToolCallingModel {
+                    id: "qwen3-0.6b".into(),
+                    display_name: "qwen3-0.6b (1.0 GB)".into(),
+                },
+                ToolCallingModel {
+                    id: "qwen3-1.7b".into(),
+                    display_name: "qwen3-1.7b (2.0 GB)".into(),
+                },
+                ToolCallingModel {
+                    id: "qwen3-4b".into(),
+                    display_name: "qwen3-4b (5.0 GB)".into(),
+                },
+                ToolCallingModel {
+                    id: "qwen3-8b".into(),
+                    display_name: "qwen3-8b (9.0 GB)".into(),
+                },
+                ToolCallingModel {
+                    id: "qwen3-14b".into(),
+                    display_name: "qwen3-14b (16.0 GB)".into(),
+                },
+                // Qwen3-VL
+                ToolCallingModel {
+                    id: "qwen3-vl-2b-instruct".into(),
+                    display_name: "qwen3-vl-2b-instruct (3.0 GB)".into(),
+                },
+                ToolCallingModel {
+                    id: "qwen3-vl-4b-instruct".into(),
+                    display_name: "qwen3-vl-4b-instruct (5.5 GB)".into(),
+                },
+                ToolCallingModel {
+                    id: "qwen3-vl-8b-instruct".into(),
+                    display_name: "qwen3-vl-8b-instruct (10.0 GB)".into(),
+                },
+                // Qwen2.5 instruct
+                ToolCallingModel {
+                    id: "qwen2.5-1.5b".into(),
+                    display_name: "qwen2.5-1.5b (2.0 GB)".into(),
+                },
+                ToolCallingModel {
+                    id: "qwen2.5-7b".into(),
+                    display_name: "qwen2.5-7b (8.0 GB)".into(),
+                },
+                ToolCallingModel {
+                    id: "qwen2.5-14b".into(),
+                    display_name: "qwen2.5-14b (16.0 GB)".into(),
+                },
+                // Qwen2.5-Coder
+                ToolCallingModel {
+                    id: "qwen2.5-coder-0.5b".into(),
+                    display_name: "qwen2.5-coder-0.5b (0.8 GB)".into(),
+                },
+                ToolCallingModel {
+                    id: "qwen2.5-coder-1.5b".into(),
+                    display_name: "qwen2.5-coder-1.5b (2.0 GB)".into(),
+                },
+                ToolCallingModel {
+                    id: "qwen2.5-coder-7b".into(),
+                    display_name: "qwen2.5-coder-7b (8.0 GB)".into(),
+                },
+                ToolCallingModel {
+                    id: "qwen2.5-coder-14b".into(),
+                    display_name: "qwen2.5-coder-14b (16.0 GB)".into(),
+                },
+                // Qwen3.5
+                ToolCallingModel {
+                    id: "qwen3.5-0.8b".into(),
+                    display_name: "qwen3.5-0.8b (1.2 GB)".into(),
+                },
+                ToolCallingModel {
+                    id: "qwen3.5-2b".into(),
+                    display_name: "qwen3.5-2b (2.5 GB)".into(),
+                },
+                ToolCallingModel {
+                    id: "qwen3.5-2b-text".into(),
+                    display_name: "qwen3.5-2b-text (2.5 GB)".into(),
+                },
+                ToolCallingModel {
+                    id: "qwen3.5-4b".into(),
+                    display_name: "qwen3.5-4b (5.0 GB)".into(),
+                },
+                ToolCallingModel {
+                    id: "qwen3.5-9b".into(),
+                    display_name: "qwen3.5-9b (10.0 GB)".into(),
+                },
+                // Phi-4
+                ToolCallingModel {
+                    id: "phi-4".into(),
+                    display_name: "phi-4 (10.2 GB)".into(),
+                },
+                ToolCallingModel {
+                    id: "phi-4-mini".into(),
+                    display_name: "phi-4-mini (4.8 GB)".into(),
+                },
+                // Mistral / Ministral
+                ToolCallingModel {
+                    id: "mistral-nemo-12b-instruct".into(),
+                    display_name: "mistral-nemo-12b-instruct (13.0 GB)".into(),
+                },
+                ToolCallingModel {
+                    id: "ministral-3-3b-instruct-2512".into(),
+                    display_name: "ministral-3-3b-instruct-2512 (4.0 GB)".into(),
+                },
+                // Other
+                ToolCallingModel {
+                    id: "gpt-oss-20b".into(),
+                    display_name: "gpt-oss-20b (16.0 GB)".into(),
+                },
+                ToolCallingModel {
+                    id: "smollm3-3b".into(),
+                    display_name: "smollm3-3b (4.0 GB)".into(),
+                },
+            ],
         }
     }
 
@@ -79,12 +203,7 @@ impl AssistantService {
         app: AppHandle,
         assistant_settings: entity::assistant_settings::Model,
     ) -> Result<(), AppError> {
-        let database_service = app.state::<DatabaseService>();
         let config_service = app.state::<ConfigService>();
-        database_service
-            .update_assistant_settings(assistant_settings.clone())
-            .await?;
-
         {
             let mut status = self.status.lock().unwrap();
             match *status {
@@ -101,7 +220,7 @@ impl AssistantService {
         if assistant_settings.tool_calling_provider == ToolCallingProvider::Local {
             let tool_calling_model = self
                 .load_model(
-                    &assistant_settings.tool_calling_model,
+                    &assistant_settings.tool_calling_model.id,
                     config_service.foundry_path.clone(),
                 )
                 .await?;
@@ -128,8 +247,6 @@ impl AssistantService {
         assistant_settings: entity::assistant_settings::Model,
     ) -> Result<(), AppError> {
         let config_service = app.state::<ConfigService>();
-        let websocket_broadcaster: tauri::State<'_, WebSocketBroadcaster> =
-            app.state::<WebSocketBroadcaster>();
         let device = self
             .get_input_devices(&app)
             .await?
@@ -148,7 +265,7 @@ impl AssistantService {
 
         let input_stream = self.build_audio_input_stream(device, input_tx)?;
 
-        let model = self
+        let stt_model = self
             .load_model(
                 &assistant_settings.stt_model,
                 config_service.foundry_path.clone(),
@@ -156,7 +273,7 @@ impl AssistantService {
             .await?;
 
         SttService::start_transcription_session(
-            model,
+            stt_model,
             assistant_settings.stt_language.clone(),
             app.clone(),
             transcribe_rx,
@@ -169,7 +286,6 @@ impl AssistantService {
             wake_engine,
             vad_engine,
             transcribe_tx,
-            &websocket_broadcaster,
             assistant_settings,
         )
         .await?;
@@ -276,7 +392,6 @@ impl AssistantService {
         mut wake_engine: WakeEngine,
         mut vad_engine: VadEngine,
         transcribe_tx: Sender<Transcribe>,
-        websocket_broadcaster: &tauri::State<'_, WebSocketBroadcaster>,
         assistant_settings: entity::assistant_settings::Model,
     ) -> Result<(), AppError> {
         let mut audio_buffer: VecDeque<f32> = VecDeque::new();
@@ -294,7 +409,7 @@ impl AssistantService {
                 res = rx.recv() => {
                     match res {
                         Some(chunk) => {
-                            self.process_audio_chunk(&chunk,  &mut audio_buffer, &mut wake_engine, &mut vad_engine, &mut is_recording,  &mut silence_frames, &transcribe_tx,websocket_broadcaster,&assistant_settings).await?;
+                            self.process_audio_chunk(&chunk,  &mut audio_buffer, &mut wake_engine, &mut vad_engine, &mut is_recording,  &mut silence_frames, &transcribe_tx,&assistant_settings).await?;
                         }
                         None => {
                             break;
@@ -326,7 +441,6 @@ impl AssistantService {
         is_recording: &mut bool,
         silence_frames: &mut u32,
         transcribe_tx: &Sender<Transcribe>,
-        websocket_broadcaster: &tauri::State<'_, WebSocketBroadcaster>,
         assistant_settings: &entity::assistant_settings::Model,
     ) -> Result<(), AppError> {
         audio_buffer.extend(chunk);
@@ -337,23 +451,18 @@ impl AssistantService {
                 v if *is_recording || v < 0.1 => 0.0,
                 _ => wake_engine.process(&frame)?,
             };
+
             if vad_score >= assistant_settings.vad_threshold
                 && wake_score >= assistant_settings.wake_threshold
             {
-                websocket_broadcaster.broadcast_event_message(&EventMessage {
-                    event: AppEvent::AssistantStartTranscribe,
-                    data: true,
-                });
                 wake_engine.reset_wake();
                 *is_recording = true;
                 *silence_frames = 0;
                 let _ = transcribe_tx.send(Transcribe::Start).await;
-                log::info!("Start transcribe.");
             }
 
             if *is_recording {
                 let _ = transcribe_tx.send(Transcribe::Audio(frame)).await;
-
                 if vad_score >= assistant_settings.vad_threshold {
                     *silence_frames = 0;
                 } else {
@@ -363,14 +472,10 @@ impl AssistantService {
                 let hit_silence_end = *silence_frames >= assistant_settings.silence_hangover_frames;
 
                 if hit_silence_end {
-                    let _ = transcribe_tx.send(Transcribe::Stop).await;
                     vad_engine.reset_vad();
                     *is_recording = false;
                     *silence_frames = 0;
-                    websocket_broadcaster.broadcast_event_message(&EventMessage {
-                        event: AppEvent::AssistantStopTranscribe,
-                        data: true,
-                    });
+                    let _ = transcribe_tx.send(Transcribe::Stop).await;
                 }
             }
         }
@@ -420,7 +525,19 @@ impl AssistantService {
             ToolCallingProvider::Gemini => {
                 let gemini_service = app.state::<GeminiService>();
                 gemini_service
-                    .handle_tool_calling(app, assistant_settings.tool_calling_model, text)
+                    .handle_tool_calling(app, assistant_settings.clone(), text)
+                    .await?
+            }
+            ToolCallingProvider::Claude => {
+                let claude_service = app.state::<ClaudeService>();
+                claude_service
+                    .handle_tool_calling(app, assistant_settings.clone(), text)
+                    .await?
+            }
+            ToolCallingProvider::OpenAI => {
+                let openai_service = app.state::<OpenAIService>();
+                openai_service
+                    .handle_tool_calling(app, assistant_settings.clone(), text)
                     .await?
             }
             ToolCallingProvider::Local => {
@@ -430,7 +547,12 @@ impl AssistantService {
                     .unwrap()
                     .clone()
                     .ok_or(AppError::Custom("Tool calling model empty".to_string()))?;
-                ToolCallingService::handle_tool_calling(tool_calling_model, text).await?
+                ToolCallingService::handle_tool_calling(
+                    tool_calling_model,
+                    assistant_settings.clone(),
+                    text,
+                )
+                .await?
             }
         };
         for tool_call in tool_calls {
@@ -441,16 +563,17 @@ impl AssistantService {
                         .get("platform")
                         .cloned()
                         .unwrap_or_default();
-                    let users: Vec<String> = match platform.as_str().to_lowercase().as_str() {
+                    let users: Vec<String> = match platform.to_lowercase().as_str() {
                         "twitch" => {
                             let twitch_service = app.state::<TwitchService>();
                             twitch_service
                                 .chat_messages_buffer
                                 .lock()
                                 .unwrap()
-                                .clone()
                                 .iter()
                                 .map(|m| m.sender.username.clone())
+                                .collect::<HashSet<_>>()
+                                .into_iter()
                                 .collect()
                         }
                         "kick" => {
@@ -459,9 +582,10 @@ impl AssistantService {
                                 .chat_messages_buffer
                                 .lock()
                                 .unwrap()
-                                .clone()
                                 .iter()
                                 .map(|m| m.sender.username.clone())
+                                .collect::<HashSet<_>>()
+                                .into_iter()
                                 .collect()
                         }
                         _ => {
@@ -480,6 +604,50 @@ impl AssistantService {
                     ))
                     .await
                     .map_err(|e| log_and_wrap_error("Ban user clarification", e));
+                }
+                "unban_user" if needs_clarification => {
+                    let platform = tool_call
+                        .arguments
+                        .get("platform")
+                        .cloned()
+                        .unwrap_or_default();
+                    let users: Vec<String> = match platform.to_lowercase().as_str() {
+                        "twitch" => {
+                            let twitch_service = app.state::<TwitchService>();
+                            let auth = twitch_service.get_auth(app).await?;
+                            let banned_users = twitch_service
+                                .get_all_banned_users(auth.user_id, app)
+                                .await?;
+                            banned_users.iter().map(|b| b.user_name.clone()).collect()
+                        }
+                        "kick" => {
+                            let kick_session_service = app.state::<KickSessionService>();
+                            let bans_info = kick_session_service
+                                .get_bans(app)
+                                .await?
+                                .ok_or(AppError::Custom("Bans info empty".to_string()))?;
+
+                            bans_info
+                                .iter()
+                                .map(|b| b.banned_user.username.clone())
+                                .collect()
+                        }
+                        _ => {
+                            vec![]
+                        }
+                    };
+
+                    let text_clarification = format!(
+                        "Please select the user you want to unban from this list: {}",
+                        users.join(", ")
+                    );
+                    let _ = Box::pin(self.handle_tool_calling(
+                        app,
+                        &format!("{} {}", text, text_clarification),
+                        false,
+                    ))
+                    .await
+                    .map_err(|e| log_and_wrap_error("Unban user clarification", e));
                 }
                 "play_alert" if needs_clarification => {
                     let database_service = app.state::<DatabaseService>();
@@ -516,13 +684,23 @@ impl AssistantService {
         &self,
         app: &AppHandle,
         provider: ToolCallingProvider,
-    ) -> Result<Vec<String>, AppError> {
+    ) -> Result<Vec<ToolCallingModel>, AppError> {
         match provider {
             ToolCallingProvider::Gemini => {
                 let gemini_service = app.state::<GeminiService>();
-                return Ok(gemini_service.models.lock().unwrap().clone());
+                return Ok(gemini_service.tool_calling_models.clone());
             }
-            ToolCallingProvider::Local => return Ok(vec!["qwen2.5-0.5b".to_string()]),
+            ToolCallingProvider::Local => {
+                return Ok(self.tool_calling_models.clone());
+            }
+            ToolCallingProvider::Claude => {
+                let claude_service = app.state::<ClaudeService>();
+                return Ok(claude_service.tool_calling_models.clone());
+            }
+            ToolCallingProvider::OpenAI => {
+                let openai_service = app.state::<OpenAIService>();
+                return Ok(openai_service.tool_calling_models.clone());
+            }
         }
     }
 

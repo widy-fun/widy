@@ -83,8 +83,8 @@ pub enum AppEvent {
     ReplayTts,
     SkipTts,
     SkipPlayingTts,
-    AssistantStartTranscribe,
-    AssistantStopTranscribe,
+    StartTranscribe,
+    StopTranscribe,
     AssistantAction,
 }
 impl AppEvent {
@@ -137,8 +137,8 @@ impl AppEvent {
             AppEvent::ReplayTts => "ReplayTts",
             AppEvent::SkipTts => "SkipTts",
             AppEvent::SkipPlayingTts => "SkipPlayingTts",
-            AppEvent::AssistantStartTranscribe => "AssistantStartTranscribe",
-            AppEvent::AssistantStopTranscribe => "AssistantStopTranscribe",
+            AppEvent::StartTranscribe => "StartTranscribe",
+            AppEvent::StopTranscribe => "StopTranscribe",
             AppEvent::AssistantAction => "AssistantAction",
         }
     }

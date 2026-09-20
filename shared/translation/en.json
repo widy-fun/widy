@@ -32,6 +32,7 @@
 	"starting": "Starting",
 	"test": "Test",
 	"speakers": "Speakers",
+	"session_token": "Session token",
 	"single_speaker": "Single speaker",
 	"sure_delete": "Are you sure want to delete this variation?",
 	"authorization": {
@@ -119,8 +120,19 @@
 		"gifted_subscriptions": "{{user_name}} gift {{total}} subscriptions",
 		"raided_with": "{{user_name}} raided with {{viewers}} viewers",
 		"command_action": "{{user_name}} used command {{command_name}}",
-		"assistant_ban_user": "Assistant banned {{user_name}}",
-		"assistant_alert": "Assistant alert"
+		"assistant_ban_user": "Banned {{user_name}}",
+		"assistant_unban_user": "Unban {{user_name}}",
+		"assistant_pin_message": "Pin message {{message}}",
+		"assistant_change_channel_category": "Change category to {{category}}",
+		"assistant_change_channel_title": "Change title to {{title}}",
+		"assistant_add_emote_mode": "Add emote mode",
+		"assistant_remove_emote_mode": "Remove emote mode",
+		"assistant_add_follow_mode": "Add follow mode",
+		"assistant_remove_follow_mode": "Remove follow mode",
+		"assistant_add_slow_mode": "Add slow mode",
+		"assistant_remove_slow_mode": "Remove slow mode",
+		"assistant_add_subscribe_mode": "Add subscribe mode",
+		"assistant_remove_subscribe_mode": "Remove subscribe mode"
 	},
 	"filter": {
 		"title": "Filter messages",
@@ -548,6 +560,33 @@
 		"provider": "Provider",
 		"model": "Model",
 		"stt_language": "Your voice language",
-		"stt_model": "STT model"
+		"stt_model": "STT model",
+		"tools": "Tools",
+		"max_tokens": "Max output tokens",
+		"vad_threshold": "VAD threshold",
+		"wake_threshold": "Wake threshold",
+		"silence_hangover_frames": "Silence hangover frames",
+		"wake_word": "To wake say - Hey Jarvis"
+	},
+	"tools": {
+		"play_alert": "Play alert (name)",
+		"pin_message": "Pin a message in chat (message, platform)",
+		"ban_user": "Ban user in chat (username, platform, duration optional)",
+		"unban_user": "Unban user in chat (username, platform)",
+		"skip_alert": "Skip current alert",
+		"skip_media": "Skip current media",
+		"skip_tts": "Skip current TTS",
+		"change_channel_title": "Change channel title (platform, title)",
+		"change_channel_category": "Change channel category (platform, category)",
+		"delete_chat_messages": "Delete/clear chat messages (platform)",
+		"on_followers_mode": "Enable followers-only mode (platform)",
+		"off_followers_mode": "Disable followers-only mode (platform)",
+		"on_emotes_mode": "Enable emotes-only mode (platform)",
+		"off_emotes_mode": "Disable emotes-only mode (platform)",
+		"on_subscribers_mode": "Enable subscribers-only mode (platform)",
+		"off_subscribers_mode": "Disable subscribers-only mode (platform)",
+		"on_slow_mode": "Enable slow mode (platform)",
+		"off_slow_mode": "Disable slow mode (platform)",
+		"play_media": "Play a YouTube song/video (name)"
 	}
 }

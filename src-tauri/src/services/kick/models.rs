@@ -1,6 +1,7 @@
-use serde::{Deserialize, Serialize};
-
+#![allow(dead_code)]
 use crate::services::GrantType;
+use serde::{Deserialize, Serialize};
+use serde_json::Value;
 
 #[derive(Debug, Serialize)]
 pub struct KickTokenExchangeBody {
@@ -27,7 +28,7 @@ pub struct PostChatMessageBody {
 }
 
 #[derive(Debug, Clone, Serialize)]
-#[allow(dead_code)]
+
 pub enum PostChatMessageType {
     #[serde(rename = "user")]
     User,
@@ -47,7 +48,7 @@ pub struct AddKickRewardBody {
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct EventPayload {
     pub chanel: Option<String>,
     pub data: String,
@@ -79,33 +80,33 @@ pub enum Event {
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct StopStreamBroadcastData {
     pub livestream: StopStreamBroadcastLivestream,
 }
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct StopStreamBroadcastLivestream {
     pub id: u64,
     pub channel: StopStreamBroadcastChanel,
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct StopStreamBroadcastChanel {
     pub id: u64,
     pub is_banned: bool,
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct SubscriptionData {
     pub chatroom_id: u64,
     pub username: String,
     pub months: u64,
 }
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct ChatMessageData {
     pub id: String,
     pub chatroom_id: u64,
@@ -117,7 +118,7 @@ pub struct ChatMessageData {
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct RewardRedeemedData {
     pub reward_title: String,
     pub user_id: u64,
@@ -128,7 +129,7 @@ pub struct RewardRedeemedData {
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct StreamHostData {
     pub chatroom_id: u64,
     pub number_viewers: u32,
@@ -136,7 +137,7 @@ pub struct StreamHostData {
     pub host_username: String,
 }
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct GiftedSubscriptionsData {
     pub chatroom_id: u64,
     pub gifted_usernames: Vec<String>,
@@ -145,7 +146,7 @@ pub struct GiftedSubscriptionsData {
     pub gifter_total: u32,
 }
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct KicksGiftedData {
     pub gift_transaction_id: String,
     pub message: String,
@@ -155,7 +156,7 @@ pub struct KicksGiftedData {
     pub expires_at: String,
 }
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct KicksSender {
     pub id: u64,
     pub username: String,
@@ -164,7 +165,7 @@ pub struct KicksSender {
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct Gift {
     pub gift_id: String,
     pub name: String,
@@ -176,7 +177,7 @@ pub struct Gift {
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct MessageDeletedData {
     pub id: String,
     pub message: DeletedMessage,
@@ -185,18 +186,18 @@ pub struct MessageDeletedData {
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct DeletedMessage {
     pub id: String,
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct StreamerIsLiveData {
     pub livestream: StreamerIsLiveLivestream,
 }
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct StreamerIsLiveLivestream {
     pub id: u64,
     pub channel_id: u64,
@@ -206,7 +207,6 @@ pub struct StreamerIsLiveLivestream {
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
 
 pub struct MessageSender {
     pub id: u64,
@@ -216,7 +216,6 @@ pub struct MessageSender {
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
 
 pub struct Identity {
     pub color: String,
@@ -225,7 +224,7 @@ pub struct Identity {
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct Badge {
     pub r#type: String,
     pub text: String,
@@ -234,21 +233,18 @@ pub struct Badge {
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
 
 pub struct BadgeMetadata {
     pub level: Option<u32>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
 
 pub struct MessageMetadata {
     pub message_ref: String,
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
 
 pub struct BadgeV2 {
     pub name: String,
@@ -260,7 +256,7 @@ pub struct BadgeV2 {
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct ChanelInfoResponse {
     pub id: u64,
     pub user_id: u64,
@@ -272,7 +268,7 @@ pub struct ChanelInfoResponse {
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct SubscriberBadge {
     pub id: u64,
     pub channel_id: u64,
@@ -280,20 +276,20 @@ pub struct SubscriberBadge {
     pub badge_image: BadgeImage,
 }
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct BadgeImage {
     pub srcset: String,
     pub src: String,
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct User {
     pub id: u64,
     pub username: String,
 }
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct Chatroom {
     pub id: u64,
     pub chatable_type: String,
@@ -312,14 +308,13 @@ pub struct Chatroom {
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
+
 pub struct UserInfoResponse {
     pub data: Vec<UserInfo>,
     pub message: String,
 }
 
 #[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
 
 pub struct UserInfo {
     pub user_id: u64,
@@ -340,4 +335,156 @@ pub struct BanUserBody {
     pub duration: Option<u64>,
     pub reason: Option<String>,
     pub user_id: u64,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct UnbanUserBody {
+    pub broadcaster_user_id: u64,
+    pub user_id: u64,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+
+pub struct ActiveChattersResponse {
+    pub data: ActiveChatters,
+    pub message: String,
+}
+#[derive(Debug, Clone, Deserialize)]
+
+pub struct ActiveChatters {
+    pub chatters: Vec<Chatter>,
+    pub moderators: Vec<Chatter>,
+    pub ogs: Vec<Chatter>,
+    pub vips: Vec<Chatter>,
+    pub bots: Vec<Chatter>,
+    pub total_count: u64,
+}
+#[derive(Debug, Clone, Deserialize)]
+
+pub struct Chatter {
+    pub profile_picture: String,
+    pub slug: String,
+    pub username: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+
+pub struct BanInfo {
+    pub banned_user: BannedUser,
+    pub banned_by: BannedBy,
+    pub ban: Ban,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+
+pub struct BannedUser {
+    pub id: u64,
+    pub username: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+
+pub struct BannedBy {
+    pub id: u64,
+    pub username: String,
+}
+#[derive(Debug, Clone, Deserialize)]
+
+pub struct Ban {
+    pub reason: String,
+    pub banned_at: String,
+    pub expires_at: String,
+    pub permanent: bool,
+}
+#[derive(Debug, Clone, Serialize)]
+
+pub struct ChatCommandBody {
+    pub command: String,
+}
+#[derive(Debug, Clone, Serialize)]
+
+pub struct SendMessageBody {
+    pub r#type: String,
+    pub content: String,
+    pub message_ref: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+
+pub struct SendMessageResponse {
+    pub data: Value,
+}
+
+#[derive(Debug, Clone, Serialize)]
+
+pub struct PinMessageBody {
+    pub duration: u32,
+    pub message: Value,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+
+pub struct CategoriesResponse {
+    pub data: Vec<Categories>,
+    pub message: String,
+    pub pagination: Pagination,
+}
+#[derive(Debug, Clone, Deserialize)]
+
+pub struct Pagination {
+    pub next_cursor: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+
+pub struct Categories {
+    pub id: u64,
+    pub name: String,
+    pub tags: Vec<String>,
+    pub thumbnail: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+
+pub struct StreamInfoBody {
+    pub stream_title: String,
+    pub category_id: u64,
+    pub is_mature: bool,
+    pub language: String,
+    pub tags: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Default)]
+
+pub struct PatchChanelBody {
+    pub category_id: Option<u64>,
+    pub stream_title: Option<String>,
+    pub custom_tags: Option<Vec<String>>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+
+pub struct SearchCategoriesResponse {
+    pub data: Vec<Category>,
+    pub pagination: Pagination,
+    pub message: String,
+}
+#[derive(Debug, Clone, Deserialize)]
+
+pub struct Category {
+    pub id: u64,
+    pub name: String,
+    pub thumbnail: String,
+    pub tags: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Default)]
+
+pub struct UpdateChatSettingsBody {
+    pub slow_mode: Option<bool>,
+    pub message_interval: Option<u32>,
+    pub followers_mode: Option<bool>,
+    pub following_min_duration: Option<u32>,
+    pub subscribers_mode: Option<bool>,
+    pub emotes_mode: Option<bool>,
 }

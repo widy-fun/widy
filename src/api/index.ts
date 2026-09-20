@@ -119,6 +119,24 @@ export const api = createApi({
 			}),
 			invalidatesTags: ["Services"],
 		}),
+		openaiSignOut: builder.mutation<void, void>({
+			query: () => ({
+				command: "openai_sign_out",
+			}),
+			invalidatesTags: ["Services"],
+		}),
+		claudeSignOut: builder.mutation<void, void>({
+			query: () => ({
+				command: "claude_sign_out",
+			}),
+			invalidatesTags: ["Services"],
+		}),
+		kickSessionSignOut: builder.mutation<void, void>({
+			query: () => ({
+				command: "kick_session_sign_out",
+			}),
+			invalidatesTags: ["Services"],
+		}),
 	}),
 });
 
@@ -136,4 +154,7 @@ export const {
 	useTwitchBotSignOutMutation,
 	useGetInitialStateQuery,
 	useGeminiSignOutMutation,
+	useOpenaiSignOutMutation,
+	useClaudeSignOutMutation,
+	useKickSessionSignOutMutation,
 } = api;

@@ -60,9 +60,12 @@ const AssistantAlertActionMessageCard = ({
 									color: theme.palette.primary.main,
 								})}
 							>
-								{t("message.assistant_alert")}
+								{t("dashboard.assistant")}
 							</Typography>
 						</Box>
+						<div>
+							<span>{alert.name}</span>
+						</div>
 
 						{!!alert && (
 							<div

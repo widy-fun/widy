@@ -20,11 +20,15 @@ use crate::{
     services::{
         DatabaseService,
         twitch::models::{
-            AddTwitchRewardBody, BadgeInfoResponse, BanUserBody, BanUserData, ChatMessageCondition,
-            CheerCondition, Condition, FollowCondition, RaidCondition, RedemptionCondition,
-            SendChatAnnouncementBody, SendChatMessageBody, SubscriptionCondition,
-            SubscriptionRequestBody, SubscriptionType, Transport, TwitchDeviceCodeResponse,
-            TwitchRefreshTokenResponse, TwitchTokenInfo, TwitchTokenResponse,
+            AddTwitchRewardBody, BadgeInfoResponse, BanUserBody, BanUserData, BannedUser,
+            BannedUsersResponse, ChatMessageCondition, ChattersResponse, CheerCondition, Condition,
+            CreatePollBody, CreatePollResponse, CreatePredictionBody, CreatePredictionResponse,
+            EndPollBody, EndPredictionBody, FollowCondition, GetTopGamesResponse,
+            ModifyChannelInformationBody, RaidCondition, RedemptionCondition,
+            SearchCategoriesResponse, SendChatAnnouncementBody, SendChatMessageBody,
+            SubscriptionCondition, SubscriptionRequestBody, SubscriptionType, Transport,
+            TwitchDeviceCodeResponse, TwitchRefreshTokenResponse, TwitchTokenInfo,
+            TwitchTokenResponse, UpdateChatSettingsBody,
         },
     },
     utils::send_request,
@@ -95,7 +99,7 @@ pub trait TwitchApi: Send + Sync {
             return Ok(auth);
         }
 
-        if cfg!(debug_assertions) {
+        if cfg!(feature = "mock-twitch") {
             return self.get_token_mock().await;
         }
 
@@ -107,14 +111,11 @@ pub trait TwitchApi: Send + Sync {
         app: &AppHandle,
         old_auth: &TwitchAuth,
     ) -> Result<TwitchAuth, AppError> {
-        if cfg!(debug_assertions) {
+        if cfg!(feature = "mock-twitch") {
             return Ok(old_auth.clone());
         }
         let database_service = app.state::<DatabaseService>();
-        match self
-            .refresh_token(&self.client_id(), &old_auth.refresh_token)
-            .await
-        {
+        match self.refresh_token(&old_auth.refresh_token).await {
             Ok(response) => {
                 let new_auth = TwitchAuth {
                     access_token: response.access_token,
@@ -167,14 +168,15 @@ pub trait TwitchApi: Send + Sync {
         app: &AppHandle,
     ) -> Result<BadgeInfoResponse, AppError> {
         let auth = self.get_auth(app).await?;
+        #[cfg(feature = "mock-twitch")]
+        let client_id = std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap();
+        #[cfg(not(feature = "mock-twitch"))]
+        let client_id = self.client_id();
         let request = self
             .reqwest_client()
             .get(format!("{}/chat/badges", self.api_endpoint()))
             .bearer_auth(auth.access_token)
-            .header(
-                "Client-Id",
-                std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap_or(self.client_id()),
-            )
+            .header("Client-Id", client_id)
             .query(&[("broadcaster_id", broadcaster_id)]);
 
         let chanel_badges = self
@@ -187,14 +189,15 @@ pub trait TwitchApi: Send + Sync {
 
     async fn get_global_badges(&self, app: &AppHandle) -> Result<BadgeInfoResponse, AppError> {
         let auth = self.get_auth(app).await?;
+        #[cfg(feature = "mock-twitch")]
+        let client_id = std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap();
+        #[cfg(not(feature = "mock-twitch"))]
+        let client_id = self.client_id();
         let request = self
             .reqwest_client()
             .get(format!("{}/chat/badges/global", self.api_endpoint()))
             .bearer_auth(auth.access_token)
-            .header(
-                "Client-Id",
-                std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap_or(self.client_id()),
-            );
+            .header("Client-Id", client_id);
 
         let global_badges: BadgeInfoResponse = self
             .send_twitch_request(request, "global badges")
@@ -205,7 +208,7 @@ pub trait TwitchApi: Send + Sync {
     }
 
     async fn get_token(&self, device_code: String) -> Result<TwitchAuth, AppError> {
-        if cfg!(debug_assertions) {
+        if cfg!(feature = "mock-twitch") {
             return self.get_token_mock().await;
         }
 
@@ -278,7 +281,6 @@ pub trait TwitchApi: Send + Sync {
 
     async fn refresh_token(
         &self,
-        client_id: &String,
         refresh_token: &String,
     ) -> Result<TwitchRefreshTokenResponse, AppError> {
         let request = self
@@ -290,7 +292,7 @@ pub trait TwitchApi: Send + Sync {
                     "refresh_token",
                     urlencoding::encode(&refresh_token).to_string(),
                 ),
-                ("client_id", client_id.to_owned()),
+                ("client_id", self.client_id().to_owned()),
             ]);
 
         let refresh_token_response: TwitchRefreshTokenResponse = self
@@ -342,6 +344,11 @@ pub trait TwitchApi: Send + Sync {
             should_redemptions_skip_request_queue: reward.should_redemptions_skip_request_queue,
         };
 
+        #[cfg(feature = "mock-twitch")]
+        let client_id = std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap();
+        #[cfg(not(feature = "mock-twitch"))]
+        let client_id = self.client_id();
+
         let request = self
             .reqwest_client()
             .post(format!(
@@ -349,10 +356,7 @@ pub trait TwitchApi: Send + Sync {
                 self.api_endpoint()
             ))
             .header("Authorization", format!("Bearer {}", auth.access_token))
-            .header(
-                "Client-Id",
-                std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap_or(self.client_id()),
-            )
+            .header("Client-Id", client_id)
             .query(&[("broadcaster_id", &auth.user_id)])
             .json(&twitch_reward_body);
 
@@ -385,6 +389,10 @@ pub trait TwitchApi: Send + Sync {
             .get_reward_by_id(id)
             .await?
             .ok_or(AppError::DbError("Reward not found".to_string()))?;
+        #[cfg(feature = "mock-twitch")]
+        let client_id = std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap();
+        #[cfg(not(feature = "mock-twitch"))]
+        let client_id = self.client_id();
 
         let request = self
             .reqwest_client()
@@ -393,10 +401,7 @@ pub trait TwitchApi: Send + Sync {
                 self.api_endpoint()
             ))
             .header("Authorization", format!("Bearer {}", auth.access_token))
-            .header(
-                "Client-Id",
-                std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap_or(self.client_id()),
-            )
+            .header("Client-Id", client_id)
             .query(&[
                 ("broadcaster_id", auth.user_id.clone()),
                 (
@@ -572,7 +577,6 @@ pub trait TwitchApi: Send + Sync {
             ))
             .bearer_auth(auth.access_token)
             .header("Client-Id", self.client_id())
-            .header("Content-Type", "application/json")
             .json(&body);
 
         let json = self
@@ -632,23 +636,22 @@ pub trait TwitchApi: Send + Sync {
         broadcaster_id: String,
         sender_id: String,
         reply_parent_message_id: Option<String>,
-        client_id: String,
         app: &AppHandle,
+        pin: Option<bool>,
     ) -> Result<(), AppError> {
         let auth: TwitchAuth = self.get_auth(app).await?;
         let request = self
             .reqwest_client()
             .post(format!("{}/chat/messages", self.api_endpoint()))
             .bearer_auth(auth.access_token)
-            .header("Client-Id", client_id)
-            .header("Content-Type", "application/json")
+            .header("Client-Id", self.client_id())
             .json(&SendChatMessageBody {
                 message,
                 broadcaster_id,
                 sender_id,
                 reply_parent_message_id,
                 for_source_only: None,
-                pin: None,
+                pin,
             });
 
         let _ = self
@@ -663,7 +666,6 @@ pub trait TwitchApi: Send + Sync {
         message: String,
         broadcaster_id: String,
         moderator_id: String,
-        client_id: String,
         app: &AppHandle,
     ) -> Result<(), AppError> {
         let auth: TwitchAuth = self.get_auth(app).await?;
@@ -675,8 +677,7 @@ pub trait TwitchApi: Send + Sync {
                 ("broadcaster_id", broadcaster_id),
                 ("moderator_id", moderator_id),
             ])
-            .header("Client-Id", client_id)
-            .header("Content-Type", "application/json")
+            .header("Client-Id", self.client_id())
             .json(&SendChatAnnouncementBody {
                 message,
                 color: None,
@@ -692,7 +693,359 @@ pub trait TwitchApi: Send + Sync {
 
     async fn ban_user(
         &self,
-        client_id: String,
+        broadcaster_id: String,
+        moderator_id: String,
+        user_id: String,
+        app: &AppHandle,
+        duration: Option<u64>,
+    ) -> Result<(), AppError> {
+        let auth: TwitchAuth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
+            .post(format!("{}/moderation/bans", self.api_endpoint()))
+            .bearer_auth(auth.access_token)
+            .header("Client-Id", self.client_id())
+            .query(&[
+                ("broadcaster_id", broadcaster_id),
+                ("moderator_id", moderator_id),
+            ])
+            .json(&BanUserBody {
+                data: BanUserData {
+                    user_id,
+                    duration,
+                    reason: None,
+                },
+            });
+
+        let _ = self
+            .send_twitch_request::<serde_json::Value>(request, "ban user")
+            .await?;
+
+        Ok(())
+    }
+
+    async fn unban_user(
+        &self,
+        broadcaster_id: String,
+        moderator_id: String,
+        user_id: String,
+        app: &AppHandle,
+    ) -> Result<(), AppError> {
+        let auth: TwitchAuth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
+            .delete(format!("{}/moderation/bans", self.api_endpoint()))
+            .bearer_auth(auth.access_token)
+            .header("Client-Id", self.client_id())
+            .query(&[
+                ("broadcaster_id", broadcaster_id),
+                ("moderator_id", moderator_id),
+                ("user_id", user_id),
+            ]);
+
+        let _ = self
+            .send_twitch_request::<serde_json::Value>(request, "unban user")
+            .await?;
+
+        Ok(())
+    }
+
+    async fn get_banned_users(
+        &self,
+        broadcaster_id: String,
+        app: &AppHandle,
+        after: Option<String>,
+        before: Option<String>,
+        first: Option<u32>,
+    ) -> Result<Option<BannedUsersResponse>, AppError> {
+        let auth: TwitchAuth = self.get_auth(app).await?;
+        let mut query: Vec<(&str, String)> = vec![
+            ("broadcaster_id", broadcaster_id),
+            ("first", first.unwrap_or(100).min(100).to_string()),
+        ];
+
+        if let Some(after) = after {
+            query.push(("after", after));
+        }
+        if let Some(before) = before {
+            query.push(("before", before));
+        }
+        let request = self
+            .reqwest_client()
+            .get(format!("{}/moderation/banned", self.api_endpoint()))
+            .bearer_auth(auth.access_token)
+            .header("Client-Id", self.client_id())
+            .query(&query);
+
+        let response = self
+            .send_twitch_request::<BannedUsersResponse>(request, "get banned users")
+            .await?;
+
+        Ok(response)
+    }
+
+    async fn get_all_banned_users(
+        &self,
+        broadcaster_id: String,
+        app: &AppHandle,
+    ) -> Result<Vec<BannedUser>, AppError> {
+        let mut all_users = Vec::new();
+        let mut cursor: Option<String> = None;
+
+        loop {
+            let response = self
+                .get_banned_users(broadcaster_id.clone(), app, cursor.clone(), None, Some(100))
+                .await?;
+
+            let Some(response) = response else {
+                break;
+            };
+
+            let is_last_page = response.data.is_empty();
+            all_users.extend(response.data);
+
+            if is_last_page || response.pagination.cursor.is_none() {
+                break;
+            }
+
+            cursor = response.pagination.cursor;
+        }
+
+        Ok(all_users)
+    }
+
+    async fn get_chatters(
+        &self,
+        broadcaster_id: String,
+        moderator_id: String,
+        app: &AppHandle,
+        after: Option<String>,
+        first: Option<u32>,
+    ) -> Result<Option<ChattersResponse>, AppError> {
+        let auth: TwitchAuth = self.get_auth(app).await?;
+        let mut query: Vec<(&str, String)> = vec![
+            ("broadcaster_id", broadcaster_id),
+            ("moderator_id", moderator_id),
+            ("first", first.unwrap_or(1000).to_string()),
+        ];
+
+        if let Some(after) = after {
+            query.push(("after", after));
+        }
+        let request = self
+            .reqwest_client()
+            .get(format!("{}/chat/chatters", self.api_endpoint()))
+            .bearer_auth(auth.access_token)
+            .header("Client-Id", self.client_id())
+            .query(&query);
+
+        let response = self
+            .send_twitch_request::<ChattersResponse>(request, "get chatters")
+            .await?;
+
+        Ok(response)
+    }
+
+    async fn get_top_games(
+        &self,
+        app: &AppHandle,
+        after: Option<String>,
+        before: Option<String>,
+        first: Option<u32>,
+    ) -> Result<Option<GetTopGamesResponse>, AppError> {
+        let auth: TwitchAuth = self.get_auth(app).await?;
+        let mut query: Vec<(&str, String)> =
+            vec![("first", first.unwrap_or(100).min(100).to_string())];
+
+        if let Some(after) = after {
+            query.push(("after", after));
+        }
+        if let Some(before) = before {
+            query.push(("before", before));
+        }
+        let request = self
+            .reqwest_client()
+            .get(format!("{}/games/top", self.api_endpoint()))
+            .bearer_auth(auth.access_token)
+            .header("Client-Id", self.client_id())
+            .query(&query);
+
+        let response = self
+            .send_twitch_request::<GetTopGamesResponse>(request, "get top games")
+            .await?;
+
+        Ok(response)
+    }
+
+    async fn search_categories(
+        &self,
+        app: &AppHandle,
+        query: String,
+        after: Option<String>,
+        first: Option<u32>,
+    ) -> Result<Option<SearchCategoriesResponse>, AppError> {
+        let auth: TwitchAuth = self.get_auth(app).await?;
+        let mut params: Vec<(&str, String)> = vec![
+            ("query", query),
+            ("first", first.unwrap_or(100).min(100).to_string()),
+        ];
+
+        if let Some(after) = after {
+            params.push(("after", after));
+        }
+        let request = self
+            .reqwest_client()
+            .get(format!("{}/search/categories", self.api_endpoint()))
+            .bearer_auth(auth.access_token)
+            .header("Client-Id", self.client_id())
+            .query(&params);
+
+        let response = self
+            .send_twitch_request::<SearchCategoriesResponse>(request, "search categories")
+            .await?;
+
+        Ok(response)
+    }
+
+    async fn modify_channel_information(
+        &self,
+        broadcaster_id: String,
+        app: &AppHandle,
+        body: ModifyChannelInformationBody,
+    ) -> Result<(), AppError> {
+        let auth: TwitchAuth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
+            .patch(format!("{}/channels", self.api_endpoint()))
+            .bearer_auth(auth.access_token)
+            .header("Client-Id", self.client_id())
+            .query(&[("broadcaster_id", broadcaster_id.clone())])
+            .json(&body);
+
+        let _ = self
+            .send_twitch_request::<serde_json::Value>(request, "modify channel information")
+            .await?;
+
+        Ok(())
+    }
+
+    async fn update_chat_settings(
+        &self,
+        broadcaster_id: String,
+        moderator_id: String,
+        app: &AppHandle,
+        body: UpdateChatSettingsBody,
+    ) -> Result<(), AppError> {
+        let auth: TwitchAuth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
+            .patch(format!("{}/chat/settings", self.api_endpoint()))
+            .bearer_auth(auth.access_token)
+            .header("Client-Id", self.client_id())
+            .query(&[
+                ("broadcaster_id", broadcaster_id.clone()),
+                ("moderator_id", moderator_id),
+            ])
+            .json(&body);
+
+        let _ = self
+            .send_twitch_request::<serde_json::Value>(request, "update chat settings")
+            .await?;
+
+        Ok(())
+    }
+
+    async fn pin_chat_message(
+        &self,
+        broadcaster_id: String,
+        moderator_id: String,
+        message_id: String,
+        duration_seconds: Option<u32>,
+        app: &AppHandle,
+    ) -> Result<(), AppError> {
+        let auth: TwitchAuth = self.get_auth(app).await?;
+        let mut query: Vec<(&str, String)> = vec![
+            ("broadcaster_id", broadcaster_id),
+            ("moderator_id", moderator_id),
+            ("message_id", message_id),
+        ];
+
+        if let Some(duration) = duration_seconds {
+            query.push(("duration_seconds", duration.to_string()));
+        }
+        let request = self
+            .reqwest_client()
+            .put(format!("{}/chat/pins", self.api_endpoint()))
+            .bearer_auth(auth.access_token)
+            .header("Client-Id", self.client_id())
+            .query(&query);
+
+        let _ = self
+            .send_twitch_request::<serde_json::Value>(request, "pin chat message")
+            .await?;
+
+        Ok(())
+    }
+
+    async fn create_clip(
+        &self,
+        broadcaster_id: String,
+        title: Option<String>,
+        duration: Option<u32>,
+        app: &AppHandle,
+    ) -> Result<(), AppError> {
+        let auth: TwitchAuth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
+            .post(format!("{}/clips", self.api_endpoint()))
+            .bearer_auth(auth.access_token)
+            .header("Client-Id", self.client_id())
+            .query(&[
+                ("broadcaster_id", broadcaster_id.clone()),
+                ("title", title.unwrap_or_default()),
+                ("duration", duration.unwrap_or(30).to_string()),
+            ]);
+
+        let _ = self
+            .send_twitch_request::<serde_json::Value>(request, "create clip")
+            .await?;
+
+        Ok(())
+    }
+
+    async fn delete_chat_messages(
+        &self,
+        broadcaster_id: String,
+        moderator_id: String,
+        message_id: Option<String>,
+        app: &AppHandle,
+    ) -> Result<(), AppError> {
+        let auth: TwitchAuth = self.get_auth(app).await?;
+        let mut query: Vec<(&str, String)> = vec![
+            ("broadcaster_id", broadcaster_id),
+            ("moderator_id", moderator_id),
+        ];
+
+        if let Some(message_id) = message_id {
+            query.push(("message_id", message_id));
+        }
+
+        let request = self
+            .reqwest_client()
+            .delete(format!("{}/moderation/chat", self.api_endpoint()))
+            .bearer_auth(auth.access_token)
+            .header("Client-Id", self.client_id())
+            .query(&query);
+
+        let _ = self
+            .send_twitch_request::<serde_json::Value>(request, "delete chat messages")
+            .await?;
+
+        Ok(())
+    }
+
+    async fn add_channel_moderator(
+        &self,
         broadcaster_id: String,
         user_id: String,
         app: &AppHandle,
@@ -700,24 +1053,152 @@ pub trait TwitchApi: Send + Sync {
         let auth: TwitchAuth = self.get_auth(app).await?;
         let request = self
             .reqwest_client()
-            .post(format!("{}/moderation/bans", self.api_endpoint()))
+            .post(format!("{}/moderation/moderators", self.api_endpoint()))
             .bearer_auth(auth.access_token)
-            .header("Client-Id", client_id)
-            .header("Content-Type", "application/json")
-            .query(&[
-                ("broadcaster_id", broadcaster_id.clone()),
-                ("moderator_id", broadcaster_id),
-            ])
-            .json(&BanUserBody {
-                data: BanUserData {
-                    user_id,
-                    duration: None,
-                    reason: None,
-                },
-            });
+            .header("Client-Id", self.client_id())
+            .query(&[("broadcaster_id", broadcaster_id), ("user_id", user_id)]);
 
         let _ = self
-            .send_twitch_request::<serde_json::Value>(request, "chat message")
+            .send_twitch_request::<serde_json::Value>(request, "add channel moderator")
+            .await?;
+
+        Ok(())
+    }
+
+    async fn remove_channel_moderator(
+        &self,
+        broadcaster_id: String,
+        user_id: String,
+        app: &AppHandle,
+    ) -> Result<(), AppError> {
+        let auth: TwitchAuth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
+            .delete(format!("{}/moderation/moderators", self.api_endpoint()))
+            .bearer_auth(auth.access_token)
+            .header("Client-Id", self.client_id())
+            .query(&[("broadcaster_id", broadcaster_id), ("user_id", user_id)]);
+
+        let _ = self
+            .send_twitch_request::<serde_json::Value>(request, "remove channel moderator")
+            .await?;
+
+        Ok(())
+    }
+
+    async fn add_channel_vip(
+        &self,
+        broadcaster_id: String,
+        user_id: String,
+        app: &AppHandle,
+    ) -> Result<(), AppError> {
+        let auth: TwitchAuth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
+            .post(format!("{}/channels/vips", self.api_endpoint()))
+            .bearer_auth(auth.access_token)
+            .header("Client-Id", self.client_id())
+            .query(&[("broadcaster_id", broadcaster_id), ("user_id", user_id)]);
+
+        let _ = self
+            .send_twitch_request::<serde_json::Value>(request, "add channel vip")
+            .await?;
+
+        Ok(())
+    }
+
+    async fn remove_channel_vip(
+        &self,
+        broadcaster_id: String,
+        user_id: String,
+        app: &AppHandle,
+    ) -> Result<(), AppError> {
+        let auth: TwitchAuth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
+            .delete(format!("{}/channels/vips", self.api_endpoint()))
+            .bearer_auth(auth.access_token)
+            .header("Client-Id", self.client_id())
+            .query(&[("broadcaster_id", broadcaster_id), ("user_id", user_id)]);
+
+        let _ = self
+            .send_twitch_request::<serde_json::Value>(request, "remove channel vip")
+            .await?;
+
+        Ok(())
+    }
+
+    async fn create_poll(
+        &self,
+        body: CreatePollBody,
+        app: &AppHandle,
+    ) -> Result<Option<CreatePollResponse>, AppError> {
+        let auth: TwitchAuth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
+            .post(format!("{}/polls", self.api_endpoint()))
+            .bearer_auth(auth.access_token)
+            .header("Client-Id", self.client_id())
+            .json(&body);
+
+        let response = self
+            .send_twitch_request::<CreatePollResponse>(request, "create poll")
+            .await?;
+
+        Ok(response)
+    }
+
+    async fn end_poll(&self, body: EndPollBody, app: &AppHandle) -> Result<(), AppError> {
+        let auth: TwitchAuth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
+            .patch(format!("{}/polls", self.api_endpoint()))
+            .bearer_auth(auth.access_token)
+            .header("Client-Id", self.client_id())
+            .json(&body);
+
+        let _ = self
+            .send_twitch_request::<serde_json::Value>(request, "end poll")
+            .await?;
+
+        Ok(())
+    }
+
+    async fn create_prediction(
+        &self,
+        body: CreatePredictionBody,
+        app: &AppHandle,
+    ) -> Result<Option<CreatePredictionResponse>, AppError> {
+        let auth: TwitchAuth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
+            .post(format!("{}/predictions", self.api_endpoint()))
+            .bearer_auth(auth.access_token)
+            .header("Client-Id", self.client_id())
+            .json(&body);
+
+        let response = self
+            .send_twitch_request::<CreatePredictionResponse>(request, "create prediction")
+            .await?;
+
+        Ok(response)
+    }
+
+    async fn end_prediction(
+        &self,
+        body: EndPredictionBody,
+        app: &AppHandle,
+    ) -> Result<(), AppError> {
+        let auth: TwitchAuth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
+            .patch(format!("{}/predictions", self.api_endpoint()))
+            .bearer_auth(auth.access_token)
+            .header("Client-Id", self.client_id())
+            .json(&body);
+
+        let _ = self
+            .send_twitch_request::<serde_json::Value>(request, "end prediction")
             .await?;
 
         Ok(())

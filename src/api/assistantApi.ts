@@ -2,6 +2,8 @@ import {
 	IAssistantSettings,
 	IAssistantStatus,
 	IInputDeviceInfo,
+	ITool,
+	IToolCallingModel,
 	ToolCallingProvider,
 } from "@widy/sdk";
 import { api } from ".";
@@ -35,7 +37,7 @@ export const assistantApi = api.injectEndpoints({
 			providesTags: ["Assistant-Settings"],
 		}),
 		getAssistantProviderModels: builder.query<
-			string[],
+			IToolCallingModel[],
 			{ provider: ToolCallingProvider }
 		>({
 			query: (args) => ({
@@ -46,6 +48,11 @@ export const assistantApi = api.injectEndpoints({
 		getAssistantStatus: builder.query<IAssistantStatus, void>({
 			query: () => ({
 				command: "get_assistant_status",
+			}),
+		}),
+		getTools: builder.query<ITool[], void>({
+			query: () => ({
+				command: "get_tools",
 			}),
 		}),
 		updateAssistantSettings: builder.mutation<
@@ -68,4 +75,5 @@ export const {
 	useUpdateAssistantSettingsMutation,
 	useGetAssistantProviderModelsQuery,
 	useGetAssistantStatusQuery,
+	useGetToolsQuery,
 } = assistantApi;

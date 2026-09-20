@@ -1,21 +1,21 @@
 {
 	"on": "تشغيل",
 	"off": "إيقاف",
-	"select": "اختيار",
+	"select": "تحديد",
 	"success": "نجاح",
 	"ok": "موافق",
 	"cancel": "إلغاء",
 	"tts_volume": "مستوى صوت تحويل النص إلى كلام",
-	"skip_media": "اختصار لتخطي الوسائط",
-	"skip_alert": "اختصار لتخطي التنبيه",
-	"skip_tts": "اختصار لتخطي تحويل النص إلى كلام",
+	"skip_media": "اختصار تخطي الوسائط",
+	"skip_alert": "اختصار تخطي التنبيه",
+	"skip_tts": "اختصار تخطي تحويل النص إلى كلام",
 	"none": "لا شيء",
 	"next": "التالي",
 	"start": "بدء",
 	"stop": "إيقاف",
 	"delay": "تأخير",
 	"milliseconds": "مللي ثانية",
-	"token": "الرمز المميز",
+	"token": "الرمز",
 	"overlay_id": "معرّف التراكب",
 	"api_key": "مفتاح API",
 	"disconnected": "غير متصل",
@@ -27,23 +27,26 @@
 	"downloading": "جارٍ التنزيل",
 	"remove": "إزالة",
 	"removing": "جارٍ الإزالة",
-	"search_voices": "بحث عن الأصوات",
+	"search_voices": "البحث عن الأصوات",
+	"stopping": "جارٍ الإيقاف",
+	"starting": "جارٍ البدء",
 	"test": "اختبار",
 	"speakers": "المتحدثون",
+	"session_token": "رمز الجلسة",
 	"single_speaker": "متحدث واحد",
 	"sure_delete": "هل أنت متأكد من رغبتك في حذف هذا التنويع؟",
 	"authorization": {
 		"title": "المصادقة",
-		"code": "طلب رمز",
+		"code": "طلب الرمز",
 		"sign_in": "تسجيل الدخول",
 		"phone": "رقم الهاتف",
 		"telegram_code": "الرمز من تيليجرام",
 		"your_code": "رمزك",
 		"2fa_password": "كلمة مرور المصادقة الثنائية",
 		"password": "كلمة المرور",
-		"streamelements": "يجب أولاً الاتصال باستخدام JWT الخاص بـ StreamElements",
+		"streamelements": "يجب الاتصال أولًا بـ StreamElements باستخدام JWT",
 		"you_can_find_by_url": "يمكنك العثور عليه عبر هذا الرابط",
-		"set_id_and_jwt": "يجب تعيين معرّف حساب StreamElements وJWT الخاص بـ {{service}}"
+		"set_id_and_jwt": "يجب تعيين معرّف حساب StreamElements وJWT لـ {{service}}"
 	},
 	"error": {
 		"wrong_lots_format": "تنسيق العناصر غير صحيح",
@@ -59,9 +62,9 @@
 	},
 	"media": {
 		"title": "الوسائط",
-		"youtube": "YouTube",
-		"twitch": "Twitch",
-		"tiktok": "TikTok"
+		"youtube": "يوتيوب",
+		"twitch": "تويتش",
+		"tiktok": "تيك توك"
 	},
 	"integration": {
 		"tribute": "إظهار رسائل التبرعات"
@@ -72,13 +75,13 @@
 		"settings": "الإعدادات"
 	},
 	"maption": {
-		"set_point": "تعيين النقطة",
+		"set_point": "تعيين نقطة",
 		"meter_price": "سعر المتر الواحد",
 		"amount": "المبلغ",
 		"finish": "إنهاء",
 		"lat_error": "يجب أن يكون خط العرض بين -90 و90",
 		"lng_error": "يجب أن يكون خط الطول بين -180 و180",
-		"rules": "لكي يغيّر المؤشر موضعه تلقائيًا في الرسالة، يجب أن تحتوي الرسالة على كلمة واحدة فقط من:"
+		"rules": "لكي يغيّر المؤشر موضعه تلقائيًا في الرسالة، يجب أن توجد كلمة واحدة فقط من:"
 	},
 	"media_settings": {
 		"enabled": "مفعّل",
@@ -94,14 +97,15 @@
 		"media": "الوسائط",
 		"goals": "الأهداف",
 		"auction": "المزاد",
-		"maption": "Maption",
+		"maption": "الخريطة",
 		"fighter": "المقاتل",
 		"widgets": "الأدوات",
-		"info": "معلومات",
-		"nsfw": "محتوى غير مناسب للعمل",
+		"info": "المعلومات",
+		"nsfw": "محتوى غير آمن للعمل",
 		"rewards": "المكافآت",
 		"commands": "الأوامر",
-		"tts": "تحويل النص إلى كلام"
+		"tts": "تحويل النص إلى كلام",
+		"assistant": "المساعد"
 	},
 	"messages": {
 		"title": "آخر الرسائل"
@@ -110,21 +114,35 @@
 		"skip": "تخطي",
 		"replay": "إعادة التشغيل",
 		"donated": "تبرع {{user_name}} بمبلغ {{amount}} {{currency}}",
-		"redemption": "استردّ {{user_name}} المكافأة {{title}} مقابل {{cost}}",
+		"redemption": "استرد {{user_name}} المكافأة {{title}} مقابل {{cost}}",
 		"followed": "تابع {{user_name}}",
 		"subscribed": "اشترك {{user_name}}",
 		"gifted_subscriptions": "أهدى {{user_name}} عدد {{total}} من الاشتراكات",
-		"raided_with": "قام {{user_name}} بمداهمة مع {{viewers}} مشاهدين",
-		"command_action": "استخدم {{user_name}} الأمر {{command_name}}"
+		"raided_with": "نفّذ {{user_name}} غارة مع {{viewers}} مشاهدين",
+		"command_action": "استخدم {{user_name}} الأمر {{command_name}}",
+		"assistant_ban_user": "تم حظر {{user_name}}",
+		"assistant_unban_user": "إلغاء حظر {{user_name}}",
+		"assistant_pin_message": "تثبيت الرسالة {{message}}",
+		"assistant_change_channel_category": "تغيير الفئة إلى {{category}}",
+		"assistant_change_channel_title": "تغيير العنوان إلى {{title}}",
+		"assistant_add_emote_mode": "تفعيل وضع الرموز التعبيرية",
+		"assistant_remove_emote_mode": "إيقاف وضع الرموز التعبيرية",
+		"assistant_add_follow_mode": "تفعيل وضع المتابعة",
+		"assistant_remove_follow_mode": "إيقاف وضع المتابعة",
+		"assistant_add_slow_mode": "تفعيل الوضع البطيء",
+		"assistant_remove_slow_mode": "إيقاف الوضع البطيء",
+		"assistant_add_subscribe_mode": "تفعيل وضع الاشتراك",
+		"assistant_remove_subscribe_mode": "إيقاف وضع الاشتراك"
 	},
 	"filter": {
 		"title": "تصفية الرسائل",
 		"exclude_donations": "استبعاد التبرعات",
 		"exclude_follows": "استبعاد المتابعات",
 		"exclude_subscriptions": "استبعاد الاشتراكات",
-		"exclude_raids": "استبعاد المداهمات",
+		"exclude_raids": "استبعاد الغارات",
 		"exclude_redemptions": "استبعاد الاستردادات",
-		"exclude_commands_actions": "استبعاد إجراءات الأوامر"
+		"exclude_commands_actions": "استبعاد إجراءات الأوامر",
+		"exclude_assistant_actions": "استبعاد إجراءات المساعد"
 	},
 	"settings": {
 		"title": "الإعدادات",
@@ -146,23 +164,23 @@
 	"timer": {
 		"continue": "متابعة",
 		"pause": "إيقاف مؤقت",
-		"reset": "إعادة تعيين",
+		"reset": "إعادة ضبط",
 		"add_time": "إضافة وقت",
 		"reduce_time": "تقليل الوقت",
 		"add_timex2": "إضافة الوقت ×2"
 	},
 	"fighter": {
 		"title": "المقاتل",
-		"match": "مواجهة",
-		"final": "النهائي",
-		"game": "اللعبة",
+		"match": "مباراة",
+		"final": "نهائي",
+		"game": "لعبة",
 		"cancel": "إلغاء اللعبة",
 		"winner": "الفائز",
 		"settings": "الإعدادات",
-		"create_game": "Create game from lots",
+		"create_game": "إنشاء لعبة من العناصر",
 		"start": "بدء",
 		"pause": "إيقاف مؤقت",
-		"rematch": "إعادة المواجهة",
+		"rematch": "إعادة المباراة",
 		"resume": "استئناف"
 	},
 	"lot": {
@@ -188,8 +206,8 @@
 		"new_donation": "تبرع جديد",
 		"show_odds": "إظهار الاحتمالات",
 		"show_total_sum": "إظهار المجموع الكلي",
-		"greater_timer_adding_time": "وقت إضافة أكبر للمؤقت",
-		"not_add_time_if": "عدم إضافة الوقت إذا",
+		"greater_timer_adding_time": "وقت إضافة المؤقت الأكبر",
+		"not_add_time_if": "عدم إضافة وقت إذا",
 		"adding_time": "الوقت"
 	},
 	"lots_options": {
@@ -206,7 +224,7 @@
 	},
 	"services": {
 		"title": "الخدمات",
-		"tribute": "التبرع",
+		"tribute": "تبرع",
 		"streamelements": "StreamElements",
 		"connect": "اتصال",
 		"integrations": "التكاملات",
@@ -217,7 +235,7 @@
 		"device_code_expired": "انتهت صلاحية رمز الجهاز. يرجى المحاولة مرة أخرى.",
 		"user_code": "رمز المستخدم",
 		"authorize_with_code": "المصادقة باستخدام الرمز",
-		"waiting_authorization": "بانتظار المصادقة..."
+		"waiting_authorization": "في انتظار المصادقة..."
 	},
 	"widy": {
 		"donation_account_name": "اسم حساب التبرعات",
@@ -249,7 +267,7 @@
 		"Donation": "تبرع",
 		"Subscription": "اشتراك",
 		"Follow": "متابعة",
-		"Raid": "مداهمة",
+		"Raid": "غارة",
 		"variant": "التنويع",
 		"audio_volume": "مستوى صوت الصوت",
 		"video_volume": "مستوى صوت الفيديو",
@@ -257,7 +275,8 @@
 		"duration": "المدة",
 		"delay": "تأخير",
 		"Redemption": "استرداد",
-		"CommandAction": "إجراء الأمر"
+		"CommandAction": "إجراء الأمر",
+		"AssistantAction": "إجراء المساعد"
 	},
 	"alert_variant": {
 		"Image": "صورة",
@@ -281,8 +300,8 @@
 		"start_raising": "بدء الجمع من",
 		"end_date": "تاريخ انتهاء الهدف",
 		"bar_height": "ارتفاع الشريط",
-		"rounding_radius": "نصف قطر الزوايا",
-		"bar_stroke_thickness": "سُمك حدود الشريط",
+		"rounding_radius": "نصف قطر الاستدارة",
+		"bar_stroke_thickness": "سماكة حدود الشريط",
 		"background_bar_color": "لون خلفية الشريط",
 		"progress_bar_color": "لون شريط التقدم",
 		"goal_progress_bar": "شريط تقدم الهدف",
@@ -297,7 +316,7 @@
 		"DoNotDisplay": "عدم العرض",
 		"title": "العنوان",
 		"limits": "الحدود",
-		"raised": "المجموع المجموع",
+		"raised": "المجموع المحصل",
 		"days_left": "الأيام المتبقية",
 		"finish_goal": "إنهاء الهدف",
 		"sure_finish": "هل أنت متأكد من رغبتك في إنهاء هذا الهدف؟",
@@ -316,10 +335,10 @@
 		"obs_dock_url": "رابط لوحة OBS"
 	},
 	"view": {
-		"top": "الصورة في الأعلى، والنص في الأسفل",
-		"bottom": "الصورة في الأسفل، والنص في الأعلى",
-		"left": "الصورة على اليسار، والنص على اليمين",
-		"right": "الصورة على اليمين، والنص على اليسار",
+		"top": "الصورة في الأعلى، النص في الأسفل",
+		"bottom": "الصورة في الأسفل، النص في الأعلى",
+		"left": "الصورة على اليسار، النص على اليمين",
+		"right": "الصورة على اليمين، النص على اليسار",
 		"overlay": "النص فوق الصورة"
 	},
 	"image": {
@@ -357,27 +376,27 @@
 		"control": "التحكم",
 		"delete_confirm": "هل أنت متأكد من رغبتك في حذف هذه الأداة؟",
 		"invalid_manifest": "بيان الأداة غير صالح",
-		"add_confirm": "ستسمح الإضافة لـ {{widget_name}} بما يلي:",
+		"add_confirm": "ستسمح الإضافة لـ {{widget_name}} بـ:",
 		"installing": "جارٍ التثبيت...",
 		"updating": "جارٍ التحديث...",
 		"view_url": "عرض الرابط",
-		"widget_connection": "يمكن للأداة الحصول على الطلبات أو إرسالها إلى:"
+		"widget_connection": "الأداة تتلقى الطلبات من أو ترسلها إلى:"
 	},
 	"scopes": {
 		"widgets:messages.read": "قراءة الرسائل",
 		"widgets:goals.read": "قراءة الأهداف",
-		"widgets:auc-fighter:settings.read": "قراءة إعدادات المقاتل",
+		"widgets:auc-fighter:settings.read": "قراءة إعدادات المقاتل في المزاد",
 		"widgets:settings.read": "قراءة إعدادات الأداة",
 		"widgets:alerts.read": "قراءة التنبيهات",
 		"widgets:media:settings.read": "قراءة إعدادات الوسائط",
-		"widgets:auc-fighter:match-playing.send": "إرسال حالة تشغيل المواجهة",
-		"widgets:auc-fighter:match-winner.send": "إرسال فائز المواجهة",
-		"widgets:auc-fighter:match-paused.send": "إرسال إيقاف المواجهة مؤقتًا",
-		"widgets:auc-fighter:match-id.send": "إرسال معرّف المواجهة",
+		"widgets:auc-fighter:match-playing.send": "إرسال حالة تشغيل المباراة",
+		"widgets:auc-fighter:match-winner.send": "إرسال فائز المباراة",
+		"widgets:auc-fighter:match-paused.send": "إرسال حالة إيقاف المباراة",
+		"widgets:auc-fighter:match-id.send": "إرسال معرّف المباراة",
 		"widgets:alert:played.send": "إرسال حالة تشغيل التنبيه",
 		"widgets:alert:playing.send": "إرسال حالة تشغيل التنبيه",
 		"widgets:media:played.send": "إرسال حالة تشغيل الوسائط",
-		"widgets:media:end.send": "إرسال انتهاء الوسائط",
+		"widgets:media:end.send": "إرسال نهاية الوسائط",
 		"widgets:media:playing.send": "إرسال حالة تشغيل الوسائط",
 		"widgets:media:paused.send": "إرسال إيقاف الوسائط مؤقتًا",
 		"widgets:media:error.send": "إرسال خطأ الوسائط",
@@ -391,14 +410,14 @@
 		"widgets:redemption.subscription": "الاشتراك في الاستردادات",
 		"widgets:chat-message.subscription": "الاشتراك في رسائل الدردشة",
 		"widgets:chat-message-delete.subscription": "الاشتراك في حذف رسائل الدردشة",
-		"widgets:goal.subscription": "الاشتراك في الهدف",
+		"widgets:goal.subscription": "الاشتراك في الأهداف",
 		"widgets:settings.subscription": "الاشتراك في الإعدادات",
-		"widgets:auc-fighter:start-match.subscription": "الاشتراك في بدء المواجهة",
-		"widgets:auc-fighter:pause-match.subscription": "الاشتراك في إيقاف المواجهة مؤقتًا",
-		"widgets:auc-fighter:resume-match.subscription": "الاشتراك في استئناف المواجهة",
-		"widgets:auc-fighter:cancel-match.subscription": "الاشتراك في إلغاء المواجهة",
-		"widgets:auc-fighter:update-match.subscription": "الاشتراك في تحديث المواجهة",
-		"widgets:auc-fighter:settings.subscription": "الاشتراك في إعدادات المقاتل",
+		"widgets:auc-fighter:start-match.subscription": "الاشتراك في بدء المباراة",
+		"widgets:auc-fighter:pause-match.subscription": "الاشتراك في إيقاف المباراة",
+		"widgets:auc-fighter:resume-match.subscription": "الاشتراك في استئناف المباراة",
+		"widgets:auc-fighter:cancel-match.subscription": "الاشتراك في إلغاء المباراة",
+		"widgets:auc-fighter:update-match.subscription": "الاشتراك في تحديث المباراة",
+		"widgets:auc-fighter:settings.subscription": "الاشتراك في إعدادات المقاتل في المزاد",
 		"widgets:alert:replay.subscription": "الاشتراك في إعادة تشغيل التنبيه",
 		"widgets:alert:skip.subscription": "الاشتراك في تخطي التنبيه",
 		"widgets:alert:test.subscription": "الاشتراك في اختبار التنبيه",
@@ -408,30 +427,30 @@
 		"widgets:media:settings.subscription": "الاشتراك في إعدادات الوسائط",
 		"widgets:media:skip.subscription": "الاشتراك في تخطي الوسائط",
 		"widgets:media:skip-playing-media.subscription": "الاشتراك في تخطي الوسائط الجاري تشغيلها",
-		"widgets:media:end.subscription": "الاشتراك في انتهاء الوسائط",
+		"widgets:media:end.subscription": "الاشتراك في نهاية الوسائط",
 		"widgets:media:error.subscription": "الاشتراك في أخطاء الوسائط",
 		"widgets:media:pause.subscription": "الاشتراك في إيقاف الوسائط مؤقتًا",
 		"widgets:media:play.subscription": "الاشتراك في تشغيل الوسائط",
 		"widgets:alert:played.subscription": "الاشتراك في تشغيل التنبيه",
-		"widgets:view:storage.read": "قراءة تخزين عرض الأداة",
-		"widgets:control:storage.read": "قراءة تخزين تحكم الأداة",
-		"widgets:view:storage.write": "الكتابة إلى تخزين عرض الأداة",
-		"widgets:control:storage.write": "الكتابة إلى تخزين تحكم الأداة",
-		"widgets:view:storage.subscription": "الاشتراك في تخزين عرض الأداة",
-		"widgets:control:storage.subscription": "الاشتراك في تخزين تحكم الأداة"
+		"widgets:view:storage.read": "قراءة مساحة تخزين عرض الأداة",
+		"widgets:control:storage.read": "قراءة مساحة تخزين التحكم بالأداة",
+		"widgets:view:storage.write": "الكتابة في مساحة تخزين عرض الأداة",
+		"widgets:control:storage.write": "الكتابة في مساحة تخزين التحكم بالأداة",
+		"widgets:view:storage.subscription": "الاشتراك في مساحة تخزين عرض الأداة",
+		"widgets:control:storage.subscription": "الاشتراك في مساحة تخزين التحكم بالأداة"
 	},
 	"nsfw": {
-		"title": "محتوى غير مناسب للعمل",
-		"nsfw_window": "نافذة المحتوى غير المناسب للعمل",
+		"title": "محتوى غير آمن للعمل",
+		"nsfw_window": "نافذة المحتوى غير الآمن للعمل",
 		"settings": "الإعدادات",
 		"window": "النافذة",
 		"blur_timeout_duration": "مدة مهلة التمويه",
-		"confidence_threshold": "عتبة الثقة",
+		"confidence_threshold": "حد الثقة",
 		"anus": "الشرج",
 		"make_love": "ممارسة الجنس",
-		"nipple": "الحلمة",
-		"penis": "القضيب",
-		"vagina": "المهبل"
+		"nipple": "حلمة",
+		"penis": "قضيب",
+		"vagina": "مهبل"
 	},
 	"rewards": {
 		"title": "المكافآت",
@@ -449,8 +468,8 @@
 		"delete": "حذف",
 		"sure_delete": "هل أنت متأكد من رغبتك في حذف هذه المكافأة؟",
 		"points_currency_ratio": "نسبة النقاط إلى العملة",
-		"is_global_cooldown_enabled": "هل فترة الانتظار العامة مفعّلة",
-		"global_cooldown_seconds": "ثواني فترة الانتظار العامة",
+		"is_global_cooldown_enabled": "هل فترة التهدئة العامة مفعّلة",
+		"global_cooldown_seconds": "ثواني التهدئة العامة",
 		"title_exist": "توجد مكافأة بالعنوان نفسه"
 	},
 	"validation": {
@@ -470,28 +489,28 @@
 	},
 	"chat_source": {
 		"title": "الدردشة",
-		"description": "مُشغّل رسالة الدردشة لاستدعاء الإجراءات",
-		"trigger": "المُشغّل",
+		"description": "رسالة دردشة لتشغيل الإجراءات",
+		"trigger": "المشغّل",
 		"platforms": "المنصات",
 		"user_levels": "مستويات المستخدمين"
 	},
 	"timer_source": {
-		"title": "Timer",
+		"title": "المؤقت",
 		"description": "استدعاءات الإجراءات المجدولة",
 		"message": "الرسالة",
-		"post_type": "نوع المنشور",
+		"post_type": "نوع النشر",
 		"alias": "الاسم المستعار",
 		"Normal": "عادي",
-		"interval": "Interval",
+		"interval": "الفاصل الزمني",
 		"Announcement": "إعلان",
 		"mins_passed": "الدقائق التي تمر قبل النشر",
 		"lines_passed": "أسطر الدردشة التي تمر قبل النشر"
 	},
 	"chat_bot_action": {
 		"title": "روبوت الدردشة",
-		"description": "روبوت الدردشة يجيب ويرسل الرسائل",
+		"description": "روبوت الدردشة يرد ويرسل الرسائل",
 		"message": "الرسالة",
-		"replay": "إعادة التشغيل؟"
+		"replay": "هل تتم إعادة التشغيل"
 	},
 	"alert_action": {
 		"title": "تنبيه",
@@ -507,7 +526,7 @@
 		"WidySol": "خطأ في WidySol",
 		"StreamLabs": "خطأ في StreamLabs",
 		"Websocket": "خطأ في WebSocket",
-		"NSFW": "خطأ في المحتوى غير المناسب للعمل",
+		"NSFW": "خطأ في محتوى NSFW",
 		"Custom": "خطأ مخصص",
 		"Io": "خطأ في الإدخال/الإخراج",
 		"Internet": "خطأ في الإنترنت",
@@ -523,7 +542,7 @@
 		"title": "تحويل النص إلى كلام"
 	},
 	"piper": {
-		"missing_model": "النموذج أو إدخال ملف الإعدادات مفقود للصوت {{voice_key}}",
+		"missing_model": "النموذج أو إدخال ملف الإعدادات للصوت {{voice_key}} مفقود",
 		"failed_download": "فشل تنزيل الصوت {{voice_key}}",
 		"failed_remove": "فشل إزالة الصوت {{voice_key}}",
 		"medium": "متوسط",
@@ -532,5 +551,42 @@
 		"high": "مرتفع",
 		"remove_voice": "إزالة الصوت",
 		"sure_remove": "هل أنت متأكد من رغبتك في إزالة الصوت؟"
+	},
+	"assistant": {
+		"title": "المساعد",
+		"device": "الجهاز",
+		"settings": "الإعدادات",
+		"input_device": "جهاز الإدخال",
+		"provider": "المزوّد",
+		"model": "النموذج",
+		"stt_language": "لغة صوتك",
+		"stt_model": "نموذج تحويل الكلام إلى نص",
+		"tools": "الأدوات",
+		"max_tokens": "الحد الأقصى لرموز الإخراج",
+		"vad_threshold": "حد VAD",
+		"wake_threshold": "حد التنبيه",
+		"silence_hangover_frames": "إطارات استمرار الصمت",
+		"wake_word": "للتنبيه قل - مرحبًا جارفس"
+	},
+	"tools": {
+		"play_alert": "تشغيل التنبيه (الاسم)",
+		"pin_message": "تثبيت رسالة في الدردشة (الرسالة، المنصة)",
+		"ban_user": "حظر مستخدم في الدردشة (اسم المستخدم، المنصة، المدة اختيارية)",
+		"unban_user": "إلغاء حظر مستخدم في الدردشة (اسم المستخدم، المنصة)",
+		"skip_alert": "تخطي التنبيه الحالي",
+		"skip_media": "تخطي الوسائط الحالية",
+		"skip_tts": "تخطي تحويل النص إلى كلام الحالي",
+		"change_channel_title": "تغيير عنوان القناة (المنصة، العنوان)",
+		"change_channel_category": "تغيير فئة القناة (المنصة، الفئة)",
+		"delete_chat_messages": "حذف/مسح رسائل الدردشة (المنصة)",
+		"on_followers_mode": "تفعيل وضع المتابعين فقط (المنصة)",
+		"off_followers_mode": "تعطيل وضع المتابعين فقط (المنصة)",
+		"on_emotes_mode": "تفعيل وضع الرموز التعبيرية فقط (المنصة)",
+		"off_emotes_mode": "تعطيل وضع الرموز التعبيرية فقط (المنصة)",
+		"on_subscribers_mode": "تفعيل وضع المشتركين فقط (المنصة)",
+		"off_subscribers_mode": "تعطيل وضع المشتركين فقط (المنصة)",
+		"on_slow_mode": "تفعيل الوضع البطيء (المنصة)",
+		"off_slow_mode": "تعطيل الوضع البطيء (المنصة)",
+		"play_media": "تشغيل أغنية/فيديو من YouTube (الاسم)"
 	}
 }

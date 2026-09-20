@@ -5,3 +5,4 @@ pub use models::TwitchDeviceCodeResponse;
 pub use twitch_bot_service::*;
 pub use twitch_service::*;
 pub mod traits;
+pub use models::{ModifyChannelInformationBody, UpdateChatSettingsBody};

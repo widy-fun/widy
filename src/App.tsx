@@ -9,6 +9,7 @@ import useAppEvents from "../shared/hooks/useAppEvents";
 import { useGetInitialStateQuery } from "./api";
 import { useGetSettingsQuery } from "./api/settingsApi";
 import { AppSnackBar } from "./components/AppSnackBar";
+import Claude from "./components/claude/Claude";
 import WidgetControl from "./components/dashboard/components/widgets/components/WidgetControl";
 import Dashboard from "./components/dashboard/Dashboard";
 import Destream from "./components/destream/Destream";
@@ -19,6 +20,8 @@ import DonationAlerts from "./components/donationalerts/DonationAlerts";
 import Gemini from "./components/gemini/Gemini";
 import Kick from "./components/kick/Kick";
 import KickBot from "./components/kick-bot/KickBot";
+import KickSession from "./components/kick-session/KickSession";
+import OpenAI from "./components/openai/OpenAI";
 import StreamElements from "./components/streamelements/StreamElements";
 import StreamLabs from "./components/streamlabs/StreamLabs";
 import Tribute from "./components/tribute/Tribute";
@@ -116,6 +119,9 @@ function App() {
 					<Route path="/tribute/*" element={<Tribute />} />
 					<Route path="/widget/:id" element={<WidgetControl />} />
 					<Route path="/gemini/*" element={<Gemini />} />
+					<Route path="/openai/*" element={<OpenAI />} />
+					<Route path="/claude/*" element={<Claude />} />
+					<Route path="/kick-session/*" element={<KickSession />} />
 				</Routes>
 			)}
 		</main>

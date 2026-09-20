@@ -1,12 +1,13 @@
 pub mod commands;
 pub mod constants;
 pub mod enums;
+pub mod helpers;
 pub mod repositories;
 pub mod services;
 pub mod utils;
 use std::sync::{Arc, Mutex};
 
-use crate::{commands::*, error::AppError, utils::init_services};
+use crate::{commands::*, error::AppError, helpers::init_services};
 use tauri::Manager;
 use tauri_plugin_deep_link::DeepLinkExt;
 use utils::register_shortcuts;
@@ -178,7 +179,14 @@ pub fn run() {
             get_assistant_settings,
             update_assistant_settings,
             get_assistant_provider_models,
-            get_assistant_status
+            get_assistant_status,
+            claude_connect,
+            openai_connect,
+            openai_sign_out,
+            claude_sign_out,
+            get_tools,
+            kick_session_connect,
+            kick_session_sign_out
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

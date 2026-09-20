@@ -3,7 +3,7 @@
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::{alerts::Alert, rewards::Platform};
+use crate::{alerts::Alert, donations::Media, rewards::Platform};
 
 #[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
@@ -36,21 +36,74 @@ impl ActiveModelBehavior for ActiveModel {}
 pub enum AssistantActionType {
     #[sea_orm(string_value = "BanUser")]
     BanUser,
+    #[sea_orm(string_value = "UnbanUser")]
+    UnbanUser,
     #[sea_orm(string_value = "PlayAlert")]
     PlayAlert,
+    #[sea_orm(string_value = "PinMessage")]
+    PinMessage,
+    #[sea_orm(string_value = "ChangeChannelTitle")]
+    ChangeChannelTitle,
+    #[sea_orm(string_value = "ChangeChannelCategory")]
+    ChangeChannelCategory,
+    #[sea_orm(string_value = "AddFollowMode")]
+    AddFollowMode,
+    #[sea_orm(string_value = "RemoveFollowMode")]
+    RemoveFollowMode,
+    #[sea_orm(string_value = "AddEmotesMode")]
+    AddEmotesMode,
+    #[sea_orm(string_value = "RemoveEmotesMode")]
+    RemoveEmotesMode,
+    #[sea_orm(string_value = "AddSubscribersMode")]
+    AddSubscribersMode,
+    #[sea_orm(string_value = "RemoveSubscribersMode")]
+    RemoveSubscribersMode,
+    #[sea_orm(string_value = "AddSlowMode")]
+    AddSlowMode,
+    #[sea_orm(string_value = "RemoveSlowMode")]
+    RemoveSlowMode,
+    #[sea_orm(string_value = "PlayMedia")]
+    PlayMedia,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
 #[serde(untagged)]
 
 pub enum AssistantActionData {
-    BanUser(BanUserData),
+    BanUser(UserData),
+    UnbanUser(UserData),
     PlayAlert(Alert),
+    PinMessage(PinedMessageData),
+    ChangeChannel(ChanelData),
+    UpdateChatSettings(ChatSettingsData),
+    PlayMedia(MediaData),
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct BanUserData {
+pub struct UserData {
     pub name: String,
     pub platform: Platform,
     pub id: String,
+}
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct PinedMessageData {
+    pub message: String,
+    pub platform: Platform,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct ChanelData {
+    pub title: Option<String>,
+    pub platform: Platform,
+    pub category: Option<String>,
+}
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct ChatSettingsData {
+    pub platform: Platform,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct MediaData {
+    pub media: Media,
+    pub title: String,
 }

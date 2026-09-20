@@ -1,8 +1,7 @@
 use std::collections::HashMap;
 
+use entity::assistant_settings::Tool;
 use serde::{Deserialize, Serialize};
-
-use crate::services::assistant::models::Tool;
 
 #[derive(Debug, Clone, Deserialize)]
 

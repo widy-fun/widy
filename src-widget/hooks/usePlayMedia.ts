@@ -4,7 +4,7 @@ import type {
 	ISettings,
 	MessageId,
 } from "@widy/sdk";
-import { AppEvent, RewardType } from "@widy/sdk";
+import { AppEvent, AssistantActionType, RewardType } from "@widy/sdk";
 import { useCallback, useEffect, useRef, useState } from "react";
 import useAppEvents from "../../shared/hooks/useAppEvents";
 import getMediaFromMessage from "../utils/getMediaFromMessage";
@@ -67,7 +67,7 @@ const usePlayMedia = () => {
 		const media = getMediaFromMessage(message);
 		if (media) {
 			messagesRef.current = [...messagesRef.current, message];
-			if (!currentMessage) {
+			if (messagesRef.current.length === 1) {
 				playMedia({ message: message });
 			}
 		}
@@ -103,6 +103,19 @@ const usePlayMedia = () => {
 			AppEvent.Redemption,
 			(message) => {
 				if (message.redemption?.type === RewardType.Media) {
+					handleNewMessage(message);
+				}
+			},
+		);
+
+		return () => unsubscribe();
+	}, [handleNewMessage]);
+
+	useEffect(() => {
+		const unsubscribe = eventsService.subscribe<IClientMessage>(
+			AppEvent.AssistantAction,
+			(message) => {
+				if (message.assistant_action?.type === AssistantActionType.PlayMedia) {
 					handleNewMessage(message);
 				}
 			},

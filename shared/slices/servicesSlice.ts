@@ -103,6 +103,21 @@ const initialState: ServicesState = {
 			color: "#121a3a",
 			authPath: "/gemini/api-key",
 		},
+		[ServiceType.OpenAI]: {
+			active: false,
+			color: "#000000",
+			authPath: "/openai/api-key",
+		},
+		[ServiceType.Claude]: {
+			active: false,
+			color: "#d97757",
+			authPath: "/claude/api-key",
+		},
+		[ServiceType.KickSession]: {
+			active: false,
+			color: "#53fc18",
+			authPath: "/kick-session/authorize",
+		},
 	},
 };
 

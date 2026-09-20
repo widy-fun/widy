@@ -29,6 +29,12 @@ impl AssistantSettingsRepository for DatabaseService {
             vad_threshold: Set(assistant_settings.vad_threshold),
             wake_threshold: Set(assistant_settings.wake_threshold),
             silence_hangover_frames: Set(assistant_settings.silence_hangover_frames),
+            tools: Set(assistant_settings.tools),
+            max_tokens: Set(assistant_settings.max_tokens),
+            max_chars: Set(assistant_settings.max_chars),
+            tts_settings: Set(assistant_settings.tts_settings),
+            tts_type: Set(assistant_settings.tts_type),
+            tts_volume: Set(assistant_settings.tts_volume),
         })
         .exec(&self.connection)
         .await

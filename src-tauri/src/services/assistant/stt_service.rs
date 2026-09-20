@@ -6,8 +6,9 @@ use tauri::{AppHandle, Manager};
 
 use crate::{
     error::AppError,
-    services::assistant::{
-        AssistantService, AssistantServiceStatus, linear_resampler::LinearResampler,
+    services::{
+        AppEvent, EventMessage, WebSocketBroadcaster,
+        assistant::{AssistantService, AssistantServiceStatus, linear_resampler::LinearResampler},
     },
     utils::log_and_wrap_error,
 };
@@ -33,6 +34,7 @@ impl SttService {
             let audio_client = model.create_audio_client();
             let mut session: Option<LiveAudioTranscriptionSession> = None;
             let assistant_service = app.state::<AssistantService>();
+            let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
 
             while let Some(chunk) = transcribe_rx.recv().await {
                 match chunk {
@@ -43,10 +45,14 @@ impl SttService {
                             );
                             Self::stop_session(old, "Stop previous session on restart").await;
                         }
-
                         session =
                             Self::start_session(&audio_client, &language, &app, &assistant_service)
                                 .await;
+                        websocket_broadcaster.broadcast_event_message(&EventMessage {
+                            event: AppEvent::StartTranscribe,
+                            data: true,
+                        });
+                        log::info!("Start transcribe.");
                     }
                     Transcribe::Audio(frame) => {
                         if let Some(session) = session.as_mut() {
@@ -54,13 +60,15 @@ impl SttService {
                             if let Err(e) = session.append(&bytes, None).await {
                                 log_and_wrap_error("Append audio frame error", e);
                             }
-                        } else {
-                            log::warn!("Audio frame received before session start");
                         }
                     }
                     Transcribe::Stop => {
                         if let Some(session) = session.take() {
                             Self::stop_session(session, "End audio session").await;
+                            websocket_broadcaster.broadcast_event_message(&EventMessage {
+                                event: AppEvent::StopTranscribe,
+                                data: true,
+                            });
                         }
                     }
                     Transcribe::Cancel => {

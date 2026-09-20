@@ -67,7 +67,7 @@ impl KickService {
             scopes,
             app_token,
             auth_session: Mutex::new(None),
-            chat_messages_buffer: Arc::new(Mutex::new(ItemsBuffer::new(1001))),
+            chat_messages_buffer: Arc::new(Mutex::new(ItemsBuffer::new(2000))),
             expire_at: Arc::new(AtomicU64::new(0)),
             cancellation_token: Arc::new(Mutex::new(CancellationToken::new())),
             reqwest_client,

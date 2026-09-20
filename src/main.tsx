@@ -65,19 +65,13 @@ eventsService.subscribe<IClientMessage>(AppEvent.Goal, () => {
 	store.dispatch(settingsApi.util.invalidateTags(["Goals"]));
 });
 
-eventsService.subscribe<IClientMessage>(
-	AppEvent.AssistantStartTranscribe,
-	() => {
-		new Audio("/start_recording.mp3").play();
-	},
-);
+eventsService.subscribe<IClientMessage>(AppEvent.StartTranscribe, () => {
+	new Audio("/start_transcribe.wav").play();
+});
 
-eventsService.subscribe<IClientMessage>(
-	AppEvent.AssistantStopTranscribe,
-	() => {
-		new Audio("/stop_recording.mp3").play();
-	},
-);
+eventsService.subscribe<IClientMessage>(AppEvent.StopTranscribe, () => {
+	new Audio("/stop_transcribe.wav").play();
+});
 
 eventsService.subscribe<IClientMessage>(
 	AppEvent.Redemption,

@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize)]
@@ -122,14 +123,14 @@ pub struct TwitchDeviceCodeResponse {
 }
 
 #[derive(Deserialize, Debug)]
-#[allow(dead_code)]
+
 pub struct TwitchBadResponse {
     pub error: Option<String>,
     pub status: u16,
     pub message: String,
 }
 #[derive(Deserialize, Debug)]
-#[allow(dead_code)]
+
 pub struct TwitchTokenResponse {
     pub access_token: String,
     pub refresh_token: String,
@@ -138,7 +139,7 @@ pub struct TwitchTokenResponse {
     pub token_type: String,
 }
 #[derive(Deserialize, Debug)]
-#[allow(dead_code)]
+
 pub struct TwitchRefreshTokenResponse {
     pub access_token: String,
     pub refresh_token: String,
@@ -147,12 +148,12 @@ pub struct TwitchRefreshTokenResponse {
 }
 
 #[derive(Deserialize, Debug)]
-#[allow(dead_code)]
+
 pub struct TwitchUsersResponse {
     pub data: Vec<TwitchUser>,
 }
 #[derive(Deserialize, Debug, Clone)]
-#[allow(dead_code)]
+
 pub struct TwitchUser {
     pub id: String,
     pub login: String,
@@ -167,7 +168,7 @@ pub struct TwitchUser {
     pub created_at: String,
 }
 #[derive(Deserialize, Debug, Clone)]
-#[allow(dead_code)]
+
 pub struct TwitchTokenInfo {
     pub client_id: String,
     pub login: String,
@@ -183,7 +184,7 @@ pub struct NotificationMessage {
 }
 
 #[derive(Debug, Deserialize)]
-#[allow(dead_code)]
+
 pub struct Metadata {
     pub message_type: String,
     pub message_id: String,
@@ -523,4 +524,220 @@ pub struct BanUserData {
     pub user_id: String,
     pub duration: Option<u64>,
     pub reason: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BannedUsersResponse {
+    pub data: Vec<BannedUser>,
+    pub pagination: Pagination,
+}
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BannedUser {
+    pub user_id: String,
+    pub user_login: String,
+    pub user_name: String,
+    pub expires_at: String,
+    pub created_at: String,
+    pub reason: String,
+    pub moderator_id: String,
+    pub moderator_login: String,
+    pub moderator_name: String,
+}
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Pagination {
+    pub cursor: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ChattersResponse {
+    pub data: Vec<Chatter>,
+    pub pagination: Pagination,
+    pub total: u64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Chatter {
+    pub user_id: String,
+    pub user_login: String,
+    pub user_name: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+pub struct ModifyChannelInformationBody {
+    pub id: Option<String>,
+    pub is_enabled: Option<bool>,
+    pub game_id: Option<String>,
+    pub broadcaster_language: Option<String>,
+    pub title: Option<String>,
+    pub delay: Option<u32>,
+    pub tags: Option<Vec<String>>,
+    pub content_classification_labels: Option<Vec<String>>,
+    pub is_branded_content: Option<bool>,
+}
+
+#[derive(Debug, Clone, Default, Serialize)]
+pub struct UpdateChatSettingsBody {
+    pub emote_mode: Option<bool>,
+    pub follower_mode: Option<bool>,
+    pub follower_mode_duration: Option<u32>,
+    pub non_moderator_chat_delay: Option<bool>,
+    pub non_moderator_chat_delay_duration: Option<u32>,
+    pub slow_mode: Option<bool>,
+    pub slow_mode_wait_time: Option<u32>,
+    pub subscriber_mode: Option<bool>,
+    pub unique_chat_mode: Option<bool>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct GetTopGamesResponse {
+    pub data: Vec<Game>,
+    pub pagination: Pagination,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct Game {
+    pub id: String,
+    pub name: String,
+    pub box_art_url: String,
+    pub igdb_id: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct SearchCategoriesResponse {
+    pub data: Vec<SearchCategory>,
+    pub pagination: Pagination,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct SearchCategory {
+    pub id: String,
+    pub name: String,
+    pub box_art_url: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct CreatePollBody {
+    pub broadcaster_id: String,
+    pub title: String,
+    pub choices: Vec<PollChoice>,
+    pub duration: u32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub channel_points_voting_enabled: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub channel_points_per_vote: Option<u32>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct PollChoice {
+    pub title: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct EndPollBody {
+    pub broadcaster_id: String,
+    pub id: String,
+    pub status: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct CreatePredictionBody {
+    pub broadcaster_id: String,
+    pub title: String,
+    pub outcomes: Vec<PredictionOutcome>,
+    pub prediction_window: u32,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct PredictionOutcome {
+    pub title: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct EndPredictionBody {
+    pub broadcaster_id: String,
+    pub id: String,
+    pub status: String,
+    pub winning_outcome_id: Option<String>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct CreatePredictionResponse {
+    pub data: Vec<Prediction>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct Prediction {
+    pub id: String,
+    pub broadcaster_id: String,
+    pub broadcaster_name: String,
+    pub broadcaster_login: String,
+    pub title: String,
+    pub winning_outcome_id: Option<String>,
+    pub outcomes: Vec<PredictionOutcomeResponse>,
+    pub prediction_window: u32,
+    pub status: String,
+    pub created_at: String,
+    pub ended_at: Option<String>,
+    pub locked_at: Option<String>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct PredictionOutcomeResponse {
+    pub id: String,
+    pub title: String,
+    pub users: u32,
+    pub channel_points: u32,
+    pub top_predictors: Vec<PredictionTopPredictor>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct PredictionTopPredictor {
+    pub user_id: String,
+    pub user_name: String,
+    pub user_login: String,
+    pub channel_points_used: u32,
+    pub channel_points_won: u32,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct CreatePollResponse {
+    pub data: Vec<Poll>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct Poll {
+    pub id: String,
+    pub broadcaster_id: String,
+    pub broadcaster_name: String,
+    pub broadcaster_login: String,
+    pub title: String,
+    pub choices: Vec<CreatedPollChoice>,
+    pub bits_voting_enabled: bool,
+    pub bits_per_vote: u32,
+    pub channel_points_voting_enabled: bool,
+    pub channel_points_per_vote: u32,
+    pub status: PollStatus,
+    pub duration: u32,
+    pub started_at: String,
+    pub ended_at: Option<String>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct CreatedPollChoice {
+    pub id: String,
+    pub title: String,
+    pub votes: u32,
+    pub channel_points_votes: u32,
+    pub bits_votes: u32,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "UPPERCASE")]
+pub enum PollStatus {
+    Active,
+    Completed,
+    Terminated,
+    Archived,
+    Moderated,
+    Invalid,
 }

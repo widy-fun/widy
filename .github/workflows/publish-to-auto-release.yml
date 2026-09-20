@@ -116,6 +116,9 @@ jobs:
         run: npm run widget:build
       - name: build auc-fighter-adapter
         run: npm run auc-fighter-adapter:build
+      - name: build foundry-local-sdk
+        working-directory: src-tauri
+        run: cargo build -p foundry-local-sdk --release
       - uses: tauri-apps/tauri-action@84b9d35b5fc46c1e45415bdb6144030364f7ebc5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -140,7 +143,7 @@ jobs:
         with:
           tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: "v__VERSION__"
-          releaseBody: "Fix tribute service reconnect, kick message parsing and add delay for first media."
+          releaseBody: "Add assistant."
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
@@ -169,7 +172,7 @@ jobs:
         with:
           tagName: latest # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: "latest"
-          releaseBody: "Fix tribute service reconnect, kick message parsing and add delay for first media."
+          releaseBody: "Add assistant."
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}

@@ -53,6 +53,12 @@ pub enum ServiceType {
     KickBot,
     #[sea_orm(string_value = "Gemini")]
     Gemini,
+    #[sea_orm(string_value = "OpenAI")]
+    OpenAI,
+    #[sea_orm(string_value = "Claude")]
+    Claude,
+    #[sea_orm(string_value = "KickSession")]
+    KickSession,
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
 #[serde(untagged)]
@@ -74,6 +80,7 @@ pub enum ServiceAuth {
     DonatePay(DonatePayAuth),
     Destream(DestreamAuth),
     ApiKey(ApiKeyAuth),
+    KickSession(KickSessionToken),
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -89,6 +96,10 @@ pub struct DonationAlertsAuth {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ApiKeyAuth {
     pub api_key: String,
+}
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct KickSessionToken {
+    pub session_token: String,
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct DonatePayAuth {

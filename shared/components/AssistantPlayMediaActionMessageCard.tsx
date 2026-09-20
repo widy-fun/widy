@@ -1,29 +1,27 @@
-import { Box, Card, Typography } from "@mui/material";
-import type { IBanUserData, IClientMessage } from "@widy/sdk";
+import ReplayIcon from "@mui/icons-material/Replay";
+import { Box, Card, IconButton, Typography } from "@mui/material";
+import { AppEvent, type IClientMessage, type IMediaData } from "@widy/sdk";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
-import type { AppState } from "../../src/store";
-import getColorByMessageType from "../utils/getColorByMessageType";
+import useAppEvents from "../hooks/useAppEvents";
+import getColorByMediaType from "../utils/getColorByMediaType";
 import MediaTile from "./MediaTile";
 import MessageDate from "./MessageDate";
 
-const AssistantBanUserActionMessageCard = ({
+const AssistantPlayMediaActionMessageCard = ({
 	message,
-	isAlertPlaying,
 	isMediaPlaying,
 }: {
 	message: IClientMessage;
-	isAlertPlaying: boolean;
 	isMediaPlaying: boolean;
 }) => {
 	const { t } = useTranslation();
-	const banedUser = message.assistant_action?.data as IBanUserData;
-	const { services } = useSelector((state: AppState) => state.servicesState);
+	const eventsService = useAppEvents();
+	const mediaData = message.assistant_action?.data as IMediaData;
 
 	return (
 		<>
-			{banedUser && (
+			{mediaData && (
 				<Card
 					sx={(theme) => ({
 						display: "flex",
@@ -31,9 +29,7 @@ const AssistantBanUserActionMessageCard = ({
 						border: "2px solid",
 						borderRadius: 3,
 						boxSizing: "border-box",
-						borderColor: isAlertPlaying
-							? theme.palette.primary.main
-							: theme.palette.background.default,
+						borderColor: theme.palette.background.default,
 						marginBottom: "5px",
 						minHeight: "5.3rem",
 						overflow: "hidden",
@@ -42,8 +38,8 @@ const AssistantBanUserActionMessageCard = ({
 					{isMediaPlaying && (
 						<MediaTile
 							message={message}
-							media={message.command_action?.media}
-							user_name={message.command_action?.user_name}
+							media={mediaData.media}
+							user_name={mediaData.title}
 						/>
 					)}
 					<Box
@@ -51,10 +47,23 @@ const AssistantBanUserActionMessageCard = ({
 							width: "3rem",
 							display: "grid",
 							placeItems: "center",
-							background: getColorByMessageType(message.type),
+							background: getColorByMediaType(mediaData.media.media_type),
 							minHeight: "100%",
 						}}
-					></Box>
+					>
+						{!isMediaPlaying && (
+							<IconButton
+								onClick={() => {
+									eventsService.send<IClientMessage>({
+										event: AppEvent.ReplayMedia,
+										data: message,
+									});
+								}}
+							>
+								<ReplayIcon />
+							</IconButton>
+						)}
+					</Box>
 
 					<div style={{ width: "100%", padding: 15, wordBreak: "break-word" }}>
 						<div style={{ float: "right" }}>
@@ -66,24 +75,16 @@ const AssistantBanUserActionMessageCard = ({
 									color: theme.palette.primary.main,
 								})}
 							>
-								{t("message.assistant_ban_user", {
-									user_name: banedUser.name,
-								})}
+								{t("dashboard.assistant")}
 							</Typography>
 						</Box>
+						<div>
+							<span>{mediaData.title}</span>
+						</div>
 					</div>
-					<Box
-						sx={{
-							width: "3rem",
-							display: "grid",
-							placeItems: "center",
-							background: services[banedUser.platform].color,
-							minHeight: "100%",
-						}}
-					/>
 				</Card>
 			)}
 		</>
 	);
 };
-export default memo(AssistantBanUserActionMessageCard);
+export default memo(AssistantPlayMediaActionMessageCard);

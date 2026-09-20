@@ -7,7 +7,7 @@ use foundry_local_sdk::{
 use futures::StreamExt;
 use serde::{Deserialize, Serialize};
 
-use crate::{error::AppError, services::assistant::models::Tool};
+use crate::error::AppError;
 
 #[derive(Default, Debug)]
 pub struct ToolCallState {
@@ -26,6 +26,7 @@ pub struct ToolCallingService;
 impl ToolCallingService {
     pub async fn handle_tool_calling(
         model: Arc<Model>,
+        assistant_settings: entity::assistant_settings::Model,
         text: &str,
     ) -> Result<Vec<ToolCall>, AppError> {
         let messages: Vec<ChatCompletionRequestMessage> = vec![
@@ -35,10 +36,11 @@ impl ToolCallingService {
                         .into(),
                         ChatCompletionRequestUserMessage::from(text).into(),
                     ];
-        let tools = Tool::get_tools::<ChatCompletionTools>()?;
+        let json_tools = serde_json::to_value(&assistant_settings.tools)?;
+        let tools = serde_json::from_value::<Vec<ChatCompletionTools>>(json_tools)?;
         let client = model
             .create_chat_client()
-            .max_tokens(512)
+            .max_tokens(assistant_settings.max_tokens)
             .tool_choice(ChatToolChoice::Required);
 
         let mut state = ToolCallState::default();

@@ -1,5 +1,5 @@
 use super::DatabaseService;
-use crate::repositories::MediaSettingsRepository;
+use crate::{error::AppError, repositories::MediaSettingsRepository};
 use entity::{
     donations::{Media, MediaType},
     media_settings::MediaPlatformSettings,
@@ -13,6 +13,14 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use tauri::{AppHandle, Manager};
 use url::Url;
+
+#[derive(Debug)]
+pub struct YoutubeVideoResult {
+    pub video_id: String,
+    pub title: String,
+    pub channel: String,
+    pub url: String,
+}
 
 struct UrlMedia {
     url: String,
@@ -359,6 +367,7 @@ impl MediaService {
             }
         }
     }
+
     fn get_twitch_temporary_src(&self, twitch_clip_info: &TwitchClipInfo) -> Option<String> {
         let clip_url = twitch_clip_info
             .data
@@ -390,6 +399,134 @@ impl MediaService {
             .append_pair("sig", &sig)
             .append_pair("token", &token);
         Some(url.to_string())
+    }
+
+    pub async fn search_youtube(
+        &self,
+        app: &AppHandle,
+        query: &str,
+    ) -> Result<Vec<YoutubeVideoResult>, AppError> {
+        let reqwest_client = app.state::<reqwest::Client>();
+
+        let encoded_query = urlencoding::encode(query);
+        let url = format!(
+            "https://www.youtube.com/results?search_query={}",
+            encoded_query
+        );
+
+        let html = reqwest_client.get(&url).send().await?.text().await?;
+
+        let json_str = self.extract_yt_initial_data(&html).ok_or(AppError::Custom(
+            "could not find ytInitialData in page".to_string(),
+        ))?;
+
+        let data: Value = serde_json::from_str(&json_str)?;
+
+        Ok(self.extract_video_results(&data))
+    }
+
+    /// Pulls the raw JSON text out of `var ytInitialData = {...};` in the HTML.
+    fn extract_yt_initial_data(&self, html: &str) -> Option<String> {
+        let marker = "var ytInitialData = ";
+        let start = html.find(marker)? + marker.len();
+        let rest = &html[start..];
+
+        // Walk forward counting brace depth to find the matching closing brace,
+        // since the JSON can contain strings with `;` in them.
+        let bytes = rest.as_bytes();
+        let mut depth = 0i32;
+        let mut in_string = false;
+        let mut escaped = false;
+        let mut end = None;
+
+        for (i, &b) in bytes.iter().enumerate() {
+            let c = b as char;
+            if in_string {
+                if escaped {
+                    escaped = false;
+                } else if c == '\\' {
+                    escaped = true;
+                } else if c == '"' {
+                    in_string = false;
+                }
+                continue;
+            }
+            match c {
+                '"' => in_string = true,
+                '{' => depth += 1,
+                '}' => {
+                    depth -= 1;
+                    if depth == 0 {
+                        end = Some(i + 1);
+                        break;
+                    }
+                }
+                _ => {}
+            }
+        }
+
+        end.map(|e| rest[..e].to_string())
+    }
+
+    /// Walks the ytInitialData structure to find `videoRenderer` nodes.
+    fn extract_video_results(&self, data: &Value) -> Vec<YoutubeVideoResult> {
+        let mut results = Vec::new();
+        self.walk(data, &mut results);
+        results
+    }
+
+    fn walk(&self, value: &Value, results: &mut Vec<YoutubeVideoResult>) {
+        match value {
+            Value::Object(map) => {
+                if let Some(video) = map.get("videoRenderer") {
+                    if let Some(v) = self.parse_video_renderer(video) {
+                        results.push(v);
+                    }
+                }
+                for v in map.values() {
+                    self.walk(v, results);
+                }
+            }
+            Value::Array(arr) => {
+                for v in arr {
+                    self.walk(v, results);
+                }
+            }
+            _ => {}
+        }
+    }
+
+    fn parse_video_renderer(&self, v: &Value) -> Option<YoutubeVideoResult> {
+        let video_id = v.get("videoId")?.as_str()?.to_string();
+
+        let title = v
+            .get("title")?
+            .get("runs")?
+            .as_array()?
+            .first()?
+            .get("text")?
+            .as_str()?
+            .to_string();
+
+        let channel = v
+            .get("ownerText")
+            .or_else(|| v.get("longBylineText"))
+            .and_then(|t| t.get("runs"))
+            .and_then(|r| r.as_array())
+            .and_then(|arr| arr.first())
+            .and_then(|r| r.get("text"))
+            .and_then(|t| t.as_str())
+            .unwrap_or("")
+            .to_string();
+
+        let url = format!("https://www.youtube.com/watch?v={}", video_id);
+
+        Some(YoutubeVideoResult {
+            video_id,
+            title,
+            channel,
+            url,
+        })
     }
 }
 
@@ -492,6 +629,9 @@ mod tests {
     use super::*;
     use mockall::*;
 
+    fn media_service() -> MediaService {
+        MediaService::new()
+    }
     // Create a mock for the MediaParser trait
     mock! {
         MediaParser {}
@@ -1129,5 +1269,221 @@ mod tests {
             categorize_message(&mock, "Just regular text"),
             "No media content"
         );
+    }
+    #[test]
+    fn test_extract_yt_initial_data_success() {
+        let service = media_service();
+        let html = r#"<html><body><script>var ytInitialData = {"a":1,"b":{"c":2}};</script></body></html>"#;
+
+        let result = service.extract_yt_initial_data(html);
+        assert!(result.is_some());
+        assert_eq!(result.unwrap(), r#"{"a":1,"b":{"c":2}}"#);
+    }
+
+    #[test]
+    fn test_extract_yt_initial_data_missing_marker() {
+        let service = media_service();
+        let html = "<html><body>no data here</body></html>";
+
+        let result = service.extract_yt_initial_data(html);
+        assert!(result.is_none());
+    }
+
+    #[test]
+    fn test_extract_yt_initial_data_handles_semicolons_and_braces_in_strings() {
+        let service = media_service();
+        // The JSON contains a string with `;` and `}` characters that must NOT
+        // be treated as terminators/structural characters by the brace walker.
+        let html = r#"var ytInitialData = {"title":"weird; title } with braces {}","nested":{"x":1}};</script>"#;
+
+        let result = service.extract_yt_initial_data(html);
+        assert!(result.is_some());
+        let json_str = result.unwrap();
+
+        // Should parse as valid JSON despite the tricky embedded characters.
+        let parsed: Value = serde_json::from_str(&json_str).expect("should be valid JSON");
+        assert_eq!(
+            parsed["title"],
+            Value::String("weird; title } with braces {}".to_string())
+        );
+        assert_eq!(parsed["nested"]["x"], Value::Number(1.into()));
+    }
+
+    #[test]
+    fn test_extract_yt_initial_data_unterminated_returns_none() {
+        let service = media_service();
+        let html = r#"var ytInitialData = {"a": {"b": 1}"#; // missing closing brace
+
+        let result = service.extract_yt_initial_data(html);
+        assert!(result.is_none());
+    }
+
+    #[test]
+    fn test_parse_video_renderer_full() {
+        let service = media_service();
+        let renderer = serde_json::json!({
+            "videoId": "abc123",
+            "title": { "runs": [{ "text": "Test Video Title" }] },
+            "ownerText": { "runs": [{ "text": "Test Channel" }] }
+        });
+
+        let result = service.parse_video_renderer(&renderer);
+        assert!(result.is_some());
+        let video = result.unwrap();
+        assert_eq!(video.video_id, "abc123");
+        assert_eq!(video.title, "Test Video Title");
+        assert_eq!(video.channel, "Test Channel");
+        assert_eq!(video.url, "https://www.youtube.com/watch?v=abc123");
+    }
+
+    #[test]
+    fn test_parse_video_renderer_falls_back_to_long_byline_text() {
+        let service = media_service();
+        let renderer = serde_json::json!({
+            "videoId": "xyz789",
+            "title": { "runs": [{ "text": "Another Video" }] },
+            "longBylineText": { "runs": [{ "text": "Fallback Channel" }] }
+        });
+
+        let result = service.parse_video_renderer(&renderer).unwrap();
+        assert_eq!(result.channel, "Fallback Channel");
+    }
+
+    #[test]
+    fn test_parse_video_renderer_missing_channel_defaults_to_empty_string() {
+        let service = media_service();
+        let renderer = serde_json::json!({
+            "videoId": "noChannel1",
+            "title": { "runs": [{ "text": "No Channel Video" }] }
+        });
+
+        let result = service.parse_video_renderer(&renderer).unwrap();
+        assert_eq!(result.channel, "");
+    }
+
+    #[test]
+    fn test_parse_video_renderer_missing_video_id_returns_none() {
+        let service = media_service();
+        let renderer = serde_json::json!({
+            "title": { "runs": [{ "text": "No ID Video" }] }
+        });
+
+        assert!(service.parse_video_renderer(&renderer).is_none());
+    }
+
+    #[test]
+    fn test_parse_video_renderer_missing_title_returns_none() {
+        let service = media_service();
+        let renderer = serde_json::json!({
+            "videoId": "noTitle1"
+        });
+
+        assert!(service.parse_video_renderer(&renderer).is_none());
+    }
+
+    #[test]
+    fn test_parse_video_renderer_empty_title_runs_returns_none() {
+        let service = media_service();
+        let renderer = serde_json::json!({
+            "videoId": "emptyRuns1",
+            "title": { "runs": [] }
+        });
+
+        assert!(service.parse_video_renderer(&renderer).is_none());
+    }
+
+    #[test]
+    fn test_walk_extracts_only_video_renderers_ignoring_other_types() {
+        let service = media_service();
+        let data = serde_json::json!({
+            "contents": [
+                {
+                    "videoRenderer": {
+                        "videoId": "vid1",
+                        "title": { "runs": [{ "text": "First Video" }] },
+                        "ownerText": { "runs": [{ "text": "Channel One" }] }
+                    }
+                },
+                {
+                    // Should be ignored - not a videoRenderer
+                    "channelRenderer": {
+                        "channelId": "someChannel"
+                    }
+                },
+                {
+                    "videoRenderer": {
+                        "videoId": "vid2",
+                        "title": { "runs": [{ "text": "Second Video" }] },
+                        "ownerText": { "runs": [{ "text": "Channel Two" }] }
+                    }
+                },
+                {
+                    // Malformed videoRenderer (no videoId) should be skipped silently
+                    "videoRenderer": {
+                        "title": { "runs": [{ "text": "Broken Video" }] }
+                    }
+                }
+            ]
+        });
+
+        let results = service.extract_video_results(&data);
+        assert_eq!(results.len(), 2);
+        assert_eq!(results[0].video_id, "vid1");
+        assert_eq!(results[0].title, "First Video");
+        assert_eq!(results[0].channel, "Channel One");
+        assert_eq!(results[1].video_id, "vid2");
+        assert_eq!(results[1].title, "Second Video");
+    }
+
+    #[test]
+    fn test_walk_finds_nested_video_renderers_at_any_depth() {
+        let service = media_service();
+        let data = serde_json::json!({
+            "a": {
+                "b": {
+                    "c": [
+                        {
+                            "d": {
+                                "videoRenderer": {
+                                    "videoId": "deep1",
+                                    "title": { "runs": [{ "text": "Deeply Nested" }] }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        });
+
+        let results = service.extract_video_results(&data);
+        assert_eq!(results.len(), 1);
+        assert_eq!(results[0].video_id, "deep1");
+    }
+
+    #[test]
+    fn test_extract_video_results_empty_data_returns_empty_vec() {
+        let service = media_service();
+        let data = serde_json::json!({});
+
+        let results = service.extract_video_results(&data);
+        assert!(results.is_empty());
+    }
+
+    #[test]
+    fn test_extract_video_results_end_to_end_from_html() {
+        let service = media_service();
+        let html = format!(
+            r#"<html><script>var ytInitialData = {{"contents":[{{"videoRenderer":{{"videoId":"e2e1","title":{{"runs":[{{"text":"E2E Video"}}]}},"ownerText":{{"runs":[{{"text":"E2E Channel"}}]}}}}}}]}};</script></html>"#
+        );
+
+        let json_str = service.extract_yt_initial_data(&html).unwrap();
+        let data: Value = serde_json::from_str(&json_str).unwrap();
+        let results = service.extract_video_results(&data);
+
+        assert_eq!(results.len(), 1);
+        assert_eq!(results[0].video_id, "e2e1");
+        assert_eq!(results[0].title, "E2E Video");
+        assert_eq!(results[0].channel, "E2E Channel");
+        assert_eq!(results[0].url, "https://www.youtube.com/watch?v=e2e1");
     }
 }

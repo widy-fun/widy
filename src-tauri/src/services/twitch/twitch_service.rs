@@ -17,7 +17,7 @@ use crate::{
     utils::get_random_alert,
 };
 use async_trait::async_trait;
-use chrono::Utc;
+use chrono::{SecondsFormat, Utc};
 use entity::{
     followers::Follow,
     goals::GoalType,
@@ -54,26 +54,28 @@ pub struct TwitchService {
 
 impl TwitchService {
     pub fn new(client_id: String, reqwest_client: reqwest::Client) -> Self {
-        #[cfg(not(debug_assertions))]
+        #[cfg(not(feature = "mock-twitch"))]
         let auth_endpoint = "https://id.twitch.tv/oauth2".to_string();
-        #[cfg(debug_assertions)]
+        #[cfg(feature = "mock-twitch")]
         let auth_endpoint = "http://localhost:8080/auth".to_string();
-        #[cfg(not(debug_assertions))]
+        #[cfg(not(feature = "mock-twitch"))]
         let api_endpoint = "https://api.twitch.tv/helix".to_string();
-        #[cfg(debug_assertions)]
+        #[cfg(feature = "mock-twitch")]
         let api_endpoint = "http://localhost:8080/mock".to_string();
-        #[cfg(not(debug_assertions))]
+        #[cfg(not(feature = "mock-twitch"))]
         let websocket_eventsub_url =
             "wss://eventsub.wss.twitch.tv/ws?keepalive_timeout_seconds=30".to_string();
-        #[cfg(debug_assertions)]
+        #[cfg(feature = "mock-twitch")]
         let websocket_eventsub_url = "ws://localhost:8081/ws".to_string();
-        #[cfg(not(debug_assertions))]
+        #[cfg(not(feature = "mock-twitch"))]
         let eventsub_endpoint = api_endpoint.clone();
-        #[cfg(debug_assertions)]
+        #[cfg(feature = "mock-twitch")]
         let eventsub_endpoint = "http://localhost:8081".to_string();
         let scopes="user:read:email channel:read:subscriptions moderator:read:followers channel:manage:redemptions bits:read".to_string();
-        #[cfg(not(debug_assertions))]
-        let scopes = format!("{scopes} user:read:chat user:write:chat user:bot channel:bot");
+        #[cfg(not(feature = "mock-twitch"))]
+        let scopes = format!(
+            "{scopes} user:read:chat user:write:chat user:bot channel:bot moderation:read moderator:manage:chat_messages moderator:manage:banned_users user:edit:broadcast moderator:manage:chat_settings"
+        );
 
         Self {
             client_id,
@@ -84,7 +86,7 @@ impl TwitchService {
             eventsub_endpoint,
             session_id: Arc::new(Mutex::new(None)),
             expire_at: Arc::new(AtomicU64::new(0)),
-            chat_messages_buffer: Arc::new(Mutex::new(ItemsBuffer::new(1001))),
+            chat_messages_buffer: Arc::new(Mutex::new(ItemsBuffer::new(2000))),
             cancellation_token: Arc::new(Mutex::new(CancellationToken::new())),
             reqwest_client,
             service_type: ServiceType::Twitch,
@@ -409,7 +411,7 @@ impl TwitchService {
                 if let Event::ChannelChatMessage(event) = payload.event {
                     let message = UnifiedChatMessage::from_twitch(
                         event.clone(),
-                        payload.subscription.created_at,
+                        Utc::now().to_rfc3339_opts(SecondsFormat::Secs, true),
                         all_badges_info,
                     );
                     {

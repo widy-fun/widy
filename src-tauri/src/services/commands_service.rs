@@ -217,8 +217,8 @@ impl CommandsService {
                     auth.user_id,
                     bot_auth.user_id,
                     reply_to_message_id,
-                    twitch_bot_service.client_id(),
                     app,
+                    None,
                 )
                 .await;
         }
@@ -394,14 +394,7 @@ impl CommandsService {
         }
 
         twitch_bot_service
-            .send_chat_message(
-                message,
-                auth.user_id,
-                bot_auth.user_id,
-                None,
-                twitch_bot_service.client_id(),
-                app,
-            )
+            .send_chat_message(message, auth.user_id, bot_auth.user_id, None, app, None)
             .await?;
 
         Ok(())
@@ -423,13 +416,7 @@ impl CommandsService {
         }
 
         twitch_bot_service
-            .send_chat_announcement(
-                message,
-                auth.user_id,
-                bot_auth.user_id,
-                twitch_bot_service.client_id(),
-                app,
-            )
+            .send_chat_announcement(message, auth.user_id, bot_auth.user_id, app)
             .await?;
 
         Ok(())
