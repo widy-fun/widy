@@ -63,7 +63,9 @@ const SessionToken = () => {
 					>
 						{t("save")}
 					</Button>
-					<YouCanFindByUrl url={"https://aistudio.google.com/api-keys"} />
+					<YouCanFindByUrl
+						url={"https://docs.widy.fun/next/guide/kick-session-token"}
+					/>
 				</>
 			)}
 		</>
