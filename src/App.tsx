@@ -17,6 +17,7 @@ import Donatello from "./components/donatello/Donatello";
 import DonatePay from "./components/donatepay/DonatePay";
 import Donatik from "./components/donatik/Donatik";
 import DonationAlerts from "./components/donationalerts/DonationAlerts";
+import FishAudio from "./components/fish-audio/FishAudio";
 import Gemini from "./components/gemini/Gemini";
 import Kick from "./components/kick/Kick";
 import KickBot from "./components/kick-bot/KickBot";
@@ -122,6 +123,7 @@ function App() {
 					<Route path="/openai/*" element={<OpenAI />} />
 					<Route path="/claude/*" element={<Claude />} />
 					<Route path="/kick-session/*" element={<KickSession />} />
+					<Route path="/fish-audio/*" element={<FishAudio />} />
 				</Routes>
 			)}
 		</main>

@@ -15,6 +15,7 @@ import { AlertSeverity, type IPiperVoice } from "@widy/sdk";
 import { type Dispatch, type SetStateAction, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
+import { TTS_MODELS_HEIGHT } from "../constants";
 import formatBytes from "../helpers/formatBytes";
 import readAppLocalDirEntrys from "../helpers/readAppLocalDirEntrys";
 import type { AppState } from "../store";
@@ -140,7 +141,7 @@ const PiperVoiceCard = ({
 				warning={t("piper.sure_remove")}
 				onClick={handleRemove}
 			/>
-			<Card sx={{ height: 160 }}>
+			<Card sx={{ height: TTS_MODELS_HEIGHT }}>
 				<CardContent>
 					<Stack
 						direction="row"

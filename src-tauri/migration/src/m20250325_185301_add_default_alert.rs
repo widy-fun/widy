@@ -1,6 +1,7 @@
 use entity::{
-    alerts::{AlertVariant, AlertVariationConditions, TtsType, ViewType},
+    alerts::{AlertVariant, AlertVariationConditions, ViewType},
     messages::MessageType,
+    tts::TtsType,
 };
 use sea_orm_migration::{prelude::*, sea_orm::sqlx::types::Uuid};
 

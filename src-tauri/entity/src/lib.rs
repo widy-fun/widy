@@ -18,4 +18,5 @@ pub mod rewards;
 pub mod services;
 pub mod settings;
 pub mod subscriptions;
+pub mod tts;
 pub mod widgets;

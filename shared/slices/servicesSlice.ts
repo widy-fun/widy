@@ -118,6 +118,11 @@ const initialState: ServicesState = {
 			color: "#53fc18",
 			authPath: "/kick-session/authorize",
 		},
+		[ServiceType.FishAudio]: {
+			active: false,
+			color: "#f0f3ef",
+			authPath: "/fish-audio/api-key",
+		},
 	},
 };
 

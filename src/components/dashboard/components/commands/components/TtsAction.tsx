@@ -1,4 +1,3 @@
-import type { IPiperTtsSettings } from "@widy/sdk";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -52,16 +51,12 @@ const TtsAction = () => {
 								}),
 							);
 						}}
-						voices={
-							ttsAction.tts_settings
-								? (ttsAction.tts_settings as IPiperTtsSettings).voices
-								: {}
-						}
-						onVoicesChange={(voices) => {
+						settings={ttsAction.tts_settings}
+						onSettingsChange={(tts_settings) => {
 							dispatch(
 								setCommand({
 									...command,
-									tts_action: { ...ttsAction, tts_settings: { voices } },
+									tts_action: { ...ttsAction, tts_settings },
 								}),
 							);
 						}}

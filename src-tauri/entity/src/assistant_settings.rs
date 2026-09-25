@@ -6,7 +6,7 @@ use sea_orm::entity::prelude::*;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use serde_json::{json, Error};
 
-use crate::alerts::{TtsSettings, TtsType};
+use crate::tts::{TtsSettings, TtsType};
 
 #[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]

@@ -2,6 +2,7 @@ use migration::{Migrator, MigratorTrait};
 use sea_orm::{ConnectOptions, Database, DatabaseConnection};
 use std::path::PathBuf;
 use tauri::is_dev;
+use tokio::fs;
 
 use crate::error::AppError;
 
@@ -10,10 +11,10 @@ pub struct DatabaseService {
     pub connection: DatabaseConnection,
 }
 impl DatabaseService {
-    pub async fn new(db_path: &PathBuf, version: &str) -> Result<Self, AppError> {
+    pub async fn new(db_path: &PathBuf) -> Result<Self, AppError> {
         let db_url = format!("sqlite://{}?mode=rwc", db_path.to_string_lossy());
 
-        let options = Self::get_connect_options(db_url);
+        let options = Self::get_connect_options(db_url.clone());
 
         let connection = Self::establish_connection(options).await?;
         match Self::run_migrations(&connection).await {
@@ -21,12 +22,7 @@ impl DatabaseService {
                 return Ok(Self { connection });
             }
             Err(_) => {
-                let db_url = format!(
-                    "sqlite://{}.v{}?mode=rwc",
-                    db_path.to_string_lossy(),
-                    version
-                );
-
+                fs::rename(db_path, format!("{}.old", db_path.to_string_lossy(),)).await?;
                 let options = Self::get_connect_options(db_url);
                 let connection = Self::establish_connection(options).await?;
                 Self::run_migrations(&connection).await?;

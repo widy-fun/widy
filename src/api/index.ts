@@ -40,6 +40,7 @@ export const api = createApi({
 		"Rewards",
 		"Commands",
 		"Assistant-Settings",
+		"FishAudioModels",
 	],
 	endpoints: (builder) => ({
 		getInitialState: builder.query<IInitialState, void>({
@@ -137,6 +138,12 @@ export const api = createApi({
 			}),
 			invalidatesTags: ["Services"],
 		}),
+		fishAudioSignOut: builder.mutation<void, void>({
+			query: () => ({
+				command: "fish_audio_sign_out",
+			}),
+			invalidatesTags: ["Services"],
+		}),
 	}),
 });
 
@@ -157,4 +164,5 @@ export const {
 	useOpenaiSignOutMutation,
 	useClaudeSignOutMutation,
 	useKickSessionSignOutMutation,
+	useFishAudioSignOutMutation,
 } = api;

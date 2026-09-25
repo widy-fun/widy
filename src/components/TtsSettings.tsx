@@ -1,26 +1,32 @@
 import { MenuItem, Select, Typography } from "@mui/material";
-import { TtsType } from "@widy/sdk";
+import { type ITtsSettings, ServiceType, TtsType } from "@widy/sdk";
 import { useTranslation } from "react-i18next";
+import { useGetServiceByIdQuery } from "../api/servicesApi";
+import getTtsNoteByTtsType from "../helpers/getTtsNoteByTtsType";
 import styles from "./dashboard/components/settings/Settings.module.css";
+import FishAudioSettings from "./FishAudioSettings";
 import InputSlider from "./InputSlider";
-import PiperVoices from "./PiperVoices";
+import PiperSettings from "./PiperSettings";
 
 const TtsSettings = ({
 	tts_type,
 	onTtsTypeChange,
 	tts_volume,
 	onTtsVolumeChange,
-	voices,
-	onVoicesChange,
+	settings,
+	onSettingsChange,
 }: {
 	tts_type: TtsType;
 	onTtsTypeChange: (tts_type: TtsType) => void;
 	tts_volume: number;
 	onTtsVolumeChange: (tts_volume: number) => void;
-	voices: Record<string, string>;
-	onVoicesChange: (voices: Record<string, string>) => void;
+	settings: ITtsSettings;
+	onSettingsChange: (settings: ITtsSettings) => void;
 }) => {
 	const { t } = useTranslation();
+	const { data: fishAudioService } = useGetServiceByIdQuery({
+		id: ServiceType.FishAudio,
+	});
 
 	return (
 		<>
@@ -29,11 +35,7 @@ const TtsSettings = ({
 					<Typography>
 						{t("settings.tts_type")}{" "}
 						<span style={{ fontSize: 12 }}>
-							(
-							{tts_type !== TtsType.Piper
-								? t("tts.quotas").toLowerCase()
-								: t("tts.model_ram").toLowerCase()}
-							)
+							({getTtsNoteByTtsType(tts_type)})
 						</span>
 						:
 					</Typography>
@@ -69,7 +71,17 @@ const TtsSettings = ({
 			</div>
 			{tts_type === TtsType.Piper && (
 				<div style={{ display: "flex", placeContent: "center" }}>
-					<PiperVoices onChange={onVoicesChange} voices={voices} />
+					<PiperSettings onChange={onSettingsChange} tts_settings={settings} />
+				</div>
+			)}
+			{tts_type === TtsType.FishAudio && (
+				<div style={{ display: "flex", placeContent: "center" }}>
+					{fishAudioService?.authorized && (
+						<FishAudioSettings
+							onChange={onSettingsChange}
+							tts_settings={settings}
+						/>
+					)}
 				</div>
 			)}
 		</>

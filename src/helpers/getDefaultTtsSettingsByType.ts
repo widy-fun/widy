@@ -1,5 +1,4 @@
 import { TtsType } from "@widy/sdk";
-import { DEFAULT_TTS_ACTION } from "../constants";
 import getDefaultAlert from "./getDefaultAlert";
 
 const getDefaultTtsSettingsByType = (type: TtsType) => {
@@ -7,10 +6,9 @@ const getDefaultTtsSettingsByType = (type: TtsType) => {
 		case TtsType.Edge:
 			return getDefaultAlert().tts_settings;
 		case TtsType.Piper:
-			return DEFAULT_TTS_ACTION.tts_settings;
-
-		default:
-			break;
+			return [];
+		case TtsType.FishAudio:
+			return [];
 	}
 };
 export default getDefaultTtsSettingsByType;

@@ -3,10 +3,7 @@
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    alerts::{TtsSettings, TtsType},
-    rewards::Platform,
-};
+use crate::{rewards::Platform, tts::TtsAction};
 
 #[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
@@ -79,13 +76,6 @@ pub struct ChatBotAction {
     pub message: String,
     pub replay: bool,
     pub platforms: Vec<Platform>,
-}
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
-pub struct TtsAction {
-    pub tts_type: TtsType,
-    pub tts_settings: Option<TtsSettings>,
-    pub tts_volume: u32,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]

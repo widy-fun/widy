@@ -9,7 +9,7 @@ import {
 	TextField,
 } from "@mui/material";
 import { convertFileSrc } from "@tauri-apps/api/core";
-import { AlertVariant, type IPiperTtsSettings } from "@widy/sdk";
+import { AlertVariant } from "@widy/sdk";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NumericFormat } from "react-number-format";
@@ -248,16 +248,12 @@ const AlertVariantSettings = () => {
 							}),
 						);
 					}}
-					voices={
-						alert.tts_settings
-							? (alert.tts_settings as IPiperTtsSettings).voices
-							: {}
-					}
-					onVoicesChange={(voices) => {
+					settings={alert.tts_settings}
+					onSettingsChange={(tts_settings) => {
 						dispatch(
 							setAlert({
 								...alert,
-								tts_settings: { voices },
+								tts_settings,
 							}),
 						);
 					}}

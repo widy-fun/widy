@@ -1,6 +1,7 @@
 use crate::error::AppError;
 use crate::services::assistant::AssistantService;
 use crate::services::claude::ClaudeService;
+use crate::services::fish_audio::FishAudioService;
 use crate::services::gemini::GeminiService;
 use crate::services::kick::{KickBotService, KickService, KickSessionService};
 use crate::services::openai::OpenAIService;
@@ -24,8 +25,6 @@ use tauri::{AppHandle, Manager};
 use tokio::sync::Mutex;
 
 pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
-    let version = app.package_info().version.to_string();
-
     //http client
     let user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36";
     let reqwest_client = reqwest::Client::builder()
@@ -48,7 +47,7 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
     app.manage(config_service.clone());
 
     //db
-    let database_service = DatabaseService::new(&config_service.db_path, &version).await?;
+    let database_service = DatabaseService::new(&config_service.db_path).await?;
     app.manage(database_service);
 
     //exchange
@@ -207,6 +206,11 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
     let claude_service = ClaudeService::new();
     let _ = claude_service.connect(&app).await;
     app.manage(claude_service);
+
+    //fish audio
+    let fish_audio_service = FishAudioService::new(reqwest_client.clone());
+    let _ = fish_audio_service.connect(&app).await;
+    app.manage(fish_audio_service);
 
     Ok(())
 }

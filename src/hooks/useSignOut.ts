@@ -4,6 +4,7 @@ import {
 	useDestreamSignOutMutation,
 	useDonatePaySignOutMutation,
 	useDonationAlertsSignOutMutation,
+	useFishAudioSignOutMutation,
 	useGeminiSignOutMutation,
 	useKickBotSignOutMutation,
 	useKickSessionSignOutMutation,
@@ -35,6 +36,7 @@ const useSignOut = (id: ServiceType) => {
 	const [openaiSignOut] = useOpenaiSignOutMutation();
 	const [claudeSignOut] = useClaudeSignOutMutation();
 	const [kickSessionSignOut] = useKickSessionSignOutMutation();
+	const [fishAudioSignOut] = useFishAudioSignOutMutation();
 
 	switch (id) {
 		case ServiceType.Streamelements:
@@ -71,6 +73,8 @@ const useSignOut = (id: ServiceType) => {
 			return claudeSignOut;
 		case ServiceType.KickSession:
 			return kickSessionSignOut;
+		case ServiceType.FishAudio:
+			return fishAudioSignOut;
 		default:
 			return () => null;
 	}

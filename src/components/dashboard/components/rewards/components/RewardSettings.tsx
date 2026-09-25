@@ -2,7 +2,6 @@ import { Button, MenuItem, Select, TextField } from "@mui/material";
 import { showSnackBar } from "@widy/react";
 import {
 	AlertSeverity,
-	type IPiperTtsSettings,
 	type IReward,
 	Platform,
 	RewardType,
@@ -261,18 +260,14 @@ const RewardSettings = ({ onSave }: { onSave: () => Promise<void> }) => {
 									}),
 								);
 							}}
-							voices={
-								reward.tts_action.tts_settings
-									? (reward.tts_action.tts_settings as IPiperTtsSettings).voices
-									: {}
-							}
-							onVoicesChange={(voices) => {
+							settings={reward.tts_action.tts_settings}
+							onSettingsChange={(tts_settings) => {
 								dispatch(
 									setReward({
 										...reward,
 										tts_action: {
 											...reward.tts_action,
-											tts_settings: { voices },
+											tts_settings,
 										},
 									}),
 								);

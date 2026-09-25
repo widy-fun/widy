@@ -10,6 +10,7 @@ pub mod donate_pay_service;
 pub mod donation_alerts_service;
 pub mod events_service;
 pub mod exchange_rates_service;
+pub mod fish_audio;
 pub mod gemini;
 pub mod kick;
 pub mod media_service;

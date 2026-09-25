@@ -7,7 +7,7 @@ use std::{
 };
 
 use async_trait::async_trait;
-use entity::alerts::TtsSettings;
+use entity::tts::{PiperVoice, PiperVoices, TtsSettings};
 use hound::{SampleFormat, WavSpec, WavWriter};
 use lingua::Language;
 use ndarray::{Array2, arr1};
@@ -16,7 +16,7 @@ use ort::{session::Session, value::Tensor};
 use crate::{
     constants::{BOS, EOS, PAD},
     error::AppError,
-    services::tts::models::{Piper, PiperModelConfig, PiperVoices},
+    services::tts::models::{Piper, PiperModelConfig},
     utils::log_and_wrap_error,
 };
 
@@ -232,15 +232,19 @@ pub trait PiperTts: Send + Sync {
         Ok(cursor.into_inner())
     }
 
-    fn get_piper_voices(&self) -> Result<PiperVoices, AppError> {
+    fn get_piper_voices(&self) -> Result<Vec<PiperVoice>, AppError> {
         let piper_voices = fs::read_to_string(self.piper_path().join("voices.json"))
             .map_err(|e| log_and_wrap_error("Failed to read piper voices file", e))?;
-        let piper_voices: PiperVoices = serde_json::from_str(&piper_voices).map_err(|e| {
-            log_and_wrap_error(
-                "Failed to parse piper voices file",
-                AppError::ParseError(e.to_string()),
-            )
-        })?;
+        let piper_voices = serde_json::from_str::<PiperVoices>(&piper_voices)
+            .map_err(|e| {
+                log_and_wrap_error(
+                    "Failed to parse piper voices file",
+                    AppError::ParseError(e.to_string()),
+                )
+            })?
+            .into_iter()
+            .map(|(_, voice)| voice)
+            .collect();
         Ok(piper_voices)
     }
     fn get_voice_key(
@@ -249,12 +253,14 @@ pub trait PiperTts: Send + Sync {
         tts_settings: Option<TtsSettings>,
     ) -> Result<String, AppError> {
         if let Some(TtsSettings::Piper(settings)) = tts_settings {
-            let voice_key = settings
-                .voices
-                .get(&language.iso_code_639_1().to_string())
-                .cloned()
-                .ok_or(AppError::Piper("Not found voice key".to_string()))?;
-            return Ok(voice_key);
+            let voice = settings
+                .iter()
+                .find(|voice| {
+                    voice.language.family.to_lowercase()
+                        == language.iso_code_639_1().to_string().to_lowercase()
+                })
+                .ok_or(AppError::Piper("Not found voice".to_string()))?;
+            return Ok(voice.key.clone());
         }
         Err(AppError::Piper("Piper tts settings empty".to_string()))
     }

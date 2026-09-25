@@ -1,4 +1,4 @@
-use entity::alerts::{TtsSettings, TtsType};
+use entity::tts::{TtsSettings, TtsType};
 use lingua::{Language, LanguageDetector};
 use msedge_tts::{
     tts::{SpeechConfig, client::connect_async},
@@ -15,7 +15,10 @@ use tokio::{fs::File, io::AsyncWriteExt};
 
 use crate::{
     error::AppError,
-    services::tts::{models::Piper, traits::PiperTts},
+    services::{
+        fish_audio::{FishAudioService, models::TtsRequestBody, traits::FishAudioApi},
+        tts::{models::Piper, traits::PiperTts},
+    },
     utils::log_and_wrap_error,
 };
 
@@ -60,6 +63,10 @@ impl TtsService {
             },
             TtsType::Piper => {
                 self.make_piper_audio(text, file_name, &language, tts_settings)
+                    .await
+            }
+            TtsType::FishAudio => {
+                self.make_fish_audio(text, file_name, &language, app, tts_settings)
                     .await
             }
         }
@@ -186,6 +193,50 @@ impl TtsService {
                 )
             })?;
         Ok(format!("{}.wav", file_name))
+    }
+
+    async fn make_fish_audio(
+        &self,
+        text: &str,
+        file_name: &str,
+        language: &Language,
+        app: &AppHandle,
+        tts_settings: Option<TtsSettings>,
+    ) -> Result<String, AppError> {
+        let settings = match tts_settings {
+            Some(TtsSettings::FishAudio(settings)) => settings,
+            _ => {
+                return Err(AppError::Custom(
+                    "FishAudio settings not provided".to_string(),
+                ));
+            }
+        };
+        let fish_audio_service = app.state::<FishAudioService>();
+        let reference_id = settings
+            .iter()
+            .find(|m| m.languages.contains(&language.iso_code_639_1().to_string()))
+            .ok_or(AppError::Piper("Not found model".to_string()))?
+            ._id
+            .clone();
+        let audio_bytes = fish_audio_service
+            .tts(
+                app,
+                TtsRequestBody {
+                    text: text.to_string(),
+                    reference_id,
+                },
+            )
+            .await?;
+
+        let audio_file_path = self.audio_path.join(format!("{}.mp3", file_name));
+        let mut file = File::create(audio_file_path).await.map_err(|e| {
+            log_and_wrap_error("Create fish audio file error", AppError::Io(e.to_string()))
+        })?;
+        file.write_all(&audio_bytes).await.map_err(|e| {
+            log_and_wrap_error("Write fish audio file error", AppError::Io(e.to_string()))
+        })?;
+
+        Ok(format!("{}.mp3", file_name))
     }
 
     fn split_text(&self, sentence: &str, max_length: usize) -> Vec<String> {

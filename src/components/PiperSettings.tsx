@@ -1,36 +1,32 @@
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, Chip, InputAdornment, styled, TextField } from "@mui/material";
+import type { IPiperVoice, ITtsSettings } from "@widy/sdk";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AutoSizer, List, type ListRowProps } from "react-virtualized";
 import { useGetPiperVoicesQuery } from "../api/ttsApi";
-import { SCROLLBAR_STYLES } from "../constants";
+import { CONTAINER_HEIGHT, ROW_HEIGHT, SCROLLBAR_STYLES } from "../constants";
 import readAppLocalDirEntrys from "../helpers/readAppLocalDirEntrys";
 import PiperVoiceCard from "./PiperVoiceCard";
-
-const ROW_HEIGHT = 165;
-const CONTAINER_HEIGHT = 300;
 
 const StyledList = styled(List)(() => ({
 	...SCROLLBAR_STYLES,
 }));
 
-const PiperVoices = ({
+const PiperSettings = ({
 	onChange,
-	voices,
+	tts_settings,
 }: {
-	onChange: (voices: Record<string, string>) => void;
-	voices: Record<string, string>;
+	onChange: (tts_settings: ITtsSettings) => void;
+	tts_settings: ITtsSettings;
 }) => {
 	const { t } = useTranslation();
 	const { data } = useGetPiperVoicesQuery();
 	const [downloadedModels, setDownloadedModels] = useState<string[]>([]);
 	const [searchQuery, setSearchQuery] = useState("");
-	const [selectedVoices, setSelectedVoices] = useState<Record<string, string>>(
-		{},
-	);
+	const [piperTtsSettings, setPiperTtsSettings] = useState<IPiperVoice[]>([]);
 
-	const piperVoices = useMemo(() => (data ? Object.values(data) : []), [data]);
+	const piperVoices = data ?? [];
 
 	const filteredVoices = useMemo(() => {
 		const query = searchQuery.trim().toLowerCase();
@@ -54,7 +50,6 @@ const PiperVoices = ({
 
 	const rowRenderer = ({ index, key, style }: ListRowProps) => {
 		const voice = filteredVoices[index];
-
 		return (
 			<div key={key} style={style}>
 				<Box
@@ -68,26 +63,29 @@ const PiperVoices = ({
 				>
 					<PiperVoiceCard
 						voice={voice}
-						isSelected={selectedVoices[voice.language.family] === voice.key}
+						isSelected={
+							piperTtsSettings.some((v) => v.key === voice.key) ?? false
+						}
 						onChange={(checked) => {
-							const voices = { ...selectedVoices };
-
 							if (checked) {
-								voices[voice.language.family] = voice.key;
+								setPiperTtsSettings((prev) => [...prev, voice]);
+								onChange([...piperTtsSettings, voice]);
 							} else {
-								delete voices[voice.language.family];
+								const updatedVoices = piperTtsSettings.filter(
+									(v) => v.key !== voice.key,
+								);
+								setPiperTtsSettings(updatedVoices);
+								onChange(updatedVoices);
 							}
-
-							setSelectedVoices(voices);
-							onChange(voices);
 						}}
 						downloadedModels={downloadedModels}
 						setDownloadedModels={setDownloadedModels}
 						onRemove={() => {
-							const voices = { ...selectedVoices };
-							delete voices[voice.language.family];
-							setSelectedVoices(voices);
-							onChange(voices);
+							const updatedVoices = piperTtsSettings.filter(
+								(v) => v.key !== voice.key,
+							);
+							setPiperTtsSettings(updatedVoices);
+							onChange(updatedVoices);
 						}}
 					/>
 				</Box>
@@ -101,12 +99,12 @@ const PiperVoices = ({
 
 	useEffect(() => {
 		if (piperVoices.length) {
-			const validEntries = Object.entries(voices).filter(([, key]) =>
-				piperVoices.some((v) => v.key === key),
+			const validEntries = (tts_settings as IPiperVoice[]).filter(
+				(settingsVoice) => piperVoices.some((v) => v.key === settingsVoice.key),
 			);
-			setSelectedVoices(Object.fromEntries(validEntries));
+			setPiperTtsSettings(validEntries);
 		}
-	}, [voices, piperVoices]);
+	}, [tts_settings, piperVoices]);
 
 	return (
 		<Box sx={{ width: 400 }}>
@@ -117,6 +115,7 @@ const PiperVoices = ({
 				value={searchQuery}
 				onChange={(e) => setSearchQuery(e.target.value)}
 				sx={{ mb: 1 }}
+				autoComplete="off"
 				slotProps={{
 					input: {
 						startAdornment: (
@@ -143,16 +142,23 @@ const PiperVoices = ({
 				</AutoSizer>
 			</Box>
 			<Box sx={{ margin: 1, display: "flex", flexWrap: "wrap", gap: 1 }}>
-				{Object.entries(selectedVoices).map(([_, key]) => {
-					const voice = piperVoices.find((v) => v.key === key);
+				{piperTtsSettings.map((settingsVoice) => {
+					const voice = piperVoices.find((v) => v.key === settingsVoice.key);
 					if (!voice) return null;
 
 					return (
 						<Chip
-							key={key}
+							key={voice.key}
 							label={voice.name}
 							size="small"
 							variant="outlined"
+							onDelete={() => {
+								const updatedVoices = piperTtsSettings.filter(
+									(v) => v.key !== voice.key,
+								);
+								setPiperTtsSettings(updatedVoices);
+								onChange(updatedVoices);
+							}}
 						/>
 					);
 				})}
@@ -160,4 +166,4 @@ const PiperVoices = ({
 		</Box>
 	);
 };
-export default PiperVoices;
+export default PiperSettings;

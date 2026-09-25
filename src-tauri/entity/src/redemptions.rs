@@ -4,9 +4,9 @@ use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    commands_actions::Tts,
     donations::Media,
     rewards::{Platform, RewardType},
+    tts::Tts,
 };
 
 #[sea_orm::model]

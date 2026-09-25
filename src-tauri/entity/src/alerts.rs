@@ -1,9 +1,10 @@
-use std::collections::HashMap;
-
 use sea_orm::{entity::prelude::*, ActiveValue::Set, FromJsonQueryResult, HasOneModel::NotSet};
 use serde::{Deserialize, Serialize};
 
-use crate::messages::MessageType;
+use crate::{
+    messages::MessageType,
+    tts::{TtsSettings, TtsType},
+};
 
 #[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
@@ -179,39 +180,4 @@ impl From<Option<Alert>> for ActiveModelEx {
             None => Default::default(),
         }
     }
-}
-
-#[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
-#[sea_orm(rs_type = "String", db_type = "Text")]
-pub enum TtsType {
-    #[sea_orm(string_value = "Google")]
-    Google,
-    #[sea_orm(string_value = "Edge")]
-    Edge,
-    #[sea_orm(string_value = "Piper")]
-    Piper,
-}
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
-#[serde(untagged)]
-
-pub enum TtsSettings {
-    Edge(EdgeTtsSettings),
-    Piper(PiperTtsSettings),
-}
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct EdgeTtsSettings {
-    pub gender: Gender,
-}
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct PiperTtsSettings {
-    pub voices: HashMap<String, String>,
-}
-
-#[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
-#[sea_orm(rs_type = "String", db_type = "Text")]
-pub enum Gender {
-    #[sea_orm(string_value = "Male")]
-    Male,
-    #[sea_orm(string_value = "Female")]
-    Female,
 }

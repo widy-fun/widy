@@ -22,6 +22,7 @@ use crate::{
         twitch::{TwitchBotService, TwitchService, traits::TwitchApi},
     },
     traits::ChatMessageBuffer,
+    utils::log_and_wrap_error,
 };
 
 pub struct CommandsService {
@@ -263,8 +264,9 @@ impl CommandsService {
                 alert: None,
             };
 
-            let _ =
-                EventsService::command_tts_action(rest_text, tts_action, app, command_action).await;
+            let _ = EventsService::command_tts_action(rest_text, tts_action, app, command_action)
+                .await
+                .map_err(|e| log_and_wrap_error("command tts action", e));
         }
 
         Ok(())

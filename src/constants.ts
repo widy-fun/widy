@@ -4,7 +4,6 @@ import {
 	IChatBotAction,
 	IChatSource,
 	ICommand,
-	IPiperTtsSettings,
 	ISettings,
 	ITextStyle,
 	ITimerSource,
@@ -124,7 +123,7 @@ export const DEFAULT_CHAT_BOT_ACTION: IChatBotAction = {
 
 export const DEFAULT_TTS_ACTION: ITtsAction = {
 	tts_type: TtsType.Piper,
-	tts_settings: { voices: {} } as IPiperTtsSettings,
+	tts_settings: [],
 	tts_volume: 50,
 };
 
@@ -182,3 +181,7 @@ export const STT_MODELS = {
 		languages: NEMOTRON_3_5_ASR_LANGUAGES,
 	},
 };
+
+export const ROW_HEIGHT = 165;
+export const CONTAINER_HEIGHT = 300;
+export const TTS_MODELS_HEIGHT = 160;

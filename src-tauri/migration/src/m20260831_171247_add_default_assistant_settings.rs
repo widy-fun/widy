@@ -1,6 +1,6 @@
 use entity::{
-    alerts::TtsType,
     assistant_settings::{Tool, ToolCallingModel, ToolCallingProvider},
+    tts::TtsType,
 };
 use sea_orm_migration::{prelude::*, sea_query::value::prelude::serde_json};
 #[derive(DeriveMigrationName)]

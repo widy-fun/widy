@@ -186,7 +186,10 @@ pub fn run() {
             claude_sign_out,
             get_tools,
             kick_session_connect,
-            kick_session_sign_out
+            kick_session_sign_out,
+            fish_audio_connect,
+            fish_audio_sign_out,
+            get_fish_audio_models
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

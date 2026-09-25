@@ -1,9 +1,8 @@
 use chrono::Utc;
 use entity::{
-    alerts::TtsType,
     assistant_actions::AssistantAction,
-    commands::{TtsAction, UserLevel},
-    commands_actions::{CommandAction, Tts},
+    commands::UserLevel,
+    commands_actions::CommandAction,
     donations::Donation,
     followers::Follow,
     goals::GoalType,
@@ -14,6 +13,7 @@ use entity::{
     services::ServiceType,
     settings::Currency,
     subscriptions::Subscription,
+    tts::{Tts, TtsAction, TtsType},
 };
 use serde::Serialize;
 use tauri::{AppHandle, Manager};

@@ -59,7 +59,36 @@ pub enum ServiceType {
     Claude,
     #[sea_orm(string_value = "KickSession")]
     KickSession,
+    #[sea_orm(string_value = "FishAudio")]
+    FishAudio,
 }
+
+impl ServiceType {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            ServiceType::Streamelements => "Streamelements",
+            ServiceType::Twitch => "Twitch",
+            ServiceType::WidySol => "WidySol",
+            ServiceType::WidyTon => "WidyTon",
+            ServiceType::DonationAlerts => "DonationAlerts",
+            ServiceType::StreamLabs => "StreamLabs",
+            ServiceType::Donatello => "Donatello",
+            ServiceType::Donatik => "Donatik",
+            ServiceType::DonatePay => "DonatePay",
+            ServiceType::Destream => "Destream",
+            ServiceType::Tribute => "Tribute",
+            ServiceType::Kick => "Kick",
+            ServiceType::TwitchBot => "TwitchBot",
+            ServiceType::KickBot => "KickBot",
+            ServiceType::Gemini => "Gemini",
+            ServiceType::OpenAI => "OpenAI",
+            ServiceType::Claude => "Claude",
+            ServiceType::KickSession => "KickSession",
+            ServiceType::FishAudio => "FishAudio",
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
 #[serde(untagged)]
 
