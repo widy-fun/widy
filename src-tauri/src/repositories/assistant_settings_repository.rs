@@ -33,8 +33,6 @@ impl AssistantSettingsRepository for DatabaseService {
             max_tokens: Set(assistant_settings.max_tokens),
             max_chars: Set(assistant_settings.max_chars),
             tts_settings: Set(assistant_settings.tts_settings),
-            tts_type: Set(assistant_settings.tts_type),
-            tts_volume: Set(assistant_settings.tts_volume),
         })
         .exec(&self.connection)
         .await

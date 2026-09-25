@@ -6,7 +6,7 @@ use sea_orm::entity::prelude::*;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use serde_json::{json, Error};
 
-use crate::tts::{TtsSettings, TtsType};
+use crate::tts::TtsSettings;
 
 #[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
@@ -27,10 +27,8 @@ pub struct Model {
     #[sea_orm(column_type = "JsonBinary")]
     pub tools: Tools,
     pub max_tokens: u32,
-    pub tts_volume: u32,
-    pub tts_type: TtsType,
     #[sea_orm(column_type = "JsonBinary")]
-    pub tts_settings: Option<TtsSettings>,
+    pub tts_settings: TtsSettings,
     pub max_chars: u32,
 }
 

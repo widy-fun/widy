@@ -17,7 +17,7 @@ impl MigrationTrait for Migration {
                     .col(json_binary_null("chat_source"))
                     .col(json_binary_null("timer_source"))
                     .col(json_binary_null("chat_bot_action"))
-                    .col(json_binary_null("tts_action"))
+                    .col(json_binary_null("tts_settings"))
                     .col(string("source_type"))
                     .col(boolean("is_enabled"))
                     .to_owned(),

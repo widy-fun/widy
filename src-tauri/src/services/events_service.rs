@@ -13,7 +13,7 @@ use entity::{
     services::ServiceType,
     settings::Currency,
     subscriptions::Subscription,
-    tts::{Tts, TtsAction, TtsType},
+    tts::{Tts, TtsSettings},
 };
 use serde::Serialize;
 use tauri::{AppHandle, Manager};
@@ -430,18 +430,8 @@ impl EventsService {
         };
 
         let alert = get_alert_by_amount(app, exchanged_amount, MessageType::Donation)
-            .await
-            .unwrap_or(None);
-
-        let tts_type = match alert.clone() {
-            Some(alert) => alert.tts_type,
-            _ => TtsType::Edge,
-        };
-
-        let tts_settings = match alert.clone() {
-            Some(alert) => alert.tts_settings,
-            _ => None,
-        };
+            .await?
+            .ok_or(AppError::Custom("Alert not found".to_string()))?;
 
         let audio = if let Some(text) = text.clone() {
             match tts_service
@@ -449,8 +439,7 @@ impl EventsService {
                     &remove_links(&text),
                     &id.to_string(),
                     &app,
-                    tts_type,
-                    tts_settings,
+                    alert.tts_settings.clone(),
                 )
                 .await
             {
@@ -498,7 +487,7 @@ impl EventsService {
                 exchanged_currency: Some(settings.currency.clone()),
                 created_at,
                 media: media.clone(),
-                alert: alert,
+                alert: Some(alert),
             }),
         };
 
@@ -592,7 +581,7 @@ impl EventsService {
     pub async fn redemption(
         redemption: Redemption,
         reward_type: RewardType,
-        tts_action: TtsAction,
+        tts_settings: TtsSettings,
         app: &AppHandle,
     ) -> Result<(), AppError> {
         let tts_service = app.state::<TtsService>();
@@ -626,14 +615,13 @@ impl EventsService {
                             &text,
                             &redemption.id.to_string(),
                             &app,
-                            tts_action.tts_type.clone(),
-                            tts_action.tts_settings,
+                            tts_settings.clone(),
                         )
                         .await?;
 
                     Some(Tts {
-                        tts_type: tts_action.tts_type,
-                        tts_volume: tts_action.tts_volume,
+                        r#type: tts_settings.r#type,
+                        volume: tts_settings.volume,
                         audio,
                     })
                 }
@@ -754,7 +742,7 @@ impl EventsService {
 
     pub async fn command_tts_action(
         text: &str,
-        tts_action: TtsAction,
+        tts_settings: TtsSettings,
         app: &AppHandle,
         command_action: CommandAction,
     ) -> Result<(), AppError> {
@@ -781,15 +769,14 @@ impl EventsService {
                 &remove_links(&text),
                 &command_action.id.to_string(),
                 &app,
-                tts_action.tts_type.clone(),
-                tts_action.tts_settings,
+                tts_settings.clone(),
             )
             .await?;
 
         let command_action = CommandAction {
             tts: Some(Tts {
-                tts_type: tts_action.tts_type,
-                tts_volume: tts_action.tts_volume,
+                r#type: tts_settings.r#type,
+                volume: tts_settings.volume,
                 audio,
             }),
             ..command_action

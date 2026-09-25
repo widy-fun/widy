@@ -14,17 +14,17 @@ const StyledList = styled(List)(() => ({
 }));
 
 const PiperSettings = ({
-	onChange,
+	onSettingsChange,
 	tts_settings,
 }: {
-	onChange: (tts_settings: ITtsSettings) => void;
+	onSettingsChange: (tts_settings: ITtsSettings) => void;
 	tts_settings: ITtsSettings;
 }) => {
 	const { t } = useTranslation();
 	const { data } = useGetPiperVoicesQuery();
 	const [downloadedModels, setDownloadedModels] = useState<string[]>([]);
 	const [searchQuery, setSearchQuery] = useState("");
-	const [piperTtsSettings, setPiperTtsSettings] = useState<IPiperVoice[]>([]);
+	const [piperTtsVoices, setPiperTtsVoices] = useState<IPiperVoice[]>([]);
 
 	const piperVoices = data ?? [];
 
@@ -64,28 +64,37 @@ const PiperSettings = ({
 					<PiperVoiceCard
 						voice={voice}
 						isSelected={
-							piperTtsSettings.some((v) => v.key === voice.key) ?? false
+							piperTtsVoices.some((v) => v.key === voice.key) ?? false
 						}
 						onChange={(checked) => {
 							if (checked) {
-								setPiperTtsSettings((prev) => [...prev, voice]);
-								onChange([...piperTtsSettings, voice]);
+								setPiperTtsVoices((prev) => [...prev, voice]);
+								onSettingsChange({
+									...tts_settings,
+									models: [...piperTtsVoices, voice],
+								});
 							} else {
-								const updatedVoices = piperTtsSettings.filter(
+								const updatedVoices = piperTtsVoices.filter(
 									(v) => v.key !== voice.key,
 								);
-								setPiperTtsSettings(updatedVoices);
-								onChange(updatedVoices);
+								setPiperTtsVoices(updatedVoices);
+								onSettingsChange({
+									...tts_settings,
+									models: updatedVoices,
+								});
 							}
 						}}
 						downloadedModels={downloadedModels}
 						setDownloadedModels={setDownloadedModels}
 						onRemove={() => {
-							const updatedVoices = piperTtsSettings.filter(
+							const updatedVoices = piperTtsVoices.filter(
 								(v) => v.key !== voice.key,
 							);
-							setPiperTtsSettings(updatedVoices);
-							onChange(updatedVoices);
+							setPiperTtsVoices(updatedVoices);
+							onSettingsChange({
+								...tts_settings,
+								models: updatedVoices,
+							});
 						}}
 					/>
 				</Box>
@@ -99,10 +108,10 @@ const PiperSettings = ({
 
 	useEffect(() => {
 		if (piperVoices.length) {
-			const validEntries = (tts_settings as IPiperVoice[]).filter(
+			const validEntries = (tts_settings.models as IPiperVoice[]).filter(
 				(settingsVoice) => piperVoices.some((v) => v.key === settingsVoice.key),
 			);
-			setPiperTtsSettings(validEntries);
+			setPiperTtsVoices(validEntries);
 		}
 	}, [tts_settings, piperVoices]);
 
@@ -142,7 +151,7 @@ const PiperSettings = ({
 				</AutoSizer>
 			</Box>
 			<Box sx={{ margin: 1, display: "flex", flexWrap: "wrap", gap: 1 }}>
-				{piperTtsSettings.map((settingsVoice) => {
+				{piperTtsVoices.map((settingsVoice) => {
 					const voice = piperVoices.find((v) => v.key === settingsVoice.key);
 					if (!voice) return null;
 
@@ -153,11 +162,14 @@ const PiperSettings = ({
 							size="small"
 							variant="outlined"
 							onDelete={() => {
-								const updatedVoices = piperTtsSettings.filter(
+								const updatedVoices = piperTtsVoices.filter(
 									(v) => v.key !== voice.key,
 								);
-								setPiperTtsSettings(updatedVoices);
-								onChange(updatedVoices);
+								setPiperTtsVoices(updatedVoices);
+								onSettingsChange({
+									...tts_settings,
+									models: updatedVoices,
+								});
 							}}
 						/>
 					);

@@ -31,10 +31,10 @@ const StyledBox = styled(Box)(() => ({
 }));
 
 const FishAudioSettings = ({
-	onChange,
+	onSettingsChange,
 	tts_settings,
 }: {
-	onChange: (tts_settings: ITtsSettings) => void;
+	onSettingsChange: (tts_settings: ITtsSettings) => void;
 	tts_settings: ITtsSettings;
 }) => {
 	const { t } = useTranslation();
@@ -44,7 +44,7 @@ const FishAudioSettings = ({
 		isSearchLanguage: false,
 		isSearchTitle: true,
 	});
-	const [fishTtsSettings, setFishTtsSettings] = useState<IFishAudioModel[]>([]);
+	const [fishTtsModels, setFishTtsModels] = useState<IFishAudioModel[]>([]);
 	const pattern = debouncedSearchQuery.trim();
 	const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
 		useGetFishAudioModelsInfiniteQuery(
@@ -64,7 +64,7 @@ const FishAudioSettings = ({
 		);
 
 	useEffect(() => {
-		setFishTtsSettings((tts_settings as IFishAudioModel[]) ?? []);
+		setFishTtsModels((tts_settings.models as IFishAudioModel[]) ?? []);
 	}, [tts_settings]);
 
 	return (
@@ -138,19 +138,24 @@ const FishAudioSettings = ({
 										<FishAudioModelCard
 											model={model}
 											isSelected={
-												fishTtsSettings.some((m) => m._id === model._id) ??
-												false
+												fishTtsModels.some((m) => m._id === model._id) ?? false
 											}
 											onChange={(checked) => {
 												if (checked) {
-													setFishTtsSettings((prev) => [...prev, model]);
-													onChange([...fishTtsSettings, model]);
+													setFishTtsModels((prev) => [...prev, model]);
+													onSettingsChange({
+														...tts_settings,
+														models: [...fishTtsModels, model],
+													});
 												} else {
-													const updatedModels = fishTtsSettings.filter(
+													const updatedModels = fishTtsModels.filter(
 														(m) => m._id !== model._id,
 													);
-													setFishTtsSettings(updatedModels);
-													onChange(updatedModels);
+													setFishTtsModels(updatedModels);
+													onSettingsChange({
+														...tts_settings,
+														models: updatedModels,
+													});
 												}
 											}}
 										/>
@@ -162,18 +167,18 @@ const FishAudioSettings = ({
 				)}
 			</StyledBox>
 			<Box sx={{ margin: 1, display: "flex", flexWrap: "wrap", gap: 1 }}>
-				{fishTtsSettings.map((model) => (
+				{fishTtsModels.map((model) => (
 					<Chip
 						key={model._id}
 						label={model.title}
 						size="small"
 						variant="outlined"
 						onDelete={() => {
-							const updatedModels = fishTtsSettings.filter(
+							const updatedModels = fishTtsModels.filter(
 								(m) => m._id !== model._id,
 							);
-							setFishTtsSettings(updatedModels);
-							onChange(updatedModels);
+							setFishTtsModels(updatedModels);
+							onSettingsChange({ ...tts_settings, models: updatedModels });
 						}}
 					/>
 				))}

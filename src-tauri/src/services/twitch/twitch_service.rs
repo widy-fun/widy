@@ -253,7 +253,7 @@ impl TwitchService {
                             let _ = EventsService::redemption(
                                 redemption,
                                 reward.r#type,
-                                reward.tts_action,
+                                reward.tts_settings,
                                 &app,
                             )
                             .await;

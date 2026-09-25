@@ -7,7 +7,7 @@ use std::{
 };
 
 use async_trait::async_trait;
-use entity::tts::{PiperVoice, PiperVoices, TtsSettings};
+use entity::tts::{PiperVoice, PiperVoices, TtsSettings, TtsModels};
 use hound::{SampleFormat, WavSpec, WavWriter};
 use lingua::Language;
 use ndarray::{Array2, arr1};
@@ -250,10 +250,10 @@ pub trait PiperTts: Send + Sync {
     fn get_voice_key(
         &self,
         language: &Language,
-        tts_settings: Option<TtsSettings>,
+        tts_settings: TtsSettings,
     ) -> Result<String, AppError> {
-        if let Some(TtsSettings::Piper(settings)) = tts_settings {
-            let voice = settings
+        if let Some(TtsModels::Piper(voices)) = tts_settings.models {
+            let voice = voices
                 .iter()
                 .find(|voice| {
                     voice.language.family.to_lowercase()

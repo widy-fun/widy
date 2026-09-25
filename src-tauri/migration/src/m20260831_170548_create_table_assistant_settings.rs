@@ -24,9 +24,7 @@ impl MigrationTrait for Migration {
                     .col(json_binary("tools"))
                     .col(integer("max_tokens"))
                     .col(integer("max_chars"))
-                    .col(integer("tts_volume"))
-                    .col(string("tts_type"))
-                    .col(json_binary_null("tts_settings"))
+                    .col(json_binary("tts_settings"))
                     .to_owned(),
             )
             .await

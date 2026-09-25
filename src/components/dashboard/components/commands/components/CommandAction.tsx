@@ -48,7 +48,7 @@ const CommandAction = ({ isUpdate }: { isUpdate: boolean }) => {
 				description={t("tts.description")}
 				path="/dashboard/commands/action/tts"
 				icon={<VolumeUpIcon sx={{ width: 40, height: 40 }} />}
-				selected={!!command.tts_action}
+				selected={!!command.tts_settings}
 			/>
 		</Box>
 	);

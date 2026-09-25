@@ -2,6 +2,7 @@ import { MenuItem, Select, Typography } from "@mui/material";
 import { type ITtsSettings, ServiceType, TtsType } from "@widy/sdk";
 import { useTranslation } from "react-i18next";
 import { useGetServiceByIdQuery } from "../api/servicesApi";
+import getDefaultTtsSettingsByType from "../helpers/getDefaultTtsSettingsByType";
 import getTtsNoteByTtsType from "../helpers/getTtsNoteByTtsType";
 import styles from "./dashboard/components/settings/Settings.module.css";
 import FishAudioSettings from "./FishAudioSettings";
@@ -9,19 +10,11 @@ import InputSlider from "./InputSlider";
 import PiperSettings from "./PiperSettings";
 
 const TtsSettings = ({
-	tts_type,
-	onTtsTypeChange,
-	tts_volume,
-	onTtsVolumeChange,
-	settings,
+	tts_settings,
 	onSettingsChange,
 }: {
-	tts_type: TtsType;
-	onTtsTypeChange: (tts_type: TtsType) => void;
-	tts_volume: number;
-	onTtsVolumeChange: (tts_volume: number) => void;
-	settings: ITtsSettings;
-	onSettingsChange: (settings: ITtsSettings) => void;
+	tts_settings: ITtsSettings;
+	onSettingsChange: (tts_settings: ITtsSettings) => void;
 }) => {
 	const { t } = useTranslation();
 	const { data: fishAudioService } = useGetServiceByIdQuery({
@@ -35,21 +28,21 @@ const TtsSettings = ({
 					<Typography>
 						{t("settings.tts_type")}{" "}
 						<span style={{ fontSize: 12 }}>
-							({getTtsNoteByTtsType(tts_type)})
+							({getTtsNoteByTtsType(tts_settings.type)})
 						</span>
 						:
 					</Typography>
 				</div>
-				<Select sx={{ width: 150 }} value={tts_type}>
-					{Object.values(TtsType).map((tts_type) => (
+				<Select sx={{ width: 150 }} value={tts_settings.type}>
+					{Object.values(TtsType).map((type) => (
 						<MenuItem
-							value={tts_type}
-							key={tts_type}
+							value={type}
+							key={type}
 							onClick={() => {
-								onTtsTypeChange(tts_type);
+								onSettingsChange(getDefaultTtsSettingsByType(type));
 							}}
 						>
-							{tts_type}
+							{type}
 						</MenuItem>
 					))}
 				</Select>
@@ -60,26 +53,31 @@ const TtsSettings = ({
 					<span>{t("tts_volume")}:</span>
 				</div>
 				<InputSlider
-					sliderValue={tts_volume}
-					inputValue={tts_volume}
-					onChange={onTtsVolumeChange}
+					sliderValue={tts_settings.volume}
+					inputValue={tts_settings.volume}
+					onChange={(volume) => {
+						onSettingsChange({ ...tts_settings, volume });
+					}}
 					min={0}
 					sliderMax={100}
 					inputMax={100}
 					adornmentText={"%"}
 				/>
 			</div>
-			{tts_type === TtsType.Piper && (
+			{tts_settings.type === TtsType.Piper && (
 				<div style={{ display: "flex", placeContent: "center" }}>
-					<PiperSettings onChange={onSettingsChange} tts_settings={settings} />
+					<PiperSettings
+						onSettingsChange={onSettingsChange}
+						tts_settings={tts_settings}
+					/>
 				</div>
 			)}
-			{tts_type === TtsType.FishAudio && (
+			{tts_settings.type === TtsType.FishAudio && (
 				<div style={{ display: "flex", placeContent: "center" }}>
 					{fishAudioService?.authorized && (
 						<FishAudioSettings
-							onChange={onSettingsChange}
-							tts_settings={settings}
+							onSettingsChange={onSettingsChange}
+							tts_settings={tts_settings}
 						/>
 					)}
 				</div>

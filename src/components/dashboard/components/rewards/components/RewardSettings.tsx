@@ -15,7 +15,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { useGetServiceByIdQuery } from "../../../../../api/servicesApi";
 import getDefaultReward from "../../../../../helpers/getDefaultReward";
-import getDefaultTtsSettingsByType from "../../../../../helpers/getDefaultTtsSettingsByType";
 import type { AppState } from "../../../../../store";
 import { setReward } from "../../../../../store/slices/rewardsSlice";
 import ColorPicker from "../../../../ColorPicker";
@@ -238,37 +237,12 @@ const RewardSettings = ({ onSave }: { onSave: () => Promise<void> }) => {
 					)}
 					{reward.type === RewardType.TTS && (
 						<TtsSettings
-							tts_type={reward.tts_action.tts_type}
-							onTtsTypeChange={(tts_type) => {
-								dispatch(
-									setReward({
-										...reward,
-										tts_action: {
-											tts_type,
-											tts_settings: getDefaultTtsSettingsByType(tts_type),
-											tts_volume: reward.tts_action.tts_volume,
-										},
-									}),
-								);
-							}}
-							tts_volume={reward.tts_action.tts_volume}
-							onTtsVolumeChange={(tts_volume) => {
-								dispatch(
-									setReward({
-										...reward,
-										tts_action: { ...reward.tts_action, tts_volume },
-									}),
-								);
-							}}
-							settings={reward.tts_action.tts_settings}
+							tts_settings={reward.tts_settings}
 							onSettingsChange={(tts_settings) => {
 								dispatch(
 									setReward({
 										...reward,
-										tts_action: {
-											...reward.tts_action,
-											tts_settings,
-										},
+										tts_settings,
 									}),
 								);
 							}}

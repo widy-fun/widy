@@ -18,14 +18,27 @@ pub enum TtsType {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
 #[serde(untagged)]
 
-pub enum TtsSettings {
-    Edge(EdgeTtsSettings),
+pub enum TtsExtra {
+    Edge(EdgeTtsExtra),
+    FishAudio(FishAudioExtra),
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
+#[serde(untagged)]
+
+pub enum TtsModels {
     Piper(Vec<PiperVoice>),
     FishAudio(Vec<FishAudioModel>),
 }
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct EdgeTtsSettings {
+pub struct EdgeTtsExtra {
     pub gender: Gender,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct FishAudioExtra {
+    pub model: FishAudioTtsModel,
 }
 
 #[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
@@ -207,14 +220,37 @@ pub struct ModelAudioQualityEntity {
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
 pub struct Tts {
-    pub tts_type: TtsType,
+    pub r#type: TtsType,
     pub audio: String,
-    pub tts_volume: u32,
+    pub volume: u32,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
-pub struct TtsAction {
-    pub tts_type: TtsType,
-    pub tts_settings: Option<TtsSettings>,
-    pub tts_volume: u32,
+pub struct TtsSettings {
+    pub r#type: TtsType,
+    pub extra: Option<TtsExtra>,
+    pub models: Option<TtsModels>,
+    pub volume: u32,
+}
+
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+pub enum FishAudioTtsModel {
+    S1,
+    S2Pro,
+    #[default]
+    S21Pro,
+    S21ProFree,
+    Drama3Preview,
+}
+
+impl FishAudioTtsModel {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            FishAudioTtsModel::S1 => "s1",
+            FishAudioTtsModel::S2Pro => "s2-pro",
+            FishAudioTtsModel::S21Pro => "s2.1-pro",
+            FishAudioTtsModel::S21ProFree => "s2.1-pro-free",
+            FishAudioTtsModel::Drama3Preview => "drama-3-preview",
+        }
+    }
 }

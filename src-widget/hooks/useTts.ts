@@ -38,8 +38,7 @@ const useTts = () => {
 			const audio =
 				message.command_action?.tts?.audio || message.redemption?.tts?.audio;
 			const tts_volume =
-				message.command_action?.tts?.tts_volume ||
-				message.redemption?.tts?.tts_volume;
+				message.command_action?.tts?.volume || message.redemption?.tts?.volume;
 			ttsAudioRef.current.src = `static/audio/${audio}`;
 			ttsAudioRef.current.volume = (tts_volume ?? 0) / 100;
 			ttsAudioRef.current.play();

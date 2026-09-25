@@ -1,14 +1,19 @@
-import { TtsType } from "@widy/sdk";
-import getDefaultAlert from "./getDefaultAlert";
+import { FishAudioTtsModel, Gender, ITtsSettings, TtsType } from "@widy/sdk";
 
-const getDefaultTtsSettingsByType = (type: TtsType) => {
+const getDefaultTtsSettingsByType = (type: TtsType): ITtsSettings => {
+	let tts_settings = { type, volume: 50 } as ITtsSettings;
 	switch (type) {
 		case TtsType.Edge:
-			return getDefaultAlert().tts_settings;
+			tts_settings.extra = { gender: Gender.Male };
+			break;
 		case TtsType.Piper:
-			return [];
+			tts_settings.models = [];
+			break;
 		case TtsType.FishAudio:
-			return [];
+			tts_settings.extra = { model: FishAudioTtsModel.S21ProFree };
+			tts_settings.models = [];
+			break;
 	}
+	return tts_settings;
 };
 export default getDefaultTtsSettingsByType;

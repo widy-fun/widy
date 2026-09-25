@@ -29,7 +29,7 @@ impl MigrationTrait for Migration {
                     .col(boolean_null("is_global_cooldown_enabled"))
                     .col(integer_null("global_cooldown_seconds"))
                     .col(boolean_null("should_redemptions_skip_request_queue"))
-                    .col(json_binary("tts_action"))
+                    .col(json_binary("tts_settings"))
                     .to_owned(),
             )
             .await

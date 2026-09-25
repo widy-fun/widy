@@ -31,9 +31,7 @@ impl MigrationTrait for Migration {
                     .col(json_binary("message_style"))
                     .col(uuid_null("reward_id"))
                     .col(uuid_null("command_id"))
-                    .col(integer("tts_volume"))
-                    .col(string("tts_type"))
-                    .col(json_binary_null("tts_settings"))
+                    .col(json_binary("tts_settings"))
                     .to_owned(),
             )
             .await

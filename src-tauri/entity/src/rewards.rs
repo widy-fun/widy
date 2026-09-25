@@ -3,7 +3,7 @@
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::tts::TtsAction;
+use crate::tts::TtsSettings;
 
 #[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
@@ -29,7 +29,7 @@ pub struct Model {
     pub global_cooldown_seconds: Option<i64>,
     pub should_redemptions_skip_request_queue: Option<bool>,
     #[sea_orm(column_type = "JsonBinary")]
-    pub tts_action: TtsAction,
+    pub tts_settings: TtsSettings,
     #[sea_orm(has_one)]
     pub alert: HasOne<super::alerts::Entity>,
 }
@@ -55,7 +55,7 @@ pub struct Reward {
     pub is_global_cooldown_enabled: Option<bool>,
     pub global_cooldown_seconds: Option<i64>,
     pub should_redemptions_skip_request_queue: Option<bool>,
-    pub tts_action: TtsAction,
+    pub tts_settings: TtsSettings,
     #[sea_orm(nested)]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub alert: Option<super::alerts::Alert>,

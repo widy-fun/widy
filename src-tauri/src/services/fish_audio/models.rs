@@ -55,28 +55,6 @@ pub struct FishAudioListModelsResponse {
     pub has_more: Option<bool>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
-pub enum TtsModel {
-    S1,
-    S2Pro,
-    #[default]
-    S21Pro,
-    S21ProFree,
-    Drama3Preview,
-}
-
-impl TtsModel {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            TtsModel::S1 => "s1",
-            TtsModel::S2Pro => "s2-pro",
-            TtsModel::S21Pro => "s2.1-pro",
-            TtsModel::S21ProFree => "s2.1-pro-free",
-            TtsModel::Drama3Preview => "drama-3-preview",
-        }
-    }
-}
-
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct TtsRequestBody {
     pub text: String,

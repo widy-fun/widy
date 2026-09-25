@@ -1,10 +1,7 @@
 use sea_orm::{entity::prelude::*, ActiveValue::Set, FromJsonQueryResult, HasOneModel::NotSet};
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    messages::MessageType,
-    tts::{TtsSettings, TtsType},
-};
+use crate::{messages::MessageType, tts::TtsSettings};
 
 #[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
@@ -27,10 +24,8 @@ pub struct Model {
     pub delay: u32,
     pub duration: u32,
     pub variation_conditions: AlertVariationConditions,
-    pub tts_volume: u32,
-    pub tts_type: TtsType,
     #[sea_orm(column_type = "JsonBinary")]
-    pub tts_settings: Option<TtsSettings>,
+    pub tts_settings: TtsSettings,
     #[sea_orm(column_type = "JsonBinary")]
     pub title_style: TextStyle,
     pub title_template: String,
@@ -69,9 +64,7 @@ pub struct Alert {
     pub delay: u32,
     pub duration: u32,
     pub variation_conditions: AlertVariationConditions,
-    pub tts_volume: u32,
-    pub tts_type: TtsType,
-    pub tts_settings: Option<TtsSettings>,
+    pub tts_settings: TtsSettings,
     pub title_style: TextStyle,
     pub title_template: String,
     pub message_style: TextStyle,
@@ -160,8 +153,6 @@ impl From<Alert> for ActiveModelEx {
             duration: Set(value.duration),
             variation_conditions: Set(value.variation_conditions),
             tts_settings: Set(value.tts_settings),
-            tts_type: Set(value.tts_type),
-            tts_volume: Set(value.tts_volume),
             title_style: Set(value.title_style),
             title_template: Set(value.title_template),
             message_style: Set(value.message_style),

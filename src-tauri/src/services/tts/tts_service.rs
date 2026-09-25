@@ -1,4 +1,4 @@
-use entity::tts::{TtsSettings, TtsType};
+use entity::tts::{TtsModels, TtsSettings, TtsType};
 use lingua::{Language, LanguageDetector};
 use msedge_tts::{
     tts::{SpeechConfig, client::connect_async},
@@ -43,8 +43,7 @@ impl TtsService {
         text: &str,
         file_name: &str,
         app: &AppHandle,
-        tts_type: TtsType,
-        tts_settings: Option<TtsSettings>,
+        tts_settings: TtsSettings,
     ) -> Result<String, AppError> {
         let language = self
             .detect_language(text, app)
@@ -55,7 +54,7 @@ impl TtsService {
             log_and_wrap_error("Create audio dir error", AppError::Io(e.to_string()))
         })?;
 
-        match tts_type {
+        match tts_settings.r#type {
             TtsType::Google => self.make_google_audio(text, file_name, &language).await,
             TtsType::Edge => match self.make_edge_audio(text, file_name, &language).await {
                 Ok(result) => Ok(result),
@@ -178,7 +177,7 @@ impl TtsService {
         text: &str,
         file_name: &str,
         language: &Language,
-        tts_settings: Option<TtsSettings>,
+        tts_settings: TtsSettings,
     ) -> Result<String, AppError> {
         let voice_key = self.get_voice_key(language, tts_settings)?;
         let piper = self.build_piper(&voice_key).await?;
@@ -201,18 +200,18 @@ impl TtsService {
         file_name: &str,
         language: &Language,
         app: &AppHandle,
-        tts_settings: Option<TtsSettings>,
+        tts_settings: TtsSettings,
     ) -> Result<String, AppError> {
-        let settings = match tts_settings {
-            Some(TtsSettings::FishAudio(settings)) => settings,
+        let models = match tts_settings.models {
+            Some(TtsModels::FishAudio(models)) => models,
             _ => {
                 return Err(AppError::Custom(
-                    "FishAudio settings not provided".to_string(),
+                    "FishAudio models not provided".to_string(),
                 ));
             }
         };
         let fish_audio_service = app.state::<FishAudioService>();
-        let reference_id = settings
+        let reference_id = models
             .iter()
             .find(|m| m.languages.contains(&language.iso_code_639_1().to_string()))
             .ok_or(AppError::Piper("Not found model".to_string()))?

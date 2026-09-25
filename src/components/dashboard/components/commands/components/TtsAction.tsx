@@ -1,8 +1,8 @@
+import { TtsType } from "@widy/sdk";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { DEFAULT_TTS_ACTION } from "../../../../../constants";
 import getDefaultTtsSettingsByType from "../../../../../helpers/getDefaultTtsSettingsByType";
 import type { AppState } from "../../../../../store";
 import { setCommand } from "../../../../../store/slices/commandsSlice";
@@ -15,13 +15,15 @@ const TtsAction = () => {
 	const { command } = useSelector((state: AppState) => state.commandsState);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const [ttsAction, setTtsAction] = useState(DEFAULT_TTS_ACTION);
+	const [ttsSettings, setTtsSettings] = useState(
+		getDefaultTtsSettingsByType(TtsType.Piper),
+	);
 
 	useEffect(() => {
-		if (command.tts_action) {
-			setTtsAction(command.tts_action);
+		if (command.tts_settings) {
+			setTtsSettings(command.tts_settings);
 		}
-	}, [command.tts_action]);
+	}, [command.tts_settings]);
 
 	return (
 		<>
@@ -29,34 +31,12 @@ const TtsAction = () => {
 			<div style={{ display: "grid", placeItems: "center" }}>
 				<div className={styles.settingsContainer}>
 					<TtsSettings
-						tts_type={ttsAction.tts_type}
-						onTtsTypeChange={(tts_type) => {
-							dispatch(
-								setCommand({
-									...command,
-									tts_action: {
-										tts_type,
-										tts_settings: getDefaultTtsSettingsByType(tts_type),
-										tts_volume: ttsAction.tts_volume,
-									},
-								}),
-							);
-						}}
-						tts_volume={ttsAction.tts_volume}
-						onTtsVolumeChange={(tts_volume) => {
-							dispatch(
-								setCommand({
-									...command,
-									tts_action: { ...ttsAction, tts_volume },
-								}),
-							);
-						}}
-						settings={ttsAction.tts_settings}
+						tts_settings={ttsSettings}
 						onSettingsChange={(tts_settings) => {
 							dispatch(
 								setCommand({
 									...command,
-									tts_action: { ...ttsAction, tts_settings },
+									tts_settings,
 								}),
 							);
 						}}
@@ -67,7 +47,7 @@ const TtsAction = () => {
 							dispatch(
 								setCommand({
 									...command,
-									tts_action: ttsAction,
+									tts_settings: ttsSettings,
 								}),
 							);
 							navigate(-1);
@@ -76,7 +56,7 @@ const TtsAction = () => {
 							dispatch(
 								setCommand({
 									...command,
-									tts_action: undefined,
+									tts_settings: undefined,
 								}),
 							);
 							navigate(-1);

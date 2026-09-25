@@ -37,7 +37,7 @@ impl CommandsRepository for DatabaseService {
             .set_id(command.id)
             .set_name(command.name)
             .set_chat_source(command.chat_source)
-            .set_tts_action(command.tts_action)
+            .set_tts_settings(command.tts_settings)
             .set_chat_bot_action(command.chat_bot_action)
             .set_description(command.description)
             .set_source_type(command.source_type)
@@ -125,8 +125,6 @@ impl CommandsRepository for DatabaseService {
                 duration: Set(alert.duration),
                 reward_id: Set(alert.reward_id),
                 command_id: Set(alert.command_id),
-                tts_volume: Set(alert.tts_volume),
-                tts_type: Set(alert.tts_type),
                 tts_settings: Set(alert.tts_settings),
             };
             let old_alert = self.get_alert_by_id(alert.id).await?;
@@ -150,7 +148,7 @@ impl CommandsRepository for DatabaseService {
             chat_source: Set(command.chat_source),
             timer_source: Set(command.timer_source),
             chat_bot_action: Set(command.chat_bot_action),
-            tts_action: Set(command.tts_action),
+            tts_settings: Set(command.tts_settings),
             source_type: Set(command.source_type),
             is_enabled: Set(command.is_enabled),
         }

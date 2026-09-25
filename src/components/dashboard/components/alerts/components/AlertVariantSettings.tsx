@@ -16,7 +16,6 @@ import { NumericFormat } from "react-number-format";
 import { useDispatch, useSelector } from "react-redux";
 import { setAlert } from "../../../../../../shared/slices/alertsSlice";
 import { FILE_FILTERS } from "../../../../../constants";
-import getDefaultTtsSettingsByType from "../../../../../helpers/getDefaultTtsSettingsByType";
 import selectAndSaveStaticFile from "../../../../../helpers/selectAndSaveStaticFile";
 import type { AppState } from "../../../../../store";
 import InputSlider from "../../../../InputSlider";
@@ -229,26 +228,7 @@ const AlertVariantSettings = () => {
 					</>
 				)}
 				<TtsSettings
-					tts_type={alert.tts_type}
-					onTtsTypeChange={(tts_type) => {
-						dispatch(
-							setAlert({
-								...alert,
-								tts_type,
-								tts_settings: getDefaultTtsSettingsByType(tts_type),
-							}),
-						);
-					}}
-					tts_volume={alert.tts_volume}
-					onTtsVolumeChange={(tts_volume) => {
-						dispatch(
-							setAlert({
-								...alert,
-								tts_volume,
-							}),
-						);
-					}}
-					settings={alert.tts_settings}
+					tts_settings={alert.tts_settings}
 					onSettingsChange={(tts_settings) => {
 						dispatch(
 							setAlert({

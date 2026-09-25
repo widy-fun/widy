@@ -1,6 +1,12 @@
-import { AlertVariant, IReward, Platform, RewardType } from "@widy/sdk";
+import {
+	AlertVariant,
+	IReward,
+	Platform,
+	RewardType,
+	TtsType,
+} from "@widy/sdk";
 import i18n from "../../shared/i18n/i18n";
-import { DEFAULT_TTS_ACTION } from "../constants";
+import getDefaultTtsSettingsByType from "./getDefaultTtsSettingsByType";
 
 const getDefaultReward = (): IReward => {
 	return {
@@ -17,7 +23,7 @@ const getDefaultReward = (): IReward => {
 		points_currency_ratio: 1,
 		global_cooldown_seconds: 0,
 		is_global_cooldown_enabled: false,
-		tts_action: DEFAULT_TTS_ACTION,
+		tts_settings: getDefaultTtsSettingsByType(TtsType.Piper),
 	};
 };
 export default getDefaultReward;

@@ -141,7 +141,7 @@ impl CommandsService {
 
         if let Command {
             is_enabled: true,
-            tts_action: Some(tts_action),
+            tts_settings: Some(tts_settings),
             ..
         } = command.clone()
         {
@@ -158,8 +158,8 @@ impl CommandsService {
                 alert: None,
             };
 
-            let _ =
-                EventsService::command_tts_action(rest_text, tts_action, app, command_action).await;
+            let _ = EventsService::command_tts_action(rest_text, tts_settings, app, command_action)
+                .await;
         }
 
         Ok(())
@@ -247,7 +247,7 @@ impl CommandsService {
 
         if let Command {
             is_enabled: true,
-            tts_action: Some(tts_action),
+            tts_settings: Some(tts_settings),
             ..
         } = command.clone()
         {
@@ -264,7 +264,7 @@ impl CommandsService {
                 alert: None,
             };
 
-            let _ = EventsService::command_tts_action(rest_text, tts_action, app, command_action)
+            let _ = EventsService::command_tts_action(rest_text, tts_settings, app, command_action)
                 .await
                 .map_err(|e| log_and_wrap_error("command tts action", e));
         }
@@ -338,7 +338,7 @@ impl CommandsService {
             name,
             is_enabled: true,
             timer_source: Some(timer_source),
-            tts_action: Some(tts_action),
+            tts_settings: Some(tts_settings),
             ..
         })) = command.clone()
         {
@@ -356,7 +356,7 @@ impl CommandsService {
                 alert: None,
             };
             let _ =
-                EventsService::command_tts_action(&text, tts_action, &app, command_action).await;
+                EventsService::command_tts_action(&text, tts_settings, &app, command_action).await;
         }
     }
 

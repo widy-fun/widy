@@ -1,6 +1,6 @@
 use entity::{
     assistant_settings::{Tool, ToolCallingModel, ToolCallingProvider},
-    tts::TtsType,
+    tts::{EdgeTtsExtra, Gender, TtsSettings, TtsExtra, TtsType},
 };
 use sea_orm_migration::{prelude::*, sea_query::value::prelude::serde_json};
 #[derive(DeriveMigrationName)]
@@ -11,7 +11,14 @@ impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         let tools = Tool::get_tools::<Tool>().unwrap_or(vec![]);
         let tools_json = serde_json::to_string(&tools).unwrap();
-        let tts_settings = String::from(r#"{"gender":"Male"}"#);
+        let tts_settings = TtsSettings {
+            r#type: TtsType::Edge,
+            volume: 50,
+            extra: Some(TtsExtra::Edge(EdgeTtsExtra {
+                gender: Gender::Male,
+            })),
+            models: None,
+        };
         manager
             .exec_stmt(
                 Query::insert()
@@ -30,8 +37,6 @@ impl MigrationTrait for Migration {
                         "tools",
                         "max_tokens",
                         "max_chars",
-                        "tts_volume",
-                        "tts_type",
                         "tts_settings",
                     ])
                     .values_panic([
@@ -52,8 +57,6 @@ impl MigrationTrait for Migration {
                         tools_json.into(),
                         512.into(),
                         1000.into(),
-                        50.into(),
-                        TtsType::Edge.into(),
                         tts_settings.into(),
                     ])
                     .to_owned(),

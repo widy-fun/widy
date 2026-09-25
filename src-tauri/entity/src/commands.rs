@@ -3,7 +3,7 @@
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::{rewards::Platform, tts::TtsAction};
+use crate::{rewards::Platform, tts::TtsSettings};
 
 #[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
@@ -20,7 +20,7 @@ pub struct Model {
     #[sea_orm(column_type = "JsonBinary")]
     pub chat_bot_action: Option<ChatBotAction>,
     #[sea_orm(column_type = "JsonBinary")]
-    pub tts_action: Option<TtsAction>,
+    pub tts_settings: Option<TtsSettings>,
     #[sea_orm(has_one)]
     pub alert: HasOne<super::alerts::Entity>,
     pub source_type: CommandSourceType,
@@ -36,7 +36,7 @@ pub struct Command {
     pub chat_source: Option<ChatSource>,
     pub timer_source: Option<TimerSource>,
     pub chat_bot_action: Option<ChatBotAction>,
-    pub tts_action: Option<TtsAction>,
+    pub tts_settings: Option<TtsSettings>,
     pub source_type: CommandSourceType,
     pub is_enabled: bool,
     #[sea_orm(nested)]

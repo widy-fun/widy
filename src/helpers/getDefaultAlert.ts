@@ -1,7 +1,6 @@
 import {
 	AlertVariant,
 	AlertVariationConditions,
-	Gender,
 	IAlert,
 	MessageType,
 	TtsType,
@@ -9,6 +8,7 @@ import {
 } from "@widy/sdk";
 import i18n from "../../shared/i18n/i18n";
 import { TEXT_STYLE } from "../constants";
+import getDefaultTtsSettingsByType from "./getDefaultTtsSettingsByType";
 
 const getDefaultAlert = (group_id = "1"): IAlert => {
 	return {
@@ -31,9 +31,7 @@ const getDefaultAlert = (group_id = "1"): IAlert => {
 		delay: 0,
 		duration: 3000,
 		alert_variant: AlertVariant.ImageAndAudio,
-		tts_type: TtsType.Edge,
-		tts_volume: 50,
-		tts_settings: { gender: Gender.Male },
+		tts_settings: getDefaultTtsSettingsByType(TtsType.Edge),
 	};
 };
 export default getDefaultAlert;

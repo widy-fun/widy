@@ -1,7 +1,7 @@
 use entity::{
     alerts::{AlertVariant, AlertVariationConditions, ViewType},
     messages::MessageType,
-    tts::TtsType,
+    tts::{EdgeTtsExtra, Gender, TtsExtra, TtsSettings, TtsType},
 };
 use sea_orm_migration::{prelude::*, sea_orm::sqlx::types::Uuid};
 
@@ -11,7 +11,14 @@ pub struct Migration;
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        let tts_settings = String::from(r#"{"gender":"Male"}"#);
+        let tts_settings = TtsSettings {
+            r#type: TtsType::Edge,
+            volume: 50,
+            extra: Some(TtsExtra::Edge(EdgeTtsExtra {
+                gender: Gender::Male,
+            })),
+            models: None,
+        };
         let text_style = String::from(
             r#"{"bold":true,"font_size":60,"italics":false,"letter_spacing":0,"text_color":"rgb(255,255,255,1)","underline":false,"word_spacing":0,"animation":"No","animation_variant":"AllText"}"#,
         );
@@ -38,8 +45,6 @@ impl MigrationTrait for Migration {
                         "title_style",
                         "message_style",
                         "video",
-                        "tts_volume",
-                        "tts_type",
                         "tts_settings",
                         "title_template",
                     ])
@@ -64,8 +69,6 @@ impl MigrationTrait for Migration {
                         text_style.clone().into(),
                         text_style.into(),
                         "video.mp4".into(),
-                        50.into(),
-                        TtsType::Edge.into(),
                         tts_settings.into(),
                         "{{user_name}} donated {{amount}} {{currency}}".into(),
                     ])
