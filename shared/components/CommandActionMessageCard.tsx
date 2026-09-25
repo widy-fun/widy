@@ -146,7 +146,23 @@ const CommandActionMessageCard = ({
 								: undefined,
 							minHeight: "100%",
 						}}
-					/>
+					>
+						{commandAction.platform && (
+							<Box
+								component="img"
+								src={services[commandAction.platform].image}
+								alt=""
+								sx={{
+									width: 30,
+									height: 30,
+									objectFit: "contain",
+									borderRadius: 1,
+									backgroundColor: "white",
+									padding: "4px",
+								}}
+							/>
+						)}
+					</Box>
 				</Card>
 			)}
 		</>

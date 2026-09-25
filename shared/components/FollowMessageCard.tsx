@@ -108,7 +108,21 @@ const FollowMessageCard = ({
 							background: services[follow.service].color,
 							minHeight: "100%",
 						}}
-					/>
+					>
+						<Box
+							component="img"
+							src={services[follow.service].image}
+							alt=""
+							sx={{
+								width: 30,
+								height: 30,
+								objectFit: "contain",
+								borderRadius: 1,
+								backgroundColor: "white",
+								padding: "4px",
+							}}
+						/>
+					</Box>
 				</Card>
 			)}
 		</>
