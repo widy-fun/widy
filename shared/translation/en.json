@@ -229,7 +229,28 @@
 		"sign_out": "Sign out",
 		"confirm_sign_out": "Are you sure want to sign out from this service?",
 		"connected": "Connected",
-		"not_connected": "Not connected"
+		"not_connected": "Not connected",
+		"descriptions": {
+			"streamelements": "Receive tips and stream events from StreamElements.",
+			"twitch": "Connect your Twitch channel for chat, subscriptions, follows, and channel events.",
+			"widy_sol": "Receive donations through Widy on the Solana network.",
+			"widy_ton": "Receive donations through Widy on the TON network.",
+			"donationalerts": "Receive donations and alerts from DonationAlerts.",
+			"streamlabs": "Receive donations and stream events from Streamlabs.",
+			"donatello": "Receive donations and alerts from Donatello.",
+			"donatik": "Receive donations and alerts from Donatik.",
+			"donatepay": "Receive donations and alerts from DonatePay.",
+			"destream": "Receive donations and alerts from Destream.",
+			"tribute": "Receive donations and subscription events from Tribute.",
+			"kick": "Connect your Kick channel for chat and stream events.",
+			"kick_bot": "Connect a Kick bot account to read and send chat messages.",
+			"twitch_bot": "Connect a Twitch bot account to read and send chat messages.",
+			"gemini": "Use Google Gemini as the AI provider for your assistant.",
+			"openai": "Use OpenAI as the AI provider for your assistant.",
+			"claude": "Use Claude as the AI provider for your assistant.",
+			"kick_session": "Connect a Kick session to access your channel features.",
+			"fish_audio": "Connect Fish Audio for text-to-speech voices."
+		}
 	},
 	"twitch": {
 		"device_code_expired": "Device code expired. Please try again.",

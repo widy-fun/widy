@@ -64,23 +64,44 @@ const ServiceCard = ({ service }: { service: IService<unknown, unknown> }) => {
 			>
 				<Box
 					sx={{
-						width: "3rem",
+						width: "4rem",
+						flexShrink: 0,
 						display: "grid",
 						placeItems: "center",
 						background: services[service.id].color,
 						minHeight: "100%",
 					}}
-				></Box>
+				>
+					<Box
+						component="img"
+						src={services[service.id].image}
+						alt=""
+						sx={{
+							width: 40,
+							height: 40,
+							objectFit: "contain",
+							borderRadius: 1,
+							backgroundColor: "white",
+							padding: "4px",
+						}}
+					/>
+				</Box>
 				<Box
 					sx={{
 						display: "flex",
 						width: "100%",
-						placeItems: "center",
+						alignItems: "center",
 						justifyContent: "space-between",
 						padding: "10px",
+						gap: 2,
 					}}
 				>
-					<div>{service.id}</div>
+					<Box sx={{ minWidth: 0 }}>
+						<Box sx={{ fontWeight: 600 }}>{service.id}</Box>
+						<Box sx={{ typography: "body2", color: "text.secondary" }}>
+							{t(services[service.id].description)}
+						</Box>
+					</Box>
 					{service.authorized ? (
 						<div style={{ display: "flex", gap: 10, alignItems: "center" }}>
 							<IconButton onClick={() => setDialogOpen(true)}>
