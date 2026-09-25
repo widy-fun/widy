@@ -233,13 +233,17 @@ pub struct TtsSettings {
     pub volume: u32,
 }
 
-#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum FishAudioTtsModel {
+    #[serde(rename = "s1")]
     S1,
+    #[serde(rename = "s2-pro")]
     S2Pro,
-    #[default]
+    #[serde(rename = "s2.1-pro")]
     S21Pro,
+    #[serde(rename = "s2.1-pro-free")]
     S21ProFree,
+    #[serde(rename = "drama-3-preview")]
     Drama3Preview,
 }
 
