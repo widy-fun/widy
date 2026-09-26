@@ -20,7 +20,7 @@ const Token = () => {
 	const { t } = useTranslation();
 	const { data } = useGetServiceByIdQuery({ id: ServiceType.StreamLabs });
 	const [updateServiceAuth] = useUpdateServiceAuthMutation();
-	const [streamLabsConnect] = useStreamLabsConnectMutation();
+	const [streamLabsConnect, { isLoading }] = useStreamLabsConnectMutation();
 	const [jwt, setJwt] = useState("");
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -30,12 +30,14 @@ const Token = () => {
 			{data && (
 				<>
 					<TextField
+						disabled={isLoading}
 						placeholder="JWT"
 						value={jwt}
 						type="password"
 						onChange={(e) => setJwt(e.target.value)}
 					/>
 					<Button
+						disabled={isLoading}
 						variant="contained"
 						onClick={async () => {
 							try {

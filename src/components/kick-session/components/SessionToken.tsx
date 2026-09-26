@@ -21,7 +21,7 @@ const SessionToken = () => {
 	const { t } = useTranslation();
 	const { data } = useGetServiceByIdQuery({ id: ServiceType.KickSession });
 	const [updateServiceAuth] = useUpdateServiceAuthMutation();
-	const [kickSessionConnect] = useKickSessionConnectMutation();
+	const [kickSessionConnect, { isLoading }] = useKickSessionConnectMutation();
 	const [sessionToken, setSessionToken] = useState("");
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -31,12 +31,14 @@ const SessionToken = () => {
 			{data && (
 				<>
 					<TextField
+						disabled={isLoading}
 						placeholder={t("session_token")}
 						value={sessionToken}
 						type="password"
 						onChange={(e) => setSessionToken(e.target.value)}
 					/>
 					<Button
+						disabled={isLoading}
 						variant="contained"
 						onClick={async () => {
 							try {

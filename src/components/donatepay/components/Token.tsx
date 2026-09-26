@@ -20,7 +20,7 @@ const Token = () => {
 	const { t } = useTranslation();
 	const { data } = useGetServiceByIdQuery({ id: ServiceType.DonatePay });
 	const [updateServiceAuth] = useUpdateServiceAuthMutation();
-	const [donatePayConnect] = useDonatePayConnectMutation();
+	const [donatePayConnect, { isLoading }] = useDonatePayConnectMutation();
 	const [token, setToken] = useState("");
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -30,12 +30,14 @@ const Token = () => {
 			{data && (
 				<>
 					<TextField
+						disabled={isLoading}
 						placeholder={t("token")}
 						value={token}
 						type="password"
 						onChange={(e) => setToken(e.target.value)}
 					/>
 					<Button
+						disabled={isLoading}
 						variant="contained"
 						onClick={async () => {
 							try {

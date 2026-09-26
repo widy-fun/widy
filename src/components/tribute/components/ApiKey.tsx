@@ -21,7 +21,7 @@ const ApiKey = () => {
 	const { t } = useTranslation();
 	const { data } = useGetServiceByIdQuery({ id: ServiceType.Tribute });
 	const [updateServiceAuth] = useUpdateServiceAuthMutation();
-	const [tributeConnect] = useTributeConnectMutation();
+	const [tributeConnect, { isLoading }] = useTributeConnectMutation();
 	const [apiKey, setApiKey] = useState("");
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -31,12 +31,14 @@ const ApiKey = () => {
 			{data && (
 				<>
 					<TextField
+						disabled={isLoading}
 						placeholder={t("api_key")}
 						value={apiKey}
 						type="password"
 						onChange={(e) => setApiKey(e.target.value)}
 					/>
 					<Button
+						disabled={isLoading}
 						variant="contained"
 						onClick={async () => {
 							try {

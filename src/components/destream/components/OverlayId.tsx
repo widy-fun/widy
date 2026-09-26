@@ -21,7 +21,7 @@ const OverlayId = () => {
 	const { t } = useTranslation();
 	const { data } = useGetServiceByIdQuery({ id: ServiceType.Destream });
 	const [updateServiceAuth] = useUpdateServiceAuthMutation();
-	const [destreamConnect] = useDestreamConnectMutation();
+	const [destreamConnect, { isLoading }] = useDestreamConnectMutation();
 	const [overlayid, setOverlayId] = useState("");
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -31,12 +31,14 @@ const OverlayId = () => {
 			{data && (
 				<>
 					<TextField
+						disabled={isLoading}
 						placeholder={t("overlay_id")}
 						value={overlayid}
 						type="password"
 						onChange={(e) => setOverlayId(e.target.value)}
 					/>
 					<Button
+						disabled={isLoading}
 						variant="contained"
 						onClick={async () => {
 							try {
