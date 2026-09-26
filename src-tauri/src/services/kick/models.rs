@@ -77,6 +77,8 @@ pub enum Event {
     SubscriptionEvent,
     #[serde(rename = "App\\Events\\StopStreamBroadcast")]
     StopStreamBroadcast,
+    #[serde(rename = "App\\Events\\UserBannedEvent")]
+    UserBannedEvent,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -487,4 +489,13 @@ pub struct UpdateChatSettingsBody {
     pub following_min_duration: Option<u32>,
     pub subscribers_mode: Option<bool>,
     pub emotes_mode: Option<bool>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+
+pub struct UserBannedData {
+    pub id: String,
+    pub user: BannedUser,
+    pub banned_by: BannedBy,
+    pub permanent: bool,
 }

@@ -20,14 +20,14 @@ use crate::{
     error::AppError,
     repositories::RewardsRepository,
     services::{
-        ChatMessageType, CommandsService, DatabaseService, EventsService, SenderRoles,
-        UnifiedBadge, UnifiedChatMessage, UnifiedChatMessageDelete, UnifiedContent,
-        UnifiedMetadata, UnifiedSender,
+        BanIssuedBy, BannedTargetUser, ChatMessageType, CommandsService, DatabaseService,
+        EventsService, SenderRoles, UnifiedBadge, UnifiedBannedUser, UnifiedChatMessage,
+        UnifiedChatMessageDelete, UnifiedContent, UnifiedMetadata, UnifiedSender,
         kick::{
             models::{
                 ChanelInfoResponse, ChatMessageData, Chatroom, Event, EventPayload,
                 GiftedSubscriptionsData, KickAuthSession, KicksGiftedData, MessageDeletedData,
-                RewardRedeemedData, StreamHostData, SubscriptionData,
+                RewardRedeemedData, StreamHostData, SubscriptionData, UserBannedData,
             },
             traits::KickApi,
         },
@@ -303,6 +303,13 @@ impl KickService {
                             .await;
                 }
             }
+            Event::UserBannedEvent => {
+                let event_data = serde_json::from_str::<UserBannedData>(&payload.data);
+                if let Ok(data) = event_data {
+                    let _ = EventsService::user_banned_in_chat(UnifiedBannedUser::from(data), app)
+                        .await;
+                }
+            }
             _ => {}
         }
     }
@@ -527,6 +534,29 @@ impl MessageDeletedData {
             channel_id,
             message_id: self.message.id,
             target_user: None,
+        }
+    }
+}
+
+impl From<UserBannedData> for UnifiedBannedUser {
+    fn from(d: UserBannedData) -> Self {
+        UnifiedBannedUser {
+            platform: Platform::Kick,
+            event_id: Some(d.id),
+            channel_id: None,
+            target_user: BannedTargetUser {
+                id: d.user.id.to_string(),
+                username: d.user.username,
+                display_name: None,
+            },
+            banned_by: Some(BanIssuedBy {
+                id: d.banned_by.id.to_string(),
+                username: d.banned_by.username,
+            }),
+            reason: None,
+            banned_at: None,
+            ends_at: None,
+            permanent: d.permanent,
         }
     }
 }

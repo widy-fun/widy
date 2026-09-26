@@ -86,6 +86,7 @@ pub enum AppEvent {
     StartTranscribe,
     StopTranscribe,
     AssistantAction,
+    ChannelUserBanned,
 }
 impl AppEvent {
     pub fn as_str(e: AppEvent) -> &'static str {
@@ -140,6 +141,7 @@ impl AppEvent {
             AppEvent::StartTranscribe => "StartTranscribe",
             AppEvent::StopTranscribe => "StopTranscribe",
             AppEvent::AssistantAction => "AssistantAction",
+            AppEvent::ChannelUserBanned => "ChannelUserBanned",
         }
     }
 }
@@ -342,6 +344,32 @@ pub struct UnifiedMetadata {
     pub is_source_only: Option<bool>,
     pub live_chat_id: Option<String>,      // YouTube: liveChatId
     pub has_display_content: Option<bool>, // YouTube: hasDisplayContent
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct BannedTargetUser {
+    pub id: String,
+    pub username: String,
+    pub display_name: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct BanIssuedBy {
+    pub id: String,
+    pub username: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct UnifiedBannedUser {
+    pub platform: Platform,
+    pub event_id: Option<String>,
+    pub channel_id: Option<String>,
+    pub target_user: BannedTargetUser,
+    pub banned_by: Option<BanIssuedBy>,
+    pub reason: Option<String>,
+    pub banned_at: Option<String>,
+    pub ends_at: Option<String>,
+    pub permanent: bool,
 }
 
 pub struct EventsService;
@@ -899,6 +927,19 @@ impl EventsService {
         };
         websocket_broadcaster.broadcast_event_message(&event_message);
 
+        Ok(())
+    }
+
+    pub async fn user_banned_in_chat(
+        data: UnifiedBannedUser,
+        app: &AppHandle,
+    ) -> Result<(), AppError> {
+        let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
+        let event_message = EventMessage {
+            event: AppEvent::ChannelUserBanned,
+            data,
+        };
+        websocket_broadcaster.broadcast_event_message(&event_message);
         Ok(())
     }
 

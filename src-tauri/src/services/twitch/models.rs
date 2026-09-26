@@ -79,8 +79,13 @@ pub enum Condition {
     Subscription(SubscriptionCondition),
     Redemption(RedemptionCondition),
     ChatMessage(ChatMessageCondition),
+    ChannelBan(ChannelBanCondition),
 }
 
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct ChannelBanCondition {
+    pub broadcaster_user_id: String,
+}
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct ChatMessageCondition {
     pub broadcaster_user_id: String,
@@ -208,6 +213,7 @@ pub struct Transport {
 
 pub enum Event {
     ChannelChatMessage(ChannelChatMessageEvent),
+    ChannelBan(ChannelBanEvent),
     ChannelPointsCustomRewardRedemptionAdd(ChannelPointsCustomRewardRedemptionAddEvent),
     SubscriptionMessage(SubscriptionMessageEvent),
     SubscriptionGift(SubscriptionGiftEvent),
@@ -251,6 +257,23 @@ pub struct ChannelChatMessageEvent {
     pub source_message_id: Option<String>,
     pub source_badges: Option<Vec<Badge>>,
     pub is_source_only: Option<bool>,
+}
+#[derive(Debug, Clone, Deserialize, Serialize)]
+/// 13 fields
+pub struct ChannelBanEvent {
+    pub user_id: String,
+    pub user_login: String,
+    pub user_name: String,
+    pub broadcaster_user_id: String,
+    pub broadcaster_user_name: String,
+    pub broadcaster_user_login: String,
+    pub moderator_user_id: String,
+    pub moderator_user_login: String,
+    pub moderator_user_name: String,
+    pub reason: String,
+    pub banned_at: String,
+    pub ends_at: String,
+    pub is_permanent: bool,
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Reply {
@@ -469,6 +492,8 @@ pub enum SubscriptionType {
     ChannelChatMessageDelete,
     #[serde(rename = "channel.chat.clear_user_messages")]
     ChannelChatClearUserMessages,
+    #[serde(rename = "channel.ban")]
+    ChannelBan,
     #[serde(other)]
     Unknown,
 }
@@ -492,6 +517,7 @@ impl SubscriptionType {
             SubscriptionType::ChannelChatClearUserMessages => {
                 "channel.chat.clear_user_messages".to_string()
             }
+            SubscriptionType::ChannelBan => "channel.ban".to_string(),
             SubscriptionType::Unknown => "unknown".to_string(),
         }
     }

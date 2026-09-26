@@ -2,13 +2,15 @@ use crate::{
     error::AppError,
     repositories::{RedemptionsRepository, RewardsRepository},
     services::{
-        ChatFragment, ChatMessageType, CommandsService, DatabaseService, DeletedMessageUser,
-        EventsService, FragmentKind, ReplyInfo, SenderRoles, UnifiedBadge, UnifiedChatMessage,
-        UnifiedChatMessageDelete, UnifiedContent, UnifiedMetadata, UnifiedSender,
+        BanIssuedBy, BannedTargetUser, ChatFragment, ChatMessageType, CommandsService,
+        DatabaseService, DeletedMessageUser, EventsService, FragmentKind, ReplyInfo, SenderRoles,
+        UnifiedBadge, UnifiedBannedUser, UnifiedChatMessage, UnifiedChatMessageDelete,
+        UnifiedContent, UnifiedMetadata, UnifiedSender,
         twitch::{
             models::{
-                BadgeInfo, ChannelChatMessageDeleteEvent, ChannelChatMessageEvent, Event,
-                EventPayload, NotificationMessage, Payload, SubscriptionType, WebSocketInstruction,
+                BadgeInfo, ChannelBanEvent, ChannelChatMessageDeleteEvent, ChannelChatMessageEvent,
+                Event, EventPayload, NotificationMessage, Payload, SubscriptionType,
+                WebSocketInstruction,
             },
             traits::TwitchApi,
         },
@@ -74,7 +76,7 @@ impl TwitchService {
         let scopes="user:read:email channel:read:subscriptions moderator:read:followers channel:manage:redemptions bits:read".to_string();
         #[cfg(not(feature = "mock-twitch"))]
         let scopes = format!(
-            "{scopes} user:read:chat user:write:chat user:bot channel:bot moderation:read moderator:manage:chat_messages moderator:manage:banned_users user:edit:broadcast moderator:manage:chat_settings"
+            "{scopes} user:read:chat user:write:chat user:bot channel:bot moderation:read moderator:manage:chat_messages moderator:manage:banned_users user:edit:broadcast moderator:manage:chat_settings channel:moderate"
         );
 
         Self {
@@ -218,11 +220,10 @@ impl TwitchService {
         app: &AppHandle,
         all_badges_info: &Vec<BadgeInfo>,
     ) {
-        let database_service = app.state::<DatabaseService>();
-
         match payload.subscription.r#type {
             SubscriptionType::ChannelPointsCustomRewardRedemptionAdd => {
                 if let Event::ChannelPointsCustomRewardRedemptionAdd(event) = payload.event {
+                    let database_service = app.state::<DatabaseService>();
                     let redemption = database_service
                         .get_redemption_by_external_id(&event.id)
                         .await;
@@ -429,6 +430,12 @@ impl TwitchService {
                         app,
                     )
                     .await;
+                }
+            }
+            SubscriptionType::ChannelBan => {
+                if let Event::ChannelBan(event) = payload.event {
+                    let _ = EventsService::user_banned_in_chat(UnifiedBannedUser::from(event), app)
+                        .await;
                 }
             }
             _ => {}
@@ -678,6 +685,29 @@ impl From<ChannelChatMessageDeleteEvent> for UnifiedChatMessageDelete {
                 username: e.target_user_name,
                 login: e.target_user_login,
             }),
+        }
+    }
+}
+
+impl From<ChannelBanEvent> for UnifiedBannedUser {
+    fn from(e: ChannelBanEvent) -> Self {
+        UnifiedBannedUser {
+            platform: Platform::Twitch,
+            event_id: None,
+            channel_id: Some(e.broadcaster_user_id),
+            target_user: BannedTargetUser {
+                id: e.user_id,
+                username: e.user_login,
+                display_name: Some(e.user_name),
+            },
+            banned_by: Some(BanIssuedBy {
+                id: e.moderator_user_id,
+                username: e.moderator_user_login,
+            }),
+            reason: Some(e.reason).filter(|r| !r.is_empty()),
+            banned_at: Some(e.banned_at),
+            ends_at: Some(e.ends_at),
+            permanent: e.is_permanent,
         }
     }
 }

@@ -21,10 +21,10 @@ use crate::{
         DatabaseService,
         twitch::models::{
             AddTwitchRewardBody, BadgeInfoResponse, BanUserBody, BanUserData, BannedUser,
-            BannedUsersResponse, ChatMessageCondition, ChattersResponse, CheerCondition, Condition,
-            CreatePollBody, CreatePollResponse, CreatePredictionBody, CreatePredictionResponse,
-            EndPollBody, EndPredictionBody, FollowCondition, GetTopGamesResponse,
-            ModifyChannelInformationBody, RaidCondition, RedemptionCondition,
+            BannedUsersResponse, ChannelBanCondition, ChatMessageCondition, ChattersResponse,
+            CheerCondition, Condition, CreatePollBody, CreatePollResponse, CreatePredictionBody,
+            CreatePredictionResponse, EndPollBody, EndPredictionBody, FollowCondition,
+            GetTopGamesResponse, ModifyChannelInformationBody, RaidCondition, RedemptionCondition,
             SearchCategoriesResponse, SendChatAnnouncementBody, SendChatMessageBody,
             SubscriptionCondition, SubscriptionRequestBody, SubscriptionType, Transport,
             TwitchDeviceCodeResponse, TwitchRefreshTokenResponse, TwitchTokenInfo,
@@ -554,6 +554,21 @@ pub trait TwitchApi: Send + Sync {
                         ChatMessageCondition {
                             broadcaster_user_id: user_id.clone(),
                             user_id: user_id.clone(),
+                        }
+                    }),
+                    transport: transport.clone(),
+                },
+                app,
+            )
+            .await;
+        let _ = self
+            .create_subscription(
+                SubscriptionRequestBody {
+                    r#type: SubscriptionType::to_string(SubscriptionType::ChannelBan),
+                    version: "1".to_string(),
+                    condition: Condition::ChannelBan({
+                        ChannelBanCondition {
+                            broadcaster_user_id: user_id.clone(),
                         }
                     }),
                     transport: transport.clone(),
