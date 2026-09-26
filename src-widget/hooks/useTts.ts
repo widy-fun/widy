@@ -145,7 +145,7 @@ const useTts = () => {
 	}, [handleReplayMessage]);
 
 	useEffect(() => {
-		const unsubscribe = eventsService.subscribe<string>(
+		const unsubscribe = eventsService.subscribe<MessageId>(
 			AppEvent.SkipTts,
 			(id) => {
 				skipMessage(id);

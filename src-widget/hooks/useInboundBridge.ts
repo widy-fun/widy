@@ -2,15 +2,18 @@ import {
 	AppEvent,
 	GoalType,
 	IAlert,
+	IAssistantAction,
 	IAucFighterMatch,
 	IAucFighterMatchWinner,
 	IAucFighterSettings,
 	IClientMessage,
+	ICommandAction,
 	IGoal,
 	IMediaSettings,
 	IMessagesFilter,
 	IPageParm,
 	ISettings,
+	IUnifiedBannedUser,
 	IUnifiedChatMessage,
 	IUnifiedChatMessageDelete,
 	IWidget,
@@ -362,6 +365,32 @@ const useInboundBridge = (widget?: IWidget) => {
 							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
 						});
 						break;
+					case "widgets:tts:replay.subscription":
+						eventsService.subscribe<IClientMessage>(
+							AppEvent.ReplayTts,
+							(data) => {
+								iframeRef.current?.contentWindow?.postMessage(
+									{ id, data },
+									"*",
+								);
+							},
+						);
+						break;
+					case "widgets:tts:skip.subscription":
+						eventsService.subscribe<string>(AppEvent.SkipTts, (data) => {
+							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
+						});
+						break;
+					case "widgets:tts:skip-playing.subscription":
+						eventsService.subscribe<null>(AppEvent.SkipPlayingTts, (data) => {
+							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
+						});
+						break;
+					case "widgets:tts:played.subscription":
+						eventsService.subscribe<string>(AppEvent.TtsPlayed, (data) => {
+							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
+						});
+						break;
 					case "widgets:media:pause.subscription":
 						eventsService.subscribe<MessageId>(AppEvent.PauseMedia, (data) => {
 							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
@@ -404,6 +433,34 @@ const useInboundBridge = (widget?: IWidget) => {
 						eventsService.send<IClientMessage>({
 							event: AppEvent.ReplayMedia,
 							data: arg as IClientMessage,
+						});
+						iframeRef.current?.contentWindow?.postMessage({ id }, "*");
+						break;
+					case "widgets:tts:played.send":
+						eventsService.send<MessageId>({
+							event: AppEvent.TtsPlayed,
+							data: arg as MessageId,
+						});
+						iframeRef.current?.contentWindow?.postMessage({ id }, "*");
+						break;
+					case "widgets:tts:playing.send":
+						eventsService.send<MessageId>({
+							event: AppEvent.TtsPlaying,
+							data: arg as MessageId,
+						});
+						iframeRef.current?.contentWindow?.postMessage({ id }, "*");
+						break;
+					case "widgets:tts:replay.send":
+						eventsService.send<IClientMessage>({
+							event: AppEvent.ReplayTts,
+							data: arg as IClientMessage,
+						});
+						iframeRef.current?.contentWindow?.postMessage({ id }, "*");
+						break;
+					case "widgets:tts:skip.send":
+						eventsService.send<MessageId>({
+							event: AppEvent.SkipTts,
+							data: arg as MessageId,
 						});
 						iframeRef.current?.contentWindow?.postMessage({ id }, "*");
 						break;
@@ -503,6 +560,39 @@ const useInboundBridge = (widget?: IWidget) => {
 										"*",
 									);
 								}
+							},
+						);
+						break;
+					case "widgets:command:action.subscription":
+						eventsService.subscribe<ICommandAction>(
+							AppEvent.CommandAction,
+							(data) => {
+								iframeRef.current?.contentWindow?.postMessage(
+									{ id, data },
+									"*",
+								);
+							},
+						);
+						break;
+					case "widgets:assistant:action.subscription":
+						eventsService.subscribe<IAssistantAction>(
+							AppEvent.AssistantAction,
+							(data) => {
+								iframeRef.current?.contentWindow?.postMessage(
+									{ id, data },
+									"*",
+								);
+							},
+						);
+						break;
+					case "widgets:channel-user-banned.subscription":
+						eventsService.subscribe<IUnifiedBannedUser>(
+							AppEvent.ChannelUserBanned,
+							(data) => {
+								iframeRef.current?.contentWindow?.postMessage(
+									{ id, data },
+									"*",
+								);
 							},
 						);
 						break;
