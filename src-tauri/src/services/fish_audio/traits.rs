@@ -39,6 +39,21 @@ pub trait FishAudioApi {
         Ok(auth)
     }
 
+    async fn get_api_credits(&self, app: &AppHandle) -> Result<(), AppError> {
+        let auth = self.get_auth(app).await?;
+        let request = self
+            .reqwest_client()
+            .get(format!("{}/wallet/self/api-credit", self.base_url()))
+            .bearer_auth(auth.api_key);
+        let _ = send_request::<serde_json::Value>(
+            request,
+            "get api credits",
+            ServiceType::FishAudio.as_str(),
+        )
+        .await?;
+        Ok(())
+    }
+
     async fn get_models(
         &self,
         app: &AppHandle,

@@ -4,10 +4,7 @@ use tauri::{AppHandle, Manager};
 use crate::{
     error::AppError,
     repositories::ServicesRepository,
-    services::{
-        DatabaseService,
-        fish_audio::{models::FishAudioListModelsFilter, traits::FishAudioApi},
-    },
+    services::{DatabaseService, fish_audio::traits::FishAudioApi},
 };
 
 pub struct FishAudioService {
@@ -26,18 +23,7 @@ impl FishAudioService {
     pub async fn connect(&self, app: &AppHandle) -> Result<(), AppError> {
         let auth = self.get_auth(app).await?;
         let database_service = app.state::<DatabaseService>();
-        match self
-            .get_models(
-                app,
-                1,
-                1,
-                FishAudioListModelsFilter {
-                    language: Some("en".to_string()),
-                    ..Default::default()
-                },
-            )
-            .await
-        {
+        match self.get_api_credits(app).await {
             Err(e) => {
                 database_service
                     .update_service_auth(

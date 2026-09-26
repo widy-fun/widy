@@ -21,7 +21,7 @@ const ApiKey = () => {
 	const { t } = useTranslation();
 	const { data } = useGetServiceByIdQuery({ id: ServiceType.FishAudio });
 	const [updateServiceAuth] = useUpdateServiceAuthMutation();
-	const [fishAudioConnect] = useFishAudioConnectMutation();
+	const [fishAudioConnect, { isLoading }] = useFishAudioConnectMutation();
 	const [apiKey, setApiKey] = useState("");
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -31,6 +31,7 @@ const ApiKey = () => {
 			{data && (
 				<>
 					<TextField
+						disabled={isLoading}
 						placeholder={t("api_key")}
 						value={apiKey}
 						type="password"
@@ -38,6 +39,7 @@ const ApiKey = () => {
 					/>
 					<Button
 						variant="contained"
+						disabled={isLoading}
 						onClick={async () => {
 							try {
 								if (!apiKey) {
