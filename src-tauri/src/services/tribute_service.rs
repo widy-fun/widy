@@ -153,7 +153,7 @@ impl TributeService {
         database_service
             .update_service(entity::services::Model {
                 id: ServiceType::Tribute,
-                settings: None,
+                extra: None,
                 auth: None,
                 authorized: false,
             })

@@ -10,7 +10,7 @@ interface ServicesState {
 			authPath: string;
 			image: string;
 			description: string;
-			settingsPath?: string;
+			extraPath?: string;
 			isIntegration?: boolean;
 		}
 	>;

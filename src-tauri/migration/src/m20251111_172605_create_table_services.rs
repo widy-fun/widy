@@ -12,8 +12,8 @@ impl MigrationTrait for Migration {
                     .if_not_exists()
                     .col(string("id").primary_key())
                     .col(boolean("authorized"))
-                    .col(json_null("settings"))
-                    .col(json_null("auth"))
+                    .col(json_binary_null("extra"))
+                    .col(json_binary_null("auth"))
                     .to_owned(),
             )
             .await

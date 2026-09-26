@@ -79,10 +79,10 @@ const Integrations = () => {
 											}}
 										/>
 									</div>
-									{!!service.settings && (
+									{!!service.extra && (
 										<IconButton
 											onClick={() => {
-												const path = services[service.id].settingsPath;
+												const path = services[service.id].extraPath;
 												if (path) {
 													navigate(path);
 												}

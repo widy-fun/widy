@@ -12,7 +12,7 @@ impl MigrationTrait for Migration {
             id: Set(ServiceType::Claude),
             authorized: Set(false),
             auth: Set(None),
-            settings: Set(None),
+            extra: Set(None),
         }
         .insert(connection)
         .await?;

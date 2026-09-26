@@ -230,7 +230,7 @@ impl DestreamService {
         database_service
             .update_service(entity::services::Model {
                 id: ServiceType::Destream,
-                settings: None,
+                extra: None,
                 auth: None,
                 authorized: false,
             })

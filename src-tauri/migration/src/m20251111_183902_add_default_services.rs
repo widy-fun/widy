@@ -12,7 +12,7 @@ impl MigrationTrait for Migration {
             id: Set(ServiceType::Streamelements),
             authorized: Set(false),
             auth: Set(None),
-            settings: Set(None),
+            extra: Set(None),
         }
         .insert(connection)
         .await?;
@@ -21,7 +21,7 @@ impl MigrationTrait for Migration {
             id: Set(ServiceType::Twitch),
             authorized: Set(false),
             auth: Set(None),
-            settings: Set(None),
+            extra: Set(None),
         }
         .insert(connection)
         .await?;

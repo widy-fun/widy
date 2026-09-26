@@ -7,11 +7,9 @@ pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: ServiceType,
     pub authorized: bool,
-    #[sea_orm(column_type = "Json", nullable)]
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub settings: Option<ServiceSettings>,
-    #[sea_orm(column_type = "Json", nullable)]
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[sea_orm(column_type = "JsonBinary")]
+    pub extra: Option<ServiceExtra>,
+    #[sea_orm(column_type = "JsonBinary")]
     pub auth: Option<ServiceAuth>,
 }
 
@@ -92,7 +90,7 @@ impl ServiceType {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
 #[serde(untagged)]
 
-pub enum ServiceSettings {
+pub enum ServiceExtra {
     Twitch,
 }
 

@@ -153,7 +153,7 @@ impl DeepLinkHandler for WidyTonService {
                         user: query_params.user.clone(),
                         donation_account_address: query_params.donation_account_address.clone(),
                     })),
-                    settings: None,
+                    extra: None,
                     authorized: true,
                 })
                 .await;
@@ -382,7 +382,7 @@ impl WidyTonService {
         database_service
             .update_service(entity::services::Model {
                 id: ServiceType::WidyTon,
-                settings: None,
+                extra: None,
                 auth: None,
                 authorized: false,
             })

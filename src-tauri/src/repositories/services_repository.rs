@@ -12,7 +12,7 @@ pub trait ServicesRepository: Send + Sync {
     async fn update_service_settings(
         &self,
         id: ServiceType,
-        settings: ServiceSettings,
+        settings: ServiceExtra,
     ) -> Result<(), AppError>;
     async fn update_service_auth(
         &self,
@@ -29,7 +29,7 @@ impl ServicesRepository for DatabaseService {
         Entity::find()
             .select_only()
             .column(Column::Id)
-            .column(Column::Settings)
+            .column(Column::Extra)
             .column(Column::Authorized)
             .all(&self.connection)
             .await
@@ -39,7 +39,7 @@ impl ServicesRepository for DatabaseService {
         Entity::find_by_id(id)
             .select_only()
             .column(Column::Id)
-            .column(Column::Settings)
+            .column(Column::Extra)
             .column(Column::Authorized)
             .one(&self.connection)
             .await
@@ -58,12 +58,12 @@ impl ServicesRepository for DatabaseService {
     async fn update_service_settings(
         &self,
         id: ServiceType,
-        settings: ServiceSettings,
+        settings: ServiceExtra,
     ) -> Result<(), AppError> {
         let pear = self.get_service_by_id(id).await?;
         if let Some(pear) = pear {
             let mut pear: ActiveModel = pear.into();
-            pear.settings = Set(Some(settings));
+            pear.extra = Set(Some(settings));
             pear.update(&self.connection)
                 .await
                 .map_err(|e| log_and_wrap_error("Update service settings error", e))?;
@@ -76,7 +76,7 @@ impl ServicesRepository for DatabaseService {
         Entity::update(ActiveModel {
             id: Set(service.id),
             authorized: Set(service.authorized),
-            settings: Set(service.settings),
+            extra: Set(service.extra),
             auth: Set(service.auth),
         })
         .exec(&self.connection)

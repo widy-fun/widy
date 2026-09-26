@@ -170,7 +170,7 @@ impl StreamLabsService {
         database_service
             .update_service(entity::services::Model {
                 id: ServiceType::StreamLabs,
-                settings: None,
+                extra: None,
                 auth: None,
                 authorized: false,
             })

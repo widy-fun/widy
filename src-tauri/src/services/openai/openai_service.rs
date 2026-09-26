@@ -406,7 +406,7 @@ impl OpenAIService {
         database_service
             .update_service(entity::services::Model {
                 id: ServiceType::OpenAI,
-                settings: None,
+                extra: None,
                 auth: None,
                 authorized: false,
             })

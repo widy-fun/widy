@@ -114,7 +114,7 @@ impl DeepLinkHandler for WidySolService {
                         user: query_params.user.clone(),
                         donation_account_address: query_params.donation_account_address.clone(),
                     })),
-                    settings: None,
+                    extra: None,
                     authorized: true,
                 })
                 .await;
@@ -218,7 +218,7 @@ impl WidySolService {
         database_service
             .update_service(entity::services::Model {
                 id: ServiceType::WidySol,
-                settings: None,
+                extra: None,
                 auth: None,
                 authorized: false,
             })
