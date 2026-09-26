@@ -589,7 +589,7 @@
 		"vad_threshold": "عتبة VAD",
 		"wake_threshold": "عتبة التنبيه",
 		"silence_hangover_frames": "إطارات استمرار الصمت",
-		"wake_word": "للتنبيه، قل - Hey Jarvis"
+		"wake_word": "للتنبيه، قل - {{wake_word}}"
 	},
 	"tools": {
 		"play_alert": "تشغيل التنبيه (الاسم)",

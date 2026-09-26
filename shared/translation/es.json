@@ -589,7 +589,7 @@
 		"vad_threshold": "Umbral de VAD",
 		"wake_threshold": "Umbral de activación",
 		"silence_hangover_frames": "Fotogramas de espera tras el silencio",
-		"wake_word": "Para activar, diga: «Hey Jarvis»"
+		"wake_word": "Para activar, diga: «{{wake_word}}»"
 	},
 	"tools": {
 		"play_alert": "Reproducir alerta (nombre)",

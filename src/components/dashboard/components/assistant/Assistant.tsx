@@ -14,7 +14,7 @@ const Assistant = () => {
 	return (
 		<>
 			<h1>{t("assistant.title")}</h1>
-			<h3>{t("assistant.wake_word")}</h3>
+			<h3>{t("assistant.wake_word", { wake_word: "Hey Jarvis" })}</h3>
 			<Box
 				sx={{
 					borderBottom: 1,

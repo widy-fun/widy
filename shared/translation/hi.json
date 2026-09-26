@@ -589,7 +589,7 @@
 		"vad_threshold": "VAD सीमा",
 		"wake_threshold": "वेक सीमा",
 		"silence_hangover_frames": "साइलेंस हैंगओवर फ़्रेम",
-		"wake_word": "जगाने के लिए कहें - Hey Jarvis"
+		"wake_word": "जगाने के लिए कहें - {{wake_word}}"
 	},
 	"tools": {
 		"play_alert": "अलर्ट चलाएँ (नाम)",

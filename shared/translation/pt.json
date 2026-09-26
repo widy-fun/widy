@@ -589,7 +589,7 @@
 		"vad_threshold": "Limite de VAD",
 		"wake_threshold": "Limite de ativação",
 		"silence_hangover_frames": "Quadros de persistência do silêncio",
-		"wake_word": "Para ativar, diga - Hey Jarvis"
+		"wake_word": "Para ativar, diga - {{wake_word}}"
 	},
 	"tools": {
 		"play_alert": "Reproduzir alerta (nome)",

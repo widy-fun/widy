@@ -589,7 +589,7 @@
 		"vad_threshold": "Seuil VAD",
 		"wake_threshold": "Seuil d’activation",
 		"silence_hangover_frames": "Images de maintien du silence",
-		"wake_word": "Pour activer, dites : Hey Jarvis"
+		"wake_word": "Pour activer, dites : {{wake_word}}"
 	},
 	"tools": {
 		"play_alert": "Lire une alerte (nom)",

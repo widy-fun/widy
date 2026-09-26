@@ -589,7 +589,7 @@
 		"vad_threshold": "VAD-Schwellenwert",
 		"wake_threshold": "Aktivierungsschwellenwert",
 		"silence_hangover_frames": "Stille-Nachlauf-Frames",
-		"wake_word": "Zum Aktivieren sagen Sie: Hey Jarvis"
+		"wake_word": "Zum Aktivieren sagen Sie: {{wake_word}}"
 	},
 	"tools": {
 		"play_alert": "Alert abspielen (Name)",

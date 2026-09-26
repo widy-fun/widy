@@ -589,7 +589,7 @@
 		"vad_threshold": "VAD 阈值",
 		"wake_threshold": "唤醒阈值",
 		"silence_hangover_frames": "静音延迟帧数",
-		"wake_word": "说“Hey Jarvis”以唤醒"
+		"wake_word": "说“{{wake_word}}”以唤醒"
 	},
 	"tools": {
 		"play_alert": "播放提醒（名称）",
