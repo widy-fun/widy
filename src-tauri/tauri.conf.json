@@ -25,7 +25,7 @@
 				"script-src": "'self' 'unsafe-inline' 'unsafe-eval' ipc: http://ipc.localhost https://maps.googleapis.com",
 				"style-src": "'self' 'unsafe-inline' asset: http://asset.localhost https://fonts.googleapis.com",
 				"font-src": "'self' https://fonts.gstatic.com",
-				"media-src": "'self' asset: http://asset.localhost",
+				"media-src": "'self' asset: http://asset.localhost https://platform.r2.fish.audio",
 				"img-src": "'self' data: asset: http://asset.localhost https://*.googleapis.com https://*.gstatic.com https://*.google.com",
 				"worker-src": "'self' blob:"
 			},
