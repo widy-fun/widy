@@ -45,13 +45,17 @@ const usePlayMedia = () => {
 	}, []);
 
 	const skipMedia = useCallback(
-		(id: string) => {
+		(id: MessageId) => {
 			if (currentMessage?.id === id) {
 				handleMediaEnd({ message: currentMessage });
 			} else {
 				messagesRef.current = messagesRef.current.filter(
 					(message) => message.id !== id,
 				);
+				eventsService.send<MessageId>({
+					event: AppEvent.MediaPlayed,
+					data: id,
+				});
 			}
 		},
 		[handleMediaEnd, currentMessage],

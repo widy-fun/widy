@@ -27328,9 +27328,12 @@ const Wr = c9({
     n.current && !n.current.alert_paused && a(v);
   }, []), p = k.useCallback(
     (v) => {
-      s?.id === v ? l({ message: s }) : i.current = i.current.filter(
+      s?.id === v ? l({ message: s }) : (i.current = i.current.filter(
         (w) => w.id !== v
-      );
+      ), e.send({
+        event: ee.MediaPlayed,
+        data: v
+      }));
     },
     [l, s]
   ), f = k.useCallback(() => {
