@@ -28,10 +28,7 @@ import {
 	useUpdateAssistantSettingsMutation,
 } from "../../../../../api/assistantApi";
 import { useGetServiceByIdQuery } from "../../../../../api/servicesApi";
-import {
-	NEMOTRON_3_5_ASR_LANGUAGES,
-	STT_MODELS,
-} from "../../../../../constants";
+import { STT_MODELS } from "../../../../../constants";
 import styles from "../../settings/Settings.module.css";
 
 const Device = () => {
@@ -57,6 +54,12 @@ const Device = () => {
 	const { data: gemini } = useGetServiceByIdQuery({ id: ServiceType.Gemini });
 	const { data: openai } = useGetServiceByIdQuery({ id: ServiceType.OpenAI });
 	const { data: claude } = useGetServiceByIdQuery({ id: ServiceType.Claude });
+
+	const sttModelLanguages =
+		STT_MODELS[
+			(assistantSettings?.stt_model ??
+				"whisper-large-v3-turbo") as keyof typeof STT_MODELS
+		].languages;
 
 	useEffect(() => {
 		if (settings && devices) {
@@ -170,7 +173,7 @@ const Device = () => {
 							sx={{ width: 150 }}
 							value={assistantSettings.stt_language}
 						>
-							{Object.keys(NEMOTRON_3_5_ASR_LANGUAGES).map((stt_language) => (
+							{Object.keys(sttModelLanguages).map((stt_language) => (
 								<MenuItem
 									value={stt_language}
 									key={stt_language}
@@ -185,7 +188,7 @@ const Device = () => {
 										);
 									}}
 								>
-									{NEMOTRON_3_5_ASR_LANGUAGES[stt_language]}
+									{sttModelLanguages[stt_language]}
 								</MenuItem>
 							))}
 						</Select>

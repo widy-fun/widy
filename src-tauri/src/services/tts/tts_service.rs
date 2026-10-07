@@ -19,7 +19,7 @@ use crate::{
         fish_audio::{FishAudioService, models::TtsRequestBody, traits::FishAudioApi},
         tts::{models::Piper, traits::PiperTts},
     },
-    utils::log_and_wrap_error,
+    utils::{log_and_wrap_error, save_audio_to_wav_file},
 };
 
 #[derive(Clone, Debug)]
@@ -183,7 +183,7 @@ impl TtsService {
         let piper = self.build_piper(&voice_key).await?;
         let audio = self.piper_synthesize(text, language, piper).await?;
         let audio_file_path = self.audio_path.join(format!("{}.wav", file_name));
-        self.save_audio_to_wav_file(&audio, 22050, &audio_file_path)
+        save_audio_to_wav_file(&audio, 22050, audio_file_path.to_str().unwrap())
             .await
             .map_err(|e| {
                 log_and_wrap_error(

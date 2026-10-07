@@ -20,6 +20,7 @@ use tokio::sync::mpsc::{self, Sender};
 use tokio_util::sync::CancellationToken;
 
 use crate::{
+    constants::STREAMING_STT_MODELS,
     error::AppError,
     repositories::{AlertsRepository, AssistantSettingsRepository},
     services::{
@@ -277,10 +278,10 @@ impl AssistantService {
             assistant_settings.stt_language.clone(),
             app.clone(),
             transcribe_rx,
+            STREAMING_STT_MODELS.contains(&assistant_settings.stt_model.as_str()),
         )?;
 
         input_stream.play()?;
-
         self.run_audio_loop(
             input_rx,
             wake_engine,
@@ -398,6 +399,7 @@ impl AssistantService {
         let mut is_recording = false;
         let mut silence_frames: u32 = 0;
         let cancellation_token = { self.cancellation_token.lock().unwrap().clone() };
+
         log::info!("Start AI assistant.");
         {
             let mut status = self.status.lock().unwrap();
@@ -409,7 +411,7 @@ impl AssistantService {
                 res = rx.recv() => {
                     match res {
                         Some(chunk) => {
-                            self.process_audio_chunk(&chunk,  &mut audio_buffer, &mut wake_engine, &mut vad_engine, &mut is_recording,  &mut silence_frames, &transcribe_tx,&assistant_settings).await?;
+                            self.process_audio_chunk(&chunk,  &mut audio_buffer, &mut wake_engine, &mut vad_engine, &mut is_recording,  &mut silence_frames, &transcribe_tx,&assistant_settings, ).await?;
                         }
                         None => {
                             break;

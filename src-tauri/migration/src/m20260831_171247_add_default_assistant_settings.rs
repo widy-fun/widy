@@ -1,6 +1,6 @@
 use entity::{
     assistant_settings::{Tool, ToolCallingModel, ToolCallingProvider},
-    tts::{EdgeTtsExtra, Gender, TtsSettings, TtsExtra, TtsType},
+    tts::{EdgeTtsExtra, Gender, TtsExtra, TtsSettings, TtsType},
 };
 use sea_orm_migration::{prelude::*, sea_query::value::prelude::serde_json};
 #[derive(DeriveMigrationName)]
@@ -47,7 +47,7 @@ impl MigrationTrait for Migration {
                             display_name: "Gemini 3.5 Flash Lite".into(),
                         }
                         .into(),
-                        "nemotron-3.5-asr-streaming-0.6b".into(),
+                        "whisper-medium".into(),
                         "en".into(),
                         "0".into(),
                         false.into(),

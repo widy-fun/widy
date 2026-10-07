@@ -5,14 +5,15 @@ use futures::StreamExt;
 use tauri::{AppHandle, Manager};
 
 use crate::{
+    constants::TARGET_SR,
     error::AppError,
     services::{
-        AppEvent, EventMessage, WebSocketBroadcaster,
+        AppEvent, ConfigService, EventMessage, WebSocketBroadcaster,
         assistant::{AssistantService, AssistantServiceStatus, linear_resampler::LinearResampler},
     },
-    utils::log_and_wrap_error,
+    utils::{log_and_wrap_error, save_audio_to_wav_file},
 };
-use tokio::sync::mpsc::Receiver;
+use tokio::{fs, sync::mpsc::Receiver};
 
 pub enum Transcribe {
     Start,
@@ -29,25 +30,40 @@ impl SttService {
         language: String,
         app: AppHandle,
         mut transcribe_rx: Receiver<Transcribe>,
+        is_streaming: bool,
     ) -> Result<(), AppError> {
         tokio::spawn(async move {
+            let config_service = app.state::<ConfigService>();
             let audio_client = model.create_audio_client();
             let mut session: Option<LiveAudioTranscriptionSession> = None;
             let assistant_service = app.state::<AssistantService>();
             let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
+            let mut session_buffer: Vec<f32> = Vec::new();
 
             while let Some(chunk) = transcribe_rx.recv().await {
                 match chunk {
                     Transcribe::Start => {
-                        if let Some(old) = session.take() {
-                            log::warn!(
-                                "Received Start while a session was active; stopping previous session"
-                            );
-                            Self::stop_session(old, "Stop previous session on restart").await;
-                        }
-                        session =
-                            Self::start_session(&audio_client, &language, &app, &assistant_service)
+                        if is_streaming {
+                            if let Some(old) = session.take() {
+                                log::warn!(
+                                    "Received Start while a session was active; stopping previous session"
+                                );
+                                Self::stop_live_transcription_session(
+                                    old,
+                                    "Stop previous session on restart",
+                                )
                                 .await;
+                            }
+                            session = Self::start_live_transcription_session(
+                                &audio_client,
+                                &language,
+                                &app,
+                                &assistant_service,
+                            )
+                            .await;
+                        } else {
+                            session_buffer.clear();
+                        }
                         websocket_broadcaster.broadcast_event_message(&EventMessage {
                             event: AppEvent::StartTranscribe,
                             data: true,
@@ -55,25 +71,66 @@ impl SttService {
                         log::info!("Start transcribe.");
                     }
                     Transcribe::Audio(frame) => {
-                        if let Some(session) = session.as_mut() {
-                            let bytes = LinearResampler::pcm_f32_to_le_bytes(&frame);
-                            if let Err(e) = session.append(&bytes, None).await {
-                                log_and_wrap_error("Append audio frame error", e);
+                        if is_streaming {
+                            if let Some(session) = session.as_mut() {
+                                let bytes = LinearResampler::pcm_f32_to_le_bytes(&frame);
+                                if let Err(e) = session.append(&bytes, None).await {
+                                    log_and_wrap_error("Append audio frame error", e);
+                                }
                             }
+                        } else {
+                            session_buffer.extend(frame);
                         }
                     }
                     Transcribe::Stop => {
-                        if let Some(session) = session.take() {
-                            Self::stop_session(session, "End audio session").await;
-                            websocket_broadcaster.broadcast_event_message(&EventMessage {
-                                event: AppEvent::StopTranscribe,
-                                data: true,
-                            });
+                        websocket_broadcaster.broadcast_event_message(&EventMessage {
+                            event: AppEvent::StopTranscribe,
+                            data: true,
+                        });
+                        if is_streaming {
+                            if let Some(session) = session.take() {
+                                Self::stop_live_transcription_session(session, "End audio session")
+                                    .await;
+                            }
+                        } else {
+                            let audio_file_path = format!(
+                                "{}/{}.wav",
+                                config_service.audio_path.to_string_lossy(),
+                                uuid::Uuid::new_v4().to_string()
+                            );
+                            let _ = save_audio_to_wav_file(
+                                &session_buffer,
+                                TARGET_SR,
+                                &audio_file_path,
+                            )
+                            .await;
+                            session_buffer.clear();
+                            let response = audio_client
+                                .transcribe(audio_file_path.clone())
+                                .await
+                                .map_err(|e| log_and_wrap_error("Transcribe audio", e))
+                                .unwrap();
+                            let text = response.text.trim();
+                            fs::remove_file(&audio_file_path)
+                                .await
+                                .map_err(|e| log_and_wrap_error("Remove audio file", e))
+                                .unwrap();
+                            if !text.is_empty() {
+                                let _ = assistant_service
+                                    .handle_tool_calling(&app, text, true)
+                                    .await
+                                    .map_err(|e| log_and_wrap_error("Handle tool calling", e));
+                            }
                         }
                     }
                     Transcribe::Cancel => {
-                        if let Some(session) = session.take() {
-                            Self::stop_session(session, "Cancel session").await;
+                        if is_streaming {
+                            if let Some(session) = session.take() {
+                                Self::stop_live_transcription_session(session, "Cancel session")
+                                    .await;
+                            }
+                        } else {
+                            session_buffer.clear();
                         }
 
                         if let Err(e) = model.unload().await {
@@ -89,7 +146,7 @@ impl SttService {
         Ok(())
     }
 
-    async fn start_session(
+    async fn start_live_transcription_session(
         audio_client: &AudioClient,
         language: &str,
         app: &AppHandle,
@@ -103,9 +160,13 @@ impl SttService {
             Self::cancel_token(assistant_service);
             return None;
         }
-        if let Err(e) = SttService::transcribe(app.clone(), &new_session).await {
+        if let Err(e) = SttService::transcribe_live_session(app.clone(), &new_session).await {
             log_and_wrap_error("Start STT transcription listener", e);
-            Self::stop_session(new_session, "Stop session after listener failure").await;
+            Self::stop_live_transcription_session(
+                new_session,
+                "Stop session after listener failure",
+            )
+            .await;
             Self::cancel_token(assistant_service);
             return None;
         }
@@ -113,7 +174,10 @@ impl SttService {
         Some(new_session)
     }
 
-    async fn stop_session(session: LiveAudioTranscriptionSession, context: &str) {
+    async fn stop_live_transcription_session(
+        session: LiveAudioTranscriptionSession,
+        context: &str,
+    ) {
         if let Err(e) = session.stop(None).await {
             log_and_wrap_error(context, e);
         }
@@ -139,7 +203,7 @@ impl SttService {
         }
     }
 
-    async fn transcribe(
+    async fn transcribe_live_session(
         app: AppHandle,
         session: &LiveAudioTranscriptionSession,
     ) -> Result<(), AppError> {
@@ -153,7 +217,6 @@ impl SttService {
                             if r.is_final {
                                 let text = content.text.trim();
                                 if !text.is_empty() {
-                                    log::info!("{text}");
                                     let _ = assistant_service
                                         .handle_tool_calling(&app, text, true)
                                         .await

@@ -1,14 +1,12 @@
 use std::{
     collections::HashMap,
     fs,
-    io::Cursor,
     path::PathBuf,
     sync::{Arc, Mutex},
 };
 
 use async_trait::async_trait;
-use entity::tts::{PiperVoice, PiperVoices, TtsSettings, TtsModels};
-use hound::{SampleFormat, WavSpec, WavWriter};
+use entity::tts::{PiperVoice, PiperVoices, TtsModels, TtsSettings};
 use lingua::Language;
 use ndarray::{Array2, arr1};
 use ort::{session::Session, value::Tensor};
@@ -191,45 +189,6 @@ pub trait PiperTts: Send + Sync {
         ids.push(eos_id);
 
         ids
-    }
-
-    async fn save_audio_to_wav_file(
-        &self,
-        audio: &[f32],
-        sample_rate: u32,
-        path: &PathBuf,
-    ) -> Result<(), AppError> {
-        let wav_bytes = self.audio_to_wav_bytes(audio, sample_rate)?;
-        tokio::fs::write(path, wav_bytes)
-            .await
-            .map_err(|e| AppError::Piper(format!("Failed to write file: {e}")))
-    }
-
-    fn audio_to_wav_bytes(&self, audio: &[f32], sample_rate: u32) -> Result<Vec<u8>, AppError> {
-        let spec = WavSpec {
-            channels: 1,
-            sample_rate,
-            bits_per_sample: 32,
-            sample_format: SampleFormat::Float,
-        };
-
-        let mut cursor = Cursor::new(Vec::new());
-        {
-            let mut writer = WavWriter::new(&mut cursor, spec)
-                .map_err(|e| AppError::Piper(format!("Failed to create WAV writer: {e}")))?;
-
-            for &sample in audio {
-                writer
-                    .write_sample(sample)
-                    .map_err(|e| AppError::Piper(format!("Failed to write sample: {e}")))?;
-            }
-
-            writer
-                .finalize()
-                .map_err(|e| AppError::Piper(format!("Failed to finalize WAV file: {e}")))?;
-        }
-
-        Ok(cursor.into_inner())
     }
 
     fn get_piper_voices(&self) -> Result<Vec<PiperVoice>, AppError> {
