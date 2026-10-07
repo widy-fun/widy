@@ -1,11 +1,12 @@
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import { Box, Button, Tab, Tabs } from "@mui/material";
 import { showSnackBar } from "@widy/react";
-import { AlertSeverity, type ISerializedAppError } from "@widy/sdk";
+import { AlertSeverity, type ISerializedAppError, MediaType } from "@widy/sdk";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { setMediaSettings } from "../../../../../shared/slices/mediaSlice";
+import getColorByMediaType from "../../../../../shared/utils/getColorByMediaType";
 import {
 	useGetMediaSettingsQuery,
 	useUpdateMediaSettingsMutation,
@@ -69,23 +70,40 @@ const Media = () => {
 						allowScrollButtonsMobile
 						onChange={(_, value) => setValue(value)}
 						slotProps={{
-							indicator: { style: { transition: "none" } },
+							indicator: {
+								style: { transition: "none" },
+							},
 						}}
 					>
 						<Tab
 							icon={<YouTubeIcon />}
 							iconPosition="start"
 							label={t("media.youtube")}
+							sx={{
+								"&.Mui-selected": {
+									color: getColorByMediaType(MediaType.Youtube),
+								},
+							}}
 						/>
 						<Tab
 							icon={<TwitchIcon />}
 							iconPosition="start"
 							label={t("media.twitch")}
+							sx={{
+								"&.Mui-selected": {
+									color: getColorByMediaType(MediaType.Twitch),
+								},
+							}}
 						/>
 						<Tab
 							icon={<TikTokIcon />}
 							iconPosition="start"
 							label={t("media.tiktok")}
+							sx={{
+								"&.Mui-selected": {
+									color: getColorByMediaType(MediaType.TikTok),
+								},
+							}}
 						/>
 					</Tabs>
 				</Box>
