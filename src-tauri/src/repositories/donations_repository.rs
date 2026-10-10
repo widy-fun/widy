@@ -1,15 +1,29 @@
 use async_trait::async_trait;
 use entity::{
-    donations,
+    donations::{self, Column, Donation, Entity},
     messages::{self, ClientMessage},
     services::ServiceType,
 };
+use serde::{Deserialize, Serialize};
 
 use crate::{error::AppError, services::DatabaseService, utils::log_and_wrap_error};
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter, QueryOrder, QuerySelect};
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub enum DonationSort {
+    Newest,
+    Largest,
+}
+
 #[async_trait]
 pub trait DonationsRepository: Send + Sync {
+    async fn get_donations(
+        &self,
+        from: Option<i64>,
+        to: Option<i64>,
+        limit: u64,
+        sort: DonationSort,
+    ) -> Result<Vec<Donation>, AppError>;
     async fn get_donation_by_service_id(
         &self,
         service_id: String,
@@ -24,6 +38,36 @@ pub trait DonationsRepository: Send + Sync {
 
 #[async_trait]
 impl DonationsRepository for DatabaseService {
+    async fn get_donations(
+        &self,
+        from: Option<i64>,
+        to: Option<i64>,
+        limit: u64,
+        sort: DonationSort,
+    ) -> Result<Vec<Donation>, AppError> {
+        let mut query = Entity::find();
+        if let Some(from) = from {
+            query = query.filter(Column::CreatedAt.gte(from));
+        }
+        if let Some(to) = to {
+            query = query.filter(Column::CreatedAt.lt(to));
+        }
+        match sort {
+            DonationSort::Largest => {
+                query = query.order_by_desc(Column::ExchangedAmount);
+            }
+            _ => {}
+        }
+
+        query
+            .order_by_desc(Column::CreatedAt)
+            .limit(limit)
+            .into_partial_model::<Donation>()
+            .all(&self.connection)
+            .await
+            .map_err(|e| log_and_wrap_error("Get donations error", e))
+    }
+
     async fn get_donation_by_service_id(
         &self,
         service_id: String,

@@ -1,8 +1,9 @@
 use crate::constants::HTTP_WIDGET_PORT;
 use crate::error::AppError;
 use crate::repositories::{
-    AlertsRepository, AucFighterSettingsRepository, GoalsRepository, MediaSettingsRepository,
-    MessagesRepository, NsfwRepository, ServicesRepository, SettingsRepository, WidgetsRepository,
+    AlertsRepository, AucFighterSettingsRepository, DonationSort, DonationsRepository,
+    GoalsRepository, MediaSettingsRepository, MessagesRepository, NsfwRepository,
+    ServicesRepository, SettingsRepository, WidgetsRepository,
 };
 use crate::services::kick::traits::KickApi;
 use crate::services::kick::{KickBotService, KickService};
@@ -56,7 +57,7 @@ pub enum GrantType {
 // }
 
 #[derive(Debug, Deserialize)]
-struct DonationsQuery {
+struct MessagesQuery {
     pub limit: u64,
     pub offset: u64,
     pub exclude_donations: bool,
@@ -70,6 +71,14 @@ struct DonationsQuery {
 #[derive(Debug, Deserialize)]
 struct GoalsQuery {
     pub r#type: GoalType,
+}
+
+#[derive(Debug, Deserialize)]
+struct DonationsQuery {
+    from: Option<i64>,
+    to: Option<i64>,
+    limit: u64,
+    sort: DonationSort,
 }
 
 #[derive(Debug, Deserialize)]
@@ -125,6 +134,7 @@ impl AxumService {
             .route("/api/settings", get(AxumService::get_settings))
             .route("/api/messages", get(AxumService::get_messages))
             .route("/api/goals", get(AxumService::get_not_ended_goal))
+            .route("/api/donations", get(AxumService::get_donations))
             .route("/api/widgets/{id}", get(AxumService::get_widget_by_id))
             .route(
                 "/api/widgets/view/storage/{id}",
@@ -231,7 +241,7 @@ impl AxumService {
     }
 
     async fn get_messages(
-        Query(params): Query<DonationsQuery>,
+        Query(params): Query<MessagesQuery>,
         State(state): State<AxumState>,
     ) -> Result<Json<Vec<ClientMessage>>, StatusCode> {
         let database_service = state.app.state::<DatabaseService>();
@@ -264,6 +274,19 @@ impl AxumService {
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
         Ok(Json(goal))
+    }
+
+    async fn get_donations(
+        Query(params): Query<DonationsQuery>,
+        State(state): State<AxumState>,
+    ) -> Result<Json<Vec<entity::donations::Donation>>, StatusCode> {
+        let database_service = state.app.state::<DatabaseService>();
+        let donations = database_service
+            .get_donations(params.from, params.to, params.limit, params.sort)
+            .await
+            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+        Ok(Json(donations))
     }
 
     async fn get_widget_by_id(

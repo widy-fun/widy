@@ -473,7 +473,10 @@
 		"widgets:control:storage.subscription": "Subscribe widget control storage",
 		"widgets:command:action.subscription": "Subscribe command action",
 		"widgets:assistant:action.subscription": "Subscribe assistant action",
-		"widgets:channel-user-banned.subscription": "Subscribe channel user banned event"
+		"widgets:channel-user-banned.subscription": "Subscribe channel user banned event",
+		"widgets:channel-subscription.subscription": "Subscribe channel user subscribe or gift",
+		"widgets:command-auction-action.subscription": "Subscribe to command auction action",
+		"widgets:donations.read": "Read donations"
 	},
 	"nsfw": {
 		"title": "NSFW",

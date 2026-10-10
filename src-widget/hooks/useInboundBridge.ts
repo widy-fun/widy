@@ -8,6 +8,8 @@ import {
 	IAucFighterSettings,
 	IClientMessage,
 	ICommandAction,
+	ICommandAuctionAction,
+	IDonationsQuery,
 	IGoal,
 	IMediaSettings,
 	IMessagesFilter,
@@ -28,6 +30,7 @@ import appSettingsToWidgetSettings from "../../src/helpers/appSettingsToWidgetSe
 import { AppDispatch } from "../../src/store";
 import { alertsApi } from "../api/alertsApi";
 import { aucFighterApi } from "../api/aucFighterApi";
+import { donationsApi } from "../api/donationsApi";
 import { goalsApi } from "../api/goalsApi";
 import { messagesApi } from "../api/messagesApi";
 import { settingsApi } from "../api/settingsApi";
@@ -596,6 +599,41 @@ const useInboundBridge = (widget?: IWidget) => {
 							},
 						);
 						break;
+					case "widgets:channel-subscription.subscription":
+						eventsService.subscribe<IClientMessage>(
+							AppEvent.ChannelSubscription,
+							(data) => {
+								iframeRef.current?.contentWindow?.postMessage(
+									{ id, data },
+									"*",
+								);
+							},
+						);
+						break;
+					case "widgets:command-auction-action.subscription":
+						eventsService.subscribe<ICommandAuctionAction>(
+							AppEvent.CommandAuctionAction,
+							(data) => {
+								iframeRef.current?.contentWindow?.postMessage(
+									{ id, data },
+									"*",
+								);
+							},
+						);
+						break;
+					case "widgets:donations.read": {
+						const { data, error } = await dispatch(
+							donationsApi.endpoints.getDonations.initiate(
+								arg as IDonationsQuery,
+								{ forceRefetch: true },
+							),
+						);
+						iframeRef.current?.contentWindow?.postMessage(
+							{ id, data, error },
+							"*",
+						);
+						break;
+					}
 					default:
 						break;
 				}

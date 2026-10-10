@@ -41,6 +41,7 @@ export const api = createApi({
 		"Commands",
 		"Assistant-Settings",
 		"FishAudioModels",
+		"Donations",
 	],
 	endpoints: (builder) => ({
 		getInitialState: builder.query<IInitialState, void>({
