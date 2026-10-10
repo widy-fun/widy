@@ -14,7 +14,7 @@ import WheelIcon from "./components/WheelIcon";
 const Auction = () => {
 	const [value, setValue] = useState(0);
 	const { t } = useTranslation();
-	const { lots } = useSelector((state: AppState) => state.lotsState);
+	const { lots, variant } = useSelector((state: AppState) => state.lotsState);
 
 	return (
 		<>
@@ -42,7 +42,7 @@ const Auction = () => {
 						label={t("auction.lots")}
 					/>
 					<Tab
-						icon={<WheelIcon />}
+						icon={<WheelIcon size={24} />}
 						iconPosition="start"
 						label={t("auction.wheel")}
 					/>
@@ -58,7 +58,7 @@ const Auction = () => {
 					<Lots />
 				</TabPanel>
 				<TabPanel index={1} value={value}>
-					<AuctionWheel lots={lots.filter((lot) => lot.amount)} />
+					<AuctionWheel lots={lots[variant].filter((lot) => lot.amount)} />
 				</TabPanel>
 				<TabPanel index={2} value={value}>
 					<AuctionSettings />

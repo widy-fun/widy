@@ -14,12 +14,14 @@ const ConfigurationMenu = ({
 	configurePath,
 	onTest,
 	isShowDelete = true,
+	isShowTest = true,
 }: {
 	onConfirm: () => Promise<void>;
 	warning: string;
 	configurePath: string;
-	onTest: () => void;
+	onTest?: () => void;
 	isShowDelete?: boolean;
+	isShowTest?: boolean;
 }) => {
 	const [dialogOpen, setDialogOpen] = useState(false);
 	const { t } = useTranslation();
@@ -75,7 +77,7 @@ const ConfigurationMenu = ({
 					>
 						{t("configure")}
 					</MenuItem>
-					<MenuItem onClick={onTest}>{t("test")}</MenuItem>
+					{isShowTest && <MenuItem onClick={onTest}>{t("test")}</MenuItem>}
 					{isShowDelete && (
 						<MenuItem
 							onClick={() => {

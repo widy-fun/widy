@@ -1,6 +1,7 @@
 import {
 	CommandSourceType,
 	Currency,
+	IAuctionAction,
 	IChatBotAction,
 	IChatSource,
 	ICommand,
@@ -117,6 +118,13 @@ export const DEFAULT_CHAT_BOT_ACTION: IChatBotAction = {
 	message: "",
 	replay: false,
 	platforms: [Platform.Kick, Platform.Twitch],
+};
+
+export const DEFAULT_AUCTION_ACTION: IAuctionAction = {
+	regular_luck_modifier: 1,
+	subscriber_luck_modifier: 1,
+	vip_luck_modifier: 1,
+	moderator_luck_modifier: 1,
 };
 
 export const DEFAULT_SETTINGS: ISettings = {

@@ -1,42 +1,43 @@
 import type { Middleware, Action as UnknownAction } from "@reduxjs/toolkit";
 import { showSnackBar } from "@widy/react";
-import { AlertSeverity } from "@widy/sdk";
-import calculateMaptionDistance from "../../helpers/calculateMaptionDistance";
-import type { AppState } from "..";
-import { maptionDonationsSlice } from "../slices/donationsSlice.ts";
-import { down, left, right, up } from "../slices/maptionSlice";
+import { AlertSeverity, LotVariant } from "@widy/sdk";
+import calculateMaptionDistance from "../../helpers/calculateMaptionDistance.ts";
+import type { AppState } from "../index.ts";
+import { maptionEventsSlice } from "../slices/auctionEventsSlice.ts";
+import { down, left, right, up } from "../slices/maptionSlice.ts";
 
-const newDonationUpdateMaptionPositionMiddleware: Middleware<
+const newAuctionEventUpdateMaptionPositionMiddleware: Middleware<
 	unknown,
 	AppState
 > = (store) => (next) => (action) => {
 	const appAction = action as UnknownAction;
 	const result = next(action);
 	const nextState = store.getState();
-	const newDonation = nextState.maptionDonationsState.donations.at(-1);
+	const newEvent =
+		nextState.maptionEventsState.events[LotVariant.Donation].at(-1);
 	const { isPointSet, maptionSettings } = nextState.maptionState;
 	const isStopped = nextState.maptionTimerState.isStopped;
 
 	if (
-		appAction.type === maptionDonationsSlice.actions.addDonation.type &&
+		appAction.type === maptionEventsSlice.actions.addAuctionEvent.type &&
 		maptionSettings &&
-		newDonation &&
+		newEvent &&
 		isPointSet &&
 		!isStopped
 	) {
-		switch (newDonation.text?.toLowerCase()) {
+		switch (newEvent.text?.toLowerCase()) {
 			case "up":
 				store.dispatch(
 					up(
 						calculateMaptionDistance({
 							price_for_meter: maptionSettings.price_for_meter,
-							amount: newDonation.exchanged_amount,
+							amount: newEvent.exchanged_amount,
 						}),
 					),
 				);
 				store.dispatch(
 					showSnackBar({
-						message: `+${newDonation.exchanged_amount.toFixed(2)}      Up`,
+						message: `+${newEvent.exchanged_amount.toFixed(2)}      Up`,
 						alertSeverity: AlertSeverity.success,
 					}),
 				);
@@ -46,13 +47,13 @@ const newDonationUpdateMaptionPositionMiddleware: Middleware<
 					down(
 						calculateMaptionDistance({
 							price_for_meter: maptionSettings.price_for_meter,
-							amount: newDonation.exchanged_amount,
+							amount: newEvent.exchanged_amount,
 						}),
 					),
 				);
 				store.dispatch(
 					showSnackBar({
-						message: `+${newDonation.exchanged_amount.toFixed(2)}      Down`,
+						message: `+${newEvent.exchanged_amount.toFixed(2)}      Down`,
 						alertSeverity: AlertSeverity.success,
 					}),
 				);
@@ -62,13 +63,13 @@ const newDonationUpdateMaptionPositionMiddleware: Middleware<
 					left(
 						calculateMaptionDistance({
 							price_for_meter: maptionSettings.price_for_meter,
-							amount: newDonation.exchanged_amount,
+							amount: newEvent.exchanged_amount,
 						}),
 					),
 				);
 				store.dispatch(
 					showSnackBar({
-						message: `+${newDonation.exchanged_amount.toFixed(2)}      Left`,
+						message: `+${newEvent.exchanged_amount.toFixed(2)}      Left`,
 						alertSeverity: AlertSeverity.success,
 					}),
 				);
@@ -78,13 +79,13 @@ const newDonationUpdateMaptionPositionMiddleware: Middleware<
 					right(
 						calculateMaptionDistance({
 							price_for_meter: maptionSettings.price_for_meter,
-							amount: newDonation.exchanged_amount,
+							amount: newEvent.exchanged_amount,
 						}),
 					),
 				);
 				store.dispatch(
 					showSnackBar({
-						message: `+${newDonation.exchanged_amount.toFixed(2)}      Right`,
+						message: `+${newEvent.exchanged_amount.toFixed(2)}      Right`,
 						alertSeverity: AlertSeverity.success,
 					}),
 				);
@@ -98,4 +99,4 @@ const newDonationUpdateMaptionPositionMiddleware: Middleware<
 	return result;
 };
 
-export default newDonationUpdateMaptionPositionMiddleware;
+export default newAuctionEventUpdateMaptionPositionMiddleware;

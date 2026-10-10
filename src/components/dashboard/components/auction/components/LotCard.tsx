@@ -9,12 +9,13 @@ import {
 	TextField,
 	type Theme,
 } from "@mui/material";
-import type { ILot } from "@widy/sdk";
+import { type ILot, LotVariant } from "@widy/sdk";
 import { memo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NumericFormat } from "react-number-format";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useGetSettingsQuery } from "../../../../../api/settingsApi";
+import type { AppState } from "../../../../../store";
 import { removeLot, updateLot } from "../../../../../store/slices/lotsSlice";
 
 const inputSX = (theme: Theme) => ({
@@ -49,6 +50,7 @@ const LotCard = ({
 		id: lot.fastId,
 	});
 	const { data: settings } = useGetSettingsQuery();
+	const { variant } = useSelector((state: AppState) => state.lotsState);
 
 	return (
 		<>
@@ -130,60 +132,66 @@ const LotCard = ({
 								input: {
 									endAdornment: (
 										<InputAdornment position="end">
-											{settings.currency}
+											{variant === LotVariant.Donation && settings.currency}
 										</InputAdornment>
 									),
 								},
 							}}
 						/>
 
-						<IconButton
-							onClick={() => {
-								const newAmount = (lot.amount ?? 0) + (lot.extra ?? 0);
-								setAmount(newAmount);
-								dispatch(
-									updateLot({
-										...lot,
-										amount: newAmount,
-										extra: 0,
-									}),
-								);
-							}}
-							title={t("lot.add")}
-						>
-							<AddIcon />
-						</IconButton>
-						<NumericFormat
-							sx={{ ...inputSX, width: 120 }}
-							size="small"
-							autoComplete="off"
-							customInput={TextField}
-							value={lot.extra ?? 0}
-							placeholder="0"
-							onChange={(e) =>
-								dispatch(updateLot({ ...lot, extra: Number(e.target.value) }))
-							}
-							onKeyDown={(e) => {
-								if (e.key === "Enter") {
-									dispatch(
-										updateLot({
-											...lot,
-											amount: (lot.amount ?? 0) + (lot.extra ?? 0),
-											extra: 0,
-										}),
-									);
-								}
-							}}
-							slotProps={{
-								input: {
-									endAdornment: (
-										<InputAdornment position="end">
-											{settings.currency}
-										</InputAdornment>
-									),
-								},
-							}}
-						/>
+						{variant === LotVariant.Donation && (
+							<>
+								<IconButton
+									onClick={() => {
+										const newAmount = (lot.amount ?? 0) + (lot.extra ?? 0);
+										setAmount(newAmount);
+										dispatch(
+											updateLot({
+												...lot,
+												amount: newAmount,
+												extra: 0,
+											}),
+										);
+									}}
+									title={t("lot.add")}
+								>
+									<AddIcon />
+								</IconButton>
+								<NumericFormat
+									sx={{ ...inputSX, width: 120 }}
+									size="small"
+									autoComplete="off"
+									customInput={TextField}
+									value={lot.extra ?? 0}
+									placeholder="0"
+									onChange={(e) =>
+										dispatch(
+											updateLot({ ...lot, extra: Number(e.target.value) }),
+										)
+									}
+									onKeyDown={(e) => {
+										if (e.key === "Enter") {
+											dispatch(
+												updateLot({
+													...lot,
+													amount: (lot.amount ?? 0) + (lot.extra ?? 0),
+													extra: 0,
+												}),
+											);
+										}
+									}}
+									slotProps={{
+										input: {
+											endAdornment: (
+												<InputAdornment position="end">
+													{settings.currency}
+												</InputAdornment>
+											),
+										},
+									}}
+								/>
+							</>
+						)}
 
 						<IconButton
 							onClick={() => dispatch(removeLot(lot))}

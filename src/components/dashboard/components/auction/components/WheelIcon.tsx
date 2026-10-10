@@ -1,10 +1,10 @@
-const WheelIcon = () => {
+const WheelIcon = ({ size }: { size: number }) => {
 	return (
 		<svg
 			fill="currentColor"
 			style={{ paddingRight: "8px" }}
-			height="24px"
-			width="24px"
+			height={`${size}px`}
+			width={`${size}px`}
 			version="1.1"
 			xmlns="http://www.w3.org/2000/svg"
 			viewBox="0 0 512 512"

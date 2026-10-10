@@ -18,7 +18,9 @@ const calculateLotsProbabilityMiddleware: Middleware<unknown, AppState> =
 			appAction.type === lotsSlice.actions.updateLot.type ||
 			appAction.type === lotsSlice.actions.addLot.type
 		) {
-			const lots = nextState.lotsState.lots;
+			const variant = nextState.lotsState.variant;
+
+			const lots = nextState.lotsState.lots[variant];
 
 			const totalAmount = lotsTotalAmount(lots);
 

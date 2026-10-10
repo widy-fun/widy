@@ -18,13 +18,13 @@ import MatchCard from "./MatchCard";
 
 const AucFighter = () => {
 	const eventsService = useAppEvents();
-	const { lots } = useSelector((state: AppState) => state.lotsState);
+	const { lots, variant } = useSelector((state: AppState) => state.lotsState);
 	const { game, pausedMatchId, playingMatchId, isGameStarted, gameWinner } =
 		useSelector((state: AppState) => state.aucFighterState);
 
 	const dispatch = useDispatch();
 	const { t } = useTranslation();
-	const lotsWithAmount = lots.filter((lot) => lot.amount);
+	const lotsWithAmount = lots[variant].filter((lot) => lot.amount);
 	const playingMatchIndex = useMemo(() => {
 		return game?.matches.findIndex((match) => match.id === playingMatchId);
 	}, [game, playingMatchId]);

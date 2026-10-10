@@ -1,32 +1,29 @@
 import {
 	Currency,
+	IAuctionEvent,
 	IClientMessage,
-	IDonation,
 	IRedemption,
 	ServiceType,
 } from "@widy/sdk";
 
-const donationFromRedemption = ({
+const auctionEventFromRedemption = ({
 	redemption,
 	message,
 }: {
 	redemption: IRedemption;
 	message: IClientMessage;
-}): IDonation => {
+}): IAuctionEvent => {
 	const amount = redemption.cost * redemption.points_currency_ratio;
 	return {
-		service_id: redemption.id,
 		amount: amount,
 		user_name: redemption.user_name,
-		played: false,
 		text: redemption.user_input,
 		service: redemption.platform as unknown as ServiceType,
 		currency: Currency.NONE,
 		exchanged_amount: amount,
 		exchanged_currency: Currency.NONE,
-		created_at: message.created_at,
 		id: crypto.randomUUID(),
-		message_id: message.id,
+		created_at: message.created_at,
 	};
 };
-export default donationFromRedemption;
+export default auctionEventFromRedemption;

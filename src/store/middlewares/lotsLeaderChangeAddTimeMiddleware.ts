@@ -1,7 +1,7 @@
 import type { Middleware } from "@reduxjs/toolkit";
 import { auctionTimerSlice } from "../../../shared/slices/timerSlice";
 import findLotsMinMaxAmount from "../../helpers/findLotsMinMaxAmount";
-import isDonationAddTime from "../../helpers/isDonationAddTime";
+import isGreaterTimerAddingTime from "../../helpers/isGreaterTimerAddingTime";
 import type { AppState } from "..";
 
 const { addTime } = auctionTimerSlice.actions;
@@ -9,14 +9,16 @@ const { addTime } = auctionTimerSlice.actions;
 const lotsLeaderChangeAddTimeMiddleware: Middleware<unknown, AppState> =
 	(store) => (next) => (action) => {
 		const prevState = store.getState();
+		const prevVariant = prevState.lotsState.variant;
 		const prevLots = prevState.lotsState.lots;
-		const { max: prevLeader } = findLotsMinMaxAmount(prevLots);
+		const { max: prevLeader } = findLotsMinMaxAmount(prevLots[prevVariant]);
 
 		const result = next(action);
 
 		const nextState = store.getState();
+		const nextVariant = nextState.lotsState.variant;
 		const nextLots = nextState.lotsState.lots;
-		const { max: nextLeader } = findLotsMinMaxAmount(nextLots);
+		const { max: nextLeader } = findLotsMinMaxAmount(nextLots[nextVariant]);
 		const auctionSettings = nextState.auctionState.auctionSettings;
 		const time = nextState.auctionTimerState.time;
 
@@ -25,7 +27,7 @@ const lotsLeaderChangeAddTimeMiddleware: Middleware<unknown, AppState> =
 			nextLeader &&
 			prevLeader.fastId !== nextLeader.fastId &&
 			auctionSettings?.is_leader_change_adding_time &&
-			isDonationAddTime({
+			isGreaterTimerAddingTime({
 				is_greater_timer_adding_time:
 					auctionSettings.is_greater_timer_adding_time,
 				timer_adding_time: auctionSettings.timer_adding_time,

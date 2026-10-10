@@ -13,19 +13,19 @@ import { widgetApi } from "../../src-widget/api/index.ts";
 import { api } from "../api";
 import calculateLotsProbabilityMiddleware from "./middlewares/calculateLotsProbabilityMiddleware";
 import lotsLeaderChangeAddTimeMiddleware from "./middlewares/lotsLeaderChangeAddTimeMiddleware";
-import newDonationAddAuctionTimeMiddleware from "./middlewares/newDonationAddAuctionTimeMiddleware";
-import newDonationAddMaptionTimeMiddleware from "./middlewares/newDonationAddMaptionTimeMiddleware";
-import newDonationUpdateLotMiddleware from "./middlewares/newDonationUpdateLotMiddleware";
-import newDonationUpdateMaptionPositionMiddleware from "./middlewares/newDonationUpdateMaptionPositionMiddleware";
+import newAuctionEventAddAuctionTimeMiddleware from "./middlewares/newAuctionEventAddAuctionTimeMiddleware.ts";
+import newAuctionEventAddMaptionTimeMiddleware from "./middlewares/newAuctionEventAddMaptionTimeMiddleware.ts";
+import newAuctionEventUpdateLotMiddleware from "./middlewares/newAuctionEventUpdateLotMiddleware.ts";
+import newAuctionEventUpdateMaptionPositionMiddleware from "./middlewares/newAuctionEventUpdateMaptionPositionMiddleware.ts";
 import newLotAddAuctionTimeMiddleware from "./middlewares/newLotAddAuctionTimeMiddleware";
 import updateMaptionSettingsMiddleware from "./middlewares/updateMaptionSettingsMiddleware";
 import { aucFighterSlice } from "./slices/aucFighterSlice";
+import {
+	auctionEventsSlice,
+	maptionEventsSlice,
+} from "./slices/auctionEventsSlice.ts";
 import { auctionSlice } from "./slices/auctionSlice";
 import { commandsSlice } from "./slices/commandsSlice.ts";
-import {
-	auctionDonationsSlice,
-	maptionDonationsSlice,
-} from "./slices/donationsSlice.ts";
 import { goalsSlice } from "./slices/goalsSlice";
 import { lotsSlice } from "./slices/lotsSlice";
 import { mainSlice } from "./slices/mainSlice";
@@ -45,8 +45,8 @@ export const rootReducer = combineReducers({
 	auctionState: auctionSlice.reducer,
 	auctionTimerState: auctionTimerSlice.reducer,
 	maptionTimerState: maptionTimerSlice.reducer,
-	auctionDonationsState: auctionDonationsSlice.reducer,
-	maptionDonationsState: maptionDonationsSlice.reducer,
+	auctionEventsState: auctionEventsSlice.reducer,
+	maptionEventsState: maptionEventsSlice.reducer,
 	maptionState: maptionSlice.reducer,
 	aucFighterState: aucFighterSlice.reducer,
 	goalsState: goalsSlice.reducer,
@@ -66,12 +66,12 @@ export const setupStore = (preloadedState?: Partial<AppState>) => {
 				.concat(widgetApi.middleware)
 				.concat(lotsLeaderChangeAddTimeMiddleware)
 				.concat(newLotAddAuctionTimeMiddleware)
-				.concat(newDonationAddAuctionTimeMiddleware)
+				.concat(newAuctionEventAddAuctionTimeMiddleware)
 				.concat(calculateLotsProbabilityMiddleware)
-				.concat(newDonationUpdateLotMiddleware)
+				.concat(newAuctionEventUpdateLotMiddleware)
 				.concat(updateMaptionSettingsMiddleware)
-				.concat(newDonationAddMaptionTimeMiddleware)
-				.concat(newDonationUpdateMaptionPositionMiddleware),
+				.concat(newAuctionEventAddMaptionTimeMiddleware)
+				.concat(newAuctionEventUpdateMaptionPositionMiddleware),
 		preloadedState,
 		devTools: process.env.NODE_ENV !== "production",
 	});

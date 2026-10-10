@@ -6,9 +6,19 @@ import { type AppState, store } from "./store";
 import "../shared/i18n/i18n";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { appLocalDataDir } from "@tauri-apps/api/path";
-import { BridgeContext, dark } from "@widy/react";
-import type { IAucFighterMatchWinner, IClientMessage } from "@widy/sdk";
-import { AppEvent, RewardType, WidgetOutboundBridge } from "@widy/sdk";
+import { BridgeContext, dark, showSnackBar } from "@widy/react";
+import type {
+	IAucFighterMatchWinner,
+	IClientMessage,
+	ICommandAuctionAction,
+} from "@widy/sdk";
+import {
+	AlertSeverity,
+	AppEvent,
+	LotVariant,
+	RewardType,
+	WidgetOutboundBridge,
+} from "@widy/sdk";
 import { BrowserRouter } from "react-router";
 import { EventsContext } from "../shared/contexts/EventsContext";
 import EventsProvider from "../shared/providers/EventsProvider";
@@ -22,7 +32,9 @@ import { setPlayingTtsId } from "../shared/slices/ttsSlice";
 import { messagesApi } from "./api/messagesApi";
 import { settingsApi } from "./api/settingsApi";
 import { StreamElementsSocketServiceContext } from "./contexts/StreamElementsSocketServiceContext";
-import donationFromRedemption from "./helpers/donationFromRedemption";
+import auctionEventFromDonation from "./helpers/auctionEventFromDonation";
+import auctionEventFromRedemption from "./helpers/auctionEventFromRedemption";
+import getRandomColor from "./helpers/getRandomColor";
 import updateAucFighterTeamAmount from "./helpers/updateAucFighterTeamAmount";
 import StreamElementsSocketServiceProvider from "./providers/StreamElementsSocketServiceProvider";
 import StreamElementsSocketService from "./services/streamElementsSocketService";
@@ -33,17 +45,18 @@ import {
 	updateMatch,
 } from "./store/slices/aucFighterSlice";
 import {
-	auctionDonationsSlice,
-	maptionDonationsSlice,
-} from "./store/slices/donationsSlice";
+	auctionEventsSlice,
+	maptionEventsSlice,
+} from "./store/slices/auctionEventsSlice";
+import { addLot, updateLot } from "./store/slices/lotsSlice";
 import { setAppDataDir } from "./store/slices/mainSlice";
 
 appLocalDataDir().then((path) => store.dispatch(setAppDataDir(path)));
 
 const eventsService = new WebsocketEventsService("ws://127.0.0.1:12553/ws");
 
-const { addDonation: addAuctionDonation } = auctionDonationsSlice.actions;
-const { addDonation: addMaptionDonation } = maptionDonationsSlice.actions;
+const { addAuctionEvent } = auctionEventsSlice.actions;
+const { addAuctionEvent: addMaptionEvent } = maptionEventsSlice.actions;
 
 eventsService.subscribe<IClientMessage>(AppEvent.Message, (_) => {
 	store.dispatch(messagesApi.util.invalidateTags(["Messages"]));
@@ -52,12 +65,35 @@ eventsService.subscribe<IClientMessage>(AppEvent.Message, (_) => {
 eventsService.subscribe<IClientMessage>(AppEvent.Donation, (message) => {
 	const state = store.getState() as AppState;
 	const { services } = state.servicesState;
+	const { variant } = state.lotsState;
+	const { isPointSet } = state.maptionState;
 	if (message.donation) {
-		if (services[message.donation.service].active) {
-			store.dispatch(addAuctionDonation(message.donation));
+		if (
+			services[message.donation.service].active &&
+			variant === LotVariant.Donation
+		) {
+			store.dispatch(
+				addAuctionEvent({
+					event: auctionEventFromDonation({
+						donation: message.donation,
+						message,
+					}),
+					variant: LotVariant.Donation,
+				}),
+			);
 		}
 		updateAucFighterTeamAmount(message.donation, eventsService);
-		store.dispatch(addMaptionDonation(message.donation));
+		if (isPointSet) {
+			store.dispatch(
+				addMaptionEvent({
+					event: auctionEventFromDonation({
+						donation: message.donation,
+						message,
+					}),
+					variant: LotVariant.Donation,
+				}),
+			);
+		}
 	}
 });
 
@@ -84,16 +120,108 @@ eventsService.subscribe<IClientMessage>(
 					forceRefetch: true,
 				}),
 			);
-			if (services[message.redemption.platform].active && settings) {
+			const { variant } = state.lotsState;
+			if (
+				services[message.redemption.platform].active &&
+				settings &&
+				variant === LotVariant.Donation
+			) {
 				store.dispatch(
-					addAuctionDonation(
-						donationFromRedemption({
+					addAuctionEvent({
+						event: auctionEventFromRedemption({
 							redemption: message.redemption,
 							message,
 						}),
-					),
+						variant: LotVariant.Donation,
+					}),
 				);
 			}
+		}
+	},
+);
+
+eventsService.subscribe<IClientMessage>(
+	AppEvent.ChannelSubscription,
+	async (message) => {
+		if (message.subscription) {
+			const state = store.getState() as AppState;
+			const { services } = state.servicesState;
+			const { lots, currentId, variant } = state.lotsState;
+			const { colors } = state.mainState;
+			const { data: settings } = await store.dispatch(
+				settingsApi.endpoints.getSettings.initiate(undefined, {
+					forceRefetch: true,
+				}),
+			);
+			if (
+				services[message.subscription.service].active &&
+				settings &&
+				variant === LotVariant.ChannelSubscription
+			) {
+				const lot = lots[LotVariant.ChannelSubscription].find(
+					(lot) => lot.id === message.subscription?.user_id,
+				);
+				if (lot) {
+					store.dispatch(
+						updateLot({
+							...lot,
+							amount: (lot.amount ?? 0) + message.subscription.total,
+						}),
+					);
+				} else {
+					store.dispatch(
+						addLot({
+							fastId: currentId,
+							amount: message.subscription.total,
+							name: message.subscription.user_name,
+							color: getRandomColor(colors),
+							id: message.subscription?.user_id,
+						}),
+					);
+				}
+				store.dispatch(
+					showSnackBar({
+						message: message.subscription.user_name,
+						alertSeverity: AlertSeverity.success,
+					}),
+				);
+			}
+		}
+	},
+);
+
+eventsService.subscribe<ICommandAuctionAction>(
+	AppEvent.CommandAuctionAction,
+	async (message) => {
+		const state = store.getState() as AppState;
+		const { services } = state.servicesState;
+		const { lots, currentId, variant } = state.lotsState;
+		const { colors } = state.mainState;
+
+		if (
+			services[message.platform].active &&
+			variant === LotVariant.CommandAuctionAction
+		) {
+			const lot = lots[LotVariant.CommandAuctionAction].find(
+				(lot) => lot.id === message.user_id,
+			);
+			if (!lot) {
+				store.dispatch(
+					addLot({
+						fastId: currentId,
+						amount: message.amount,
+						name: message.user_name,
+						color: getRandomColor(colors),
+						id: message.user_id,
+					}),
+				);
+			}
+			store.dispatch(
+				showSnackBar({
+					message: message.user_name,
+					alertSeverity: AlertSeverity.success,
+				}),
+			);
 		}
 	},
 );

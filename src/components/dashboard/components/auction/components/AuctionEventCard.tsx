@@ -11,39 +11,41 @@ import {
 	Typography,
 } from "@mui/material";
 import { showSnackBar } from "@widy/react";
-import type { IDonation, ILot } from "@widy/sdk";
+import type { IAuctionEvent, ILot } from "@widy/sdk";
 import { AlertSeverity } from "@widy/sdk";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { findBestMatch } from "string-similarity";
-import getRandomColor from "../../../../../helpers/getRandomColor";
-import type { AppState } from "../../../../../store";
-import { auctionDonationsSlice } from "../../../../../store/slices/donationsSlice.ts";
-import { addLot, updateLot } from "../../../../../store/slices/lotsSlice";
+import getRandomColor from "../../../../../helpers/getRandomColor.ts";
+import type { AppState } from "../../../../../store/index.ts";
+import { auctionEventsSlice } from "../../../../../store/slices/auctionEventsSlice.ts";
+import { addLot, updateLot } from "../../../../../store/slices/lotsSlice.ts";
 
-const AuctionDonationCard = ({ donation }: { donation: IDonation }) => {
+const AuctionEventCard = ({ event }: { event: IAuctionEvent }) => {
 	const { t } = useTranslation();
 	const dispatch = useDispatch();
-	const { removeDonation } = auctionDonationsSlice.actions;
-	const { lots, currentId } = useSelector((state: AppState) => state.lotsState);
+	const { removeAuctionEvent } = auctionEventsSlice.actions;
+	const { lots, currentId, variant } = useSelector(
+		(state: AppState) => state.lotsState,
+	);
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
 	const { colors } = useSelector((state: AppState) => state.mainState);
 	const { services } = useSelector((state: AppState) => state.servicesState);
 
 	const bestMatch = useMemo(() => {
-		if (!donation.text) return;
-		const lotsNames = lots.map(({ name }) => name || "");
+		if (!event.text) return;
+		const lotsNames = lots[variant].map(({ name }) => name || "");
 		if (!lotsNames.length) return;
 		const {
 			bestMatch: { rating },
 			bestMatchIndex,
-		} = findBestMatch(donation.text, lotsNames);
+		} = findBestMatch(event.text, lotsNames);
 		return rating > 0.4
-			? { ...lots[bestMatchIndex], index: bestMatchIndex + 1 }
+			? { ...lots[variant][bestMatchIndex], index: bestMatchIndex + 1 }
 			: null;
-	}, [lots, donation.text]);
+	}, [lots, event.text, variant]);
 
 	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
@@ -53,41 +55,43 @@ const AuctionDonationCard = ({ donation }: { donation: IDonation }) => {
 	};
 
 	const handleAddToRandomLot = useCallback(() => {
-		const randomLotIndex = Math.floor(Math.random() * (lots.length + 1));
-		const randomLot = lots.at(randomLotIndex) as ILot;
+		const randomLotIndex = Math.floor(
+			Math.random() * (lots[variant].length + 1),
+		);
+		const randomLot = lots[variant].at(randomLotIndex) as ILot;
 		dispatch(
 			updateLot({
 				...randomLot,
-				amount: (randomLot.amount ?? 0) + donation.exchanged_amount,
+				amount: (randomLot.amount ?? 0) + event.exchanged_amount,
 			}),
 		);
 		dispatch(
 			showSnackBar({
-				message: `+${donation.exchanged_amount.toFixed(2)}      #${randomLot.fastId}`,
+				message: `+${event.exchanged_amount.toFixed(2)}      #${randomLot.fastId}`,
 				alertSeverity: AlertSeverity.success,
 			}),
 		);
-		dispatch(removeDonation(donation));
+		dispatch(removeAuctionEvent({ event, variant }));
 		setAnchorEl(null);
-	}, [dispatch, lots, donation, removeDonation]);
+	}, [dispatch, lots, event, removeAuctionEvent, variant]);
 
 	const handleAddToBestMatch = useCallback(() => {
 		if (!bestMatch) return;
 		dispatch(
 			updateLot({
 				...bestMatch,
-				amount: (bestMatch.amount ?? 0) + donation.exchanged_amount,
+				amount: (bestMatch.amount ?? 0) + event.exchanged_amount,
 			}),
 		);
 		dispatch(
 			showSnackBar({
-				message: `+${donation.exchanged_amount.toFixed(2)}      #${bestMatch.fastId}`,
+				message: `+${event.exchanged_amount.toFixed(2)}      #${bestMatch.fastId}`,
 				alertSeverity: AlertSeverity.success,
 			}),
 		);
-		dispatch(removeDonation(donation));
+		dispatch(removeAuctionEvent({ event, variant }));
 		setAnchorEl(null);
-	}, [dispatch, bestMatch, removeDonation, donation]);
+	}, [dispatch, bestMatch, removeAuctionEvent, event, variant]);
 
 	return (
 		<Card
@@ -95,7 +99,7 @@ const AuctionDonationCard = ({ donation }: { donation: IDonation }) => {
 				width: 304,
 				marginBottom: "10px",
 				cursor: "pointer",
-				backgroundColor: services[donation.service].color,
+				backgroundColor: services[event.service].color,
 			}}
 		>
 			<CardContent>
@@ -107,12 +111,12 @@ const AuctionDonationCard = ({ donation }: { donation: IDonation }) => {
 					}}
 				>
 					<Typography variant="h6">
-						{donation.amount}
-						{donation.currency} {donation.user_name}
+						{event.amount}
+						{event.currency} {event.user_name}
 					</Typography>
 					<IconButton
 						onClick={() => {
-							dispatch(removeDonation(donation));
+							dispatch(removeAuctionEvent({ event, variant }));
 						}}
 						title={t("bid.delete")}
 						size="large"
@@ -120,7 +124,7 @@ const AuctionDonationCard = ({ donation }: { donation: IDonation }) => {
 						<CloseIcon />
 					</IconButton>
 				</div>
-				<Typography sx={{ wordWrap: "break-word" }}>{donation.text}</Typography>
+				<Typography sx={{ wordWrap: "break-word" }}>{event.text}</Typography>
 				<div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
 					<ButtonGroup size="small" style={{ display: "flex" }}>
 						<Button
@@ -131,12 +135,12 @@ const AuctionDonationCard = ({ donation }: { donation: IDonation }) => {
 								dispatch(
 									addLot({
 										fastId: currentId,
-										name: donation.text ?? "",
-										amount: donation.exchanged_amount,
+										name: event.text ?? "",
+										amount: event.exchanged_amount,
 										color: getRandomColor(colors),
 									}),
 								);
-								dispatch(removeDonation(donation));
+								dispatch(removeAuctionEvent({ event, variant }));
 							}}
 						>
 							{t("bid.new")}
@@ -169,4 +173,4 @@ const AuctionDonationCard = ({ donation }: { donation: IDonation }) => {
 		</Card>
 	);
 };
-export default AuctionDonationCard;
+export default AuctionEventCard;

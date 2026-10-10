@@ -1,4 +1,4 @@
-const isDonationAddTime = ({
+const isGreaterTimerAddingTime = ({
 	is_greater_timer_adding_time,
 	timer_adding_time,
 	time,
@@ -15,4 +15,4 @@ const isDonationAddTime = ({
 	}
 	return false;
 };
-export default isDonationAddTime;
+export default isGreaterTimerAddingTime;

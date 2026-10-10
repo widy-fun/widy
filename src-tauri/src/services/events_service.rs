@@ -28,8 +28,8 @@ use crate::{
         SettingsRepository, SubscriptionsRepository,
     },
     services::{
-        DatabaseService, EventMessage, ExchangeRatesService, MediaService, WebSocketBroadcaster,
-        tts::TtsService,
+        CommandAuctionAction, DatabaseService, EventMessage, ExchangeRatesService, MediaService,
+        WebSocketBroadcaster, tts::TtsService,
     },
     utils::{get_alert_by_amount, remove_black_listed_words, remove_links},
 };
@@ -87,6 +87,8 @@ pub enum AppEvent {
     StopTranscribe,
     AssistantAction,
     ChannelUserBanned,
+    ChannelSubscription,
+    CommandAuctionAction,
 }
 impl AppEvent {
     pub fn as_str(e: AppEvent) -> &'static str {
@@ -142,6 +144,8 @@ impl AppEvent {
             AppEvent::StopTranscribe => "StopTranscribe",
             AppEvent::AssistantAction => "AssistantAction",
             AppEvent::ChannelUserBanned => "ChannelUserBanned",
+            AppEvent::ChannelSubscription => "ChannelSubscription",
+            AppEvent::CommandAuctionAction => "CommandAuctionAction",
         }
     }
 }
@@ -592,6 +596,11 @@ impl EventsService {
             data: client_message.clone(),
         };
         websocket_broadcaster.broadcast_event_message(&event_message);
+        let event_message = EventMessage {
+            event: AppEvent::ChannelSubscription,
+            data: client_message.clone(),
+        };
+        websocket_broadcaster.broadcast_event_message(&event_message);
         let _ = database_service
             .save_subscribe_message(client_message)
             .await;
@@ -910,6 +919,20 @@ impl EventsService {
         let event_message = EventMessage {
             event: AppEvent::ChatMessage,
             data: chat_message,
+        };
+        websocket_broadcaster.broadcast_event_message(&event_message);
+
+        Ok(())
+    }
+
+    pub async fn command_auction_action(
+        command_auction_action: CommandAuctionAction,
+        app: &AppHandle,
+    ) -> Result<(), AppError> {
+        let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
+        let event_message = EventMessage {
+            event: AppEvent::CommandAuctionAction,
+            data: command_auction_action,
         };
         websocket_broadcaster.broadcast_event_message(&event_message);
 

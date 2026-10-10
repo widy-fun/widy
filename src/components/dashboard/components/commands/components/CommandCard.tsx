@@ -50,7 +50,7 @@ const CommandCard = ({ command }: { command: ICommand }) => {
 						}}
 						warning={t("sure_delete")}
 						configurePath={`/dashboard/commands/${command.id}`}
-						onTest={() => {}}
+						isShowTest={false}
 					/>
 				</Box>
 			</CardContent>

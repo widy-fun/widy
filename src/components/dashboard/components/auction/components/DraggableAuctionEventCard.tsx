@@ -1,12 +1,12 @@
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
-import type { IDonation } from "@widy/sdk";
-import AuctionDonationCard from "./AuctionDonationCard";
+import type { IAuctionEvent } from "@widy/sdk";
+import AuctionEventCard from "./AuctionEventCard";
 
-const DraggableDonationCard = ({ donation }: { donation: IDonation }) => {
+const DraggableAuctionEventCard = ({ event }: { event: IAuctionEvent }) => {
 	const { attributes, listeners, setNodeRef, transform } = useDraggable({
-		id: donation.id,
-		data: donation,
+		id: event.id,
+		data: event,
 	});
 
 	return (
@@ -18,8 +18,8 @@ const DraggableDonationCard = ({ donation }: { donation: IDonation }) => {
 			{...listeners}
 			{...attributes}
 		>
-			<AuctionDonationCard donation={donation} />
+			<AuctionEventCard event={event} />
 		</div>
 	);
 };
-export default DraggableDonationCard;
+export default DraggableAuctionEventCard;

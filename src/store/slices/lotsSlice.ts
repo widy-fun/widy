@@ -1,16 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { ILot } from "@widy/sdk";
+import { ILot, LotVariant } from "@widy/sdk";
 
 interface LotsState {
-	lots: ILot[];
+	lots: Record<LotVariant, ILot[]>;
 	currentId: number;
 	searchPattern: string;
+	variant: LotVariant;
 }
 
 const initialState: LotsState = {
-	lots: [],
+	lots: {
+		[LotVariant.Donation]: [],
+		[LotVariant.CommandAuctionAction]: [],
+		[LotVariant.ChannelSubscription]: [],
+	},
 	currentId: 1,
 	searchPattern: "",
+	variant: LotVariant.Donation,
 };
 
 export const lotsSlice = createSlice({
@@ -32,7 +38,7 @@ export const lotsSlice = createSlice({
 				payload: ILot;
 			},
 		) => {
-			state.lots.push(action.payload);
+			state.lots[state.variant].push(action.payload);
 			state.currentId++;
 		},
 		updateLot: (
@@ -41,7 +47,7 @@ export const lotsSlice = createSlice({
 				payload: ILot;
 			},
 		) => {
-			state.lots = state.lots.map((lot) => {
+			state.lots[state.variant] = state.lots[state.variant].map((lot) => {
 				if (lot.fastId === action.payload.fastId) {
 					return action.payload;
 				}
@@ -54,7 +60,7 @@ export const lotsSlice = createSlice({
 				payload: ILot;
 			},
 		) => {
-			state.lots = state.lots.filter(
+			state.lots[state.variant] = state.lots[state.variant].filter(
 				(lot) => lot.fastId !== action.payload.fastId,
 			);
 		},
@@ -64,10 +70,24 @@ export const lotsSlice = createSlice({
 				payload: ILot[];
 			},
 		) => {
-			state.lots = action.payload;
+			state.lots[state.variant] = action.payload;
+		},
+		setLotVariant: (
+			state,
+			action: {
+				payload: LotVariant;
+			},
+		) => {
+			state.variant = action.payload;
 		},
 	},
 });
 
-export const { addLot, setSearchPattern, setLots, removeLot, updateLot } =
-	lotsSlice.actions;
+export const {
+	addLot,
+	setSearchPattern,
+	setLots,
+	removeLot,
+	updateLot,
+	setLotVariant,
+} = lotsSlice.actions;

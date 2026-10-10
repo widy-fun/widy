@@ -21,6 +21,8 @@ pub struct Model {
     pub chat_bot_action: Option<ChatBotAction>,
     #[sea_orm(column_type = "JsonBinary")]
     pub tts_settings: Option<TtsSettings>,
+    #[sea_orm(column_type = "JsonBinary")]
+    pub auction_action: Option<AuctionAction>,
     #[sea_orm(has_one)]
     pub alert: HasOne<super::alerts::Entity>,
     pub source_type: CommandSourceType,
@@ -37,6 +39,7 @@ pub struct Command {
     pub timer_source: Option<TimerSource>,
     pub chat_bot_action: Option<ChatBotAction>,
     pub tts_settings: Option<TtsSettings>,
+    pub auction_action: Option<AuctionAction>,
     pub source_type: CommandSourceType,
     pub is_enabled: bool,
     #[sea_orm(nested)]
@@ -76,6 +79,13 @@ pub struct ChatBotAction {
     pub message: String,
     pub replay: bool,
     pub platforms: Vec<Platform>,
+}
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
+pub struct AuctionAction {
+    pub regular_luck_modifier: f32,
+    pub subscriber_luck_modifier: f32,
+    pub vip_luck_modifier: f32,
+    pub moderator_luck_modifier: f32,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]

@@ -1,6 +1,6 @@
 import type { Middleware, UnknownAction } from "@reduxjs/toolkit";
 import { auctionTimerSlice } from "../../../shared/slices/timerSlice";
-import isDonationAddTime from "../../helpers/isDonationAddTime";
+import isGreaterTimerAddingTime from "../../helpers/isGreaterTimerAddingTime";
 import type { AppState } from "..";
 import { lotsSlice } from "../slices/lotsSlice";
 
@@ -17,7 +17,7 @@ const newLotAddAuctionTimeMiddleware: Middleware<unknown, AppState> =
 		if (
 			appAction.type === lotsSlice.actions.addLot.type &&
 			auctionSettings?.is_new_lot_adding_time &&
-			isDonationAddTime({
+			isGreaterTimerAddingTime({
 				is_greater_timer_adding_time:
 					auctionSettings.is_greater_timer_adding_time,
 				timer_adding_time: auctionSettings.timer_adding_time,

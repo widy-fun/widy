@@ -1,4 +1,5 @@
 pub mod audio_to_wav_bytes;
+pub mod calc_command_auction_action_amount;
 pub mod copy_assets_to_static;
 pub mod download_widget;
 pub mod get_alert_by_amount;
@@ -13,6 +14,7 @@ pub mod save_audio_to_wav_file;
 pub mod send_request;
 pub mod validate_csp;
 pub use audio_to_wav_bytes::*;
+pub use calc_command_auction_action_amount::*;
 pub use copy_assets_to_static::*;
 pub use download_widget::*;
 pub use get_alert_by_amount::*;

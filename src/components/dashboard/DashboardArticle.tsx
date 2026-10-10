@@ -5,6 +5,7 @@ import { dashboardRouts } from "../../routes/dashboardRouts";
 import CreateAlert from "./components/alerts/components/CreateAlert";
 import UpdateAlertSettings from "./components/alerts/UpdateAlertSettings";
 import AlertAction from "./components/commands/components/AlertAction";
+import AuctionAction from "./components/commands/components/AuctionAction";
 import ChatBotAction from "./components/commands/components/ChatBotAction";
 import ChatSource from "./components/commands/components/ChatSource";
 import CreateCommand from "./components/commands/components/CreateCommand";
@@ -56,6 +57,7 @@ const DashboardArticle = () => {
 					path="commands/action/alert/update"
 					element={<AlertAction isUpdate={true} />}
 				/>
+				<Route path="commands/action/auction" element={<AuctionAction />} />
 			</Routes>
 		</article>
 	);

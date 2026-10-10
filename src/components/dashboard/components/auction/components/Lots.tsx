@@ -7,7 +7,7 @@ import {
 	useSensors,
 } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
-import type { IDonation } from "@widy/sdk";
+import type { IAuctionEvent } from "@widy/sdk";
 import { useDispatch, useSelector } from "react-redux";
 import {
 	AutoSizer,
@@ -16,10 +16,10 @@ import {
 	List,
 } from "react-virtualized";
 import type { AppState } from "../../../../../store";
-import { auctionDonationsSlice } from "../../../../../store/slices/donationsSlice.ts";
+import { auctionEventsSlice } from "../../../../../store/slices/auctionEventsSlice.ts";
 import { updateLot } from "../../../../../store/slices/lotsSlice";
-import AuctionDonationCard from "./AuctionDonationCard";
-import DraggableDonationCard from "./DraggableDonationCard";
+import AuctionEventCard from "./AuctionEventCard.tsx";
+import DraggableAuctionEventCard from "./DraggableAuctionEventCard.tsx";
 import LotCard from "./LotCard";
 import LotSearch from "./LotSearch";
 import NewLotForm from "./NewLotForm";
@@ -35,6 +35,7 @@ import { SCROLLBAR_STYLES } from "../../../../../constants.ts";
 import Integrations from "./Integrations";
 import LotsOptionsMenu from "./LotsOptionsMenu";
 import LotsTotal from "./LotsTotal.tsx";
+import LotsVariant from "./LotsVariant.tsx";
 
 const StyledList = styled(List)(() => ({
 	paddingRight: 5,
@@ -42,20 +43,19 @@ const StyledList = styled(List)(() => ({
 }));
 
 const Lots = () => {
-	const { lots, searchPattern } = useSelector(
+	const { lots, searchPattern, variant } = useSelector(
 		(state: AppState) => state.lotsState,
 	);
-	const [activeDonationId, setActiveDonationId] = useState<UniqueIdentifier>();
-	const { donations } = useSelector(
-		(state: AppState) => state.auctionDonationsState,
-	);
+	const [activeAuctionEventId, setActiveAuctionEventId] =
+		useState<UniqueIdentifier>();
+	const { events } = useSelector((state: AppState) => state.auctionEventsState);
 	const cacheRef = useRef(
 		new CellMeasurerCache({ fixedWidth: true, defaultHeight: 110 }),
 	);
 	const { data: auctionSettings } = useGetAuctionSettingsQuery();
 
 	const dispatch = useDispatch();
-	const { removeDonation } = auctionDonationsSlice.actions;
+	const { removeAuctionEvent } = auctionEventsSlice.actions;
 
 	const touchSensor = useSensor(MouseSensor, {
 		activationConstraint: {
@@ -67,17 +67,17 @@ const Lots = () => {
 
 	const filteredLots = useMemo(
 		() =>
-			lots.filter((lot) =>
+			lots[variant].filter((lot) =>
 				lot.name.toLowerCase().includes(searchPattern.toLowerCase()),
 			),
-		[searchPattern, lots],
+		[searchPattern, lots, variant],
 	);
 
-	//donations need to clear cache when changed
+	//events need to clear cache when changed
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		cacheRef.current.clearAll();
-	}, [donations]);
+	}, [events]);
 
 	return (
 		<>
@@ -85,13 +85,20 @@ const Lots = () => {
 				modifiers={[restrictToWindowEdges]}
 				sensors={sensors}
 				onDragStart={({ active }) => {
-					setActiveDonationId(active.id);
+					setActiveAuctionEventId(active.id);
 				}}
 				onDragEnd={({ over, active }) => {
 					if (over) {
-						dispatch(removeDonation(active.data.current as IDonation));
+						dispatch(
+							removeAuctionEvent({
+								event: active.data.current as IAuctionEvent,
+								variant,
+							}),
+						);
 
-						const selectedLot = lots.find((lot) => lot.fastId === over?.id);
+						const selectedLot = lots[variant].find(
+							(lot) => lot.fastId === over?.id,
+						);
 
 						if (selectedLot) {
 							const exchanged_amount = (
@@ -111,7 +118,7 @@ const Lots = () => {
 							);
 						}
 					}
-					setActiveDonationId(undefined);
+					setActiveAuctionEventId(undefined);
 				}}
 			>
 				<div
@@ -168,6 +175,7 @@ const Lots = () => {
 							timerSlice={auctionTimerSlice}
 							timerStateName="auctionTimerState"
 						/>
+						<LotsVariant />
 						<Integrations />
 						<div
 							style={{
@@ -178,12 +186,12 @@ const Lots = () => {
 								{({ height, width }) => (
 									<List
 										style={{
-											overflowY: activeDonationId ? "hidden" : "auto",
+											overflowY: activeAuctionEventId ? "hidden" : "auto",
 											overflowX: "hidden",
 										}}
 										width={width}
 										height={height}
-										rowCount={donations.length}
+										rowCount={events[variant].length}
 										rowHeight={cacheRef.current.rowHeight}
 										deferredMeasurementCache={cacheRef.current}
 										rowRenderer={({ key, index, style, parent }) => {
@@ -196,8 +204,8 @@ const Lots = () => {
 													rowIndex={index}
 												>
 													<div style={style}>
-														<DraggableDonationCard
-															donation={donations[index]}
+														<DraggableAuctionEventCard
+															event={events[variant][index]}
 														/>
 													</div>
 												</CellMeasurer>
@@ -208,12 +216,12 @@ const Lots = () => {
 							</AutoSizer>
 
 							<DragOverlay>
-								{activeDonationId ? (
-									<AuctionDonationCard
-										donation={
-											donations.find(
-												(donation) => donation.id === activeDonationId,
-											) as IDonation
+								{activeAuctionEventId ? (
+									<AuctionEventCard
+										event={
+											events[variant].find(
+												(event) => event.id === activeAuctionEventId,
+											) as IAuctionEvent
 										}
 									/>
 								) : null}
@@ -231,7 +239,9 @@ const Lots = () => {
 				}}
 			>
 				<div style={{ position: "absolute", top: 0, left: 0 }}>
-					{auctionSettings?.is_show_total_sum && <LotsTotal lots={lots} />}
+					{auctionSettings?.is_show_total_sum && (
+						<LotsTotal lots={lots[variant]} />
+					)}
 				</div>
 				<LotsOptionsMenu />
 			</div>

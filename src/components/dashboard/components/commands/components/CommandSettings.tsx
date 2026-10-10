@@ -8,7 +8,7 @@ import { useNavigate } from "react-router";
 import type { AppState } from "../../../../../store";
 import { setTabIndex } from "../../../../../store/slices/commandsSlice";
 import TabPanel from "../../../../TabPanel";
-import CommandAction from "./CommandAction";
+import CommandActions from "./CommandActions";
 import CommandGeneralSettings from "./CommandGeneralSettings";
 import CommandSource from "./CommandSource";
 
@@ -72,7 +72,7 @@ const CommandSettings = ({
 					<CommandSource />
 				</TabPanel>
 				<TabPanel index={2} value={tabIndex}>
-					<CommandAction isUpdate={isUpdate} />
+					<CommandActions isUpdate={isUpdate} />
 				</TabPanel>
 			</div>
 

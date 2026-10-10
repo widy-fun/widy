@@ -186,7 +186,10 @@
 	"lot": {
 		"name": "Name",
 		"delete": "Delete",
-		"add": "Add amount"
+		"add": "Add amount",
+		"donation": "Donation",
+		"command": "Command",
+		"channel_subscription": "Channel subscription"
 	},
 	"bid": {
 		"delete": "Delete",
@@ -627,5 +630,13 @@
 		"search_models": "Search models",
 		"filter_title": "Find models by title",
 		"filter_language": "Find models by language"
+	},
+	"auction_action": {
+		"title": "Auction",
+		"description": "Auction lot on chat trigger",
+		"regular_luck_modifier": "Regular luck modifier",
+		"subscriber_luck_modifier": "Subscriber luck modifier",
+		"vip_luck_modifier": "VIP luck modifier",
+		"moderator_luck_modifier": "Moderator luck modifier"
 	}
 }

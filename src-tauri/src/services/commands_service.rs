@@ -3,6 +3,7 @@ use entity::{
     commands_actions::CommandAction,
     rewards::Platform,
 };
+use serde::Serialize;
 use std::{
     collections::HashMap,
     future::Future,
@@ -22,8 +23,16 @@ use crate::{
         twitch::{TwitchBotService, TwitchService, traits::TwitchApi},
     },
     traits::ChatMessageBuffer,
-    utils::log_and_wrap_error,
+    utils::{calc_command_auction_action_amount, log_and_wrap_error},
 };
+
+#[derive(Debug, Clone, Serialize)]
+pub struct CommandAuctionAction {
+    pub amount: f32,
+    pub user_name: String,
+    pub user_id: String,
+    pub platform: Platform,
+}
 
 pub struct CommandsService {
     timers: Arc<Mutex<HashMap<Uuid, AbortHandle>>>,
@@ -66,7 +75,7 @@ impl CommandsService {
     ) -> Result<(), AppError> {
         let kick_bot_service = app.state::<KickBotService>();
         let commands_service = app.state::<CommandsService>();
-        let text = message.content.text;
+        let text = message.content.text.clone();
         let mut parts = text.splitn(2, char::is_whitespace);
         let trigger = parts.next().unwrap_or("");
         let rest_text = parts.next().unwrap_or("").trim_start();
@@ -101,7 +110,7 @@ impl CommandsService {
             let reply_to_message_id: Option<String> = match command.clone().chat_bot_action {
                 Some(chat_bot) => {
                     if chat_bot.replay {
-                        Some(message.id)
+                        Some(message.id.clone())
                     } else {
                         None
                     }
@@ -147,7 +156,7 @@ impl CommandsService {
         {
             let command_action = CommandAction {
                 id: Uuid::new_v4(),
-                user_name: message.sender.username,
+                user_name: message.sender.username.clone(),
                 user_input: Some(rest_text.to_string()),
                 command_id: command.id,
                 command_name: command.name.clone(),
@@ -162,6 +171,25 @@ impl CommandsService {
                 .await;
         }
 
+        if let Command {
+            is_enabled: true,
+            chat_source: Some(_),
+            auction_action: Some(auction_action),
+            ..
+        } = command.clone()
+        {
+            let _ = EventsService::command_auction_action(
+                CommandAuctionAction {
+                    amount: calc_command_auction_action_amount(&auction_action, &message),
+                    user_name: message.sender.username,
+                    user_id: message.sender.id,
+                    platform: Platform::Kick,
+                },
+                app,
+            )
+            .await;
+        }
+
         Ok(())
     }
 
@@ -172,7 +200,7 @@ impl CommandsService {
         let twitch_bot_service = app.state::<TwitchBotService>();
         let twitch_service = app.state::<TwitchService>();
         let commands_service = app.state::<CommandsService>();
-        let text = message.content.text;
+        let text = message.content.text.clone();
         let mut parts = text.splitn(2, char::is_whitespace);
         let trigger = parts.next().unwrap_or("");
         let rest_text = parts.next().unwrap_or("").trim_start();
@@ -202,7 +230,7 @@ impl CommandsService {
             let reply_to_message_id: Option<String> = match command.clone().chat_bot_action {
                 Some(chat_bot) => {
                     if chat_bot.replay {
-                        Some(message.id)
+                        Some(message.id.clone())
                     } else {
                         None
                     }
@@ -253,7 +281,7 @@ impl CommandsService {
         {
             let command_action = CommandAction {
                 id: Uuid::new_v4(),
-                user_name: message.sender.username,
+                user_name: message.sender.username.clone(),
                 user_input: Some(rest_text.to_string()),
                 command_id: command.id,
                 command_name: command.name.clone(),
@@ -267,6 +295,25 @@ impl CommandsService {
             let _ = EventsService::command_tts_action(rest_text, tts_settings, app, command_action)
                 .await
                 .map_err(|e| log_and_wrap_error("command tts action", e));
+        }
+
+        if let Command {
+            is_enabled: true,
+            chat_source: Some(_),
+            auction_action: Some(auction_action),
+            ..
+        } = command.clone()
+        {
+            let _ = EventsService::command_auction_action(
+                CommandAuctionAction {
+                    amount: calc_command_auction_action_amount(&auction_action, &message),
+                    user_name: message.sender.username,
+                    user_id: message.sender.id,
+                    platform: Platform::Twitch,
+                },
+                app,
+            )
+            .await;
         }
 
         Ok(())

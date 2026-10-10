@@ -6,9 +6,10 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useGetAlertByIdQuery } from "../../../../../api/alertsApi";
 import type { AppState } from "../../../../../store";
+import WheelIcon from "../../auction/components/WheelIcon";
 import CommandSourceActionCard from "./CommandSourceActionCard";
 
-const CommandAction = ({ isUpdate }: { isUpdate: boolean }) => {
+const CommandActions = ({ isUpdate }: { isUpdate: boolean }) => {
 	const { command } = useSelector((state: AppState) => state.commandsState);
 	const { data } = useGetAlertByIdQuery(
 		{ id: command.alert?.id },
@@ -50,7 +51,14 @@ const CommandAction = ({ isUpdate }: { isUpdate: boolean }) => {
 				icon={<VolumeUpIcon sx={{ width: 40, height: 40 }} />}
 				selected={!!command.tts_settings}
 			/>
+			<CommandSourceActionCard
+				title={t("auction_action.title")}
+				description={t("auction_action.description")}
+				path="/dashboard/commands/action/auction"
+				icon={<WheelIcon size={40} />}
+				selected={!!command.auction_action}
+			/>
 		</Box>
 	);
 };
-export default CommandAction;
+export default CommandActions;
