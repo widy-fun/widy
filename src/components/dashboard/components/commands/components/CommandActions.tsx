@@ -2,6 +2,7 @@ import CampaignIcon from "@mui/icons-material/Campaign";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import { Box } from "@mui/material";
+import { ServiceType } from "@widy/sdk";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useGetAlertByIdQuery } from "../../../../../api/alertsApi";
@@ -10,6 +11,7 @@ import WheelIcon from "../../auction/components/WheelIcon";
 import CommandSourceActionCard from "./CommandSourceActionCard";
 
 const CommandActions = ({ isUpdate }: { isUpdate: boolean }) => {
+	const { services } = useSelector((state: AppState) => state.servicesState);
 	const { command } = useSelector((state: AppState) => state.commandsState);
 	const { data } = useGetAlertByIdQuery(
 		{ id: command.alert?.id },
@@ -57,6 +59,27 @@ const CommandActions = ({ isUpdate }: { isUpdate: boolean }) => {
 				path="/dashboard/commands/action/auction"
 				icon={<WheelIcon size={40} />}
 				selected={!!command.auction_action}
+			/>
+			<CommandSourceActionCard
+				title={t("kick_action.title")}
+				description={t("kick_action.description")}
+				path="/dashboard/commands/action/kick"
+				icon={
+					<Box
+						component="img"
+						src={services[ServiceType.Kick].image}
+						alt=""
+						sx={{
+							width: 40,
+							height: 40,
+							objectFit: "contain",
+							borderRadius: 1,
+							backgroundColor: "white",
+							padding: "4px",
+						}}
+					/>
+				}
+				selected={!!command.kick_action}
 			/>
 		</Box>
 	);

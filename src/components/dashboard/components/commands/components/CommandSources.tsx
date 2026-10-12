@@ -1,13 +1,15 @@
 import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
 import SmsFailedIcon from "@mui/icons-material/SmsFailed";
 import { Box } from "@mui/material";
+import { ServiceType } from "@widy/sdk";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import type { AppState } from "../../../../../store";
 import CommandSourceActionCard from "./CommandSourceActionCard";
 
-const CommandSource = () => {
+const CommandSources = () => {
 	const { command } = useSelector((state: AppState) => state.commandsState);
+	const { services } = useSelector((state: AppState) => state.servicesState);
 	const { t } = useTranslation();
 
 	return (
@@ -33,7 +35,28 @@ const CommandSource = () => {
 				selected={!!command.timer_source}
 				icon={<AccessAlarmIcon sx={{ width: 40, height: 40 }} />}
 			/>
+			<CommandSourceActionCard
+				title={t("kick_source.title")}
+				description={t("kick_source.description")}
+				path="/dashboard/commands/source/kick"
+				selected={!!command.kick_source}
+				icon={
+					<Box
+						component="img"
+						src={services[ServiceType.Kick].image}
+						alt=""
+						sx={{
+							width: 40,
+							height: 40,
+							objectFit: "contain",
+							borderRadius: 1,
+							backgroundColor: "white",
+							padding: "4px",
+						}}
+					/>
+				}
+			/>
 		</Box>
 	);
 };
-export default CommandSource;
+export default CommandSources;

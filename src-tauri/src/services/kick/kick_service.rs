@@ -310,6 +310,9 @@ impl KickService {
                         .await;
                 }
             }
+            Event::StreamerIsLive => {
+                let _ = CommandsService::kick_stream_start(app).await;
+            }
             _ => {}
         }
     }

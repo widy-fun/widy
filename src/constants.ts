@@ -5,9 +5,13 @@ import {
 	IChatBotAction,
 	IChatSource,
 	ICommand,
+	IKickAction,
+	IKickSource,
 	ISettings,
 	ITextStyle,
 	ITimerSource,
+	KickActionType,
+	KickSourceType,
 	Platform,
 	PostType,
 	TextAnimation,
@@ -91,6 +95,17 @@ export const DEFAULT_CHAT_SOURCE: IChatSource = {
 		UserLevel.Vip,
 		UserLevel.Anyone,
 	],
+};
+
+export const DEFAULT_KICK_SOURCE: IKickSource = {
+	type: KickSourceType.StreamStart,
+};
+
+export const DEFAULT_KICK_ACTION: IKickAction = {
+	type: KickActionType.PinMessage,
+	target: {
+		message: "",
+	},
 };
 
 export const DEFAULT_COMMAND: ICommand = {

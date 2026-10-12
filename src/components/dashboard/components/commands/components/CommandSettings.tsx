@@ -10,7 +10,7 @@ import { setTabIndex } from "../../../../../store/slices/commandsSlice";
 import TabPanel from "../../../../TabPanel";
 import CommandActions from "./CommandActions";
 import CommandGeneralSettings from "./CommandGeneralSettings";
-import CommandSource from "./CommandSource";
+import CommandSources from "./CommandSources";
 
 const CommandSettings = ({
 	onSave,
@@ -69,7 +69,7 @@ const CommandSettings = ({
 					<CommandGeneralSettings />
 				</TabPanel>
 				<TabPanel index={1} value={tabIndex}>
-					<CommandSource />
+					<CommandSources />
 				</TabPanel>
 				<TabPanel index={2} value={tabIndex}>
 					<CommandActions isUpdate={isUpdate} />

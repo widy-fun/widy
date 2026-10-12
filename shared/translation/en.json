@@ -641,5 +641,18 @@
 		"subscriber_luck_modifier": "Subscriber luck modifier",
 		"vip_luck_modifier": "VIP luck modifier",
 		"moderator_luck_modifier": "Moderator luck modifier"
+	},
+	"kick_source": {
+		"title": "Kick",
+		"description": "Kick sources",
+		"type": "Type",
+		"StreamStart": "Stream start"
+	},
+	"kick_action": {
+		"title": "Kick",
+		"description": "Kick actions",
+		"type": "Type",
+		"message": "Message",
+		"PinMessage": "Pin message"
 	}
 }

@@ -1,5 +1,7 @@
 use entity::{
-    commands::{Command, PostType},
+    commands::{
+        Command, KickAction, KickActionType, KickSource, KickSourceType, KickTarget, PostType,
+    },
     commands_actions::CommandAction,
     rewards::Platform,
 };
@@ -19,7 +21,10 @@ use crate::{
     repositories::CommandsRepository,
     services::{
         DatabaseService, EventsService, UnifiedChatMessage,
-        kick::{KickBotService, KickService, traits::KickApi},
+        kick::{
+            KickBotService, KickService, KickSessionService,
+            traits::{KickApi, KickSessionApi},
+        },
         twitch::{TwitchBotService, TwitchService, traits::TwitchApi},
     },
     traits::ChatMessageBuffer,
@@ -188,6 +193,34 @@ impl CommandsService {
                 app,
             )
             .await;
+        }
+
+        Ok(())
+    }
+
+    pub async fn kick_stream_start(app: &AppHandle) -> Result<(), AppError> {
+        let kick_session_service = app.state::<KickSessionService>();
+        let commands_service = app.state::<CommandsService>();
+        let commands = { commands_service.commands.lock().unwrap().clone() };
+        for command in &commands {
+            if let Command {
+                is_enabled: true,
+                kick_source:
+                    Some(KickSource {
+                        r#type: KickSourceType::StreamStart,
+                    }),
+                kick_action:
+                    Some(KickAction {
+                        r#type: KickActionType::PinMessage,
+                        target: KickTarget::PinMessage(target),
+                    }),
+                ..
+            } = command
+            {
+                let _ = kick_session_service
+                    .pin_message(app, target.message.clone())
+                    .await?;
+            }
         }
 
         Ok(())

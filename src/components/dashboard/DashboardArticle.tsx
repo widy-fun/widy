@@ -9,6 +9,8 @@ import AuctionAction from "./components/commands/components/AuctionAction";
 import ChatBotAction from "./components/commands/components/ChatBotAction";
 import ChatSource from "./components/commands/components/ChatSource";
 import CreateCommand from "./components/commands/components/CreateCommand";
+import KickAction from "./components/commands/components/KickAction";
+import KickSource from "./components/commands/components/KickSource";
 import TimerSource from "./components/commands/components/TimerSource";
 import TtsAction from "./components/commands/components/TtsAction";
 import UpdateCommandSettings from "./components/commands/UpdateCommandSettings";
@@ -58,6 +60,8 @@ const DashboardArticle = () => {
 					element={<AlertAction isUpdate={true} />}
 				/>
 				<Route path="commands/action/auction" element={<AuctionAction />} />
+				<Route path="commands/source/kick" element={<KickSource />} />
+				<Route path="commands/action/kick" element={<KickAction />} />
 			</Routes>
 		</article>
 	);

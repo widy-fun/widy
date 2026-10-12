@@ -47,6 +47,8 @@ mod m20260913_214320_add_claude_service;
 mod m20260917_120656_add_kick_session_service;
 mod m20260921_123048_add_fish_audio_service;
 mod m20261009_134046_add_column_auction_action_to_commands_table;
+mod m20261011_114537_add_column_kick_source_to_commands_table;
+mod m20261011_114853_add_column_kick_action_to_commands_table;
 
 pub struct Migrator;
 
@@ -102,6 +104,8 @@ impl MigratorTrait for Migrator {
             Box::new(m20260917_120656_add_kick_session_service::Migration),
             Box::new(m20260921_123048_add_fish_audio_service::Migration),
             Box::new(m20261009_134046_add_column_auction_action_to_commands_table::Migration),
+            Box::new(m20261011_114537_add_column_kick_source_to_commands_table::Migration),
+            Box::new(m20261011_114853_add_column_kick_action_to_commands_table::Migration),
         ]
     }
 }
