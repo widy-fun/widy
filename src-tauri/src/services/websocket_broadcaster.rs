@@ -43,45 +43,29 @@ impl WebSocketBroadcaster {
     }
 
     pub fn broadcast_text(&self, text: Utf8Bytes) {
-        let websocket_clients = self.websocket_clients.lock().unwrap();
-
-        let mut failed_connections = Vec::new();
-
-        for (id, sender) in websocket_clients.iter() {
-            if let Err(_) = sender.send(Message::Text(text.clone())) {
-                log::error!("Send websocket message failed WebSocket connection: {}", id);
-                failed_connections.push(*id);
-            }
-        }
-
-        if !failed_connections.is_empty() {
-            let mut websocket_clients = self.websocket_clients.lock().unwrap();
-            for id in failed_connections {
-                websocket_clients.remove(&id);
-                log::warn!("Removed failed WebSocket connection: {}", id);
-            }
-        }
+        let mut clients = self.websocket_clients.lock().unwrap();
+        clients.retain(
+            |id, sender| match sender.send(Message::Text(text.clone())) {
+                Ok(_) => true,
+                Err(_) => {
+                    log::warn!("Removed failed WebSocket connection: {}", id);
+                    false
+                }
+            },
+        );
     }
 
     pub fn broadcast_binary(&self, data: Bytes) {
-        let websocket_clients = self.websocket_clients.lock().unwrap();
-
-        let mut failed_connections = Vec::new();
-
-        for (id, sender) in websocket_clients.iter() {
-            if let Err(_) = sender.send(Message::Binary(data.clone())) {
-                log::error!("Send websocket message failed WebSocket connection: {}", id);
-                failed_connections.push(*id);
-            }
-        }
-
-        if !failed_connections.is_empty() {
-            let mut websocket_clients = self.websocket_clients.lock().unwrap();
-            for id in failed_connections {
-                websocket_clients.remove(&id);
-                log::warn!("Removed failed WebSocket connection: {}", id);
-            }
-        }
+        let mut clients = self.websocket_clients.lock().unwrap();
+        clients.retain(
+            |id, sender| match sender.send(Message::Binary(data.clone())) {
+                Ok(_) => true,
+                Err(_) => {
+                    log::warn!("Removed failed WebSocket connection: {}", id);
+                    false
+                }
+            },
+        );
     }
 
     pub fn broadcast_event_message<T>(&self, message: &EventMessage<T>)
