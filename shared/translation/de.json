@@ -186,7 +186,10 @@
 	"lot": {
 		"name": "Name",
 		"delete": "Löschen",
-		"add": "Betrag hinzufügen"
+		"add": "Betrag hinzufügen",
+		"donation": "Spende",
+		"command": "Befehl",
+		"channel_subscription": "Kanalabonnement"
 	},
 	"bid": {
 		"delete": "Löschen",
@@ -470,7 +473,10 @@
 		"widgets:control:storage.subscription": "Widget-Steuerungsspeicher abonnieren",
 		"widgets:command:action.subscription": "Befehlsaktionen abonnieren",
 		"widgets:assistant:action.subscription": "Assistentenaktionen abonnieren",
-		"widgets:channel-user-banned.subscription": "Ereignis „Kanalbenutzer gesperrt“ abonnieren"
+		"widgets:channel-user-banned.subscription": "Ereignis „Kanalbenutzer gesperrt“ abonnieren",
+		"widgets:channel-subscription.subscription": "Kanalbenutzer-Abonnement oder Geschenk abonnieren",
+		"widgets:command-auction-action.subscription": "Auktionsaktion per Befehl abonnieren",
+		"widgets:donations.read": "Spenden lesen"
 	},
 	"nsfw": {
 		"title": "NSFW",
@@ -627,5 +633,26 @@
 		"search_models": "Modelle suchen",
 		"filter_title": "Modelle nach Titel suchen",
 		"filter_language": "Modelle nach Sprache suchen"
+	},
+	"auction_action": {
+		"title": "Auktion",
+		"description": "Auktionslos bei Chat-Auslöser",
+		"regular_luck_modifier": "Normaler Glücksmodifikator",
+		"subscriber_luck_modifier": "Glücksmodifikator für Abonnenten",
+		"vip_luck_modifier": "VIP-Glücksmodifikator",
+		"moderator_luck_modifier": "Moderator-Glücksmodifikator"
+	},
+	"kick_source": {
+		"title": "Kick",
+		"description": "Kick-Quellen",
+		"type": "Typ",
+		"StreamStart": "Streamstart"
+	},
+	"kick_action": {
+		"title": "Kick",
+		"description": "Kick-Aktionen",
+		"type": "Typ",
+		"message": "Nachricht",
+		"PinMessage": "Nachricht anheften"
 	}
 }

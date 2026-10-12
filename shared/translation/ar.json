@@ -186,7 +186,10 @@
 	"lot": {
 		"name": "الاسم",
 		"delete": "حذف",
-		"add": "إضافة مبلغ"
+		"add": "إضافة مبلغ",
+		"donation": "تبرع",
+		"command": "أمر",
+		"channel_subscription": "اشتراك القناة"
 	},
 	"bid": {
 		"delete": "حذف",
@@ -470,7 +473,10 @@
 		"widgets:control:storage.subscription": "الاشتراك في تخزين تحكم الأداة",
 		"widgets:command:action.subscription": "الاشتراك في إجراءات الأوامر",
 		"widgets:assistant:action.subscription": "الاشتراك في إجراءات المساعد",
-		"widgets:channel-user-banned.subscription": "الاشتراك في حدث حظر مستخدم القناة"
+		"widgets:channel-user-banned.subscription": "الاشتراك في حدث حظر مستخدم القناة",
+		"widgets:channel-subscription.subscription": "الاشتراك في اشتراك مستخدم القناة أو إهدائه",
+		"widgets:command-auction-action.subscription": "الاشتراك في إجراء المزاد عبر الأمر",
+		"widgets:donations.read": "قراءة التبرعات"
 	},
 	"nsfw": {
 		"title": "محتوى للبالغين",
@@ -627,5 +633,26 @@
 		"search_models": "البحث عن النماذج",
 		"filter_title": "البحث عن النماذج حسب العنوان",
 		"filter_language": "البحث عن النماذج حسب اللغة"
+	},
+	"auction_action": {
+		"title": "المزاد",
+		"description": "عنصر مزاد عند استدعائه من الدردشة",
+		"regular_luck_modifier": "معامل الحظ العادي",
+		"subscriber_luck_modifier": "معامل حظ المشترك",
+		"vip_luck_modifier": "معامل حظ كبار الشخصيات",
+		"moderator_luck_modifier": "معامل حظ المشرف"
+	},
+	"kick_source": {
+		"title": "Kick",
+		"description": "مصادر Kick",
+		"type": "النوع",
+		"StreamStart": "بدء البث"
+	},
+	"kick_action": {
+		"title": "Kick",
+		"description": "إجراءات Kick",
+		"type": "النوع",
+		"message": "الرسالة",
+		"PinMessage": "تثبيت الرسالة"
 	}
 }

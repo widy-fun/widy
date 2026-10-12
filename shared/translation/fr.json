@@ -186,7 +186,10 @@
 	"lot": {
 		"name": "Nom",
 		"delete": "Supprimer",
-		"add": "Ajouter un montant"
+		"add": "Ajouter un montant",
+		"donation": "Don",
+		"command": "Commande",
+		"channel_subscription": "Abonnement à la chaîne"
 	},
 	"bid": {
 		"delete": "Supprimer",
@@ -470,7 +473,10 @@
 		"widgets:control:storage.subscription": "S’abonner au stockage du contrôle du widget",
 		"widgets:command:action.subscription": "S’abonner aux actions des commandes",
 		"widgets:assistant:action.subscription": "S’abonner aux actions de l’assistant",
-		"widgets:channel-user-banned.subscription": "S’abonner à l’événement de bannissement d’un utilisateur de la chaîne"
+		"widgets:channel-user-banned.subscription": "S’abonner à l’événement de bannissement d’un utilisateur de la chaîne",
+		"widgets:channel-subscription.subscription": "S’abonner à l’abonnement ou au cadeau d’un utilisateur de la chaîne",
+		"widgets:command-auction-action.subscription": "S’abonner à l’action d’enchère via une commande",
+		"widgets:donations.read": "Lire les dons"
 	},
 	"nsfw": {
 		"title": "NSFW",
@@ -627,5 +633,26 @@
 		"search_models": "Rechercher des modèles",
 		"filter_title": "Rechercher des modèles par titre",
 		"filter_language": "Rechercher des modèles par langue"
+	},
+	"auction_action": {
+		"title": "Enchère",
+		"description": "Lot d’enchères déclenché depuis le chat",
+		"regular_luck_modifier": "Modificateur de chance standard",
+		"subscriber_luck_modifier": "Modificateur de chance des abonnés",
+		"vip_luck_modifier": "Modificateur de chance VIP",
+		"moderator_luck_modifier": "Modificateur de chance des modérateurs"
+	},
+	"kick_source": {
+		"title": "Kick",
+		"description": "Sources Kick",
+		"type": "Type",
+		"StreamStart": "Démarrage du stream"
+	},
+	"kick_action": {
+		"title": "Kick",
+		"description": "Actions Kick",
+		"type": "Type",
+		"message": "Message",
+		"PinMessage": "Épingler le message"
 	}
 }

@@ -186,7 +186,10 @@
 	"lot": {
 		"name": "Nome",
 		"delete": "Excluir",
-		"add": "Adicionar valor"
+		"add": "Adicionar valor",
+		"donation": "Doação",
+		"command": "Comando",
+		"channel_subscription": "Inscrição no canal"
 	},
 	"bid": {
 		"delete": "Excluir",
@@ -470,7 +473,10 @@
 		"widgets:control:storage.subscription": "Assinar armazenamento de controle do widget",
 		"widgets:command:action.subscription": "Assinar ações de comando",
 		"widgets:assistant:action.subscription": "Assinar ações do assistente",
-		"widgets:channel-user-banned.subscription": "Assinar evento de usuário banido do canal"
+		"widgets:channel-user-banned.subscription": "Assinar evento de usuário banido do canal",
+		"widgets:channel-subscription.subscription": "Assinar inscrição ou presente de usuário do canal",
+		"widgets:command-auction-action.subscription": "Assinar ação de leilão por comando",
+		"widgets:donations.read": "Ler doações"
 	},
 	"nsfw": {
 		"title": "NSFW",
@@ -627,5 +633,26 @@
 		"search_models": "Pesquisar modelos",
 		"filter_title": "Encontrar modelos por título",
 		"filter_language": "Encontrar modelos por idioma"
+	},
+	"auction_action": {
+		"title": "Leilão",
+		"description": "Lote de leilão acionado pelo chat",
+		"regular_luck_modifier": "Modificador de sorte normal",
+		"subscriber_luck_modifier": "Modificador de sorte para inscritos",
+		"vip_luck_modifier": "Modificador de sorte VIP",
+		"moderator_luck_modifier": "Modificador de sorte para moderadores"
+	},
+	"kick_source": {
+		"title": "Kick",
+		"description": "Fontes do Kick",
+		"type": "Tipo",
+		"StreamStart": "Início da transmissão"
+	},
+	"kick_action": {
+		"title": "Kick",
+		"description": "Ações do Kick",
+		"type": "Tipo",
+		"message": "Mensagem",
+		"PinMessage": "Fixar mensagem"
 	}
 }

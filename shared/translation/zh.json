@@ -186,7 +186,10 @@
 	"lot": {
 		"name": "名称",
 		"delete": "删除",
-		"add": "添加金额"
+		"add": "添加金额",
+		"donation": "捐赠",
+		"command": "命令",
+		"channel_subscription": "频道订阅"
 	},
 	"bid": {
 		"delete": "删除",
@@ -470,7 +473,10 @@
 		"widgets:control:storage.subscription": "订阅小组件控制存储",
 		"widgets:command:action.subscription": "订阅命令操作事件",
 		"widgets:assistant:action.subscription": "订阅助手操作事件",
-		"widgets:channel-user-banned.subscription": "订阅频道用户封禁事件"
+		"widgets:channel-user-banned.subscription": "订阅频道用户封禁事件",
+		"widgets:channel-subscription.subscription": "订阅频道用户订阅或赠送事件",
+		"widgets:command-auction-action.subscription": "订阅命令拍卖操作",
+		"widgets:donations.read": "读取捐赠"
 	},
 	"nsfw": {
 		"title": "NSFW",
@@ -627,5 +633,26 @@
 		"search_models": "搜索模型",
 		"filter_title": "按标题查找模型",
 		"filter_language": "按语言查找模型"
+	},
+	"auction_action": {
+		"title": "拍卖",
+		"description": "聊天触发的拍卖项目",
+		"regular_luck_modifier": "普通幸运修正值",
+		"subscriber_luck_modifier": "订阅者幸运修正值",
+		"vip_luck_modifier": "VIP 幸运修正值",
+		"moderator_luck_modifier": "版主幸运修正值"
+	},
+	"kick_source": {
+		"title": "Kick",
+		"description": "Kick 来源",
+		"type": "类型",
+		"StreamStart": "直播开始"
+	},
+	"kick_action": {
+		"title": "Kick",
+		"description": "Kick 操作",
+		"type": "类型",
+		"message": "消息",
+		"PinMessage": "置顶消息"
 	}
 }

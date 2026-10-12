@@ -186,7 +186,10 @@
 	"lot": {
 		"name": "Назва",
 		"delete": "Видалити",
-		"add": "Додати суму"
+		"add": "Додати суму",
+		"donation": "Донат",
+		"command": "Команда",
+		"channel_subscription": "Підписка на канал"
 	},
 	"bid": {
 		"delete": "Видалити",
@@ -470,7 +473,10 @@
 		"widgets:control:storage.subscription": "Підписуватися на сховище керування віджета",
 		"widgets:command:action.subscription": "Підписуватися на дії команд",
 		"widgets:assistant:action.subscription": "Підписуватися на дії асистента",
-		"widgets:channel-user-banned.subscription": "Підписуватися на подію блокування користувача каналу"
+		"widgets:channel-user-banned.subscription": "Підписуватися на подію блокування користувача каналу",
+		"widgets:channel-subscription.subscription": "Підписка на підписку або подарунок користувача каналу",
+		"widgets:command-auction-action.subscription": "Підписка на аукціонну дію команди",
+		"widgets:donations.read": "Читати донати"
 	},
 	"nsfw": {
 		"title": "NSFW",
@@ -627,5 +633,26 @@
 		"search_models": "Пошук моделей",
 		"filter_title": "Пошук моделей за назвою",
 		"filter_language": "Пошук моделей за мовою"
+	},
+	"auction_action": {
+		"title": "Аукціон",
+		"description": "Лот аукціону при виклику з чату",
+		"regular_luck_modifier": "Звичайний модифікатор удачі",
+		"subscriber_luck_modifier": "Модифікатор удачі підписника",
+		"vip_luck_modifier": "Модифікатор удачі VIP",
+		"moderator_luck_modifier": "Модифікатор удачі модератора"
+	},
+	"kick_source": {
+		"title": "Kick",
+		"description": "Джерела Kick",
+		"type": "Тип",
+		"StreamStart": "Початок трансляції"
+	},
+	"kick_action": {
+		"title": "Kick",
+		"description": "Дії Kick",
+		"type": "Тип",
+		"message": "Повідомлення",
+		"PinMessage": "Закріпити повідомлення"
 	}
 }

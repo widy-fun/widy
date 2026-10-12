@@ -186,7 +186,10 @@
 	"lot": {
 		"name": "नाम",
 		"delete": "हटाएँ",
-		"add": "राशि जोड़ें"
+		"add": "राशि जोड़ें",
+		"donation": "दान",
+		"command": "कमांड",
+		"channel_subscription": "चैनल सदस्यता"
 	},
 	"bid": {
 		"delete": "हटाएँ",
@@ -470,7 +473,10 @@
 		"widgets:control:storage.subscription": "विजेट कंट्रोल स्टोरेज की सदस्यता लें",
 		"widgets:command:action.subscription": "कमांड कार्रवाइयों की सदस्यता लें",
 		"widgets:assistant:action.subscription": "असिस्टेंट कार्रवाइयों की सदस्यता लें",
-		"widgets:channel-user-banned.subscription": "चैनल उपयोगकर्ता प्रतिबंधित इवेंट की सदस्यता लें"
+		"widgets:channel-user-banned.subscription": "चैनल उपयोगकर्ता प्रतिबंधित इवेंट की सदस्यता लें",
+		"widgets:channel-subscription.subscription": "चैनल उपयोगकर्ता की सदस्यता या उपहार की सदस्यता लें",
+		"widgets:command-auction-action.subscription": "कमांड नीलामी कार्रवाई की सदस्यता लें",
+		"widgets:donations.read": "दान पढ़ें"
 	},
 	"nsfw": {
 		"title": "NSFW",
@@ -627,5 +633,26 @@
 		"search_models": "मॉडल खोजें",
 		"filter_title": "शीर्षक के अनुसार मॉडल खोजें",
 		"filter_language": "भाषा के अनुसार मॉडल खोजें"
+	},
+	"auction_action": {
+		"title": "नीलामी",
+		"description": "चैट ट्रिगर पर नीलामी लॉट",
+		"regular_luck_modifier": "सामान्य भाग्य संशोधक",
+		"subscriber_luck_modifier": "सब्सक्राइबर भाग्य संशोधक",
+		"vip_luck_modifier": "VIP भाग्य संशोधक",
+		"moderator_luck_modifier": "मॉडरेटर भाग्य संशोधक"
+	},
+	"kick_source": {
+		"title": "Kick",
+		"description": "Kick स्रोत",
+		"type": "प्रकार",
+		"StreamStart": "स्ट्रीम शुरू"
+	},
+	"kick_action": {
+		"title": "Kick",
+		"description": "Kick कार्रवाइयाँ",
+		"type": "प्रकार",
+		"message": "संदेश",
+		"PinMessage": "संदेश पिन करें"
 	}
 }
