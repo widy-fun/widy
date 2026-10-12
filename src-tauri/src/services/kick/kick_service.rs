@@ -21,13 +21,14 @@ use crate::{
     repositories::RewardsRepository,
     services::{
         BanIssuedBy, BannedTargetUser, ChatMessageType, CommandsService, DatabaseService,
-        EventsService, SenderRoles, UnifiedBadge, UnifiedBannedUser, UnifiedChatMessage,
+        EventsService, ReplyInfo, SenderRoles, UnifiedBadge, UnifiedBannedUser, UnifiedChatMessage,
         UnifiedChatMessageDelete, UnifiedContent, UnifiedMetadata, UnifiedSender,
         kick::{
             models::{
                 ChanelInfoResponse, ChatMessageData, Chatroom, Event, EventPayload,
                 GiftedSubscriptionsData, KickAuthSession, KicksGiftedData, MessageDeletedData,
-                RewardRedeemedData, StreamHostData, SubscriptionData, UserBannedData,
+                MessageMetadata, RewardRedeemedData, StreamHostData, SubscriptionData,
+                UserBannedData,
             },
             traits::KickApi,
         },
@@ -477,9 +478,28 @@ impl From<ChatMessageData> for UnifiedChatMessage {
             .collect();
         let badges = [badges_v1, badges_v2].concat();
         let fragments = EventsService::parse_kick_content(&k.content);
-        let raw_message_ref: Option<String> = match k.metadata {
+        let raw_message_ref: Option<String> = match k.metadata.clone() {
             Some(m) => Some(m.message_ref),
             _ => None,
+        };
+        let reply = {
+            if let Some(MessageMetadata {
+                original_message: Some(original_message),
+                original_sender: Some(original_sender),
+                ..
+            }) = k.metadata
+            {
+                Some(ReplyInfo {
+                    parent_message_id: original_message.id,
+                    parent_message_body: original_message.content,
+                    parent_user_id: original_sender.id.to_string(),
+                    parent_username: original_sender.username,
+                    thread_message_id: raw_message_ref.clone(),
+                    thread_user_id: Some(k.sender.id.to_string()),
+                })
+            } else {
+                None
+            }
         };
         Self {
             id: k.id,
@@ -511,7 +531,7 @@ impl From<ChatMessageData> for UnifiedChatMessage {
                 text: EventsService::strip_kick_emotes(&k.content),
                 fragments,
                 message_type: ChatMessageType::Text,
-                reply: None,
+                reply,
                 cheer_bits: None,
                 donation: None,
             },

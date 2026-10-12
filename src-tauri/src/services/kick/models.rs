@@ -244,6 +244,21 @@ pub struct BadgeMetadata {
 
 pub struct MessageMetadata {
     pub message_ref: String,
+    pub original_message: Option<OriginalMessage>,
+    pub original_sender: Option<OriginalSender>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+
+pub struct OriginalMessage {
+    pub id: String,
+    pub content: String,
+}
+#[derive(Debug, Clone, Deserialize)]
+
+pub struct OriginalSender {
+    pub id: u64,
+    pub username: String,
 }
 
 #[derive(Debug, Clone, Deserialize)]
