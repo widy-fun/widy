@@ -56,7 +56,7 @@ impl CommandsService {
         let database_service = app.state::<DatabaseService>();
         let commands = database_service.get_commands().await?;
         *self.commands.lock().unwrap() = commands.clone();
-        for command in commands {
+        for command in &commands {
             if let Command {
                 is_enabled: true,
                 timer_source: Some(timer),
@@ -106,7 +106,7 @@ impl CommandsService {
             chat_source: Some(chat),
             chat_bot_action: Some(chat_bot),
             ..
-        } = command.clone()
+        } = &command
         {
             if !message.sender.roles.has_any_level(&chat.user_levels) {
                 return Err(AppError::Custom("Not allowed".to_string()));
@@ -124,7 +124,7 @@ impl CommandsService {
             };
             let _ = kick_bot_service
                 .post_chat_message(
-                    chat_bot.message,
+                    chat_bot.message.clone(),
                     broadcaster_user_id,
                     reply_to_message_id,
                     app,
@@ -136,7 +136,7 @@ impl CommandsService {
             is_enabled: true,
             alert: Some(alert),
             ..
-        } = command.clone()
+        } = &command
         {
             let command_action = CommandAction {
                 id: Uuid::new_v4(),
@@ -148,7 +148,7 @@ impl CommandsService {
                 platform: Some(Platform::Kick),
                 media: None,
                 tts: None,
-                alert: Some(alert),
+                alert: Some(alert.clone()),
             };
             let _ = EventsService::command_action(command_action, app).await;
         }
@@ -157,7 +157,7 @@ impl CommandsService {
             is_enabled: true,
             tts_settings: Some(tts_settings),
             ..
-        } = command.clone()
+        } = &command
         {
             let command_action = CommandAction {
                 id: Uuid::new_v4(),
@@ -172,8 +172,13 @@ impl CommandsService {
                 alert: None,
             };
 
-            let _ = EventsService::command_tts_action(rest_text, tts_settings, app, command_action)
-                .await;
+            let _ = EventsService::command_tts_action(
+                rest_text,
+                tts_settings.clone(),
+                app,
+                command_action,
+            )
+            .await;
         }
 
         if let Command {
@@ -181,7 +186,7 @@ impl CommandsService {
             chat_source: Some(_),
             auction_action: Some(auction_action),
             ..
-        } = command.clone()
+        } = &command
         {
             let _ = EventsService::command_auction_action(
                 CommandAuctionAction {
@@ -254,7 +259,7 @@ impl CommandsService {
             chat_source: Some(chat),
             chat_bot_action: Some(chat_bot),
             ..
-        } = command.clone()
+        } = &command
         {
             if !message.sender.roles.has_any_level(&chat.user_levels) {
                 return Err(AppError::Custom("Not allowed".to_string()));
@@ -275,7 +280,7 @@ impl CommandsService {
 
             let _ = twitch_bot_service
                 .send_chat_message(
-                    chat_bot.message,
+                    chat_bot.message.clone(),
                     auth.user_id,
                     bot_auth.user_id,
                     reply_to_message_id,
@@ -289,7 +294,7 @@ impl CommandsService {
             is_enabled: true,
             alert: Some(alert),
             ..
-        } = command.clone()
+        } = &command
         {
             let command_action = CommandAction {
                 id: Uuid::new_v4(),
@@ -301,7 +306,7 @@ impl CommandsService {
                 platform: Some(Platform::Twitch),
                 media: None,
                 tts: None,
-                alert: Some(alert),
+                alert: Some(alert.clone()),
             };
             let _ = EventsService::command_action(command_action, app).await;
         }
@@ -310,7 +315,7 @@ impl CommandsService {
             is_enabled: true,
             tts_settings: Some(tts_settings),
             ..
-        } = command.clone()
+        } = &command
         {
             let command_action = CommandAction {
                 id: Uuid::new_v4(),
@@ -325,9 +330,14 @@ impl CommandsService {
                 alert: None,
             };
 
-            let _ = EventsService::command_tts_action(rest_text, tts_settings, app, command_action)
-                .await
-                .map_err(|e| log_and_wrap_error("command tts action", e));
+            let _ = EventsService::command_tts_action(
+                rest_text,
+                tts_settings.clone(),
+                app,
+                command_action,
+            )
+            .await
+            .map_err(|e| log_and_wrap_error("command tts action", e));
         }
 
         if let Command {
@@ -335,7 +345,7 @@ impl CommandsService {
             chat_source: Some(_),
             auction_action: Some(auction_action),
             ..
-        } = command.clone()
+        } = &command
         {
             let _ = EventsService::command_auction_action(
                 CommandAuctionAction {
@@ -360,7 +370,7 @@ impl CommandsService {
             timer_source: Some(timer_source),
             chat_bot_action: Some(chat_bot),
             ..
-        })) = command.clone()
+        })) = &command
         {
             if chat_bot.platforms.contains(&Platform::Kick) {
                 let _ = Self::kick_timer_chat_message(
@@ -396,19 +406,19 @@ impl CommandsService {
             timer_source: Some(timer_source),
             alert: Some(alert),
             ..
-        })) = command.clone()
+        })) = &command
         {
             let command_action = CommandAction {
                 id: Uuid::new_v4(),
                 user_name: "Timer".to_string(),
                 user_input: Some(timer_source.clone().message),
-                command_id: id,
-                command_name: name,
+                command_id: id.clone(),
+                command_name: name.clone(),
                 message_id: Uuid::new_v4(),
                 platform: None,
                 media: None,
                 tts: None,
-                alert: Some(alert),
+                alert: Some(alert.clone()),
             };
             let _ = EventsService::command_action(command_action, &app).await;
         }
@@ -420,23 +430,28 @@ impl CommandsService {
             timer_source: Some(timer_source),
             tts_settings: Some(tts_settings),
             ..
-        })) = command.clone()
+        })) = &command
         {
-            let text = timer_source.message;
+            let text = timer_source.message.clone();
             let command_action = CommandAction {
                 id: Uuid::new_v4(),
                 user_name: "Timer".to_string(),
                 user_input: Some(text.clone()),
-                command_id: id,
-                command_name: name,
+                command_id: id.clone(),
+                command_name: name.clone(),
                 message_id: Uuid::new_v4(),
                 platform: None,
                 media: None,
                 tts: None,
                 alert: None,
             };
-            let _ =
-                EventsService::command_tts_action(&text, tts_settings, &app, command_action).await;
+            let _ = EventsService::command_tts_action(
+                &text,
+                tts_settings.clone(),
+                &app,
+                command_action,
+            )
+            .await;
         }
     }
 
