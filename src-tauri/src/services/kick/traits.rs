@@ -31,8 +31,9 @@ use crate::{
                 ActiveChattersResponse, AddKickRewardBody, BanInfo, BanUserBody, Categories,
                 CategoriesResponse, ChanelInfoResponse, ChatCommandBody, KickTokenExchangeBody,
                 PatchChanelBody, PinMessageBody, PostChatMessageBody, PostChatMessageType,
-                RefreshTokenBody, SearchCategoriesResponse, SendMessageBody, SendMessageResponse,
-                UnbanUserBody, UpdateChatSettingsBody, UserInfo, UserInfoResponse,
+                RealtimeAuthConnectionBody, RealtimeAuthConnectionResponse, RefreshTokenBody,
+                SearchCategoriesResponse, SendMessageBody, SendMessageResponse, UnbanUserBody,
+                UpdateChatSettingsBody, UserInfo, UserInfoResponse,
             },
         },
     },
@@ -485,6 +486,27 @@ pub trait KickApi: Send + Sync {
             .await?;
 
         Ok(())
+    }
+
+    async fn realtime_auth_connection(
+        &self,
+        client_id: Uuid,
+    ) -> Result<Option<RealtimeAuthConnectionResponse>, AppError> {
+        let request = self
+            .reqwest_client()
+            .post("https://web.kick.com/api/v1/realtime/auth/connection")
+            .json(&RealtimeAuthConnectionBody {
+                client_id: client_id.to_string(),
+            });
+
+        let response = self
+            .send_kick_request::<RealtimeAuthConnectionResponse>(
+                request,
+                "realtime auth connection",
+            )
+            .await?;
+
+        Ok(response)
     }
 
     async fn patch_channel(&self, body: PatchChanelBody, app: &AppHandle) -> Result<(), AppError> {

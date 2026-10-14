@@ -49,6 +49,21 @@ pub struct AddKickRewardBody {
 
 #[derive(Debug, Clone, Deserialize)]
 
+pub struct KickPushMessage {
+    pub push: KickPub,
+}
+#[derive(Debug, Clone, Deserialize)]
+
+pub struct KickPub {
+    pub r#pub: KickPubData,
+}
+#[derive(Debug, Clone, Deserialize)]
+
+pub struct KickPubData {
+    pub data: EventPayload,
+}
+#[derive(Debug, Clone, Deserialize)]
+
 pub struct EventPayload {
     pub chanel: Option<String>,
     pub data: String,
@@ -59,8 +74,6 @@ pub struct EventPayload {
 pub enum Event {
     #[serde(rename = "App\\Events\\ChatMessageEvent")]
     ChatMessageEvent,
-    #[serde(rename = "pusher:pong")]
-    PusherPong,
     #[serde(rename = "RewardRedeemedEvent")]
     RewardRedeemedEvent,
     #[serde(rename = "App\\Events\\StreamHostEvent")]
@@ -352,6 +365,21 @@ pub struct BanUserBody {
     pub duration: Option<u64>,
     pub reason: Option<String>,
     pub user_id: u64,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct RealtimeAuthConnectionBody {
+    pub client_id: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct RealtimeAuthConnectionResponse {
+    pub data: RealtimeAuthConnectionResponseData,
+    pub message: String,
+}
+#[derive(Debug, Clone, Deserialize)]
+pub struct RealtimeAuthConnectionResponseData {
+    pub token: String,
 }
 
 #[derive(Debug, Clone, Serialize)]

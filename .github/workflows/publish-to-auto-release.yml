@@ -143,7 +143,7 @@ jobs:
         with:
           tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: "v__VERSION__"
-          releaseBody: "Refactor and add kick sources and actions to commands."
+          releaseBody: "Change kick websocket connection."
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
@@ -172,7 +172,7 @@ jobs:
         with:
           tagName: latest # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: "latest"
-          releaseBody: "Refactor and add kick sources and actions to commands."
+          releaseBody: "Change kick websocket connection."
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}

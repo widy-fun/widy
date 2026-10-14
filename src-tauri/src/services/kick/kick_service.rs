@@ -26,15 +26,15 @@ use crate::{
         kick::{
             models::{
                 ChanelInfoResponse, ChatMessageData, Chatroom, Event, EventPayload,
-                GiftedSubscriptionsData, KickAuthSession, KicksGiftedData, MessageDeletedData,
-                MessageMetadata, RewardRedeemedData, StreamHostData, SubscriptionData,
-                UserBannedData,
+                GiftedSubscriptionsData, KickAuthSession, KickPushMessage, KicksGiftedData,
+                MessageDeletedData, MessageMetadata, RewardRedeemedData, StreamHostData,
+                SubscriptionData, UserBannedData,
             },
             traits::KickApi,
         },
     },
     traits::ItemsBuffer,
-    utils::get_random_alert,
+    utils::{get_random_alert, log_and_wrap_error},
 };
 
 pub struct KickService {
@@ -94,7 +94,7 @@ impl KickService {
         tauri::async_runtime::spawn(async move {
             let kick_service = app.state::<KickService>();
             let cancellation_token = kick_service.cancellation_token();
-            let connect_url = "wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=8.5.0&flash=false";
+            let connect_url = "wss://realtime.us-east-1.platform.kick.com/connection/websocket";
             'connection_loop: loop {
                 log::info!("Connecting to Kick websocket: {}", connect_url);
 
@@ -109,9 +109,10 @@ impl KickService {
 
                 log::info!("Kick websocket connected.");
 
-                kick_service
+                let _ = kick_service
                     .create_subscriptions(&mut socket, &chanel_info_response.chatroom)
-                    .await;
+                    .await
+                    .map_err(|e| log_and_wrap_error("create kick subscriptions", e));
 
                 loop {
                     tokio::select! {
@@ -128,10 +129,12 @@ impl KickService {
                             };
 
                            match msg_result {
-                                Ok(Message::Text(text)) => {
-                                    if let Ok(payload) = serde_json::from_str::<EventPayload>(&text)
-                                    {
-                                        kick_service.handle_subscriptions(payload, &app).await;
+                               Ok(Message::Text(text)) => {
+                                    if let Ok(message) = serde_json::from_str::<KickPushMessage>(&text) {
+                                        kick_service.handle_subscriptions(message.push.r#pub.data, &app).await;
+                                    }
+                                    else if text=="{}" {
+                                        let _ = socket.send(Message::Text(Utf8Bytes::from("{}"))).await;
                                     }
                                 }
 
@@ -322,52 +325,62 @@ impl KickService {
         &self,
         socket: &mut WebSocketStream<MaybeTlsStream<TcpStream>>,
         chatroom: &Chatroom,
-    ) {
+    ) -> Result<(), AppError> {
+        let realtime_auth_connection_response = self
+            .realtime_auth_connection(Uuid::new_v4())
+            .await?
+            .ok_or(AppError::Custom("Empty realtime auth data".to_string()))?;
         let _ = socket
-                            .send(Message::Text(Utf8Bytes::from(
-                                json!({
-                                   "event":"pusher:subscribe","data":{"auth":"","channel":format!("channel_{}",chatroom.channel_id)}
-                                })
-                                .to_string(),
-                            )))
-                            .await
-                            .map_err(|e| log::error!("Kick channel_ subscription error: {}", e.to_string()));
+            .send(Message::Text(Utf8Bytes::from(
+                json!({
+                   "connect":{"token":realtime_auth_connection_response.data.token,"name":"js"},"id":1
+                })
+                .to_string(),
+            )))
+            .await
+            .map_err(|e| log::error!("Kick channel_ subscription error: {}", e.to_string()));
+
         let _ = socket
-                            .send(Message::Text(Utf8Bytes::from(
-                                json!({
-                                    "event":"pusher:subscribe","data":{"auth":"","channel":format!("channel.{}",chatroom.channel_id)}
-                                })
-                                .to_string(),
-                            )))
-                            .await
-                            .map_err(|e| log::error!("Kick channel. subscription error: {}", e.to_string()));
+            .send(Message::Text(Utf8Bytes::from(
+                json!({
+                  "subscribe":{"channel":format!("channel_{}",chatroom.channel_id),"flag":1},"id":2
+                })
+                .to_string(),
+            )))
+            .await
+            .map_err(|e| log::error!("Kick channel. subscription error: {}", e.to_string()));
+
         let _ = socket
-                            .send(Message::Text(Utf8Bytes::from(
-                                json!({
-                                    "event":"pusher:subscribe","data":{"auth":"","channel":format!("chatrooms.{}.v2",chatroom.id)}
-                                })
-                                .to_string(),
-                            )))
-                            .await
-                            .map_err(|e| log::error!("Kick chatrooms.v2 subscription error: {}", e.to_string()));
+            .send(Message::Text(Utf8Bytes::from(
+                json!({
+                    "subscribe":{"channel":format!("chatroom_{}",chatroom.id),"flag":1},"id":3
+                })
+                .to_string(),
+            )))
+            .await
+            .map_err(|e| log::error!("Kick chatroom_ subscription error: {}", e.to_string()));
+
         let _ = socket
-                            .send(Message::Text(Utf8Bytes::from(
-                                json!({
-                                    "event":"pusher:subscribe","data":{"auth":"","channel":format!("chatroom_{}",chatroom.id)}
-                                })
-                                .to_string(),
-                            )))
-                            .await
-                            .map_err(|e| log::error!("Kick chatroom_ subscription error: {}", e.to_string()));
+            .send(Message::Text(Utf8Bytes::from(
+                json!({
+                    "subscribe":{"channel":format!("chatrooms.{}",chatroom.id),"flag":1},"id":4
+                })
+                .to_string(),
+            )))
+            .await
+            .map_err(|e| log::error!("Kick chatrooms. subscription error: {}", e.to_string()));
+
         let _ = socket
-                            .send(Message::Text(Utf8Bytes::from(
-                                json!({
-                                    "event":"pusher:subscribe","data":{"auth":"","channel":format!("chatrooms.{}",chatroom.id)}
-                                })
-                                .to_string(),
-                            )))
-                            .await
-                            .map_err(|e| log::error!("Kick chatrooms. subscription error: {}", e.to_string()));
+            .send(Message::Text(Utf8Bytes::from(
+                json!({
+                    "subscribe":{"channel":format!("chatrooms.{}.v2",chatroom.id),"flag":1},"id":5
+                })
+                .to_string(),
+            )))
+            .await
+            .map_err(|e| log::error!("Kick chatrooms.v2 subscription error: {}", e.to_string()));
+
+        Ok(())
     }
 }
 
