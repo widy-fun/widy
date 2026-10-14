@@ -1,6 +1,6 @@
 [package]
 name = "widy"
-version = "0.4.2"
+version = "0.4.3"
 description = "Widy is a unified alert and widget service for streamers that works across multiple platforms."
 authors = ["ik1s3v"]
 edition = "2024"
@@ -60,7 +60,7 @@ eventsource-client = "0.16.2"
 tonlib-core = "0.26.6"
 hex = "0.4.3"
 rust_socketio = { version = "0.6.0", features = ["async"] }
-msedge-tts = "0.3.0"
+msedge-tts = "0.4.1"
 mime_guess = "2.0.5"
 http = "1.4.0"
 zip = "8.5.0"

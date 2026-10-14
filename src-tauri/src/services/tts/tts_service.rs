@@ -1,8 +1,8 @@
 use entity::tts::{TtsModels, TtsSettings, TtsType};
 use lingua::{Language, LanguageDetector};
 use msedge_tts::{
-    tts::{SpeechConfig, client::connect_async},
-    voice::get_voices_list_async,
+    tts::{SpeechConfig, client::connect},
+    voice::get_voices_list,
 };
 use std::{
     collections::HashMap,
@@ -136,20 +136,20 @@ impl TtsService {
         file_name: &str,
         language: &Language,
     ) -> Result<String, AppError> {
-        let voices = get_voices_list_async().await.map_err(|e| {
+        let voices = get_voices_list().map_err(|e| {
             log_and_wrap_error("Get edge tts voices error", AppError::Custom(e.to_string()))
         })?;
         for voice in &voices {
             if let Some(locale) = &voice.locale {
                 if locale.contains(&language.iso_code_639_1().to_string()) {
                     let config = SpeechConfig::from(voice);
-                    let mut tts = connect_async().await.map_err(|e| {
+                    let mut tts = connect().map_err(|e| {
                         log_and_wrap_error(
                             "Edge tts connect error",
                             AppError::Custom(e.to_string()),
                         )
                     })?;
-                    let audio = tts.synthesize(text, &config).await.map_err(|e| {
+                    let audio = tts.synthesize(text, &config).map_err(|e| {
                         log_and_wrap_error(
                             "Edge tts synthesize error",
                             AppError::Custom(e.to_string()),
