@@ -190,7 +190,11 @@ pub fn run() {
             fish_audio_connect,
             fish_audio_sign_out,
             get_fish_audio_models,
-            get_donations
+            get_donations,
+            get_variables,
+            get_variable_by_id,
+            create_variable,
+            update_variable
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

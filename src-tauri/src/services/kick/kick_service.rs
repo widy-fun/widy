@@ -338,7 +338,7 @@ impl KickService {
                 .to_string(),
             )))
             .await
-            .map_err(|e| log::error!("Kick channel_ subscription error: {}", e.to_string()));
+            .map_err(|e| log::error!("Connect subscription error: {}", e.to_string()));
 
         let _ = socket
             .send(Message::Text(Utf8Bytes::from(

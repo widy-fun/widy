@@ -32,6 +32,7 @@ import { mainSlice } from "./slices/mainSlice";
 import { maptionSlice } from "./slices/maptionSlice";
 import { rewardsSlice } from "./slices/rewardsSlice.ts";
 import { settingsSlice } from "./slices/settingsSlice";
+import { variablesSlice } from "./slices/variablesSlice.ts";
 
 export const rootReducer = combineReducers({
 	snackBarState: snackBarSlice.reducer,
@@ -53,6 +54,7 @@ export const rootReducer = combineReducers({
 	servicesState: servicesSlice.reducer,
 	commandsState: commandsSlice.reducer,
 	ttsState: ttsSlice.reducer,
+	variablesState: variablesSlice.reducer,
 	[api.reducerPath]: api.reducer,
 	[widgetApi.reducerPath]: widgetApi.reducer,
 });

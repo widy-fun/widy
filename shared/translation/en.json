@@ -105,7 +105,8 @@
 		"rewards": "Rewards",
 		"commands": "Commands",
 		"tts": "TTS",
-		"assistant": "Assistant"
+		"assistant": "Assistant",
+		"variables": "Variables"
 	},
 	"messages": {
 		"title": "Last messages"

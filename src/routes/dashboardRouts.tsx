@@ -1,5 +1,6 @@
 import AddLinkIcon from "@mui/icons-material/AddLink";
 import CampaignIcon from "@mui/icons-material/Campaign";
+import DataObjectIcon from "@mui/icons-material/DataObject";
 import InfoIcon from "@mui/icons-material/Info";
 import MapIcon from "@mui/icons-material/Map";
 import MessageIcon from "@mui/icons-material/Message";
@@ -29,6 +30,7 @@ import Rewards from "../components/dashboard/components/rewards/Rewards";
 import Services from "../components/dashboard/components/services/Services";
 import Settings from "../components/dashboard/components/settings/Settings";
 import Tts from "../components/dashboard/components/tts/Tts";
+import Variables from "../components/dashboard/components/variables/Variables";
 import Widgets from "../components/dashboard/components/widgets/Widgets";
 
 export const dashboardRouts = [
@@ -121,6 +123,12 @@ export const dashboardRouts = [
 		element: <Assistant />,
 		icon: <SmartToyIcon />,
 		name: "assistant",
+	},
+	{
+		path: "variables",
+		element: <Variables />,
+		icon: <DataObjectIcon />,
+		name: "variables",
 	},
 	{
 		path: "info",

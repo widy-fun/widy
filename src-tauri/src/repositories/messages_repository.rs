@@ -74,7 +74,7 @@ impl MessagesRepository for DatabaseService {
             .into_partial_model()
             .all(&self.connection)
             .await
-            .map_err(|e| log_and_wrap_error("Get messages errorr", e))?;
+            .map_err(|e| log_and_wrap_error("Get messages error", e))?;
 
         Ok(client_messages)
     }

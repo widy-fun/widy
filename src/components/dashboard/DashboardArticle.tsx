@@ -18,6 +18,8 @@ import CreateGoal from "./components/goals/components/CreateGoal";
 import UpdateGoalSettings from "./components/goals/components/UpdateGoalSettings";
 import CreateReward from "./components/rewards/components/CreateReward";
 import UpdateRewardSettings from "./components/rewards/UpdateRewardSettings";
+import CreateVariable from "./components/variables/components/CreateVariable";
+import UpdateVariable from "./components/variables/UpdateVariable";
 
 const DashboardArticle = () => {
 	const theme = useTheme();
@@ -62,6 +64,8 @@ const DashboardArticle = () => {
 				<Route path="commands/action/auction" element={<AuctionAction />} />
 				<Route path="commands/source/kick" element={<KickSource />} />
 				<Route path="commands/action/kick" element={<KickAction />} />
+				<Route path="variables/new/variable" element={<CreateVariable />} />
+				<Route path="variables/:id" element={<UpdateVariable />} />
 			</Routes>
 		</article>
 	);

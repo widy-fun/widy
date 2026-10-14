@@ -25,7 +25,7 @@ impl NsfwRepository for DatabaseService {
         })
         .exec(&self.connection)
         .await
-        .map_err(|e| log_and_wrap_error("Update nsfw_settings errorr", e))?;
+        .map_err(|e| log_and_wrap_error("Update nsfw_settings error", e))?;
         Ok(())
     }
 }

@@ -49,6 +49,7 @@ mod m20260921_123048_add_fish_audio_service;
 mod m20261009_134046_add_column_auction_action_to_commands_table;
 mod m20261011_114537_add_column_kick_source_to_commands_table;
 mod m20261011_114853_add_column_kick_action_to_commands_table;
+mod m20261014_193013_create_table_variables;
 
 pub struct Migrator;
 
@@ -106,6 +107,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20261009_134046_add_column_auction_action_to_commands_table::Migration),
             Box::new(m20261011_114537_add_column_kick_source_to_commands_table::Migration),
             Box::new(m20261011_114853_add_column_kick_action_to_commands_table::Migration),
+            Box::new(m20261014_193013_create_table_variables::Migration),
         ]
     }
 }

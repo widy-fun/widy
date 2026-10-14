@@ -18,6 +18,7 @@ pub mod rewards_repository;
 pub mod services_repository;
 pub mod settings_repository;
 pub mod subscriptions_repository;
+pub mod variables_repository;
 pub mod widgets_repository;
 
 pub use alerts_repository::*;
@@ -40,4 +41,5 @@ pub use rewards_repository::*;
 pub use services_repository::*;
 pub use settings_repository::*;
 pub use subscriptions_repository::*;
+pub use variables_repository::*;
 pub use widgets_repository::*;
