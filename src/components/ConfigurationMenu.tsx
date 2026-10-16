@@ -61,7 +61,7 @@ const ConfigurationMenu = ({
 							}),
 						);
 					}
-					setDialogOpen(true);
+					setDialogOpen(false);
 				}}
 			/>
 

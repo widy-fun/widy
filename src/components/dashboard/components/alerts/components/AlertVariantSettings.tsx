@@ -20,6 +20,7 @@ import selectAndSaveStaticFile from "../../../../../helpers/selectAndSaveStaticF
 import type { AppState } from "../../../../../store";
 import InputSlider from "../../../../InputSlider";
 import TtsSettings from "../../../../TtsSettings";
+import VariablesAdornment from "../../../../VariablesAdornment";
 import styles from "../../settings/Settings.module.css";
 
 const AlertVariantSettings = () => {
@@ -304,6 +305,23 @@ const AlertVariantSettings = () => {
 							dispatch(setAlert({ ...alert, delay }));
 						}}
 						value={alert.delay / 1000}
+					/>
+				</div>
+				<div className={styles.settings}>
+					<div className={styles.label}>
+						<span>{t("alert.title_template")}:</span>
+					</div>
+					<TextField
+						value={alert.title_template}
+						multiline
+						onChange={(e) => {
+							dispatch(setAlert({ ...alert, title_template: e.target.value }));
+						}}
+						slotProps={{
+							input: {
+								endAdornment: <VariablesAdornment />,
+							},
+						}}
 					/>
 				</div>
 			</div>

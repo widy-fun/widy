@@ -5,6 +5,6 @@ use tauri::State;
 #[tauri::command]
 pub async fn get_variables(
     database_service: State<'_, DatabaseService>,
-) -> Result<Vec<Model>, AppError> {
+) -> Result<Vec<Variable>, AppError> {
     database_service.get_variables().await
 }

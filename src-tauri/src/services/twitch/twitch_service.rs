@@ -285,6 +285,11 @@ impl TwitchService {
             }
             SubscriptionType::ChannelSubscribe => {
                 if let Event::Subscribe(event) = payload.event {
+                    let message_type = if event.is_gift {
+                        MessageType::GiftSubscription
+                    } else {
+                        MessageType::Subscription
+                    };
                     let created_at = Utc::now().timestamp();
                     let message_id = Uuid::new_v4();
                     let subscription = subscriptions::Subscription {
@@ -301,9 +306,7 @@ impl TwitchService {
                         tier: event.tier,
                         cumulative_total: None,
                         total: 1,
-                        alert: get_random_alert(app, MessageType::Subscription)
-                            .await
-                            .unwrap_or(None),
+                        alert: get_random_alert(app, message_type).await.unwrap_or(None),
                     };
                     let _ = EventsService::subscription(
                         subscription,
@@ -331,7 +334,7 @@ impl TwitchService {
                         tier: event.tier,
                         cumulative_total: event.cumulative_total,
                         total: event.total,
-                        alert: get_random_alert(app, MessageType::Subscription)
+                        alert: get_random_alert(app, MessageType::GiftSubscription)
                             .await
                             .unwrap_or(None),
                     };

@@ -1,9 +1,15 @@
 import { Box, Card, CardContent, Typography } from "@mui/material";
-import { AppEvent, type IClientMessage, type IReward } from "@widy/sdk";
+import {
+	AppEvent,
+	type IClientMessage,
+	type IReward,
+	MessageType,
+} from "@widy/sdk";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import useAppEvents from "../../../../../../shared/hooks/useAppEvents";
 import getTestAlertMessage from "../../../../../../shared/utils/getTestAlertMessage";
+import getDefaultAlert from "../../../../../helpers/getDefaultAlert";
 import getRewardIconByRewardType from "../../../../../helpers/getRewardIconByRewardType";
 import useRemoveReward from "../../../../../hooks/useRemoveReward";
 import type { AppState } from "../../../../../store";
@@ -19,7 +25,9 @@ const RewardCard = ({ reward }: { reward: IReward }) => {
 		eventsService.send<IClientMessage>({
 			event: AppEvent.Redemption,
 			data: getTestAlertMessage({
-				alert: reward.alert,
+				alert:
+					reward.alert ??
+					getDefaultAlert({ group_id: "1", type: MessageType.Redemption }),
 				userName: t("alert.test_name"),
 				text: t("alert.test_text"),
 				reward,

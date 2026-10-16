@@ -1,13 +1,5 @@
-import type {
-	IAlert,
-	IClientMessage,
-	IDonation,
-	IFollow,
-	IRaid,
-	ISubscription,
-} from "@widy/sdk";
+import type { IAlert, IClientMessage, IDonation } from "@widy/sdk";
 import { MessageType } from "@widy/sdk";
-import { useTranslation } from "react-i18next";
 import Alert from "./Alert";
 
 const AlertView = ({
@@ -29,8 +21,6 @@ const AlertView = ({
 	videoSrcObject?: MediaProvider;
 	isShowVideoElement: boolean;
 }) => {
-	const { t } = useTranslation();
-
 	switch (message.type) {
 		case MessageType.Donation: {
 			const donation = message.donation as IDonation;
@@ -46,17 +36,11 @@ const AlertView = ({
 					videoSrcObject={videoSrcObject}
 					isShowVideoElement={isShowVideoElement}
 				>
-					{t("message.donated", {
-						user_name: donation.user_name,
-						currency: donation.currency,
-						amount: donation.amount,
-					})}
+					{alert.title_template}
 				</Alert>
 			);
 		}
 		case MessageType.Follow: {
-			const follow = message.follow as IFollow;
-
 			return (
 				<Alert
 					alert={alert}
@@ -67,13 +51,11 @@ const AlertView = ({
 					videoSrcObject={videoSrcObject}
 					isShowVideoElement={isShowVideoElement}
 				>
-					{t("message.followed", { user_name: follow.user_name })}
+					{alert.title_template}
 				</Alert>
 			);
 		}
 		case MessageType.Subscription: {
-			const subscription = message.subscription as ISubscription;
-
 			return (
 				<Alert
 					alert={alert}
@@ -84,18 +66,26 @@ const AlertView = ({
 					videoSrcObject={videoSrcObject}
 					isShowVideoElement={isShowVideoElement}
 				>
-					{!subscription.is_gift
-						? t("message.subscribed", { user_name: subscription.user_name })
-						: t("message.gifted_subscriptions", {
-								user_name: subscription.user_name,
-								total: subscription.total,
-							})}
+					{alert.title_template}
+				</Alert>
+			);
+		}
+		case MessageType.GiftSubscription: {
+			return (
+				<Alert
+					alert={alert}
+					base={base}
+					width={width}
+					height={height}
+					backgroundColor={backgroundColor}
+					videoSrcObject={videoSrcObject}
+					isShowVideoElement={isShowVideoElement}
+				>
+					{alert.title_template}
 				</Alert>
 			);
 		}
 		case MessageType.Raid: {
-			const raid = message.raid as IRaid;
-
 			return (
 				<Alert
 					alert={alert}
@@ -106,10 +96,7 @@ const AlertView = ({
 					videoSrcObject={videoSrcObject}
 					isShowVideoElement={isShowVideoElement}
 				>
-					{t("message.raided_with", {
-						viewers: raid.viewers,
-						user_name: raid.from_broadcaster_user_name,
-					})}
+					{alert.title_template}
 				</Alert>
 			);
 		}
@@ -124,7 +111,7 @@ const AlertView = ({
 					videoSrcObject={videoSrcObject}
 					isShowVideoElement={isShowVideoElement}
 				>
-					{""}
+					{alert.title_template}
 				</Alert>
 			);
 		}
@@ -139,7 +126,7 @@ const AlertView = ({
 					videoSrcObject={videoSrcObject}
 					isShowVideoElement={isShowVideoElement}
 				>
-					{""}
+					{alert.title_template}
 				</Alert>
 			);
 		}
@@ -154,7 +141,7 @@ const AlertView = ({
 					videoSrcObject={videoSrcObject}
 					isShowVideoElement={isShowVideoElement}
 				>
-					{""}
+					{alert.title_template}
 				</Alert>
 			);
 		}

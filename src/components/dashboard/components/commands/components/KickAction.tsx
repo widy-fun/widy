@@ -8,6 +8,7 @@ import { DEFAULT_KICK_ACTION } from "../../../../../constants";
 import type { AppState } from "../../../../../store";
 import { setCommand } from "../../../../../store/slices/commandsSlice";
 import LeftRightButtons from "../../../../LeftRightButtons";
+import VariablesAdornment from "../../../../VariablesAdornment";
 import styles from "../../settings/Settings.module.css";
 
 const KickAction = () => {
@@ -57,7 +58,12 @@ const KickAction = () => {
 							multiline
 							minRows={2}
 							maxRows={4}
-							slotProps={{ htmlInput: { maxLength: 200 } }}
+							slotProps={{
+								htmlInput: { maxLength: 200 },
+								input: {
+									endAdornment: <VariablesAdornment />,
+								},
+							}}
 							value={kickAction.target.message}
 							onChange={(e) => {
 								setKickAction({

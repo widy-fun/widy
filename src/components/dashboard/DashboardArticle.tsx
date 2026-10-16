@@ -19,7 +19,7 @@ import UpdateGoalSettings from "./components/goals/components/UpdateGoalSettings
 import CreateReward from "./components/rewards/components/CreateReward";
 import UpdateRewardSettings from "./components/rewards/UpdateRewardSettings";
 import CreateVariable from "./components/variables/components/CreateVariable";
-import UpdateVariable from "./components/variables/UpdateVariable";
+import UpdateVariable from "./components/variables/components/UpdateVariable";
 
 const DashboardArticle = () => {
 	const theme = useTheme();

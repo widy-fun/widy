@@ -7,19 +7,17 @@ import {
 	MediaType,
 	ServiceType,
 } from "@widy/sdk";
-import getDefaultAlert from "../../src/helpers/getDefaultAlert";
 import getDefaultReward from "../../src/helpers/getDefaultReward";
 
 const getTestAlertMessage = ({
-	alert = getDefaultAlert(),
+	alert,
 	userName,
 	text,
 	reward = getDefaultReward(),
 }: {
-	alert?: IAlert;
+	alert: IAlert;
 	userName: string;
 	text: string;
-
 	reward?: IReward;
 }) => {
 	const messageId = crypto.randomUUID();

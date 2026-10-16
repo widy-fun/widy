@@ -13,4 +13,13 @@ pub struct Model {
     pub value: String,
 }
 
+#[derive(Debug, Clone, Default, Serialize, Deserialize, DerivePartialModel)]
+#[sea_orm(entity = "Entity")]
+pub struct Variable {
+    pub id: Uuid,
+    pub name: String,
+    pub description: String,
+    pub value: String,
+}
+
 impl ActiveModelBehavior for ActiveModel {}

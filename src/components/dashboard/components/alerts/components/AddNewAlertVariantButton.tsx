@@ -1,5 +1,6 @@
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "@mui/material";
+import { MessageType } from "@widy/sdk";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
@@ -16,7 +17,9 @@ const AddNewAlertVariantButton = ({ group_id }: { group_id: string }) => {
 			variant="contained"
 			startIcon={<AddIcon />}
 			onClick={() => {
-				dispatch(setAlert(getDefaultAlert(group_id)));
+				dispatch(
+					setAlert(getDefaultAlert({ group_id, type: MessageType.Donation })),
+				);
 				navigate("/dashboard/alerts/new/alert");
 			}}
 		>

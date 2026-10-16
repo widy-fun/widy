@@ -1,5 +1,6 @@
 use chrono::Utc;
 use entity::{
+    alerts::Alert,
     assistant_actions::AssistantAction,
     commands::UserLevel,
     commands_actions::CommandAction,
@@ -14,6 +15,7 @@ use entity::{
     settings::Currency,
     subscriptions::Subscription,
     tts::{Tts, TtsSettings},
+    variables::Variable,
 };
 use serde::Serialize;
 use tauri::{AppHandle, Manager};
@@ -25,13 +27,13 @@ use crate::{
     repositories::{
         AssistantActionsRepository, CommandsActionsRepository, DonationsRepository,
         FollowsRepository, GoalsRepository, RaidsRepository, RedemptionsRepository,
-        SettingsRepository, SubscriptionsRepository,
+        SettingsRepository, SubscriptionsRepository, VariablesRepository,
     },
     services::{
         CommandAuctionAction, DatabaseService, EventMessage, ExchangeRatesService, MediaService,
         WebSocketBroadcaster, tts::TtsService,
     },
-    utils::{get_alert_by_amount, remove_black_listed_words, remove_links},
+    utils::{get_alert_by_amount, remove_black_listed_words, remove_links, replace_variables},
 };
 
 #[derive(Serialize, Clone, Debug)]
@@ -461,7 +463,7 @@ impl EventsService {
             None => None,
         };
 
-        let alert = get_alert_by_amount(app, exchanged_amount, MessageType::Donation)
+        let mut alert = get_alert_by_amount(app, exchanged_amount, MessageType::Donation)
             .await?
             .ok_or(AppError::Custom("Alert not found".to_string()))?;
 
@@ -493,6 +495,30 @@ impl EventsService {
 
         let created_at = Utc::now().timestamp();
         let message_id = Uuid::new_v4();
+
+        let variables = database_service.get_variables().await?;
+        let variables = [
+            vec![
+                Variable {
+                    name: "currency".to_string(),
+                    value: target_currency.as_str().to_string(),
+                    ..Default::default()
+                },
+                Variable {
+                    name: "user_name".to_string(),
+                    value: user_name.clone(),
+                    ..Default::default()
+                },
+                Variable {
+                    name: "amount".to_string(),
+                    value: target_amount.to_string(),
+                    ..Default::default()
+                },
+            ],
+            variables,
+        ]
+        .concat();
+        alert.title_template = replace_variables(&alert.title_template, variables);
 
         let client_message = ClientMessage {
             id: message_id,
@@ -574,9 +600,40 @@ impl EventsService {
     ) -> Result<(), AppError> {
         let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
         let database_service = app.state::<DatabaseService>();
+        let variables = database_service.get_variables().await?;
+        let variables = [
+            vec![
+                Variable {
+                    name: "user_name".to_string(),
+                    value: subscription.user_name.clone(),
+                    ..Default::default()
+                },
+                Variable {
+                    name: "total".to_string(),
+                    value: subscription.total.to_string(),
+                    ..Default::default()
+                },
+            ],
+            variables,
+        ]
+        .concat();
+        let alert = match subscription.alert {
+            Some(alert) => Some(Alert {
+                title_template: replace_variables(&alert.title_template, variables),
+                ..alert
+            }),
+            None => None,
+        };
+
+        let message_type = if subscription.is_gift {
+            MessageType::GiftSubscription
+        } else {
+            MessageType::Subscription
+        };
+
         let client_message = ClientMessage {
             id: subscription.message_id.clone(),
-            r#type: MessageType::Subscription,
+            r#type: message_type,
             created_at: subscription.subscribed_at.clone(),
             donation: None,
             follow: None,
@@ -584,7 +641,10 @@ impl EventsService {
             redemption: None,
             command_action: None,
             assistant_action: None,
-            subscription: Some(subscription.clone()),
+            subscription: Some(Subscription {
+                alert,
+                ..subscription
+            }),
         };
         let event_message = EventMessage {
             event: AppEvent::Message,
@@ -854,6 +914,23 @@ impl EventsService {
     ) -> Result<(), AppError> {
         let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
         let database_service = app.state::<DatabaseService>();
+        let variables = database_service.get_variables().await?;
+        let variables = [
+            vec![Variable {
+                name: "user_name".to_string(),
+                value: follow.user_name.clone(),
+                ..Default::default()
+            }],
+            variables,
+        ]
+        .concat();
+        let alert = match follow.alert {
+            Some(alert) => Some(Alert {
+                title_template: replace_variables(&alert.title_template, variables),
+                ..alert
+            }),
+            None => None,
+        };
         let client_message = ClientMessage {
             id: follow.message_id.clone(),
             r#type: MessageType::Follow,
@@ -864,7 +941,7 @@ impl EventsService {
             redemption: None,
             command_action: None,
             assistant_action: None,
-            follow: Some(follow),
+            follow: Some(Follow { alert, ..follow }),
         };
         let event_message = EventMessage {
             event: AppEvent::Message,
@@ -884,6 +961,23 @@ impl EventsService {
     pub async fn raid(raid: Raid, app: &AppHandle) -> Result<(), AppError> {
         let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
         let database_service = app.state::<DatabaseService>();
+        let variables = database_service.get_variables().await?;
+        let variables = [
+            vec![Variable {
+                name: "user_name".to_string(),
+                value: raid.from_broadcaster_user_name.clone(),
+                ..Default::default()
+            }],
+            variables,
+        ]
+        .concat();
+        let alert = match raid.alert {
+            Some(alert) => Some(Alert {
+                title_template: replace_variables(&alert.title_template, variables),
+                ..alert
+            }),
+            None => None,
+        };
         let client_message = ClientMessage {
             id: raid.message_id.clone(),
             r#type: MessageType::Raid,
@@ -894,7 +988,7 @@ impl EventsService {
             redemption: None,
             command_action: None,
             assistant_action: None,
-            raid: Some(raid),
+            raid: Some(Raid { alert, ..raid }),
         };
         let event_message = EventMessage {
             event: AppEvent::Message,

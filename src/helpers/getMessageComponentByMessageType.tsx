@@ -41,6 +41,13 @@ const getMessageComponentByMessageType = ({
 					isAlertPlaying={isAlertPlaying}
 				/>
 			);
+		case MessageType.GiftSubscription:
+			return (
+				<SubscriptionMessageCard
+					message={message}
+					isAlertPlaying={isAlertPlaying}
+				/>
+			);
 		case MessageType.Raid:
 			return (
 				<RaidMessageCard message={message} isAlertPlaying={isAlertPlaying} />

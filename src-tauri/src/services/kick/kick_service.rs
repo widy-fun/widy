@@ -212,7 +212,7 @@ impl KickService {
                         tier: "1".to_string(),
                         cumulative_total: None,
                         total: data.gifted_total,
-                        alert: get_random_alert(app, MessageType::Subscription)
+                        alert: get_random_alert(app, MessageType::GiftSubscription)
                             .await
                             .unwrap_or(None),
                     };

@@ -34,6 +34,8 @@ pub enum MessageType {
     Donation,
     #[sea_orm(string_value = "Subscription")]
     Subscription,
+    #[sea_orm(string_value = "GiftSubscription")]
+    GiftSubscription,
     #[sea_orm(string_value = "Follow")]
     Follow,
     #[sea_orm(string_value = "Raid")]

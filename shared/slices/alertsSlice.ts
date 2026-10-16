@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { IAlert, ITextStyle } from "@widy/sdk";
+import { IAlert, ITextStyle, MessageType } from "@widy/sdk";
 import getDefaultAlert from "../../src/helpers/getDefaultAlert";
 
 interface AlertsState {
@@ -8,7 +8,10 @@ interface AlertsState {
 }
 
 const initialState: AlertsState = {
-	alert: getDefaultAlert(),
+	alert: getDefaultAlert({
+		group_id: "1",
+		type: MessageType.Donation,
+	}),
 	playingAlertId: "",
 };
 

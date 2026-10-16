@@ -8,9 +8,16 @@ import {
 } from "@widy/sdk";
 import i18n from "../../shared/i18n/i18n";
 import { TEXT_STYLE } from "../constants";
+import getDefaultAlertTitleTemplate from "./getDefaultAlertTitleTemplate";
 import getDefaultTtsSettingsByType from "./getDefaultTtsSettingsByType";
 
-const getDefaultAlert = (group_id = "1"): IAlert => {
+const getDefaultAlert = ({
+	group_id = "1",
+	type = MessageType.Donation,
+}: {
+	group_id: string;
+	type: MessageType;
+}): IAlert => {
 	return {
 		id: crypto.randomUUID(),
 		audio_volume: 50,
@@ -21,11 +28,11 @@ const getDefaultAlert = (group_id = "1"): IAlert => {
 		group_id,
 		name: i18n.t("alert.new_variant"),
 		title_style: TEXT_STYLE,
-		title_template: "{{user_name}} donated {{amount}} {{currency}}",
+		title_template: getDefaultAlertTitleTemplate(type),
 		message_style: TEXT_STYLE,
 		variation_conditions: AlertVariationConditions.Random,
 		status: true,
-		type: MessageType.Donation,
+		type,
 		amount: 100,
 		video_volume: 50,
 		delay: 0,

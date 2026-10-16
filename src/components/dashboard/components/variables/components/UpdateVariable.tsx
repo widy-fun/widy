@@ -7,10 +7,10 @@ import { useParams } from "react-router";
 import {
 	useGetVariableByIdQuery,
 	useUpdateVariableMutation,
-} from "../../../../api/variablesApi";
-import type { AppState } from "../../../../store";
-import { setVariable } from "../../../../store/slices/variablesSlice";
-import VariableSettings from "./components/VariableSettings";
+} from "../../../../../api/variablesApi";
+import type { AppState } from "../../../../../store";
+import { setVariable } from "../../../../../store/slices/variablesSlice";
+import VariableSettings from "./VariableSettings";
 
 const UpdateVariable = () => {
 	const { t } = useTranslation();

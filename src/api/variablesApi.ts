@@ -30,6 +30,13 @@ export const variablesApi = api.injectEndpoints({
 			}),
 			invalidatesTags: ["Variables"],
 		}),
+		deleteVariableById: builder.mutation<void, { id: string }>({
+			query: (args) => ({
+				command: "delete_variable_by_id",
+				args,
+			}),
+			invalidatesTags: ["Variables"],
+		}),
 	}),
 });
 export const {
@@ -37,4 +44,5 @@ export const {
 	useCreateVariableMutation,
 	useUpdateVariableMutation,
 	useGetVariableByIdQuery,
+	useDeleteVariableByIdMutation,
 } = variablesApi;

@@ -15,6 +15,7 @@ import type { AppState } from "../../../../../store";
 import { setCommand } from "../../../../../store/slices/commandsSlice";
 import LeftRightButtons from "../../../../LeftRightButtons";
 import OnOffSwitch from "../../../../OnOffSwitch";
+import VariablesAdornment from "../../../../VariablesAdornment";
 import styles from "../../settings/Settings.module.css";
 
 const ChatBotAction = () => {
@@ -48,6 +49,11 @@ const ChatBotAction = () => {
 											...chatBotAction,
 											message: e.target.value,
 										});
+									}}
+									slotProps={{
+										input: {
+											endAdornment: <VariablesAdornment />,
+										},
 									}}
 								/>
 							</div>

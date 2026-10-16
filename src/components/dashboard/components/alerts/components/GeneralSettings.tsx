@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { NumericFormat } from "react-number-format";
 import { useDispatch, useSelector } from "react-redux";
 import { setAlert } from "../../../../../../shared/slices/alertsSlice";
+import getDefaultAlertTitleTemplate from "../../../../../helpers/getDefaultAlertTitleTemplate";
 import type { AppState } from "../../../../../store";
 import OnOffSwitch from "../../../../OnOffSwitch";
 import styles from "../../settings/Settings.module.css";
@@ -81,6 +82,7 @@ const GeneralSettings = () => {
 											setAlert({
 												...alert,
 												type: value,
+												title_template: getDefaultAlertTitleTemplate(value),
 												variation_conditions: AlertVariationConditions.Random,
 											}),
 										);

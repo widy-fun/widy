@@ -6,6 +6,8 @@ const getColorByMessageType = (type: MessageType) => {
 			return "#ffca28";
 		case MessageType.Subscription:
 			return "#FF4500";
+		case MessageType.GiftSubscription:
+			return "#c300ff";
 		case MessageType.Follow:
 			return "#B2DFDB";
 		case MessageType.Raid:

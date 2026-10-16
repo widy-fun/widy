@@ -194,7 +194,8 @@ pub fn run() {
             get_variables,
             get_variable_by_id,
             create_variable,
-            update_variable
+            update_variable,
+            delete_variable_by_id
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

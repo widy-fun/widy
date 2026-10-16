@@ -18,7 +18,7 @@ use uuid::Uuid;
 
 use crate::{
     error::AppError,
-    repositories::CommandsRepository,
+    repositories::{CommandsRepository, VariablesRepository},
     services::{
         DatabaseService, EventsService, UnifiedChatMessage,
         kick::{
@@ -28,7 +28,7 @@ use crate::{
         twitch::{TwitchBotService, TwitchService, traits::TwitchApi},
     },
     traits::ChatMessageBuffer,
-    utils::{calc_command_auction_action_amount, log_and_wrap_error},
+    utils::{calc_command_auction_action_amount, log_and_wrap_error, replace_variables},
 };
 
 #[derive(Debug, Clone, Serialize)]
@@ -79,6 +79,7 @@ impl CommandsService {
         app: &AppHandle,
     ) -> Result<(), AppError> {
         let kick_bot_service = app.state::<KickBotService>();
+        let database_service = app.state::<DatabaseService>();
         let commands_service = app.state::<CommandsService>();
         let text = message.content.text.clone();
         let mut parts = text.splitn(2, char::is_whitespace);
@@ -122,9 +123,10 @@ impl CommandsService {
                 }
                 None => None,
             };
+            let variables = database_service.get_variables().await?;
             let _ = kick_bot_service
                 .post_chat_message(
-                    chat_bot.message.clone(),
+                    replace_variables(&chat_bot.message, variables),
                     broadcaster_user_id,
                     reply_to_message_id,
                     app,
@@ -204,6 +206,7 @@ impl CommandsService {
     }
 
     pub async fn kick_stream_start(app: &AppHandle) -> Result<(), AppError> {
+        let database_service = app.state::<DatabaseService>();
         let kick_session_service = app.state::<KickSessionService>();
         let commands_service = app.state::<CommandsService>();
         let commands = { commands_service.commands.lock().unwrap().clone() };
@@ -222,9 +225,9 @@ impl CommandsService {
                 ..
             } = command
             {
-                let _ = kick_session_service
-                    .pin_message(app, target.message.clone())
-                    .await?;
+                let variables = database_service.get_variables().await.unwrap_or(vec![]);
+                let message = replace_variables(&target.message, variables);
+                let _ = kick_session_service.pin_message(app, message).await?;
             }
         }
 
@@ -235,6 +238,7 @@ impl CommandsService {
         message: UnifiedChatMessage,
         app: &AppHandle,
     ) -> Result<(), AppError> {
+        let database_service = app.state::<DatabaseService>();
         let twitch_bot_service = app.state::<TwitchBotService>();
         let twitch_service = app.state::<TwitchService>();
         let commands_service = app.state::<CommandsService>();
@@ -277,10 +281,10 @@ impl CommandsService {
             };
             let auth = twitch_service.get_auth(app).await?;
             let bot_auth = twitch_bot_service.get_auth(app).await?;
-
+            let variables = database_service.get_variables().await?;
             let _ = twitch_bot_service
                 .send_chat_message(
-                    chat_bot.message.clone(),
+                    replace_variables(&chat_bot.message, variables),
                     auth.user_id,
                     bot_auth.user_id,
                     reply_to_message_id,
@@ -372,10 +376,12 @@ impl CommandsService {
             ..
         })) = &command
         {
+            let variables = database_service.get_variables().await.unwrap_or(vec![]);
+            let message = replace_variables(&timer_source.clone().message, variables);
             if chat_bot.platforms.contains(&Platform::Kick) {
                 let _ = Self::kick_timer_chat_message(
                     &app,
-                    timer_source.clone().message,
+                    message.clone(),
                     timer_source.clone().lines_passed,
                 )
                 .await;
@@ -384,14 +390,14 @@ impl CommandsService {
                 if timer_source.post_type == PostType::Announcement {
                     let _ = Self::twitch_timer_chat_announcement(
                         &app,
-                        timer_source.clone().message,
+                        message.clone(),
                         timer_source.clone().lines_passed,
                     )
                     .await;
                 } else {
                     let _ = Self::twitch_timer_chat_message(
                         &app,
-                        timer_source.clone().message,
+                        message.clone(),
                         timer_source.clone().lines_passed,
                     )
                     .await;

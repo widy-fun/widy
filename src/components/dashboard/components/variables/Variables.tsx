@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { useGetVariablesQuery } from "../../../../api/variablesApi";
-import getDefaultReward from "../../../../helpers/getDefaultReward";
-import { setReward } from "../../../../store/slices/rewardsSlice";
+import getDefaultVariable from "../../../../helpers/getDefaultVariable";
+import { setVariable } from "../../../../store/slices/variablesSlice";
 import VariableCard from "./components/VariableCard";
 
 const Variables = () => {
@@ -28,11 +28,11 @@ const Variables = () => {
 					variant="contained"
 					startIcon={<AddIcon />}
 					onClick={() => {
-						dispatch(setReward(getDefaultReward()));
+						dispatch(setVariable(getDefaultVariable()));
 						navigate("/dashboard/variables/new/variable");
 					}}
 				>
-					{t("variable.create")}
+					{t("variables.create")}
 				</Button>
 			</Box>
 			<Box

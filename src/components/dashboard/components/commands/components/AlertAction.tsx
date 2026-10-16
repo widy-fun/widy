@@ -27,10 +27,12 @@ const AlertAction = ({ isUpdate }: { isUpdate: boolean }) => {
 						onLeft={() => {
 							dispatch(
 								setAlert({
-									...getDefaultAlert(),
+									...getDefaultAlert({
+										group_id: "1",
+										type: MessageType.CommandAction,
+									}),
 									command_id: command.id,
 									name: command.name,
-									type: MessageType.CommandAction,
 								}),
 							);
 							if (isUpdate && command.id === alert.command_id) {

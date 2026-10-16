@@ -33,10 +33,12 @@ const CreateReward = () => {
 					if (reward.type === RewardType.Alert) {
 						dispatch(
 							setAlert({
-								...getDefaultAlert(),
+								...getDefaultAlert({
+									group_id: "1",
+									type: MessageType.Redemption,
+								}),
 								reward_id: reward.id,
 								name: reward.title,
-								type: MessageType.Redemption,
 							}),
 						);
 						navigate("/dashboard/alerts/new/alert");
