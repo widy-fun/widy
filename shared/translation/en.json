@@ -35,7 +35,7 @@
 	"session_token": "Session token",
 	"single_speaker": "Single speaker",
 	"sure_delete": "Are you sure want to delete this variation?",
-	"can_use_variables": "Can use variables like {{count}}",
+	"can_use_variables": "Can use your variables and",
 	"authorization": {
 		"title": "Authorization",
 		"code": "Request code",

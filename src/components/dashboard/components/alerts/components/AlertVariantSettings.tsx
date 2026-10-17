@@ -16,6 +16,7 @@ import { NumericFormat } from "react-number-format";
 import { useDispatch, useSelector } from "react-redux";
 import { setAlert } from "../../../../../../shared/slices/alertsSlice";
 import { FILE_FILTERS } from "../../../../../constants";
+import getAlertVariablesByMessageType from "../../../../../helpers/getAlertVariablesByMessageType";
 import selectAndSaveStaticFile from "../../../../../helpers/selectAndSaveStaticFile";
 import type { AppState } from "../../../../../store";
 import InputSlider from "../../../../InputSlider";
@@ -319,7 +320,11 @@ const AlertVariantSettings = () => {
 						}}
 						slotProps={{
 							input: {
-								endAdornment: <VariablesAdornment />,
+								endAdornment: (
+									<VariablesAdornment
+										variables={getAlertVariablesByMessageType(alert.type)}
+									/>
+								),
 							},
 						}}
 					/>
