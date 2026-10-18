@@ -133,6 +133,7 @@ const Alert = ({
 							percent: alert.title_style.word_spacing,
 							width,
 						}),
+						textShadow: "2px 2px 2px #000",
 					}}
 				>
 					{children}
@@ -160,6 +161,7 @@ const Alert = ({
 							percent: alert.message_style.word_spacing,
 							width,
 						}),
+						textShadow: "2px 2px 2px #000",
 					}}
 				>
 					{text}

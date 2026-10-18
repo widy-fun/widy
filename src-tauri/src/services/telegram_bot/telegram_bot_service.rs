@@ -71,6 +71,7 @@ impl TelegramBotService {
             .clone()
             .ok_or(AppError::TelegramBot("Bot empty".to_string()))?;
         let message = bot.send_message(format!("@{}", channel), message).await?;
+
         Ok(message)
     }
 
