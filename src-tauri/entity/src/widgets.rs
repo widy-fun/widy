@@ -27,6 +27,7 @@ pub struct Manifest {
     pub repository: String,
     pub scopes: Vec<String>,
     pub csp: Option<Csp>,
+    pub embedded: Option<bool>,
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Eq, FromJsonQueryResult)]
 

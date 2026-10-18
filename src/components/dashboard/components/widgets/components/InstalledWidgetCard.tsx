@@ -44,7 +44,9 @@ const InstalledWidgetCard = ({ widget }: { widget: IWidget }) => {
 					manifest={widget.manifest}
 					isDev={!!widget.dev_path}
 				/>
-				<WidgetUrl widgetUrl={widgetUrl} text={t("widgets.view_url")} />
+				{!widget.manifest.embedded && (
+					<WidgetUrl widgetUrl={widgetUrl} text={t("widgets.view_url")} />
+				)}
 				<Box
 					sx={{
 						display: "flex",

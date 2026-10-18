@@ -59,6 +59,10 @@ pub struct Media {
     pub media_type: MediaType,
     pub expires: Option<u64>,
     pub temporary_src: Option<String>,
+    // pub title: Option<String>,
+    // pub author: Option<String>,
+    // pub thumbnail_url: Option<String>,
+    // pub duration: Option<u64>,
 }
 
 #[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Serialize, Deserialize, Eq)]

@@ -17,6 +17,7 @@ import Donatello from "./components/donatello/Donatello";
 import DonatePay from "./components/donatepay/DonatePay";
 import Donatik from "./components/donatik/Donatik";
 import DonationAlerts from "./components/donationalerts/DonationAlerts";
+import EmbeddedWidgets from "./components/EmbeddedWidgets";
 import FishAudio from "./components/fish-audio/FishAudio";
 import Gemini from "./components/gemini/Gemini";
 import Kick from "./components/kick/Kick";
@@ -128,6 +129,7 @@ function App() {
 					<Route path="/telegram-bot/*" element={<TelegramBot />} />
 				</Routes>
 			)}
+			<EmbeddedWidgets />
 		</main>
 	);
 }
