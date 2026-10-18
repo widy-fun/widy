@@ -35,6 +35,7 @@
 	"session_token": "Token de sesión",
 	"single_speaker": "Una sola voz",
 	"sure_delete": "¿Está seguro de que desea eliminar esta variante?",
+	"can_use_variables": "Can use your variables",
 	"authorization": {
 		"title": "Autorización",
 		"code": "Solicitar código",
@@ -90,6 +91,7 @@
 		"min_views": "Vistas mínimas"
 	},
 	"dashboard": {
+		"variables": "Variables",
 		"messages": "Mensajes",
 		"settings": "Configuración",
 		"services": "Servicios",
@@ -235,6 +237,7 @@
 		"connected": "Conectado",
 		"not_connected": "No conectado",
 		"descriptions": {
+			"telegram_bot": "Connect Telegram bot to send messages to your telegram channel.",
 			"streamelements": "Recibir propinas y eventos de transmisión de StreamElements.",
 			"twitch": "Conectar su canal de Twitch para chat, suscripciones, seguidores y eventos del canal.",
 			"widy_sol": "Recibir donaciones mediante Widy en la red Solana.",
@@ -270,6 +273,8 @@
 		"create_donation_account_pending": "Creando cuenta de donaciones..."
 	},
 	"alert": {
+		"GiftSubscription": "Gift subscription",
+		"title_template": "Title template",
 		"image": "Imagen",
 		"audio": "Audio",
 		"view": "Vista",
@@ -519,6 +524,10 @@
 		"create": "Crear comando"
 	},
 	"command": {
+		"select_source_first": "Select source first",
+		"not_work_with_selected_source": "Not work with selected source",
+		"you_need_connect_first": "You need connect {{service}} first",
+		"work_with_type": "Work with source {{source}} and type {{type}}",
 		"name": "Nombre",
 		"description": "Descripción",
 		"source": "Origen",
@@ -556,6 +565,11 @@
 		"description": "Alerta sobre el origen del comando"
 	},
 	"errors": {
+		"Piper": "Piper error",
+		"STT": "STT error",
+		"Audio": "Audio error",
+		"Ort": "Ort error",
+		"TelegramBot": "TelegramBot error",
 		"HttpRequest": "Error de solicitud",
 		"HttpStatus": "Error de solicitud",
 		"ParseError": "Error de respuesta",
@@ -642,11 +656,41 @@
 		"vip_luck_modifier": "Modificador de suerte VIP",
 		"moderator_luck_modifier": "Modificador de suerte para moderadores"
 	},
+	"twitch_source": {
+		"title": "Twitch",
+		"description": "Twitch sources",
+		"type": "Type",
+		"StreamStarted": "Stream started",
+		"StreamStopped": "Stream stopped"
+	},
+	"twitch_action": {
+		"title": "Twitch",
+		"description": "Twitch actions",
+		"type": "Type",
+		"message": "Message",
+		"PinMessage": "Pin message"
+	},
+	"telegram_bot_action": {
+		"title": "TelegramBot",
+		"description": "Send message to your telegram channel",
+		"channel": "Channel",
+		"message": "Message"
+	},
+	"variables": {
+		"title": "Variables",
+		"create": "Create"
+	},
+	"variable": {
+		"name": "Name",
+		"description": "Description",
+		"value": "Value"
+	},
 	"kick_source": {
+		"StreamStarted": "Stream started",
+		"StreamStopped": "Stream stopped",
 		"title": "Kick",
 		"description": "Fuentes de Kick",
-		"type": "Tipo",
-		"StreamStart": "Inicio de transmisión"
+		"type": "Tipo"
 	},
 	"kick_action": {
 		"title": "Kick",

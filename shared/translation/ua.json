@@ -35,6 +35,7 @@
 	"session_token": "Токен сесії",
 	"single_speaker": "Один диктор",
 	"sure_delete": "Ви впевнені, що хочете видалити цей варіант?",
+	"can_use_variables": "Can use your variables",
 	"authorization": {
 		"title": "Авторизація",
 		"code": "Запросити код",
@@ -90,6 +91,7 @@
 		"min_views": "Мінімальна кількість переглядів"
 	},
 	"dashboard": {
+		"variables": "Variables",
 		"messages": "Повідомлення",
 		"settings": "Налаштування",
 		"services": "Сервіси",
@@ -235,6 +237,7 @@
 		"connected": "Підключено",
 		"not_connected": "Не підключено",
 		"descriptions": {
+			"telegram_bot": "Connect Telegram bot to send messages to your telegram channel.",
 			"streamelements": "Отримувати донати та події стриму з StreamElements.",
 			"twitch": "Підключіть свій Twitch-канал для чату, підписок, фоловів та подій каналу.",
 			"widy_sol": "Отримувати донати через Widy у мережі Solana.",
@@ -270,6 +273,8 @@
 		"create_donation_account_pending": "Створення донат-акаунта..."
 	},
 	"alert": {
+		"GiftSubscription": "Gift subscription",
+		"title_template": "Title template",
 		"image": "Зображення",
 		"audio": "Аудіо",
 		"view": "Вигляд",
@@ -519,6 +524,10 @@
 		"create": "Створити команду"
 	},
 	"command": {
+		"select_source_first": "Select source first",
+		"not_work_with_selected_source": "Not work with selected source",
+		"you_need_connect_first": "You need connect {{service}} first",
+		"work_with_type": "Work with source {{source}} and type {{type}}",
 		"name": "Назва",
 		"description": "Опис",
 		"source": "Джерело",
@@ -556,6 +565,11 @@
 		"description": "Сповіщення з джерела команди"
 	},
 	"errors": {
+		"Piper": "Piper error",
+		"STT": "STT error",
+		"Audio": "Audio error",
+		"Ort": "Ort error",
+		"TelegramBot": "TelegramBot error",
 		"HttpRequest": "Помилка запиту",
 		"HttpStatus": "Помилка запиту",
 		"ParseError": "Помилка відповіді",
@@ -642,11 +656,41 @@
 		"vip_luck_modifier": "Модифікатор удачі VIP",
 		"moderator_luck_modifier": "Модифікатор удачі модератора"
 	},
+	"twitch_source": {
+		"title": "Twitch",
+		"description": "Twitch sources",
+		"type": "Type",
+		"StreamStarted": "Stream started",
+		"StreamStopped": "Stream stopped"
+	},
+	"twitch_action": {
+		"title": "Twitch",
+		"description": "Twitch actions",
+		"type": "Type",
+		"message": "Message",
+		"PinMessage": "Pin message"
+	},
+	"telegram_bot_action": {
+		"title": "TelegramBot",
+		"description": "Send message to your telegram channel",
+		"channel": "Channel",
+		"message": "Message"
+	},
+	"variables": {
+		"title": "Variables",
+		"create": "Create"
+	},
+	"variable": {
+		"name": "Name",
+		"description": "Description",
+		"value": "Value"
+	},
 	"kick_source": {
+		"StreamStarted": "Stream started",
+		"StreamStopped": "Stream stopped",
 		"title": "Kick",
 		"description": "Джерела Kick",
-		"type": "Тип",
-		"StreamStart": "Початок трансляції"
+		"type": "Тип"
 	},
 	"kick_action": {
 		"title": "Kick",

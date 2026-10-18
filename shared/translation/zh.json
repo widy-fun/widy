@@ -35,6 +35,7 @@
 	"session_token": "会话 Token",
 	"single_speaker": "单人说话",
 	"sure_delete": "确定要删除此变体吗？",
+	"can_use_variables": "Can use your variables",
 	"authorization": {
 		"title": "授权",
 		"code": "请求代码",
@@ -90,6 +91,7 @@
 		"min_views": "最低观看次数"
 	},
 	"dashboard": {
+		"variables": "Variables",
 		"messages": "消息",
 		"settings": "设置",
 		"services": "服务",
@@ -235,6 +237,7 @@
 		"connected": "已连接",
 		"not_connected": "未连接",
 		"descriptions": {
+			"telegram_bot": "Connect Telegram bot to send messages to your telegram channel.",
 			"streamelements": "从 StreamElements 接收打赏和直播事件。",
 			"twitch": "连接您的 Twitch 频道，以接收聊天、订阅、关注和频道事件。",
 			"widy_sol": "通过 Solana 网络接收 Widy 捐赠。",
@@ -270,6 +273,8 @@
 		"create_donation_account_pending": "正在创建捐赠账户..."
 	},
 	"alert": {
+		"GiftSubscription": "Gift subscription",
+		"title_template": "Title template",
 		"image": "图片",
 		"audio": "音频",
 		"view": "视图",
@@ -519,6 +524,10 @@
 		"create": "创建命令"
 	},
 	"command": {
+		"select_source_first": "Select source first",
+		"not_work_with_selected_source": "Not work with selected source",
+		"you_need_connect_first": "You need connect {{service}} first",
+		"work_with_type": "Work with source {{source}} and type {{type}}",
 		"name": "名称",
 		"description": "描述",
 		"source": "来源",
@@ -556,6 +565,11 @@
 		"description": "命令来源触发的提醒"
 	},
 	"errors": {
+		"Piper": "Piper error",
+		"STT": "STT error",
+		"Audio": "Audio error",
+		"Ort": "Ort error",
+		"TelegramBot": "TelegramBot error",
 		"HttpRequest": "请求错误",
 		"HttpStatus": "请求错误",
 		"ParseError": "响应错误",
@@ -642,11 +656,41 @@
 		"vip_luck_modifier": "VIP 幸运修正值",
 		"moderator_luck_modifier": "版主幸运修正值"
 	},
+	"twitch_source": {
+		"title": "Twitch",
+		"description": "Twitch sources",
+		"type": "Type",
+		"StreamStarted": "Stream started",
+		"StreamStopped": "Stream stopped"
+	},
+	"twitch_action": {
+		"title": "Twitch",
+		"description": "Twitch actions",
+		"type": "Type",
+		"message": "Message",
+		"PinMessage": "Pin message"
+	},
+	"telegram_bot_action": {
+		"title": "TelegramBot",
+		"description": "Send message to your telegram channel",
+		"channel": "Channel",
+		"message": "Message"
+	},
+	"variables": {
+		"title": "Variables",
+		"create": "Create"
+	},
+	"variable": {
+		"name": "Name",
+		"description": "Description",
+		"value": "Value"
+	},
 	"kick_source": {
+		"StreamStarted": "Stream started",
+		"StreamStopped": "Stream stopped",
 		"title": "Kick",
 		"description": "Kick 来源",
-		"type": "类型",
-		"StreamStart": "直播开始"
+		"type": "类型"
 	},
 	"kick_action": {
 		"title": "Kick",

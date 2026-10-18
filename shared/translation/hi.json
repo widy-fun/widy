@@ -35,6 +35,7 @@
 	"session_token": "सेशन टोकन",
 	"single_speaker": "एकल स्पीकर",
 	"sure_delete": "क्या आप वाकई इस वैरिएशन को हटाना चाहते हैं?",
+	"can_use_variables": "Can use your variables",
 	"authorization": {
 		"title": "प्राधिकरण",
 		"code": "कोड का अनुरोध करें",
@@ -90,6 +91,7 @@
 		"min_views": "न्यूनतम व्यूज़"
 	},
 	"dashboard": {
+		"variables": "Variables",
 		"messages": "संदेश",
 		"settings": "सेटिंग्स",
 		"services": "सेवाएँ",
@@ -235,6 +237,7 @@
 		"connected": "कनेक्टेड",
 		"not_connected": "कनेक्ट नहीं है",
 		"descriptions": {
+			"telegram_bot": "Connect Telegram bot to send messages to your telegram channel.",
 			"streamelements": "StreamElements से टिप्स और स्ट्रीम इवेंट प्राप्त करें।",
 			"twitch": "चैट, सब्सक्रिप्शन, फ़ॉलो और चैनल इवेंट के लिए अपने Twitch चैनल को कनेक्ट करें।",
 			"widy_sol": "Solana नेटवर्क पर Widy के माध्यम से दान प्राप्त करें।",
@@ -270,6 +273,8 @@
 		"create_donation_account_pending": "दान खाता बनाया जा रहा है..."
 	},
 	"alert": {
+		"GiftSubscription": "Gift subscription",
+		"title_template": "Title template",
 		"image": "छवि",
 		"audio": "ऑडियो",
 		"view": "दृश्य",
@@ -519,6 +524,10 @@
 		"create": "कमांड बनाएँ"
 	},
 	"command": {
+		"select_source_first": "Select source first",
+		"not_work_with_selected_source": "Not work with selected source",
+		"you_need_connect_first": "You need connect {{service}} first",
+		"work_with_type": "Work with source {{source}} and type {{type}}",
 		"name": "नाम",
 		"description": "विवरण",
 		"source": "स्रोत",
@@ -556,6 +565,11 @@
 		"description": "कमांड स्रोत पर अलर्ट"
 	},
 	"errors": {
+		"Piper": "Piper error",
+		"STT": "STT error",
+		"Audio": "Audio error",
+		"Ort": "Ort error",
+		"TelegramBot": "TelegramBot error",
 		"HttpRequest": "अनुरोध त्रुटि",
 		"HttpStatus": "अनुरोध त्रुटि",
 		"ParseError": "प्रतिक्रिया त्रुटि",
@@ -642,11 +656,41 @@
 		"vip_luck_modifier": "VIP भाग्य संशोधक",
 		"moderator_luck_modifier": "मॉडरेटर भाग्य संशोधक"
 	},
+	"twitch_source": {
+		"title": "Twitch",
+		"description": "Twitch sources",
+		"type": "Type",
+		"StreamStarted": "Stream started",
+		"StreamStopped": "Stream stopped"
+	},
+	"twitch_action": {
+		"title": "Twitch",
+		"description": "Twitch actions",
+		"type": "Type",
+		"message": "Message",
+		"PinMessage": "Pin message"
+	},
+	"telegram_bot_action": {
+		"title": "TelegramBot",
+		"description": "Send message to your telegram channel",
+		"channel": "Channel",
+		"message": "Message"
+	},
+	"variables": {
+		"title": "Variables",
+		"create": "Create"
+	},
+	"variable": {
+		"name": "Name",
+		"description": "Description",
+		"value": "Value"
+	},
 	"kick_source": {
+		"StreamStarted": "Stream started",
+		"StreamStopped": "Stream stopped",
 		"title": "Kick",
 		"description": "Kick स्रोत",
-		"type": "प्रकार",
-		"StreamStart": "स्ट्रीम शुरू"
+		"type": "प्रकार"
 	},
 	"kick_action": {
 		"title": "Kick",

@@ -35,6 +35,7 @@
 	"session_token": "Sitzungstoken",
 	"single_speaker": "Einzelner Sprecher",
 	"sure_delete": "Möchten Sie diese Variante wirklich löschen?",
+	"can_use_variables": "Can use your variables",
 	"authorization": {
 		"title": "Autorisierung",
 		"code": "Code anfordern",
@@ -90,6 +91,7 @@
 		"min_views": "Mindestanzahl an Aufrufen"
 	},
 	"dashboard": {
+		"variables": "Variables",
 		"messages": "Nachrichten",
 		"settings": "Einstellungen",
 		"services": "Dienste",
@@ -235,6 +237,7 @@
 		"connected": "Verbunden",
 		"not_connected": "Nicht verbunden",
 		"descriptions": {
+			"telegram_bot": "Connect Telegram bot to send messages to your telegram channel.",
 			"streamelements": "Tipps und Stream-Ereignisse von StreamElements empfangen.",
 			"twitch": "Verbinden Sie Ihren Twitch-Kanal für Chat, Abonnements, Follows und Kanalereignisse.",
 			"widy_sol": "Spenden über Widy im Solana-Netzwerk empfangen.",
@@ -270,6 +273,8 @@
 		"create_donation_account_pending": "Spendenkonto wird erstellt..."
 	},
 	"alert": {
+		"GiftSubscription": "Gift subscription",
+		"title_template": "Title template",
 		"image": "Bild",
 		"audio": "Audio",
 		"view": "Ansicht",
@@ -519,6 +524,10 @@
 		"create": "Befehl erstellen"
 	},
 	"command": {
+		"select_source_first": "Select source first",
+		"not_work_with_selected_source": "Not work with selected source",
+		"you_need_connect_first": "You need connect {{service}} first",
+		"work_with_type": "Work with source {{source}} and type {{type}}",
 		"name": "Name",
 		"description": "Beschreibung",
 		"source": "Quelle",
@@ -556,6 +565,11 @@
 		"description": "Alert bei Befehlsquelle"
 	},
 	"errors": {
+		"Piper": "Piper error",
+		"STT": "STT error",
+		"Audio": "Audio error",
+		"Ort": "Ort error",
+		"TelegramBot": "TelegramBot error",
 		"HttpRequest": "Anfragefehler",
 		"HttpStatus": "Anfragefehler",
 		"ParseError": "Antwortfehler",
@@ -642,11 +656,41 @@
 		"vip_luck_modifier": "VIP-Glücksmodifikator",
 		"moderator_luck_modifier": "Moderator-Glücksmodifikator"
 	},
+	"twitch_source": {
+		"title": "Twitch",
+		"description": "Twitch sources",
+		"type": "Type",
+		"StreamStarted": "Stream started",
+		"StreamStopped": "Stream stopped"
+	},
+	"twitch_action": {
+		"title": "Twitch",
+		"description": "Twitch actions",
+		"type": "Type",
+		"message": "Message",
+		"PinMessage": "Pin message"
+	},
+	"telegram_bot_action": {
+		"title": "TelegramBot",
+		"description": "Send message to your telegram channel",
+		"channel": "Channel",
+		"message": "Message"
+	},
+	"variables": {
+		"title": "Variables",
+		"create": "Create"
+	},
+	"variable": {
+		"name": "Name",
+		"description": "Description",
+		"value": "Value"
+	},
 	"kick_source": {
+		"StreamStarted": "Stream started",
+		"StreamStopped": "Stream stopped",
 		"title": "Kick",
 		"description": "Kick-Quellen",
-		"type": "Typ",
-		"StreamStart": "Streamstart"
+		"type": "Typ"
 	},
 	"kick_action": {
 		"title": "Kick",
