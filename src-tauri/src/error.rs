@@ -4,6 +4,7 @@ use foundry_local_sdk::FoundryLocalError;
 use ndarray::ShapeError;
 use ort::session::builder::SessionBuilder;
 use serde::Serialize;
+use teloxide::RequestError;
 use thiserror::Error;
 use tokio::task::JoinError;
 use xcap::XCapError;
@@ -62,6 +63,9 @@ pub enum AppError {
 
     #[error("Ort error: {0}")]
     Ort(String),
+
+    #[error("TelegramBot error: {0}")]
+    TelegramBot(String),
 }
 
 impl From<reqwest::Error> for AppError {
@@ -152,5 +156,11 @@ impl From<ParseIntError> for AppError {
 impl From<ort::Error<SessionBuilder>> for AppError {
     fn from(err: ort::Error<SessionBuilder>) -> Self {
         AppError::Ort(err.to_string())
+    }
+}
+
+impl From<RequestError> for AppError {
+    fn from(err: RequestError) -> Self {
+        AppError::TelegramBot(err.to_string())
     }
 }

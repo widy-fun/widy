@@ -92,6 +92,8 @@ pub enum Event {
     StopStreamBroadcast,
     #[serde(rename = "App\\Events\\UserBannedEvent")]
     UserBannedEvent,
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Deserialize)]

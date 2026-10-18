@@ -35,7 +35,7 @@
 	"session_token": "Session token",
 	"single_speaker": "Single speaker",
 	"sure_delete": "Are you sure want to delete this variation?",
-	"can_use_variables": "Can use your variables and",
+	"can_use_variables": "Can use your variables",
 	"authorization": {
 		"title": "Authorization",
 		"code": "Request code",
@@ -255,7 +255,8 @@
 			"openai": "Use OpenAI as the AI provider for your assistant.",
 			"claude": "Use Claude as the AI provider for your assistant.",
 			"kick_session": "Connect a Kick session to access your channel features.",
-			"fish_audio": "Connect Fish Audio for text-to-speech voices."
+			"fish_audio": "Connect Fish Audio for text-to-speech voices.",
+			"telegram_bot": "Connect Telegram bot to send messages to your telegram channel."
 		}
 	},
 	"twitch": {
@@ -528,7 +529,11 @@
 		"source": "Source",
 		"action": "Action",
 		"delete": "Delete",
-		"confirm_delete": "Are you sure want to delete this command?"
+		"confirm_delete": "Are you sure want to delete this command?",
+		"select_source_first": "Select source first",
+		"not_work_with_selected_source": "Not work with selected source",
+		"you_need_connect_first": "You need connect {{service}} first",
+		"work_with_type": "Work with source {{source}} and type {{type}}"
 	},
 	"chat_source": {
 		"title": "Chat",
@@ -573,6 +578,11 @@
 		"Custom": "Custom error",
 		"Io": "Io error",
 		"Internet": "Internet error",
+		"Piper": "Piper error",
+		"STT": "STT error",
+		"Audio": "Audio error",
+		"Ort": "Ort error",
+		"TelegramBot": "TelegramBot error",
 		"unknown": "Error"
 	},
 	"tts": {
@@ -650,7 +660,8 @@
 		"title": "Kick",
 		"description": "Kick sources",
 		"type": "Type",
-		"StreamStart": "Stream start"
+		"StreamStarted": "Stream started",
+		"StreamStopped": "Stream stopped"
 	},
 	"kick_action": {
 		"title": "Kick",
@@ -658,6 +669,26 @@
 		"type": "Type",
 		"message": "Message",
 		"PinMessage": "Pin message"
+	},
+	"twitch_source": {
+		"title": "Twitch",
+		"description": "Twitch sources",
+		"type": "Type",
+		"StreamStarted": "Stream started",
+		"StreamStopped": "Stream stopped"
+	},
+	"twitch_action": {
+		"title": "Twitch",
+		"description": "Twitch actions",
+		"type": "Type",
+		"message": "Message",
+		"PinMessage": "Pin message"
+	},
+	"telegram_bot_action": {
+		"title": "TelegramBot",
+		"description": "Send message to your telegram channel",
+		"channel": "Channel",
+		"message": "Message"
 	},
 	"variables": {
 		"title": "Variables",

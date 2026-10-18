@@ -1,6 +1,7 @@
 use entity::{
     commands::{
         Command, KickAction, KickActionType, KickSource, KickSourceType, KickTarget, PostType,
+        TwitchAction, TwitchActionType, TwitchSource, TwitchSourceType, TwitchTarget,
     },
     commands_actions::CommandAction,
     rewards::Platform,
@@ -25,6 +26,7 @@ use crate::{
             KickBotService, KickService, KickSessionService,
             traits::{KickApi, KickSessionApi},
         },
+        telegram_bot::telegram_bot_service::TelegramBotService,
         twitch::{TwitchBotService, TwitchService, traits::TwitchApi},
     },
     traits::ChatMessageBuffer,
@@ -215,7 +217,7 @@ impl CommandsService {
                 is_enabled: true,
                 kick_source:
                     Some(KickSource {
-                        r#type: KickSourceType::StreamStart,
+                        r#type: KickSourceType::StreamStarted,
                     }),
                 kick_action:
                     Some(KickAction {
@@ -228,6 +230,135 @@ impl CommandsService {
                 let variables = database_service.get_variables().await.unwrap_or(vec![]);
                 let message = replace_variables(&target.message, variables);
                 let _ = kick_session_service.pin_message(app, message).await?;
+            }
+            if let Command {
+                is_enabled: true,
+                kick_source:
+                    Some(KickSource {
+                        r#type: KickSourceType::StreamStarted,
+                    }),
+                telegram_bot_action: Some(telegram_bot_action),
+                ..
+            } = command
+            {
+                let telegram_bot_service = app.state::<TelegramBotService>();
+                telegram_bot_service
+                    .send_message(
+                        telegram_bot_action.channel.clone(),
+                        telegram_bot_action.message.clone(),
+                    )
+                    .await?;
+            }
+        }
+
+        Ok(())
+    }
+
+    pub async fn kick_stream_stop(app: &AppHandle) -> Result<(), AppError> {
+        let commands_service = app.state::<CommandsService>();
+        let commands = { commands_service.commands.lock().unwrap().clone() };
+        for command in &commands {
+            if let Command {
+                is_enabled: true,
+                kick_source:
+                    Some(KickSource {
+                        r#type: KickSourceType::StreamStopped,
+                    }),
+                telegram_bot_action: Some(telegram_bot_action),
+                ..
+            } = command
+            {
+                let telegram_bot_service = app.state::<TelegramBotService>();
+                telegram_bot_service
+                    .send_message(
+                        telegram_bot_action.channel.clone(),
+                        telegram_bot_action.message.clone(),
+                    )
+                    .await?;
+            }
+        }
+
+        Ok(())
+    }
+
+    pub async fn twitch_stream_online(app: &AppHandle) -> Result<(), AppError> {
+        let database_service = app.state::<DatabaseService>();
+        let twitch_service = app.state::<TwitchService>();
+        let auth = twitch_service.get_auth(app).await?;
+        let commands_service = app.state::<CommandsService>();
+        let commands = { commands_service.commands.lock().unwrap().clone() };
+        for command in &commands {
+            if let Command {
+                is_enabled: true,
+                twitch_source:
+                    Some(TwitchSource {
+                        r#type: TwitchSourceType::StreamStarted,
+                    }),
+                twitch_action:
+                    Some(TwitchAction {
+                        r#type: TwitchActionType::PinMessage,
+                        target: TwitchTarget::PinMessage(target),
+                    }),
+                ..
+            } = command
+            {
+                let variables = database_service.get_variables().await.unwrap_or(vec![]);
+                let message = replace_variables(&target.message, variables);
+                let _ = twitch_service
+                    .send_chat_message(
+                        message,
+                        auth.user_id.clone(),
+                        auth.user_id.clone(),
+                        None,
+                        app,
+                        Some(true),
+                    )
+                    .await?;
+            }
+            if let Command {
+                is_enabled: true,
+                twitch_source:
+                    Some(TwitchSource {
+                        r#type: TwitchSourceType::StreamStarted,
+                    }),
+                telegram_bot_action: Some(telegram_bot_action),
+                ..
+            } = command
+            {
+                let telegram_bot_service = app.state::<TelegramBotService>();
+                telegram_bot_service
+                    .send_message(
+                        telegram_bot_action.channel.clone(),
+                        telegram_bot_action.message.clone(),
+                    )
+                    .await?;
+            }
+        }
+
+        Ok(())
+    }
+
+    pub async fn twitch_stream_offline(app: &AppHandle) -> Result<(), AppError> {
+        let commands_service = app.state::<CommandsService>();
+        let commands = { commands_service.commands.lock().unwrap().clone() };
+        for command in &commands {
+            if let Command {
+                is_enabled: true,
+                twitch_source:
+                    Some(TwitchSource {
+                        r#type: TwitchSourceType::StreamStopped,
+                    }),
+                telegram_bot_action: Some(telegram_bot_action),
+                ..
+            } = command
+            {
+                let telegram_bot_service = app.state::<TelegramBotService>();
+                telegram_bot_service
+                    .send_message(
+                        telegram_bot_action.channel.clone(),
+                        telegram_bot_action.message.clone(),
+                    )
+                    .await?;
             }
         }
 

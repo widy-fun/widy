@@ -1,9 +1,17 @@
 import { MenuItem, Select, TextField } from "@mui/material";
-import { KickActionType } from "@widy/sdk";
+import { showSnackBar } from "@widy/react";
+import {
+	AlertSeverity,
+	CommandSourceType,
+	KickActionType,
+	KickSourceType,
+	ServiceType,
+} from "@widy/sdk";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
+import { useGetServiceByIdQuery } from "../../../../../api/servicesApi";
 import { DEFAULT_KICK_ACTION } from "../../../../../constants";
 import type { AppState } from "../../../../../store";
 import { setCommand } from "../../../../../store/slices/commandsSlice";
@@ -17,6 +25,9 @@ const KickAction = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [kickAction, setKickAction] = useState(DEFAULT_KICK_ACTION);
+	const { data: kickService } = useGetServiceByIdQuery({
+		id: ServiceType.Kick,
+	});
 
 	useEffect(() => {
 		if (command.kick_action) {
@@ -75,13 +86,45 @@ const KickAction = () => {
 					</div>
 					<LeftRightButtons
 						onLeft={() => {
-							dispatch(
-								setCommand({
-									...command,
-									kick_action: kickAction,
-								}),
-							);
-							navigate(-1);
+							if (!kickService?.authorized) {
+								dispatch(
+									showSnackBar({
+										message: t("command.you_need_connect_first", {
+											service: ServiceType.Kick,
+										}),
+										alertSeverity: AlertSeverity.warning,
+									}),
+								);
+								return;
+							}
+							if (command.source_type === CommandSourceType.None) {
+								dispatch(
+									showSnackBar({
+										message: t("command.select_source_first"),
+										alertSeverity: AlertSeverity.warning,
+									}),
+								);
+								return;
+							}
+							if (command.kick_source?.type === KickSourceType.StreamStarted) {
+								dispatch(
+									setCommand({
+										...command,
+										kick_action: kickAction,
+									}),
+								);
+								navigate(-1);
+							} else {
+								dispatch(
+									showSnackBar({
+										message: t("command.work_with_type", {
+											type: t(`kick_source.${KickSourceType.StreamStarted}`),
+											source: CommandSourceType.Kick,
+										}),
+										alertSeverity: AlertSeverity.warning,
+									}),
+								);
+							}
 						}}
 						OnRight={() => {
 							dispatch(

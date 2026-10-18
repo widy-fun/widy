@@ -11,8 +11,11 @@ import ChatSource from "./components/commands/components/ChatSource";
 import CreateCommand from "./components/commands/components/CreateCommand";
 import KickAction from "./components/commands/components/KickAction";
 import KickSource from "./components/commands/components/KickSource";
+import TelegramBotAction from "./components/commands/components/TelegramBotAction";
 import TimerSource from "./components/commands/components/TimerSource";
 import TtsAction from "./components/commands/components/TtsAction";
+import TwitchAction from "./components/commands/components/TwitchAction";
+import TwitchSource from "./components/commands/components/TwitchSource";
 import UpdateCommandSettings from "./components/commands/UpdateCommandSettings";
 import CreateGoal from "./components/goals/components/CreateGoal";
 import UpdateGoalSettings from "./components/goals/components/UpdateGoalSettings";
@@ -66,6 +69,12 @@ const DashboardArticle = () => {
 				<Route path="commands/action/kick" element={<KickAction />} />
 				<Route path="variables/new/variable" element={<CreateVariable />} />
 				<Route path="variables/:id" element={<UpdateVariable />} />
+				<Route path="commands/source/twitch" element={<TwitchSource />} />
+				<Route path="commands/action/twitch" element={<TwitchAction />} />
+				<Route
+					path="commands/action/telegram-bot"
+					element={<TelegramBotAction />}
+				/>
 			</Routes>
 		</article>
 	);

@@ -25,6 +25,7 @@ import KickSession from "./components/kick-session/KickSession";
 import OpenAI from "./components/openai/OpenAI";
 import StreamElements from "./components/streamelements/StreamElements";
 import StreamLabs from "./components/streamlabs/StreamLabs";
+import TelegramBot from "./components/telegram-bot/TelegramBot";
 import Tribute from "./components/tribute/Tribute";
 import Twitch from "./components/twitch/Twitch";
 import TwitchBot from "./components/twitch-bot/TwitchBot";
@@ -124,6 +125,7 @@ function App() {
 					<Route path="/claude/*" element={<Claude />} />
 					<Route path="/kick-session/*" element={<KickSession />} />
 					<Route path="/fish-audio/*" element={<FishAudio />} />
+					<Route path="/telegram-bot/*" element={<TelegramBot />} />
 				</Routes>
 			)}
 		</main>

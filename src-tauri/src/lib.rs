@@ -195,7 +195,9 @@ pub fn run() {
             get_variable_by_id,
             create_variable,
             update_variable,
-            delete_variable_by_id
+            delete_variable_by_id,
+            telegram_bot_connect,
+            telegram_bot_sign_out
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

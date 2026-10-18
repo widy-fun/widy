@@ -5,11 +5,18 @@ import {
 	Select,
 	TextField,
 } from "@mui/material";
-import { Platform } from "@widy/sdk";
+import { showSnackBar } from "@widy/react";
+import {
+	AlertSeverity,
+	CommandSourceType,
+	Platform,
+	ServiceType,
+} from "@widy/sdk";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
+import { useGetServiceByIdQuery } from "../../../../../api/servicesApi";
 import { DEFAULT_CHAT_BOT_ACTION } from "../../../../../constants";
 import type { AppState } from "../../../../../store";
 import { setCommand } from "../../../../../store/slices/commandsSlice";
@@ -24,6 +31,12 @@ const ChatBotAction = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [chatBotAction, setChatBotAction] = useState(DEFAULT_CHAT_BOT_ACTION);
+	const { data: twitchBotService } = useGetServiceByIdQuery({
+		id: ServiceType.TwitchBot,
+	});
+	const { data: kickBotService } = useGetServiceByIdQuery({
+		id: ServiceType.KickBot,
+	});
 
 	useEffect(() => {
 		if (command.chat_bot_action) {
@@ -99,13 +112,63 @@ const ChatBotAction = () => {
 
 					<LeftRightButtons
 						onLeft={() => {
-							dispatch(
-								setCommand({
-									...command,
-									chat_bot_action: chatBotAction,
-								}),
-							);
-							navigate(-1);
+							if (
+								chatBotAction.platforms.includes(Platform.Kick) &&
+								!kickBotService?.authorized
+							) {
+								dispatch(
+									showSnackBar({
+										message: t("command.you_need_connect_first", {
+											service: ServiceType.KickBot,
+										}),
+										alertSeverity: AlertSeverity.warning,
+									}),
+								);
+								return;
+							}
+							if (
+								chatBotAction.platforms.includes(Platform.Twitch) &&
+								!twitchBotService?.authorized
+							) {
+								dispatch(
+									showSnackBar({
+										message: t("command.you_need_connect_first", {
+											service: ServiceType.TwitchBot,
+										}),
+										alertSeverity: AlertSeverity.warning,
+									}),
+								);
+								return;
+							}
+							if (command.source_type === CommandSourceType.None) {
+								dispatch(
+									showSnackBar({
+										message: t("command.select_source_first"),
+										alertSeverity: AlertSeverity.warning,
+									}),
+								);
+								return;
+							}
+
+							if (
+								command.source_type === CommandSourceType.Chat ||
+								command.source_type === CommandSourceType.Timer
+							) {
+								dispatch(
+									setCommand({
+										...command,
+										chat_bot_action: chatBotAction,
+									}),
+								);
+								navigate(-1);
+							} else {
+								dispatch(
+									showSnackBar({
+										message: t("command.not_work_with_selected_source"),
+										alertSeverity: AlertSeverity.warning,
+									}),
+								);
+							}
 						}}
 						OnRight={() => {
 							dispatch(

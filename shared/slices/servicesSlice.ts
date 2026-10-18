@@ -166,6 +166,13 @@ const initialState: ServicesState = {
 			image: "https://www.google.com/s2/favicons?domain=fish.audio&sz=128",
 			description: "services.descriptions.fish_audio",
 		},
+		[ServiceType.TelegramBot]: {
+			active: false,
+			color: "#24a1de",
+			authPath: "/telegram-bot/token",
+			image: "https://www.google.com/s2/favicons?domain=telegram.org&sz=128",
+			description: "services.descriptions.telegram_bot",
+		},
 	},
 };
 

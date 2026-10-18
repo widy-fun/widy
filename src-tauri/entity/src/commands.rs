@@ -27,6 +27,12 @@ pub struct Model {
     pub kick_source: Option<KickSource>,
     #[sea_orm(column_type = "JsonBinary")]
     pub kick_action: Option<KickAction>,
+    #[sea_orm(column_type = "JsonBinary")]
+    pub twitch_source: Option<TwitchSource>,
+    #[sea_orm(column_type = "JsonBinary")]
+    pub twitch_action: Option<TwitchAction>,
+    #[sea_orm(column_type = "JsonBinary")]
+    pub telegram_bot_action: Option<TelegramBotAction>,
     #[sea_orm(has_one)]
     pub alert: HasOne<super::alerts::Entity>,
     pub source_type: CommandSourceType,
@@ -43,6 +49,9 @@ pub struct Command {
     pub timer_source: Option<TimerSource>,
     pub kick_source: Option<KickSource>,
     pub kick_action: Option<KickAction>,
+    pub twitch_source: Option<TwitchSource>,
+    pub twitch_action: Option<TwitchAction>,
+    pub telegram_bot_action: Option<TelegramBotAction>,
     pub chat_bot_action: Option<ChatBotAction>,
     pub tts_settings: Option<TtsSettings>,
     pub auction_action: Option<AuctionAction>,
@@ -64,6 +73,8 @@ pub enum CommandSourceType {
     Timer,
     #[sea_orm(string_value = "Kick")]
     Kick,
+    #[sea_orm(string_value = "Twitch")]
+    Twitch,
     #[sea_orm(string_value = "None")]
     None,
 }
@@ -117,7 +128,18 @@ pub struct KickSource {
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 pub enum KickSourceType {
-    StreamStart,
+    StreamStarted,
+    StreamStopped,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
+pub struct TwitchSource {
+    pub r#type: TwitchSourceType,
+}
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
+pub enum TwitchSourceType {
+    StreamStarted,
+    StreamStopped,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
@@ -131,10 +153,32 @@ pub enum KickActionType {
     PinMessage,
 }
 
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
+pub struct TwitchAction {
+    pub r#type: TwitchActionType,
+    pub target: TwitchTarget,
+}
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
+pub struct TelegramBotAction {
+    pub channel: String,
+    pub message: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
+pub enum TwitchActionType {
+    PinMessage,
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
 
 pub enum KickTarget {
+    PinMessage(PinMessageTarget),
+}
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(untagged)]
+
+pub enum TwitchTarget {
     PinMessage(PinMessageTarget),
 }
 

@@ -146,6 +146,12 @@ export const api = createApi({
 			}),
 			invalidatesTags: ["Services"],
 		}),
+		telegramBotSignOut: builder.mutation<void, void>({
+			query: () => ({
+				command: "telegram_bot_sign_out",
+			}),
+			invalidatesTags: ["Services"],
+		}),
 	}),
 });
 
@@ -167,4 +173,5 @@ export const {
 	useClaudeSignOutMutation,
 	useKickSessionSignOutMutation,
 	useFishAudioSignOutMutation,
+	useTelegramBotSignOutMutation,
 } = api;

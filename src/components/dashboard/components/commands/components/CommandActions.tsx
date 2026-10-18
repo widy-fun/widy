@@ -81,6 +81,48 @@ const CommandActions = ({ isUpdate }: { isUpdate: boolean }) => {
 				}
 				selected={!!command.kick_action}
 			/>
+			<CommandSourceActionCard
+				title={t("twitch_action.title")}
+				description={t("twitch_action.description")}
+				path="/dashboard/commands/action/twitch"
+				icon={
+					<Box
+						component="img"
+						src={services[ServiceType.Twitch].image}
+						alt=""
+						sx={{
+							width: 40,
+							height: 40,
+							objectFit: "contain",
+							borderRadius: 1,
+							backgroundColor: "white",
+							padding: "4px",
+						}}
+					/>
+				}
+				selected={!!command.twitch_action}
+			/>
+			<CommandSourceActionCard
+				title={t("telegram_bot_action.title")}
+				description={t("telegram_bot_action.description")}
+				path="/dashboard/commands/action/telegram-bot"
+				icon={
+					<Box
+						component="img"
+						src={services[ServiceType.TelegramBot].image}
+						alt=""
+						sx={{
+							width: 40,
+							height: 40,
+							objectFit: "contain",
+							borderRadius: 1,
+							backgroundColor: "white",
+							padding: "4px",
+						}}
+					/>
+				}
+				selected={!!command.telegram_bot_action}
+			/>
 		</Box>
 	);
 };

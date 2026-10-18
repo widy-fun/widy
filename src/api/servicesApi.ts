@@ -2,11 +2,11 @@ import type {
 	IApiKeyAuth,
 	IDestreamAuth,
 	IDonatePayAuth,
-	IDonationAlertsAuth,
 	IKickSessionToken,
 	IService,
 	IStreamElementsAuth,
 	IStreamLabsAuth,
+	ITokenAuth,
 } from "@widy/sdk";
 import { ServiceType } from "@widy/sdk";
 import { api } from ".";
@@ -44,7 +44,7 @@ export const servicesApi = api.injectEndpoints({
 			{
 				auth:
 					| IStreamElementsAuth
-					| IDonationAlertsAuth
+					| ITokenAuth
 					| IStreamLabsAuth
 					| IDonatePayAuth
 					| IDestreamAuth

@@ -9,8 +9,8 @@ use crate::{
         twitch::{
             models::{
                 BadgeInfo, ChannelBanEvent, ChannelChatMessageDeleteEvent, ChannelChatMessageEvent,
-                Event, EventPayload, NotificationMessage, Payload, SubscriptionType,
-                WebSocketInstruction,
+                Event, EventPayload, NotificationMessage, Payload, StreamOnlineType,
+                SubscriptionType, WebSocketInstruction,
             },
             traits::TwitchApi,
         },
@@ -440,6 +440,16 @@ impl TwitchService {
                     let _ = EventsService::user_banned_in_chat(UnifiedBannedUser::from(event), app)
                         .await;
                 }
+            }
+            SubscriptionType::StreamOnline => {
+                if let Event::StreamOnline(event) = payload.event {
+                    if let StreamOnlineType::Live = event.r#type {
+                        let _ = CommandsService::twitch_stream_online(app).await;
+                    }
+                }
+            }
+            SubscriptionType::StreamOffline => {
+                let _ = CommandsService::twitch_stream_offline(app).await;
             }
             _ => {}
         }

@@ -5,6 +5,7 @@ use crate::services::fish_audio::FishAudioService;
 use crate::services::gemini::GeminiService;
 use crate::services::kick::{KickBotService, KickService, KickSessionService};
 use crate::services::openai::OpenAIService;
+use crate::services::telegram_bot::telegram_bot_service::TelegramBotService;
 use crate::services::tts::TtsService;
 use crate::services::twitch::traits::TwitchApi;
 use crate::services::twitch::{TwitchBotService, TwitchService};
@@ -211,6 +212,11 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
     let fish_audio_service = FishAudioService::new(reqwest_client.clone());
     let _ = fish_audio_service.connect(&app).await;
     app.manage(fish_audio_service);
+
+    //telegram bot
+    let telegram_bot_service = TelegramBotService::new();
+    let _ = telegram_bot_service.connect(&app).await;
+    app.manage(telegram_bot_service);
 
     Ok(())
 }

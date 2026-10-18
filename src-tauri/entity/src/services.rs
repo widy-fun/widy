@@ -59,6 +59,8 @@ pub enum ServiceType {
     KickSession,
     #[sea_orm(string_value = "FishAudio")]
     FishAudio,
+    #[sea_orm(string_value = "TelegramBot")]
+    TelegramBot,
 }
 
 impl ServiceType {
@@ -83,6 +85,7 @@ impl ServiceType {
             ServiceType::Claude => "Claude",
             ServiceType::KickSession => "KickSession",
             ServiceType::FishAudio => "FishAudio",
+            ServiceType::TelegramBot => "TelegramBot",
         }
     }
 }
@@ -102,12 +105,12 @@ pub enum ServiceAuth {
     Twitch(TwitchAuth),
     StreamElements(StreamElementsAuth),
     Widy(WidyAuth),
-    DonationAlerts(DonationAlertsAuth),
     StreamLabs(StreamLabsAuth),
     DonatePay(DonatePayAuth),
     Destream(DestreamAuth),
     ApiKey(ApiKeyAuth),
     KickSession(KickSessionToken),
+    Token(TokenAuth),
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -116,13 +119,14 @@ pub struct WidyAuth {
     pub donation_account_address: String,
     pub user: String,
 }
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct DonationAlertsAuth {
-    pub token: String,
-}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ApiKeyAuth {
     pub api_key: String,
+}
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct TokenAuth {
+    pub token: String,
 }
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct KickSessionToken {

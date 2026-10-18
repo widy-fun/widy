@@ -56,6 +56,27 @@ const CommandSources = () => {
 					/>
 				}
 			/>
+			<CommandSourceActionCard
+				title={t("twitch_source.title")}
+				description={t("twitch_source.description")}
+				path="/dashboard/commands/source/twitch"
+				selected={!!command.twitch_source}
+				icon={
+					<Box
+						component="img"
+						src={services[ServiceType.Twitch].image}
+						alt=""
+						sx={{
+							width: 40,
+							height: 40,
+							objectFit: "contain",
+							borderRadius: 1,
+							backgroundColor: "white",
+							padding: "4px",
+						}}
+					/>
+				}
+			/>
 		</Box>
 	);
 };

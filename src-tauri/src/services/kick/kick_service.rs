@@ -317,6 +317,9 @@ impl KickService {
             Event::StreamerIsLive => {
                 let _ = CommandsService::kick_stream_start(app).await;
             }
+            Event::StopStreamBroadcast => {
+                let _ = CommandsService::kick_stream_stop(app).await;
+            }
             _ => {}
         }
     }

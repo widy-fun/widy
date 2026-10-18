@@ -8,14 +8,19 @@ import {
 	IKickAction,
 	IKickSource,
 	ISettings,
+	ITelegramBotAction,
 	ITextStyle,
 	ITimerSource,
+	ITwitchAction,
+	ITwitchSource,
 	KickActionType,
 	KickSourceType,
 	Platform,
 	PostType,
 	TextAnimation,
 	TextAnimationVariant,
+	TwitchActionType,
+	TwitchSourceType,
 	UserLevel,
 } from "@widy/sdk";
 
@@ -98,7 +103,11 @@ export const DEFAULT_CHAT_SOURCE: IChatSource = {
 };
 
 export const DEFAULT_KICK_SOURCE: IKickSource = {
-	type: KickSourceType.StreamStart,
+	type: KickSourceType.StreamStarted,
+};
+
+export const DEFAULT_TWITCH_SOURCE: ITwitchSource = {
+	type: TwitchSourceType.StreamStarted,
 };
 
 export const DEFAULT_KICK_ACTION: IKickAction = {
@@ -106,6 +115,18 @@ export const DEFAULT_KICK_ACTION: IKickAction = {
 	target: {
 		message: "",
 	},
+};
+
+export const DEFAULT_TWITCH_ACTION: ITwitchAction = {
+	type: TwitchActionType.PinMessage,
+	target: {
+		message: "",
+	},
+};
+
+export const DEFAULT_TELEGRAM_BOT_ACTION: ITelegramBotAction = {
+	channel: "",
+	message: "",
 };
 
 export const DEFAULT_COMMAND: ICommand = {

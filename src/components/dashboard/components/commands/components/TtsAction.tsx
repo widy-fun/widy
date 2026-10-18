@@ -1,4 +1,5 @@
-import { TtsType } from "@widy/sdk";
+import { showSnackBar } from "@widy/react";
+import { AlertSeverity, CommandSourceType, TtsType } from "@widy/sdk";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -44,13 +45,34 @@ const TtsAction = () => {
 
 					<LeftRightButtons
 						onLeft={() => {
-							dispatch(
-								setCommand({
-									...command,
-									tts_settings: ttsSettings,
-								}),
-							);
-							navigate(-1);
+							if (command.source_type === CommandSourceType.None) {
+								dispatch(
+									showSnackBar({
+										message: t("command.select_source_first"),
+										alertSeverity: AlertSeverity.warning,
+									}),
+								);
+								return;
+							}
+							if (
+								command.source_type === CommandSourceType.Chat ||
+								command.source_type === CommandSourceType.Timer
+							) {
+								dispatch(
+									setCommand({
+										...command,
+										tts_settings: ttsSettings,
+									}),
+								);
+								navigate(-1);
+							} else {
+								dispatch(
+									showSnackBar({
+										message: t("command.not_work_with_selected_source"),
+										alertSeverity: AlertSeverity.warning,
+									}),
+								);
+							}
 						}}
 						OnRight={() => {
 							dispatch(

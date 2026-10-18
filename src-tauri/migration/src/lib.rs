@@ -50,6 +50,10 @@ mod m20261009_134046_add_column_auction_action_to_commands_table;
 mod m20261011_114537_add_column_kick_source_to_commands_table;
 mod m20261011_114853_add_column_kick_action_to_commands_table;
 mod m20261014_193013_create_table_variables;
+mod m20261017_144541_add_telegram_bot_service;
+mod m20261017_182112_add_column_twitch_source_to_commands_table;
+mod m20261017_182135_add_column_twitch_action_to_commands_table;
+mod m20261017_203540_add_column_telegram_bot_action_to_commands_table;
 
 pub struct Migrator;
 
@@ -108,6 +112,10 @@ impl MigratorTrait for Migrator {
             Box::new(m20261011_114537_add_column_kick_source_to_commands_table::Migration),
             Box::new(m20261011_114853_add_column_kick_action_to_commands_table::Migration),
             Box::new(m20261014_193013_create_table_variables::Migration),
+            Box::new(m20261017_144541_add_telegram_bot_service::Migration),
+            Box::new(m20261017_182112_add_column_twitch_source_to_commands_table::Migration),
+            Box::new(m20261017_182135_add_column_twitch_action_to_commands_table::Migration),
+            Box::new(m20261017_203540_add_column_telegram_bot_action_to_commands_table::Migration),
         ]
     }
 }

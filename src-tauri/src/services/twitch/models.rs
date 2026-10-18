@@ -80,8 +80,18 @@ pub enum Condition {
     Redemption(RedemptionCondition),
     ChatMessage(ChatMessageCondition),
     ChannelBan(ChannelBanCondition),
+    StreamOnline(StreamOnlineCondition),
+    StreamOffline(StreamOfflineCondition),
 }
 
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct StreamOfflineCondition {
+    pub broadcaster_user_id: String,
+}
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct StreamOnlineCondition {
+    pub broadcaster_user_id: String,
+}
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct ChannelBanCondition {
     pub broadcaster_user_id: String,
@@ -223,8 +233,41 @@ pub enum Event {
     Raid(RaidEvent),
     ChannelChatMessageDelete(ChannelChatMessageDeleteEvent),
     ChannelChatClearUserMessages(ChannelChatClearUserMessagesEvent),
+    StreamOnline(StreamOnlineEvent),
+    StreamOffline(StreamOfflineEvent),
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
+/// 3 fields
+pub struct StreamOfflineEvent {
+    pub broadcaster_user_id: String,
+    pub broadcaster_user_name: String,
+    pub broadcaster_user_login: String,
+}
+#[derive(Debug, Clone, Deserialize, Serialize)]
+/// 6 fields
+pub struct StreamOnlineEvent {
+    pub id: String,
+    pub broadcaster_user_id: String,
+    pub broadcaster_user_name: String,
+    pub broadcaster_user_login: String,
+    pub r#type: StreamOnlineType,
+    pub started_at: String,
+}
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub enum StreamOnlineType {
+    #[serde(rename = "live")]
+    Live,
+    #[serde(rename = "playlist")]
+    Playlist,
+    #[serde(rename = "watch_party")]
+    WatchParty,
+    #[serde(rename = "premiere")]
+    Premiere,
+    #[serde(rename = "rerun")]
+    Rerun,
+}
+#[derive(Debug, Clone, Deserialize, Serialize)]
+/// 7 fields
 pub struct ChannelChatMessageDeleteEvent {
     pub broadcaster_user_id: String,
     pub broadcaster_user_name: String,
@@ -494,6 +537,10 @@ pub enum SubscriptionType {
     ChannelChatClearUserMessages,
     #[serde(rename = "channel.ban")]
     ChannelBan,
+    #[serde(rename = "stream.online")]
+    StreamOnline,
+    #[serde(rename = "stream.offline")]
+    StreamOffline,
     #[serde(other)]
     Unknown,
 }
@@ -518,6 +565,8 @@ impl SubscriptionType {
                 "channel.chat.clear_user_messages".to_string()
             }
             SubscriptionType::ChannelBan => "channel.ban".to_string(),
+            SubscriptionType::StreamOnline => "stream.online".to_string(),
+            SubscriptionType::StreamOffline => "stream.offline".to_string(),
             SubscriptionType::Unknown => "unknown".to_string(),
         }
     }

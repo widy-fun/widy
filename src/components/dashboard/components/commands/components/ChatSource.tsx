@@ -5,12 +5,21 @@ import {
 	Select,
 	TextField,
 } from "@mui/material";
-import { CommandSourceType, Platform, UserLevel } from "@widy/sdk";
+import { showSnackBar } from "@widy/react";
+import {
+	AlertSeverity,
+	CommandSourceType,
+	Platform,
+	ServiceType,
+	UserLevel,
+} from "@widy/sdk";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
+import { useGetServiceByIdQuery } from "../../../../../api/servicesApi";
 import { DEFAULT_CHAT_SOURCE } from "../../../../../constants";
+import resetCommand from "../../../../../helpers/resetCommand";
 import type { AppState } from "../../../../../store";
 import { setCommand } from "../../../../../store/slices/commandsSlice";
 import LeftRightButtons from "../../../../LeftRightButtons";
@@ -22,6 +31,12 @@ const ChatSource = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [chatSource, setChatSource] = useState(DEFAULT_CHAT_SOURCE);
+	const { data: twitchService } = useGetServiceByIdQuery({
+		id: ServiceType.Twitch,
+	});
+	const { data: kickService } = useGetServiceByIdQuery({
+		id: ServiceType.Kick,
+	});
 
 	useEffect(() => {
 		if (command.chat_source) {
@@ -101,23 +116,48 @@ const ChatSource = () => {
 					</div>
 					<LeftRightButtons
 						onLeft={() => {
+							if (
+								chatSource.platforms.includes(Platform.Kick) &&
+								!kickService?.authorized
+							) {
+								dispatch(
+									showSnackBar({
+										message: t("command.you_need_connect_first", {
+											service: ServiceType.Kick,
+										}),
+										alertSeverity: AlertSeverity.warning,
+									}),
+								);
+								return;
+							}
+							if (
+								chatSource.platforms.includes(Platform.Twitch) &&
+								!twitchService?.authorized
+							) {
+								dispatch(
+									showSnackBar({
+										message: t("command.you_need_connect_first", {
+											service: ServiceType.Twitch,
+										}),
+										alertSeverity: AlertSeverity.warning,
+									}),
+								);
+								return;
+							}
 							dispatch(
 								setCommand({
-									...command,
 									chat_source: chatSource,
-									timer_source: undefined,
 									source_type: CommandSourceType.Chat,
+									id: command.id,
+									name: command.name,
+									description: command.description,
+									is_enabled: command.is_enabled,
 								}),
 							);
 							navigate(-1);
 						}}
 						OnRight={() => {
-							dispatch(
-								setCommand({
-									...command,
-									chat_source: undefined,
-								}),
-							);
+							dispatch(setCommand(resetCommand(command)));
 							navigate(-1);
 						}}
 						leftText={t("ok")}

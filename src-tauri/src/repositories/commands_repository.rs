@@ -42,6 +42,9 @@ impl CommandsRepository for DatabaseService {
             .set_auction_action(command.auction_action)
             .set_kick_action(command.kick_action)
             .set_kick_source(command.kick_source)
+            .set_twitch_action(command.twitch_action)
+            .set_twitch_source(command.twitch_source)
+            .set_telegram_bot_action(command.telegram_bot_action)
             .set_description(command.description)
             .set_source_type(command.source_type)
             .set_timer_source(command.timer_source)
@@ -154,6 +157,9 @@ impl CommandsRepository for DatabaseService {
             auction_action: Set(command.auction_action),
             kick_source: Set(command.kick_source),
             kick_action: Set(command.kick_action),
+            twitch_source: Set(command.twitch_source),
+            twitch_action: Set(command.twitch_action),
+            telegram_bot_action: Set(command.telegram_bot_action),
             tts_settings: Set(command.tts_settings),
             source_type: Set(command.source_type),
             is_enabled: Set(command.is_enabled),

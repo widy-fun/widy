@@ -18,6 +18,7 @@ pub mod nsfw_service;
 pub mod openai;
 pub mod stream_elements_service;
 pub mod stream_labs_service;
+pub mod telegram_bot;
 pub mod tribute_service;
 pub mod tts;
 pub mod twitch;

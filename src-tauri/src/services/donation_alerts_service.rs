@@ -5,7 +5,7 @@ use crate::{
     utils::send_request,
 };
 use entity::{
-    services::{DonationAlertsAuth, ServiceAuth, ServiceType},
+    services::{ServiceAuth, ServiceType, TokenAuth},
     settings::Currency,
 };
 use futures::{SinkExt, StreamExt};
@@ -119,7 +119,7 @@ impl DonationAlertsService {
             .await?;
         if let Some(entity::services::Model {
             id: ServiceType::DonationAlerts,
-            auth: Some(ServiceAuth::DonationAlerts(auth)),
+            auth: Some(ServiceAuth::Token(auth)),
             ..
         }) = service
         {
@@ -139,9 +139,7 @@ impl DonationAlertsService {
             database_service
                 .update_service_auth(
                     ServiceType::DonationAlerts,
-                    Some(ServiceAuth::DonationAlerts(DonationAlertsAuth {
-                        token: auth.token,
-                    })),
+                    Some(ServiceAuth::Token(TokenAuth { token: auth.token })),
                     true,
                 )
                 .await?;

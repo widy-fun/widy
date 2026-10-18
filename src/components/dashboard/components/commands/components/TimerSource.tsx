@@ -6,6 +6,7 @@ import { NumericFormat } from "react-number-format";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { DEFAULT_TIMER_SOURCE } from "../../../../../constants";
+import resetCommand from "../../../../../helpers/resetCommand";
 import type { AppState } from "../../../../../store";
 import { setCommand } from "../../../../../store/slices/commandsSlice";
 import LeftRightButtons from "../../../../LeftRightButtons";
@@ -112,21 +113,18 @@ const TimerSource = () => {
 						onLeft={() => {
 							dispatch(
 								setCommand({
-									...command,
 									timer_source: timerSource,
-									chat_source: undefined,
 									source_type: CommandSourceType.Timer,
+									id: command.id,
+									name: command.name,
+									description: command.description,
+									is_enabled: command.is_enabled,
 								}),
 							);
 							navigate(-1);
 						}}
 						OnRight={() => {
-							dispatch(
-								setCommand({
-									...command,
-									timer_source: undefined,
-								}),
-							);
+							dispatch(setCommand(resetCommand(command)));
 							navigate(-1);
 						}}
 						leftText={t("ok")}

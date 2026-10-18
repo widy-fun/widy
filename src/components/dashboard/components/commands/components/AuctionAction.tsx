@@ -1,4 +1,6 @@
 import { TextField } from "@mui/material";
+import { showSnackBar } from "@widy/react";
+import { AlertSeverity, CommandSourceType } from "@widy/sdk";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NumericFormat } from "react-number-format";
@@ -139,13 +141,31 @@ const AuctionAction = () => {
 
 					<LeftRightButtons
 						onLeft={() => {
-							dispatch(
-								setCommand({
-									...command,
-									auction_action: auctionAction,
-								}),
-							);
-							navigate(-1);
+							if (command.source_type === CommandSourceType.None) {
+								dispatch(
+									showSnackBar({
+										message: t("command.select_source_first"),
+										alertSeverity: AlertSeverity.warning,
+									}),
+								);
+								return;
+							}
+							if (command.source_type === CommandSourceType.Chat) {
+								dispatch(
+									setCommand({
+										...command,
+										auction_action: auctionAction,
+									}),
+								);
+								navigate(-1);
+							} else {
+								dispatch(
+									showSnackBar({
+										message: t("command.not_work_with_selected_source"),
+										alertSeverity: AlertSeverity.warning,
+									}),
+								);
+							}
 						}}
 						OnRight={() => {
 							dispatch(

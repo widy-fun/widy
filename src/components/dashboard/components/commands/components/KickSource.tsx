@@ -1,10 +1,18 @@
 import { MenuItem, Select } from "@mui/material";
-import { CommandSourceType, KickSourceType } from "@widy/sdk";
+import { showSnackBar } from "@widy/react";
+import {
+	AlertSeverity,
+	CommandSourceType,
+	KickSourceType,
+	ServiceType,
+} from "@widy/sdk";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
+import { useGetServiceByIdQuery } from "../../../../../api/servicesApi";
 import { DEFAULT_KICK_SOURCE } from "../../../../../constants";
+import resetCommand from "../../../../../helpers/resetCommand";
 import type { AppState } from "../../../../../store";
 import { setCommand } from "../../../../../store/slices/commandsSlice";
 import LeftRightButtons from "../../../../LeftRightButtons";
@@ -16,6 +24,9 @@ const KickSource = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [kickSource, setKickSource] = useState(DEFAULT_KICK_SOURCE);
+	const { data: kickService } = useGetServiceByIdQuery({
+		id: ServiceType.Kick,
+	});
 
 	useEffect(() => {
 		if (command.kick_source) {
@@ -51,24 +62,31 @@ const KickSource = () => {
 
 					<LeftRightButtons
 						onLeft={() => {
+							if (!kickService?.authorized) {
+								dispatch(
+									showSnackBar({
+										message: t("command.you_need_connect_first", {
+											service: ServiceType.Kick,
+										}),
+										alertSeverity: AlertSeverity.warning,
+									}),
+								);
+								return;
+							}
 							dispatch(
 								setCommand({
-									...command,
 									kick_source: kickSource,
-									timer_source: undefined,
-									chat_source: undefined,
 									source_type: CommandSourceType.Kick,
+									id: command.id,
+									name: command.name,
+									description: command.description,
+									is_enabled: command.is_enabled,
 								}),
 							);
 							navigate(-1);
 						}}
 						OnRight={() => {
-							dispatch(
-								setCommand({
-									...command,
-									kick_source: undefined,
-								}),
-							);
+							dispatch(setCommand(resetCommand(command)));
 							navigate(-1);
 						}}
 						leftText={t("ok")}
