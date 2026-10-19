@@ -1,14 +1,21 @@
 use async_trait::async_trait;
 use entity::{
-    followers,
+    followers::{self, Column, Entity, Model},
     messages::{self, ClientMessage},
+    services::ServiceType,
 };
+use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
 
 use crate::{error::AppError, services::DatabaseService, utils::log_and_wrap_error};
 
 #[async_trait]
 pub trait FollowsRepository: Send + Sync {
     async fn save_follow_message(&self, client_message: ClientMessage) -> Result<(), AppError>;
+    async fn get_follow(
+        &self,
+        user_id: String,
+        service: ServiceType,
+    ) -> Result<Option<Model>, AppError>;
 }
 
 #[async_trait]
@@ -36,5 +43,17 @@ impl FollowsRepository for DatabaseService {
         }
 
         Ok(())
+    }
+    async fn get_follow(
+        &self,
+        user_id: String,
+        service: ServiceType,
+    ) -> Result<Option<Model>, AppError> {
+        Entity::find()
+            .filter(Column::UserId.eq(user_id))
+            .filter(Column::Service.eq(service))
+            .one(&self.connection)
+            .await
+            .map_err(|e| log_and_wrap_error("Get follow error", e))
     }
 }

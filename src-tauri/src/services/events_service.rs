@@ -914,6 +914,12 @@ impl EventsService {
     ) -> Result<(), AppError> {
         let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
         let database_service = app.state::<DatabaseService>();
+        let old_follow = database_service
+            .get_follow(follow.user_id.clone(), follow.service.clone())
+            .await?;
+        if old_follow.is_some() {
+            return Err(AppError::Custom("Follow exist".to_string()));
+        }
         let variables = database_service.get_variables().await?;
         let variables = [
             vec![Variable {
