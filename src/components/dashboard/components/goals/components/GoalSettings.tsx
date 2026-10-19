@@ -1,7 +1,7 @@
 import CallToActionIcon from "@mui/icons-material/CallToAction";
 import SettingsIcon from "@mui/icons-material/Settings";
 import TitleIcon from "@mui/icons-material/Title";
-import { Box, Button, Tab, Tabs } from "@mui/material";
+import { Box, Tab, Tabs } from "@mui/material";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
@@ -9,6 +9,7 @@ import { useNavigate } from "react-router";
 import GoalView from "../../../../../../shared/components/GoalView";
 import { useGetSettingsQuery } from "../../../../../api/settingsApi";
 import type { AppState } from "../../../../../store";
+import LeftRightButtons from "../../../../LeftRightButtons";
 import TabPanel from "../../../../TabPanel";
 import GoalElementsSettings from "./GoalElementsSettings";
 import GoalGeneralSettings from "./GoalGeneralSettings";
@@ -129,19 +130,14 @@ const GoalSettings = ({
 							/>
 						</div>
 					)}
-					<div
-						style={{
-							display: "flex",
-							gap: 20,
-							justifyContent: "center",
-							marginTop: 20,
+					<LeftRightButtons
+						onLeft={onSave}
+						OnRight={() => {
+							navigate(-1);
 						}}
-					>
-						<Button variant="contained" onClick={onSave}>
-							{t("save")}
-						</Button>
-						<Button onClick={() => navigate(-1)}>{t("back")}</Button>
-					</div>
+						leftText={t("save")}
+						rightText={t("back")}
+					/>
 				</>
 			)}
 		</>

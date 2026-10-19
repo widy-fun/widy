@@ -6,8 +6,8 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useGetAlertsQuery } from "../../../../api/alertsApi";
 import groupAlertsByGroupId from "../../../../utils/groupAlertsByGroupId";
-import AlertsGroup from "./AlertsGroup";
 import AddNewAlertVariantButton from "./components/AddNewAlertVariantButton";
+import AlertsGroup from "./components/AlertsGroup";
 
 const Alerts = () => {
 	const { t } = useTranslation();

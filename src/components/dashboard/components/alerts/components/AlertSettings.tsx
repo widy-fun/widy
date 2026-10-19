@@ -2,22 +2,23 @@ import ImageIcon from "@mui/icons-material/Image";
 import SettingsIcon from "@mui/icons-material/Settings";
 import TitleIcon from "@mui/icons-material/Title";
 import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
-import { Box, Button, Tab, Tabs } from "@mui/material";
+import { Box, Tab, Tabs } from "@mui/material";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import type { IAlert } from "@widy/sdk";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import AlertView from "../../../../../shared/components/AlertView";
-import getTestAlertMessage from "../../../../../shared/utils/getTestAlertMessage";
-import type { AppState } from "../../../../store";
-import TabPanel from "../../../TabPanel";
-import AlertVariantSettings from "./components/AlertVariantSettings";
-import GeneralSettings from "./components/GeneralSettings";
-import MessageStyle from "./components/MessageStyle";
-import TitleStyle from "./components/TitleStyle";
-import ViewSettings from "./components/ViewSettings";
+import AlertView from "../../../../../../shared/components/AlertView";
+import getTestAlertMessage from "../../../../../../shared/utils/getTestAlertMessage";
+import type { AppState } from "../../../../../store";
+import LeftRightButtons from "../../../../LeftRightButtons";
+import TabPanel from "../../../../TabPanel";
+import AlertVariantSettings from "./AlertVariantSettings";
+import GeneralSettings from "./GeneralSettings";
+import MessageStyle from "./MessageStyle";
+import TitleStyle from "./TitleStyle";
+import ViewSettings from "./ViewSettings";
 
 const AlertSettings = ({
 	name,
@@ -113,19 +114,14 @@ const AlertSettings = ({
 					base={base}
 				/>
 			</div>
-			<div
-				style={{
-					display: "flex",
-					gap: 20,
-					justifyContent: "center",
-					marginTop: 20,
+			<LeftRightButtons
+				onLeft={onSave}
+				OnRight={() => {
+					navigate(-1);
 				}}
-			>
-				<Button variant="contained" onClick={onSave}>
-					{t("save")}
-				</Button>
-				<Button onClick={() => navigate(-1)}>{t("back")}</Button>
-			</div>
+				leftText={t("save")}
+				rightText={t("back")}
+			/>
 		</>
 	);
 };

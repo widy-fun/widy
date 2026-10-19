@@ -1,8 +1,8 @@
 import { Card } from "@mui/material";
 import type { IAlertsGroup } from "@widy/sdk";
 import { useTranslation } from "react-i18next";
-import AlertCard from "./components/AlertCard";
-import WidgetUrl from "./components/WidgetUrl";
+import AlertCard from "./AlertCard";
+import WidgetUrl from "./WidgetUrl";
 
 const AlertsGroup = ({ alertsGroup }: { alertsGroup: IAlertsGroup }) => {
 	const widgetUrl = `http://localhost:12553/alert?group_id=${alertsGroup.group_id}`;

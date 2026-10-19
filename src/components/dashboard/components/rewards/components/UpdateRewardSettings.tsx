@@ -5,47 +5,46 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import {
-	useGetCommandByIdQuery,
-	useUpdateCommandMutation,
-} from "../../../../api/commandsApi";
-import type { AppState } from "../../../../store";
-import { setCommand } from "../../../../store/slices/commandsSlice";
-import CommandSettings from "./components/CommandSettings";
+	useGetRewardByIdQuery,
+	useUpdateRewardSettingsMutation,
+} from "../../../../../api/rewardsApi";
+import type { AppState } from "../../../../../store";
+import { setReward } from "../../../../../store/slices/rewardsSlice";
+import RewardSettings from "./RewardSettings";
 
-const UpdateCommandSettings = () => {
+const UpdateRewardSettings = () => {
 	const { t } = useTranslation();
 	const { id } = useParams();
 	const dispatch = useDispatch();
-	const { command } = useSelector((state: AppState) => state.commandsState);
-	const { data, error: getCommandByIdError } = useGetCommandByIdQuery(
+	const { reward } = useSelector((state: AppState) => state.rewardsState);
+	const { data, error: getRewardByIdError } = useGetRewardByIdQuery(
 		{ id },
 		{ skip: !id },
 	);
-	const [updateCommand] = useUpdateCommandMutation();
+	const [updateRewardSettings] = useUpdateRewardSettingsMutation();
 
 	useEffect(() => {
-		if (getCommandByIdError) {
+		if (getRewardByIdError) {
 			dispatch(
 				showSnackBar({
-					message: getCommandByIdError.message as string,
+					message: getRewardByIdError.message as string,
 					alertSeverity: AlertSeverity.error,
 				}),
 			);
 		}
-	}, [getCommandByIdError, dispatch]);
+	}, [getRewardByIdError, dispatch]);
 
 	useEffect(() => {
-		if (data && data.id !== command.id) {
-			dispatch(setCommand(data));
+		if (data) {
+			dispatch(setReward(data));
 		}
-	}, [data, dispatch, command.id]);
+	}, [data, dispatch]);
 
 	return (
-		<CommandSettings
-			isUpdate={true}
+		<RewardSettings
 			onSave={async () => {
 				try {
-					await updateCommand({ command }).unwrap();
+					await updateRewardSettings({ reward }).unwrap();
 					dispatch(
 						showSnackBar({
 							message: t("success"),
@@ -65,4 +64,4 @@ const UpdateCommandSettings = () => {
 		/>
 	);
 };
-export default UpdateCommandSettings;
+export default UpdateRewardSettings;

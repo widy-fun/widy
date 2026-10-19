@@ -1,12 +1,13 @@
 import DeviceHubIcon from "@mui/icons-material/DeviceHub";
 import ElectricBoltIcon from "@mui/icons-material/ElectricBolt";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { Box, Button, Tab, Tabs } from "@mui/material";
+import { Box, Tab, Tabs } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import type { AppState } from "../../../../../store";
 import { setTabIndex } from "../../../../../store/slices/commandsSlice";
+import LeftRightButtons from "../../../../LeftRightButtons";
 import TabPanel from "../../../../TabPanel";
 import CommandActions from "./CommandActions";
 import CommandGeneralSettings from "./CommandGeneralSettings";
@@ -75,20 +76,14 @@ const CommandSettings = ({
 					<CommandActions isUpdate={isUpdate} />
 				</TabPanel>
 			</div>
-
-			<div
-				style={{
-					display: "flex",
-					gap: 20,
-					justifyContent: "center",
-					marginTop: 20,
+			<LeftRightButtons
+				onLeft={onSave}
+				OnRight={() => {
+					navigate(-1);
 				}}
-			>
-				<Button variant="contained" onClick={onSave}>
-					{t("save")}
-				</Button>
-				<Button onClick={() => navigate(-1)}>{t("back")}</Button>
-			</div>
+				leftText={t("save")}
+				rightText={t("back")}
+			/>
 		</>
 	);
 };

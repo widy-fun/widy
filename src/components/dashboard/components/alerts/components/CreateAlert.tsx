@@ -9,7 +9,7 @@ import { useGetRewardByTitleMutation } from "../../../../../api/rewardsApi";
 import { useTwitchAddCustomRewardMutation } from "../../../../../api/twitchApi";
 import type { AppState } from "../../../../../store";
 import { setCommand } from "../../../../../store/slices/commandsSlice";
-import AlertSettings from "../AlertSettings";
+import AlertSettings from "./AlertSettings";
 
 const CreateAlert = () => {
 	const { t } = useTranslation();

@@ -4,13 +4,13 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
-import { setAlert } from "../../../../../shared/slices/alertsSlice";
+import { setAlert } from "../../../../../../shared/slices/alertsSlice";
 import {
 	useGetAlertByIdQuery,
 	useUpdateAlertSettingsMutation,
-} from "../../../../api/alertsApi";
-import type { AppState } from "../../../../store";
-import { setCommand } from "../../../../store/slices/commandsSlice";
+} from "../../../../../api/alertsApi";
+import type { AppState } from "../../../../../store";
+import { setCommand } from "../../../../../store/slices/commandsSlice";
 import AlertSettings from "./AlertSettings";
 
 const UpdateAlertSettings = () => {

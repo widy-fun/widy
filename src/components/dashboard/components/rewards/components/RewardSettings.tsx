@@ -1,4 +1,4 @@
-import { Button, MenuItem, Select, TextField } from "@mui/material";
+import { MenuItem, Select, TextField } from "@mui/material";
 import { showSnackBar } from "@widy/react";
 import {
 	AlertSeverity,
@@ -18,6 +18,7 @@ import getDefaultReward from "../../../../../helpers/getDefaultReward";
 import type { AppState } from "../../../../../store";
 import { setReward } from "../../../../../store/slices/rewardsSlice";
 import ColorPicker from "../../../../ColorPicker";
+import LeftRightButtons from "../../../../LeftRightButtons";
 import OnOffSwitch from "../../../../OnOffSwitch";
 import TtsSettings from "../../../../TtsSettings";
 import styles from "../../settings/Settings.module.css";
@@ -312,23 +313,15 @@ const RewardSettings = ({ onSave }: { onSave: () => Promise<void> }) => {
 						</div>
 					)}
 				</div>
-				<div
-					style={{
-						display: "flex",
-						gap: 20,
-						justifyContent: "center",
-						marginTop: 20,
+				<LeftRightButtons
+					onLeft={handleSubmit(onSubmit)}
+					OnRight={() => {
+						navigate(-1);
 					}}
-				>
-					<Button
-						variant="contained"
-						onClick={handleSubmit(onSubmit)}
-						disabled={isPending}
-					>
-						{reward.type === RewardType.Alert ? t("next") : t("save")}
-					</Button>
-					<Button onClick={() => navigate(-1)}>{t("back")}</Button>
-				</div>
+					leftText={reward.type === RewardType.Alert ? t("next") : t("save")}
+					rightText={t("back")}
+					disabled={isPending}
+				/>
 			</div>
 		</>
 	);

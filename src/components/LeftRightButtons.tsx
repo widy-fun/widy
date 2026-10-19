@@ -5,11 +5,13 @@ const LeftRightButtons = ({
 	OnRight,
 	leftText,
 	rightText,
+	disabled,
 }: {
 	onLeft: () => void;
 	OnRight: () => void;
 	leftText: string;
 	rightText: string;
+	disabled?: boolean;
 }) => {
 	return (
 		<div
@@ -20,10 +22,12 @@ const LeftRightButtons = ({
 				marginTop: 20,
 			}}
 		>
-			<Button variant="contained" onClick={onLeft}>
+			<Button disabled={disabled} variant="contained" onClick={onLeft}>
 				{leftText}
 			</Button>
-			<Button onClick={OnRight}>{rightText}</Button>
+			<Button disabled={disabled} onClick={OnRight}>
+				{rightText}
+			</Button>
 		</div>
 	);
 };

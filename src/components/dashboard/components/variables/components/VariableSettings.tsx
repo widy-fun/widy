@@ -1,9 +1,10 @@
-import { Button, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import type { AppState } from "../../../../../store";
 import { setVariable } from "../../../../../store/slices/variablesSlice";
+import LeftRightButtons from "../../../../LeftRightButtons";
 import styles from "../../settings/Settings.module.css";
 
 const VariableSettings = ({ onSave }: { onSave: () => void }) => {
@@ -80,12 +81,14 @@ const VariableSettings = ({ onSave }: { onSave: () => void }) => {
 							}}
 						/>
 					</div>
-					<div style={{ display: "flex", placeContent: "center" }}>
-						<Button variant="contained" onClick={onSave}>
-							{t("save")}
-						</Button>
-						<Button onClick={() => navigate(-1)}>{t("back")}</Button>
-					</div>
+					<LeftRightButtons
+						onLeft={onSave}
+						OnRight={() => {
+							navigate(-1);
+						}}
+						leftText={t("save")}
+						rightText={t("back")}
+					/>
 				</div>
 			</div>
 		</>
