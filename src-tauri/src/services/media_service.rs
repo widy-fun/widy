@@ -1,7 +1,7 @@
 use super::DatabaseService;
 use crate::{error::AppError, repositories::MediaSettingsRepository};
 use entity::{
-    donations::{Media, MediaType},
+    media::{Media, MediaType},
     media_settings::MediaPlatformSettings,
     messages::MessageType,
 };
@@ -9,17 +9,20 @@ use entity::{
 use mockall::predicate::*;
 use regex::Regex;
 use reqwest::Client;
+use rusty_ytdl::{Video, search::SearchResult};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use tauri::{AppHandle, Manager};
 use url::Url;
 
 #[derive(Debug)]
-pub struct YoutubeVideoResult {
+pub struct YoutubeInfo {
     pub video_id: String,
     pub title: String,
-    pub channel: String,
     pub url: String,
+    pub thumbnail_url: Option<String>,
+    pub duration: Option<u64>,
+    pub view_count: Option<u64>,
 }
 
 struct UrlMedia {
@@ -27,8 +30,10 @@ struct UrlMedia {
     media_type: MediaType,
 }
 struct TikTokInfo {
-    id: String,
-    play_count: u64,
+    pub id: String,
+    pub play_count: u64,
+    pub title: String,
+    pub duration: Option<u64>,
 }
 
 #[derive(Serialize)]
@@ -173,6 +178,7 @@ impl MediaService {
                     media_type: url_media.media_type,
                     expires: Some(token.expires),
                     temporary_src: Some(temporary_src),
+                    ..Default::default()
                 });
             }
             MediaType::TikTok => {
@@ -191,26 +197,43 @@ impl MediaService {
                     media_type: url_media.media_type,
                     expires: None,
                     temporary_src: Some(tiktok_info.id),
+                    thumbnail_url: None,
+                    duration: tiktok_info.duration,
+                    title: Some(tiktok_info.title),
                 });
             }
             MediaType::Youtube => {
                 if let MessageType::Donation = message_type {
                     self.check_enabled_and_min_amount(amount, &media_settings.youtube)?;
                 }
-
-                let video_id = self.get_youtube_video_id(&url_media.url.clone())?;
-
-                let youtube_views = self.get_youtube_views(&url_media.url, app).await?;
-
-                if media_settings.youtube.min_views > youtube_views {
+                let video = Video::new(&url_media.url).unwrap();
+                let video_info = video.get_info().await.unwrap();
+                let view_count = video_info
+                    .video_details
+                    .view_count
+                    .parse::<u64>()
+                    .unwrap_or(0);
+                if media_settings.youtube.min_views > view_count {
                     return None;
                 }
-
+                let thumbnail = video_info.video_details.thumbnails.last()?;
+                let duration = video_info
+                    .formats
+                    .first()?
+                    .approx_duration_ms
+                    .clone()
+                    .unwrap_or("0".to_string())
+                    .parse::<u64>()
+                    .unwrap_or(0)
+                    / 1000;
                 return Some(Media {
-                    url: url_media.url,
+                    url: video_info.video_details.video_url,
                     media_type: url_media.media_type,
                     expires: None,
-                    temporary_src: Some(video_id),
+                    temporary_src: Some(video_info.video_details.video_id),
+                    thumbnail_url: Some(thumbnail.url.clone()),
+                    title: Some(video_info.video_details.title),
+                    duration: Some(duration),
                 });
             }
         }
@@ -267,56 +290,38 @@ impl MediaService {
                 return None;
             }
         };
+        let item =
+            json_data.pointer("/__DEFAULT_SCOPE__/webapp.video-detail/itemInfo/itemStruct")?;
 
-        let id = json_data
-            .pointer("/__DEFAULT_SCOPE__/webapp.video-detail/itemInfo/itemStruct/id")
-            .and_then(|v| v.as_str())?
+        let id = item.get("id")?.as_str()?.to_string();
+
+        let play_count = item
+            .pointer("/stats/playCount")
+            .and_then(|v| v.as_u64())
+            .or_else(|| {
+                item.pointer("/statsV2/playCount")
+                    .and_then(|v| v.as_str())
+                    .and_then(|s| s.parse().ok())
+            })
+            .unwrap_or(0);
+
+        let title = item
+            .get("desc")
+            .and_then(|v| v.as_str())
+            .unwrap_or("")
             .to_string();
-        let play_count = json_data
-            .pointer("/__DEFAULT_SCOPE__/webapp.video-detail/itemInfo/itemStruct/stats/playCount")
-            .and_then(|v| v.as_u64())?;
 
-        Some(TikTokInfo { id, play_count })
-    }
+        let duration = item
+            .pointer("/video/duration")
+            .and_then(|v| v.as_u64())
+            .or_else(|| item.pointer("/music/duration").and_then(|v| v.as_u64()));
 
-    async fn get_youtube_views(&self, url: &str, app: &AppHandle) -> Option<u64> {
-        let reqwest_client: tauri::State<'_, Client> = app.state::<reqwest::Client>();
-        let response = match reqwest_client
-            .get(url)
-            .header("Accept-Language", "en-US,en;q=0.9")
-            .send()
-            .await
-        {
-            Ok(response) => response,
-            Err(e) => {
-                log::error!("Failed to get youtube info: {}", e.to_string());
-                return None;
-            }
-        };
-
-        let html = match response.text().await {
-            Ok(html) => html,
-            Err(e) => {
-                log::error!("Failed to get youtube html: {}", e.to_string());
-                return None;
-            }
-        };
-
-        let re = Regex::new(r#""viewCount":"(\d+)""#).expect("Wrong viewCount regex");
-
-        if let Some(captures) = re.captures(&html) {
-            if let Some(count_match) = captures.get(1) {
-                let views_count = match count_match.as_str().parse::<u64>() {
-                    Ok(views_count) => views_count,
-                    Err(e) => {
-                        log::error!("Failed to get youtube views: {}", e.to_string());
-                        return None;
-                    }
-                };
-                return Some(views_count);
-            }
-        }
-        return None;
+        Some(TikTokInfo {
+            id,
+            play_count,
+            title,
+            duration,
+        })
     }
 
     async fn get_twitch_clip_info(
@@ -401,138 +406,29 @@ impl MediaService {
         Some(url.to_string())
     }
 
-    pub async fn search_youtube(
-        &self,
-        app: &AppHandle,
-        query: &str,
-    ) -> Result<Vec<YoutubeVideoResult>, AppError> {
-        let reqwest_client = app.state::<reqwest::Client>();
-
-        let encoded_query = urlencoding::encode(query);
-        let url = format!(
-            "https://www.youtube.com/results?search_query={}",
-            encoded_query
-        );
-
-        let html = reqwest_client.get(&url).send().await?.text().await?;
-
-        let json_str = self.extract_yt_initial_data(&html).ok_or(AppError::Custom(
-            "could not find ytInitialData in page".to_string(),
-        ))?;
-
-        let data: Value = serde_json::from_str(&json_str)?;
-
-        Ok(self.extract_video_results(&data))
-    }
-
-    /// Pulls the raw JSON text out of `var ytInitialData = {...};` in the HTML.
-    fn extract_yt_initial_data(&self, html: &str) -> Option<String> {
-        let marker = "var ytInitialData = ";
-        let start = html.find(marker)? + marker.len();
-        let rest = &html[start..];
-
-        // Walk forward counting brace depth to find the matching closing brace,
-        // since the JSON can contain strings with `;` in them.
-        let bytes = rest.as_bytes();
-        let mut depth = 0i32;
-        let mut in_string = false;
-        let mut escaped = false;
-        let mut end = None;
-
-        for (i, &b) in bytes.iter().enumerate() {
-            let c = b as char;
-            if in_string {
-                if escaped {
-                    escaped = false;
-                } else if c == '\\' {
-                    escaped = true;
-                } else if c == '"' {
-                    in_string = false;
-                }
-                continue;
-            }
-            match c {
-                '"' => in_string = true,
-                '{' => depth += 1,
-                '}' => {
-                    depth -= 1;
-                    if depth == 0 {
-                        end = Some(i + 1);
-                        break;
-                    }
-                }
-                _ => {}
-            }
+    pub async fn search_youtube(&self, query: &str) -> Result<YoutubeInfo, AppError> {
+        let youtube = rusty_ytdl::search::YouTube::new()?;
+        let result = youtube.search_one(query, None).await?;
+        if let Some(SearchResult::Video(video)) = result {
+            let thumbnail = video
+                .thumbnails
+                .last()
+                .ok_or(AppError::Youtube("Not found thumbnail".to_string()))?;
+            return Ok(YoutubeInfo {
+                video_id: video.id,
+                title: video.title,
+                url: video.url,
+                thumbnail_url: Some(thumbnail.url.clone()),
+                duration: Some(video.duration),
+                view_count: Some(video.views),
+            });
         }
-
-        end.map(|e| rest[..e].to_string())
-    }
-
-    /// Walks the ytInitialData structure to find `videoRenderer` nodes.
-    fn extract_video_results(&self, data: &Value) -> Vec<YoutubeVideoResult> {
-        let mut results = Vec::new();
-        self.walk(data, &mut results);
-        results
-    }
-
-    fn walk(&self, value: &Value, results: &mut Vec<YoutubeVideoResult>) {
-        match value {
-            Value::Object(map) => {
-                if let Some(video) = map.get("videoRenderer") {
-                    if let Some(v) = self.parse_video_renderer(video) {
-                        results.push(v);
-                    }
-                }
-                for v in map.values() {
-                    self.walk(v, results);
-                }
-            }
-            Value::Array(arr) => {
-                for v in arr {
-                    self.walk(v, results);
-                }
-            }
-            _ => {}
-        }
-    }
-
-    fn parse_video_renderer(&self, v: &Value) -> Option<YoutubeVideoResult> {
-        let video_id = v.get("videoId")?.as_str()?.to_string();
-
-        let title = v
-            .get("title")?
-            .get("runs")?
-            .as_array()?
-            .first()?
-            .get("text")?
-            .as_str()?
-            .to_string();
-
-        let channel = v
-            .get("ownerText")
-            .or_else(|| v.get("longBylineText"))
-            .and_then(|t| t.get("runs"))
-            .and_then(|r| r.as_array())
-            .and_then(|arr| arr.first())
-            .and_then(|r| r.get("text"))
-            .and_then(|t| t.as_str())
-            .unwrap_or("")
-            .to_string();
-
-        let url = format!("https://www.youtube.com/watch?v={}", video_id);
-
-        Some(YoutubeVideoResult {
-            video_id,
-            title,
-            channel,
-            url,
-        })
+        Err(AppError::Youtube("Not found video".to_string()))
     }
 }
 
 trait MediaParser {
     fn get_url_media(&self, text: &str) -> Option<UrlMedia>;
-    fn get_youtube_video_id(&self, text: &str) -> Option<String>;
     fn get_media_type(&self, text: &str) -> Option<MediaType>;
 }
 
@@ -547,39 +443,6 @@ impl MediaParser for MediaService {
         let media_type = self.get_media_type(&url)?;
 
         Some(UrlMedia { url, media_type })
-    }
-
-    fn get_youtube_video_id(&self, url: &str) -> Option<String> {
-        if let Ok(url) = Url::parse(url) {
-            // Check for youtube.com format
-            if url.host_str() == Some("www.youtube.com") || url.host_str() == Some("youtube.com") {
-                if let Some(video_id) = url
-                    .query_pairs()
-                    .find(|(key, _)| key == "v")
-                    .map(|(_, value)| value.into_owned())
-                {
-                    return Some(video_id);
-                }
-                if let Some(path) = url.path().strip_prefix("/shorts/") {
-                    if !path.is_empty() {
-                        // Extract the video ID from the path
-                        // Split at any secondary parameters
-                        let video_id = path.split('/').next()?;
-                        return Some(video_id.to_string());
-                    }
-                }
-            }
-
-            // Check for youtu.be format
-            if url.host_str() == Some("youtu.be") {
-                if let Some(path) = url.path().strip_prefix('/') {
-                    if !path.is_empty() {
-                        return Some(path.to_string());
-                    }
-                }
-            }
-        }
-        return None;
     }
 
     fn get_media_type(&self, url: &str) -> Option<MediaType> {
@@ -627,863 +490,301 @@ impl MediaParser for MediaService {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use mockall::*;
+    use serde_json::json;
 
     fn media_service() -> MediaService {
         MediaService::new()
     }
-    // Create a mock for the MediaParser trait
-    mock! {
-        MediaParser {}
-        impl MediaParser for MediaParser {
-            fn get_url_media(&self, text: &str) -> Option<UrlMedia>;
-            fn get_youtube_video_id(&self, text: &str) -> Option<String>;
-            fn get_media_type(&self, text: &str) -> Option<MediaType>;
-        }
+
+    // URL extraction
+
+    #[test]
+    fn extracts_youtube_url_from_message() {
+        let service = media_service();
+        let text = "Check out this video https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+
+        let result = service.get_url_media(text).expect("URL should be found");
+
+        assert_eq!(result.url, "https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+        assert_eq!(result.media_type, MediaType::Youtube);
     }
 
     #[test]
-    fn test_mock_get_url_media() {
-        let mut mock = MockMediaParser::new();
+    fn extracts_first_supported_url_from_message() {
+        let service = media_service();
+        let text = concat!(
+            "First: https://www.youtube.com/watch?v=123 ",
+            "Second: https://clips.twitch.tv/456"
+        );
 
-        // Set up expectations
-        mock.expect_get_url_media()
-            .with(eq(
-                "Check out this video https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-            ))
-            .times(1)
-            .returning(|_| {
-                Some(UrlMedia {
-                    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ".to_string(),
-                    media_type: MediaType::Youtube,
-                })
-            });
+        let result = service.get_url_media(text).expect("URL should be found");
 
-        // Test with the expected input
-        let result =
-            mock.get_url_media("Check out this video https://www.youtube.com/watch?v=dQw4w9WgXcQ");
-        assert!(result.is_some());
-        let media = result.unwrap();
-        assert_eq!(media.url, "https://www.youtube.com/watch?v=dQw4w9WgXcQ");
-        assert_eq!(media.media_type, MediaType::Youtube);
-
-        // Set up expectation for a case with no URL
-        mock.expect_get_url_media()
-            .with(eq("This text contains no URL"))
-            .times(1)
-            .returning(|_| None);
-
-        // Test with no URL
-        let result = mock.get_url_media("This text contains no URL");
-        assert!(result.is_none());
+        assert_eq!(result.url, "https://www.youtube.com/watch?v=123");
+        assert_eq!(result.media_type, MediaType::Youtube);
     }
 
     #[test]
-    fn test_get_url_media_with_multiple_urls() {
-        let mut mock = MockMediaParser::new();
+    fn returns_none_when_message_has_no_url() {
+        let service = media_service();
 
-        // Text with multiple URLs should return the first one
-        mock.expect_get_url_media()
-            .with(eq("First URL https://www.youtube.com/watch?v=123 and second URL https://www.twitch.tv/clip/456"))
-            .times(1)
-            .returning(|_| Some(UrlMedia {
-                url: "https://www.youtube.com/watch?v=123".to_string(),
-                media_type: MediaType::Youtube,
-            }));
-
-        let result = mock.get_url_media("First URL https://www.youtube.com/watch?v=123 and second URL https://www.twitch.tv/clip/456");
-        assert!(result.is_some());
-        let media = result.unwrap();
-        assert_eq!(media.url, "https://www.youtube.com/watch?v=123");
-        assert_eq!(media.media_type, MediaType::Youtube);
+        assert!(
+            service
+                .get_url_media("This message contains no URL")
+                .is_none()
+        );
     }
 
     #[test]
-    fn test_get_url_media_with_different_media_types() {
-        let mut mock = MockMediaParser::new();
+    fn returns_none_when_url_is_from_unsupported_platform() {
+        let service = media_service();
 
-        // YouTube
-        mock.expect_get_url_media()
-            .with(eq("YouTube link: https://www.youtube.com/watch?v=123"))
-            .times(1)
-            .returning(|_| {
-                Some(UrlMedia {
-                    url: "https://www.youtube.com/watch?v=123".to_string(),
-                    media_type: MediaType::Youtube,
-                })
-            });
-
-        let result = mock.get_url_media("YouTube link: https://www.youtube.com/watch?v=123");
-        assert!(result.is_some());
-        assert_eq!(result.unwrap().media_type, MediaType::Youtube);
-
-        // Twitch
-        mock.expect_get_url_media()
-            .with(eq("Twitch clip: https://twitch.tv/streamer/clip/123"))
-            .times(1)
-            .returning(|_| {
-                Some(UrlMedia {
-                    url: "https://twitch.tv/streamer/clip/123".to_string(),
-                    media_type: MediaType::Twitch,
-                })
-            });
-
-        let result = mock.get_url_media("Twitch clip: https://twitch.tv/streamer/clip/123");
-        assert!(result.is_some());
-        assert_eq!(result.unwrap().media_type, MediaType::Twitch);
-
-        // TikTok
-        mock.expect_get_url_media()
-            .with(eq("TikTok: https://tiktok.com/video/123"))
-            .times(1)
-            .returning(|_| {
-                Some(UrlMedia {
-                    url: "https://tiktok.com/video/123".to_string(),
-                    media_type: MediaType::TikTok,
-                })
-            });
-
-        let result = mock.get_url_media("TikTok: https://tiktok.com/video/123");
-        assert!(result.is_some());
-        assert_eq!(result.unwrap().media_type, MediaType::TikTok);
+        assert!(service.get_url_media("https://example.com/video").is_none());
     }
 
     #[test]
-    fn test_mock_get_youtube_video_id() {
-        let mut mock = MockMediaParser::new();
+    fn returns_none_when_message_contains_only_unsupported_urls() {
+        let service = media_service();
+        let text = "https://example.com https://example.org/video";
 
-        // Standard YouTube URL
-        mock.expect_get_youtube_video_id()
-            .with(eq("https://www.youtube.com/watch?v=dQw4w9WgXcQ"))
-            .times(1)
-            .returning(|_| Some("dQw4w9WgXcQ".to_string()));
-
-        let result = mock.get_youtube_video_id("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
-        assert!(result.is_some());
-        assert_eq!(result.unwrap(), "dQw4w9WgXcQ");
-
-        // Short YouTube URL
-        mock.expect_get_youtube_video_id()
-            .with(eq("https://youtu.be/dQw4w9WgXcQ"))
-            .times(1)
-            .returning(|_| Some("dQw4w9WgXcQ".to_string()));
-
-        let result = mock.get_youtube_video_id("https://youtu.be/dQw4w9WgXcQ");
-        assert!(result.is_some());
-        assert_eq!(result.unwrap(), "dQw4w9WgXcQ");
-
-        // Invalid URL
-        mock.expect_get_youtube_video_id()
-            .with(eq("not a url"))
-            .times(1)
-            .returning(|_| None);
-
-        let result = mock.get_youtube_video_id("not a url");
-        assert!(result.is_none());
+        assert!(service.get_url_media(text).is_none());
     }
 
-    #[test]
-    fn test_youtube_id_with_additional_parameters() {
-        let mut mock = MockMediaParser::new();
-
-        // YouTube URL with timestamp
-        mock.expect_get_youtube_video_id()
-            .with(eq("https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=120"))
-            .times(1)
-            .returning(|_| Some("dQw4w9WgXcQ".to_string()));
-
-        let result = mock.get_youtube_video_id("https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=120");
-        assert!(result.is_some());
-        assert_eq!(result.unwrap(), "dQw4w9WgXcQ");
-
-        // YouTube URL with multiple parameters
-        mock.expect_get_youtube_video_id()
-            .with(eq(
-                "https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=120&list=PLxyz",
-            ))
-            .times(1)
-            .returning(|_| Some("dQw4w9WgXcQ".to_string()));
-
-        let result = mock
-            .get_youtube_video_id("https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=120&list=PLxyz");
-        assert!(result.is_some());
-        assert_eq!(result.unwrap(), "dQw4w9WgXcQ");
-
-        // Short URL with parameters
-        mock.expect_get_youtube_video_id()
-            .with(eq("https://youtu.be/dQw4w9WgXcQ?t=120"))
-            .times(1)
-            .returning(|_| Some("dQw4w9WgXcQ".to_string()));
-
-        let result = mock.get_youtube_video_id("https://youtu.be/dQw4w9WgXcQ?t=120");
-        assert!(result.is_some());
-        assert_eq!(result.unwrap(), "dQw4w9WgXcQ");
-    }
+    // Media type detection
 
     #[test]
-    fn test_youtube_shorts() {
-        let mut mock = MockMediaParser::new();
+    fn identifies_youtube_url_variants() {
+        let service = media_service();
 
-        // YouTube Shorts URL
-        mock.expect_get_youtube_video_id()
-            .with(eq("https://youtube.com/shorts/abc123"))
-            .times(1)
-            .returning(|_| Some("abc123".to_string()));
-
-        let result = mock.get_youtube_video_id("https://youtube.com/shorts/abc123");
-        assert!(result.is_some());
-        assert_eq!(result.unwrap(), "abc123");
-
-        // YouTube Shorts URL with parameters
-        mock.expect_get_youtube_video_id()
-            .with(eq("https://youtube.com/shorts/abc123?feature=share"))
-            .times(1)
-            .returning(|_| Some("abc123".to_string()));
-
-        let result = mock.get_youtube_video_id("https://youtube.com/shorts/abc123?feature=share");
-        assert!(result.is_some());
-        assert_eq!(result.unwrap(), "abc123");
-    }
-
-    #[test]
-    fn test_mock_get_media_type() {
-        let mut mock = MockMediaParser::new();
-
-        // YouTube URL
-        mock.expect_get_media_type()
-            .with(eq("https://www.youtube.com/watch?v=dQw4w9WgXcQ"))
-            .times(1)
-            .returning(|_| Some(MediaType::Youtube));
-
-        let result = mock.get_media_type("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
-        assert!(result.is_some());
-        assert_eq!(result.unwrap(), MediaType::Youtube);
-
-        // Twitch URL
-        mock.expect_get_media_type()
-            .with(eq("https://twitch.tv/username/clip/abcdef"))
-            .times(1)
-            .returning(|_| Some(MediaType::Twitch));
-
-        let result = mock.get_media_type("https://twitch.tv/username/clip/abcdef");
-        assert!(result.is_some());
-        assert_eq!(result.unwrap(), MediaType::Twitch);
-
-        // TikTok URL
-        mock.expect_get_media_type()
-            .with(eq("https://tiktok.com/username/video/12345"))
-            .times(1)
-            .returning(|_| Some(MediaType::TikTok));
-
-        let result = mock.get_media_type("https://tiktok.com/username/video/12345");
-        assert!(result.is_some());
-        assert_eq!(result.unwrap(), MediaType::TikTok);
-
-        // Unsupported URL
-        mock.expect_get_media_type()
-            .with(eq("https://example.com"))
-            .times(1)
-            .returning(|_| None);
-
-        let result = mock.get_media_type("https://example.com");
-        assert!(result.is_none());
-    }
-
-    #[test]
-    fn test_media_type_variations() {
-        let mut mock = MockMediaParser::new();
-
-        // YouTube variations
-        let youtube_urls = [
+        let urls = [
             "https://www.youtube.com/watch?v=123",
+            "https://youtube.com/watch?v=123",
             "https://youtu.be/123",
             "https://youtube.com/shorts/123",
             "https://www.youtube.com/watch?v=123&t=30s",
-            "https://m.youtube.com/watch?v=123", // Mobile URL
         ];
 
-        for url in youtube_urls.iter() {
-            mock.expect_get_media_type()
-                .with(eq(*url))
-                .times(1)
-                .returning(|_| Some(MediaType::Youtube));
-
-            let result = mock.get_media_type(url);
-            assert!(result.is_some());
-            assert_eq!(result.unwrap(), MediaType::Youtube);
+        for url in urls {
+            assert_eq!(
+                service.get_media_type(url),
+                Some(MediaType::Youtube),
+                "Failed to recognize YouTube URL: {url}"
+            );
         }
+    }
 
-        // Twitch variations
-        let twitch_urls = [
-            "https://twitch.tv/streamer/clip/123",
-            "https://clips.twitch.tv/123",
-            "https://www.twitch.tv/streamer/clip/123",
-            "https://m.twitch.tv/streamer/clip/123", // Mobile URL
+    #[test]
+    fn identifies_twitch_clip_url_variants() {
+        let service = media_service();
+
+        let urls = [
+            "https://clips.twitch.tv/ExampleClip",
+            "https://twitch.tv/streamer/clip/ExampleClip",
+            "https://www.twitch.tv/streamer/clip/ExampleClip",
         ];
 
-        for url in twitch_urls.iter() {
-            mock.expect_get_media_type()
-                .with(eq(*url))
-                .times(1)
-                .returning(|_| Some(MediaType::Twitch));
-
-            let result = mock.get_media_type(url);
-            assert!(result.is_some());
-            assert_eq!(result.unwrap(), MediaType::Twitch);
+        for url in urls {
+            assert_eq!(
+                service.get_media_type(url),
+                Some(MediaType::Twitch),
+                "Failed to recognize Twitch URL: {url}"
+            );
         }
+    }
 
-        // TikTok variations
-        let tiktok_urls = [
+    #[test]
+    fn identifies_tiktok_url_variants() {
+        let service = media_service();
+
+        let urls = [
             "https://tiktok.com/video/123",
+            "https://www.tiktok.com/@user/video/123",
             "https://vm.tiktok.com/123",
-            "https://www.tiktok.com/@username/video/123",
-            "https://m.tiktok.com/v/123.html", // Mobile URL
         ];
 
-        for url in tiktok_urls.iter() {
-            mock.expect_get_media_type()
-                .with(eq(*url))
-                .times(1)
-                .returning(|_| Some(MediaType::TikTok));
-
-            let result = mock.get_media_type(url);
-            assert!(result.is_some());
-            assert_eq!(result.unwrap(), MediaType::TikTok);
+        for url in urls {
+            assert_eq!(
+                service.get_media_type(url),
+                Some(MediaType::TikTok),
+                "Failed to recognize TikTok URL: {url}"
+            );
         }
     }
 
     #[test]
-    fn test_integration_with_mock() {
-        // This test demonstrates how to test code that uses the MediaParser trait
-        let mut mock = MockMediaParser::new();
+    fn returns_none_for_unsupported_media_types() {
+        let service = media_service();
 
-        // Set up expectations for a function that processes messages
-        mock.expect_get_url_media()
-            .with(eq("Check out this video https://youtube.com/watch?v=123"))
-            .times(1)
-            .returning(|_| {
-                Some(UrlMedia {
-                    url: "https://youtube.com/watch?v=123".to_string(),
-                    media_type: MediaType::Youtube,
-                })
-            });
+        let urls = [
+            "https://example.com/video",
+            "https://vimeo.com/123",
+            "not-a-url",
+            "",
+        ];
 
-        mock.expect_get_youtube_video_id()
-            .with(eq("https://youtube.com/watch?v=123"))
-            .times(1)
-            .returning(|_| Some("123".to_string()));
-
-        // Example function that would use the MediaParser trait
-        fn process_message(parser: &impl MediaParser, message: &str) -> Option<String> {
-            let media = parser.get_url_media(message)?;
-            if media.media_type == MediaType::Youtube {
-                let video_id = parser.get_youtube_video_id(&media.url)?;
-                return Some(format!("Found YouTube video ID: {}", video_id));
-            }
-            Some(format!("Found media: {:?}", media.media_type))
+        for url in urls {
+            assert_eq!(
+                service.get_media_type(url),
+                None,
+                "Unexpected media type for: {url}"
+            );
         }
+    }
 
-        // Use the mock to test the function
-        let result = process_message(
-            &mock,
-            "Check out this video https://youtube.com/watch?v=123",
+    // Twitch temporary source URL
+
+    fn twitch_clip_info(source_url: &str, signature: &str, token: &str) -> TwitchClipInfo {
+        TwitchClipInfo {
+            data: TwitchData {
+                clip: Clip {
+                    id: "test-clip".to_string(),
+                    playback_access_token: PlaybackAccessToken {
+                        signature: signature.to_string(),
+                        value: token.to_string(),
+                        typename: "PlaybackAccessToken".to_string(),
+                    },
+                    video_qualities: vec![VideoQuality {
+                        frame_rate: 30.0,
+                        quality: "1080".to_string(),
+                        source_url: source_url.to_string(),
+                        typename: "VideoQuality".to_string(),
+                    }],
+                    typename: "Clip".to_string(),
+                },
+            },
+            extensions: TwitchExtensions {
+                duration_milliseconds: 1000,
+                operation_name: "VideoAccessToken_Clip".to_string(),
+                request_id: "test-request".to_string(),
+            },
+        }
+    }
+
+    #[test]
+    fn builds_twitch_temporary_source_url() {
+        let service = media_service();
+        let info = twitch_clip_info(
+            "https://production.example.com/video.mp4",
+            "test-signature",
+            "test-token",
         );
-        assert_eq!(result, Some("Found YouTube video ID: 123".to_string()));
+
+        let result = service
+            .get_twitch_temporary_src(&info)
+            .expect("Temporary source URL should be created");
+
+        let url = Url::parse(&result).expect("Result should be a valid URL");
+
+        assert_eq!(url.scheme(), "https");
+        assert_eq!(url.host_str(), Some("production.example.com"));
+        assert_eq!(url.path(), "/video.mp4");
+
+        let query: std::collections::HashMap<String, String> =
+            url.query_pairs().into_owned().collect();
+
+        assert_eq!(query.get("sig").map(String::as_str), Some("test-signature"));
+        assert_eq!(query.get("token").map(String::as_str), Some("test-token"));
     }
 
     #[test]
-    fn test_sequential_calls() {
-        let mut mock = MockMediaParser::new();
+    fn preserves_existing_twitch_url_query_parameters() {
+        let service = media_service();
+        let info = twitch_clip_info(
+            "https://production.example.com/video.mp4?existing=value",
+            "signature",
+            "token",
+        );
 
-        // Test a sequence where we first get a URL, then its media type
-        let text = "Check out this video https://www.youtube.com/watch?v=dQw4w9WgXcQ";
-        let url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+        let result = service
+            .get_twitch_temporary_src(&info)
+            .expect("Temporary source URL should be created");
 
-        mock.expect_get_url_media()
-            .with(eq(text))
-            .times(1)
-            .returning(move |_| {
-                Some(UrlMedia {
-                    url: url.to_string(),
-                    media_type: MediaType::Youtube,
-                })
-            });
+        let url = Url::parse(&result).expect("Result should be a valid URL");
+        let query: std::collections::HashMap<String, String> =
+            url.query_pairs().into_owned().collect();
 
-        mock.expect_get_youtube_video_id()
-            .with(eq(url))
-            .times(1)
-            .returning(|_| Some("dQw4w9WgXcQ".to_string()));
-
-        // Function that uses multiple methods of the trait
-        fn extract_video_info(parser: &impl MediaParser, text: &str) -> Option<(String, String)> {
-            let media = parser.get_url_media(text)?;
-            if media.media_type == MediaType::Youtube {
-                let video_id = parser.get_youtube_video_id(&media.url)?;
-                return Some((media.url, video_id));
-            }
-            None
-        }
-
-        let result = extract_video_info(&mock, text);
-        assert!(result.is_some());
-        let (extracted_url, video_id) = result.unwrap();
-        assert_eq!(extracted_url, url);
-        assert_eq!(video_id, "dQw4w9WgXcQ");
+        assert_eq!(query.get("existing").map(String::as_str), Some("value"));
+        assert_eq!(query.get("sig").map(String::as_str), Some("signature"));
+        assert_eq!(query.get("token").map(String::as_str), Some("token"));
     }
 
     #[test]
-    fn test_case_insensitivity() {
-        let mut mock = MockMediaParser::new();
+    fn returns_none_when_twitch_clip_has_no_video_qualities() {
+        let service = media_service();
+        let mut info = twitch_clip_info(
+            "https://production.example.com/video.mp4",
+            "signature",
+            "token",
+        );
 
-        // Test that URL detection is case-insensitive
-        mock.expect_get_media_type()
-            .with(eq("https://www.YOUTUBE.com/watch?v=abc123"))
-            .times(1)
-            .returning(|_| Some(MediaType::Youtube));
+        info.data.clip.video_qualities.clear();
 
-        let result = mock.get_media_type("https://www.YOUTUBE.com/watch?v=abc123");
-        assert!(result.is_some());
-        assert_eq!(result.unwrap(), MediaType::Youtube);
-
-        // Mixed case URLs
-        mock.expect_get_media_type()
-            .with(eq("https://Youtube.com/watch?v=abc123"))
-            .times(1)
-            .returning(|_| Some(MediaType::Youtube));
-
-        let result = mock.get_media_type("https://Youtube.com/watch?v=abc123");
-        assert!(result.is_some());
-        assert_eq!(result.unwrap(), MediaType::Youtube);
+        assert!(service.get_twitch_temporary_src(&info).is_none());
     }
 
     #[test]
-    fn test_url_with_special_characters() {
-        let mut mock = MockMediaParser::new();
+    fn returns_none_when_twitch_source_url_is_invalid() {
+        let service = media_service();
+        let info = twitch_clip_info("not a valid URL", "signature", "token");
 
-        // URL with special characters in the query string
-        mock.expect_get_youtube_video_id()
-            .with(eq("https://www.youtube.com/watch?v=abc123&list=PL%2D123"))
-            .times(1)
-            .returning(|_| Some("abc123".to_string()));
-
-        let result =
-            mock.get_youtube_video_id("https://www.youtube.com/watch?v=abc123&list=PL%2D123");
-        assert!(result.is_some());
-        assert_eq!(result.unwrap(), "abc123");
+        assert!(service.get_twitch_temporary_src(&info).is_none());
     }
 
-    #[test]
-    fn test_multiple_media_platforms() {
-        let mut mock = MockMediaParser::new();
+    // Twitch response deserialization
 
-        // A function that handles different media platforms
-        fn format_media_link(parser: &impl MediaParser, url: &str) -> Option<String> {
-            let media_type = parser.get_media_type(url)?;
-            match media_type {
-                MediaType::Youtube => {
-                    let video_id = parser.get_youtube_video_id(url)?;
-                    Some(format!(
-                        "YouTube Embed: https://www.youtube.com/embed/{}",
-                        video_id
-                    ))
+    #[test]
+    fn deserializes_twitch_clip_response() {
+        let response = json!({
+            "data": {
+                "clip": {
+                    "id": "test-clip",
+                    "playbackAccessToken": {
+                        "signature": "signature",
+                        "value": "token-value",
+                        "__typename": "PlaybackAccessToken"
+                    },
+                    "videoQualities": [{
+                        "frameRate": 30.0,
+                        "quality": "1080",
+                        "sourceURL": "https://example.com/video.mp4",
+                        "__typename": "VideoQuality"
+                    }],
+                    "__typename": "Clip"
                 }
-                MediaType::Twitch => Some(format!("Twitch Link: {}", url)),
-                MediaType::TikTok => Some(format!("TikTok Link: {}", url)),
+            },
+            "extensions": {
+                "durationMilliseconds": 100,
+                "operationName": "VideoAccessToken_Clip",
+                "requestID": "request-1"
             }
-        }
+        });
 
-        // YouTube
-        mock.expect_get_media_type()
-            .with(eq("https://youtube.com/watch?v=123"))
-            .times(1)
-            .returning(|_| Some(MediaType::Youtube));
+        let parsed: TwitchClipInfo =
+            serde_json::from_value(response).expect("Response should deserialize");
 
-        mock.expect_get_youtube_video_id()
-            .with(eq("https://youtube.com/watch?v=123"))
-            .times(1)
-            .returning(|_| Some("123".to_string()));
-
-        let result = format_media_link(&mock, "https://youtube.com/watch?v=123");
+        assert_eq!(parsed.data.clip.id, "test-clip");
         assert_eq!(
-            result,
-            Some("YouTube Embed: https://www.youtube.com/embed/123".to_string())
+            parsed.data.clip.playback_access_token.signature,
+            "signature"
         );
-
-        // Twitch
-        mock.expect_get_media_type()
-            .with(eq("https://twitch.tv/user/clip/456"))
-            .times(1)
-            .returning(|_| Some(MediaType::Twitch));
-
-        let result = format_media_link(&mock, "https://twitch.tv/user/clip/456");
         assert_eq!(
-            result,
-            Some("Twitch Link: https://twitch.tv/user/clip/456".to_string())
+            parsed.data.clip.video_qualities[0].source_url,
+            "https://example.com/video.mp4"
         );
-
-        // TikTok
-        mock.expect_get_media_type()
-            .with(eq("https://tiktok.com/video/789"))
-            .times(1)
-            .returning(|_| Some(MediaType::TikTok));
-
-        let result = format_media_link(&mock, "https://tiktok.com/video/789");
-        assert_eq!(
-            result,
-            Some("TikTok Link: https://tiktok.com/video/789".to_string())
-        );
+        assert_eq!(parsed.extensions.operation_name, "VideoAccessToken_Clip");
     }
 
     #[test]
-    fn test_error_handling() {
-        let mut mock = MockMediaParser::new();
-
-        // A function that includes error handling for media processing
-        fn safely_process_media(
-            parser: &impl MediaParser,
-            text: &str,
-        ) -> Result<String, &'static str> {
-            let media = parser.get_url_media(text).ok_or("No media URL found")?;
-
-            match media.media_type {
-                MediaType::Youtube => {
-                    let video_id = parser
-                        .get_youtube_video_id(&media.url)
-                        .ok_or("Failed to extract YouTube video ID")?;
-                    Ok(format!("YouTube ID: {}", video_id))
+    fn rejects_incomplete_twitch_clip_response() {
+        let response = json!({
+            "data": {
+                "clip": {
+                    "id": "test-clip"
                 }
-                MediaType::Twitch => Ok(format!("Twitch clip: {}", media.url)),
-                MediaType::TikTok => Ok(format!("TikTok: {}", media.url)),
             }
-        }
+        });
 
-        // Success case
-        mock.expect_get_url_media()
-            .with(eq("Check out https://youtube.com/watch?v=123"))
-            .times(1)
-            .returning(|_| {
-                Some(UrlMedia {
-                    url: "https://youtube.com/watch?v=123".to_string(),
-                    media_type: MediaType::Youtube,
-                })
-            });
+        let result = serde_json::from_value::<TwitchClipInfo>(response);
 
-        mock.expect_get_youtube_video_id()
-            .with(eq("https://youtube.com/watch?v=123"))
-            .times(1)
-            .returning(|_| Some("123".to_string()));
-
-        let result = safely_process_media(&mock, "Check out https://youtube.com/watch?v=123");
-        assert!(result.is_ok());
-        assert_eq!(result.unwrap(), "YouTube ID: 123");
-
-        // No URL case
-        mock.expect_get_url_media()
-            .with(eq("No URL here"))
-            .times(1)
-            .returning(|_| None);
-
-        let result = safely_process_media(&mock, "No URL here");
         assert!(result.is_err());
-        assert_eq!(result.unwrap_err(), "No media URL found");
-
-        // URL found but failed to get YouTube ID
-        mock.expect_get_url_media()
-            .with(eq("Check out https://youtube.com/invalid"))
-            .times(1)
-            .returning(|_| {
-                Some(UrlMedia {
-                    url: "https://youtube.com/invalid".to_string(),
-                    media_type: MediaType::Youtube,
-                })
-            });
-
-        mock.expect_get_youtube_video_id()
-            .with(eq("https://youtube.com/invalid"))
-            .times(1)
-            .returning(|_| None);
-
-        let result = safely_process_media(&mock, "Check out https://youtube.com/invalid");
-        assert!(result.is_err());
-        assert_eq!(result.unwrap_err(), "Failed to extract YouTube video ID");
-    }
-
-    #[test]
-    fn test_context_based_expectations() {
-        let mut mock = MockMediaParser::new();
-
-        // Set different expectations based on context
-
-        // When parsing a message about a YouTube video
-        mock.expect_get_url_media()
-            .with(eq("Video: https://youtube.com/watch?v=123"))
-            .times(1)
-            .returning(|_| {
-                Some(UrlMedia {
-                    url: "https://youtube.com/watch?v=123".to_string(),
-                    media_type: MediaType::Youtube,
-                })
-            });
-
-        // When parsing a message about a Twitch clip
-        mock.expect_get_url_media()
-            .with(eq("Stream highlight: https://twitch.tv/user/clip/456"))
-            .times(1)
-            .returning(|_| {
-                Some(UrlMedia {
-                    url: "https://twitch.tv/user/clip/456".to_string(),
-                    media_type: MediaType::Twitch,
-                })
-            });
-
-        // Create a function that processes different types of messages
-        fn categorize_message(parser: &impl MediaParser, message: &str) -> &'static str {
-            if let Some(media) = parser.get_url_media(message) {
-                match media.media_type {
-                    MediaType::Youtube => "YouTube content",
-                    MediaType::Twitch => "Twitch content",
-                    MediaType::TikTok => "TikTok content",
-                }
-            } else {
-                "No media content"
-            }
-        }
-
-        // Test with different messages
-        assert_eq!(
-            categorize_message(&mock, "Video: https://youtube.com/watch?v=123"),
-            "YouTube content"
-        );
-        assert_eq!(
-            categorize_message(&mock, "Stream highlight: https://twitch.tv/user/clip/456"),
-            "Twitch content"
-        );
-
-        // Test with no URL
-        mock.expect_get_url_media()
-            .with(eq("Just regular text"))
-            .times(1)
-            .returning(|_| None);
-
-        assert_eq!(
-            categorize_message(&mock, "Just regular text"),
-            "No media content"
-        );
-    }
-    #[test]
-    fn test_extract_yt_initial_data_success() {
-        let service = media_service();
-        let html = r#"<html><body><script>var ytInitialData = {"a":1,"b":{"c":2}};</script></body></html>"#;
-
-        let result = service.extract_yt_initial_data(html);
-        assert!(result.is_some());
-        assert_eq!(result.unwrap(), r#"{"a":1,"b":{"c":2}}"#);
-    }
-
-    #[test]
-    fn test_extract_yt_initial_data_missing_marker() {
-        let service = media_service();
-        let html = "<html><body>no data here</body></html>";
-
-        let result = service.extract_yt_initial_data(html);
-        assert!(result.is_none());
-    }
-
-    #[test]
-    fn test_extract_yt_initial_data_handles_semicolons_and_braces_in_strings() {
-        let service = media_service();
-        // The JSON contains a string with `;` and `}` characters that must NOT
-        // be treated as terminators/structural characters by the brace walker.
-        let html = r#"var ytInitialData = {"title":"weird; title } with braces {}","nested":{"x":1}};</script>"#;
-
-        let result = service.extract_yt_initial_data(html);
-        assert!(result.is_some());
-        let json_str = result.unwrap();
-
-        // Should parse as valid JSON despite the tricky embedded characters.
-        let parsed: Value = serde_json::from_str(&json_str).expect("should be valid JSON");
-        assert_eq!(
-            parsed["title"],
-            Value::String("weird; title } with braces {}".to_string())
-        );
-        assert_eq!(parsed["nested"]["x"], Value::Number(1.into()));
-    }
-
-    #[test]
-    fn test_extract_yt_initial_data_unterminated_returns_none() {
-        let service = media_service();
-        let html = r#"var ytInitialData = {"a": {"b": 1}"#; // missing closing brace
-
-        let result = service.extract_yt_initial_data(html);
-        assert!(result.is_none());
-    }
-
-    #[test]
-    fn test_parse_video_renderer_full() {
-        let service = media_service();
-        let renderer = serde_json::json!({
-            "videoId": "abc123",
-            "title": { "runs": [{ "text": "Test Video Title" }] },
-            "ownerText": { "runs": [{ "text": "Test Channel" }] }
-        });
-
-        let result = service.parse_video_renderer(&renderer);
-        assert!(result.is_some());
-        let video = result.unwrap();
-        assert_eq!(video.video_id, "abc123");
-        assert_eq!(video.title, "Test Video Title");
-        assert_eq!(video.channel, "Test Channel");
-        assert_eq!(video.url, "https://www.youtube.com/watch?v=abc123");
-    }
-
-    #[test]
-    fn test_parse_video_renderer_falls_back_to_long_byline_text() {
-        let service = media_service();
-        let renderer = serde_json::json!({
-            "videoId": "xyz789",
-            "title": { "runs": [{ "text": "Another Video" }] },
-            "longBylineText": { "runs": [{ "text": "Fallback Channel" }] }
-        });
-
-        let result = service.parse_video_renderer(&renderer).unwrap();
-        assert_eq!(result.channel, "Fallback Channel");
-    }
-
-    #[test]
-    fn test_parse_video_renderer_missing_channel_defaults_to_empty_string() {
-        let service = media_service();
-        let renderer = serde_json::json!({
-            "videoId": "noChannel1",
-            "title": { "runs": [{ "text": "No Channel Video" }] }
-        });
-
-        let result = service.parse_video_renderer(&renderer).unwrap();
-        assert_eq!(result.channel, "");
-    }
-
-    #[test]
-    fn test_parse_video_renderer_missing_video_id_returns_none() {
-        let service = media_service();
-        let renderer = serde_json::json!({
-            "title": { "runs": [{ "text": "No ID Video" }] }
-        });
-
-        assert!(service.parse_video_renderer(&renderer).is_none());
-    }
-
-    #[test]
-    fn test_parse_video_renderer_missing_title_returns_none() {
-        let service = media_service();
-        let renderer = serde_json::json!({
-            "videoId": "noTitle1"
-        });
-
-        assert!(service.parse_video_renderer(&renderer).is_none());
-    }
-
-    #[test]
-    fn test_parse_video_renderer_empty_title_runs_returns_none() {
-        let service = media_service();
-        let renderer = serde_json::json!({
-            "videoId": "emptyRuns1",
-            "title": { "runs": [] }
-        });
-
-        assert!(service.parse_video_renderer(&renderer).is_none());
-    }
-
-    #[test]
-    fn test_walk_extracts_only_video_renderers_ignoring_other_types() {
-        let service = media_service();
-        let data = serde_json::json!({
-            "contents": [
-                {
-                    "videoRenderer": {
-                        "videoId": "vid1",
-                        "title": { "runs": [{ "text": "First Video" }] },
-                        "ownerText": { "runs": [{ "text": "Channel One" }] }
-                    }
-                },
-                {
-                    // Should be ignored - not a videoRenderer
-                    "channelRenderer": {
-                        "channelId": "someChannel"
-                    }
-                },
-                {
-                    "videoRenderer": {
-                        "videoId": "vid2",
-                        "title": { "runs": [{ "text": "Second Video" }] },
-                        "ownerText": { "runs": [{ "text": "Channel Two" }] }
-                    }
-                },
-                {
-                    // Malformed videoRenderer (no videoId) should be skipped silently
-                    "videoRenderer": {
-                        "title": { "runs": [{ "text": "Broken Video" }] }
-                    }
-                }
-            ]
-        });
-
-        let results = service.extract_video_results(&data);
-        assert_eq!(results.len(), 2);
-        assert_eq!(results[0].video_id, "vid1");
-        assert_eq!(results[0].title, "First Video");
-        assert_eq!(results[0].channel, "Channel One");
-        assert_eq!(results[1].video_id, "vid2");
-        assert_eq!(results[1].title, "Second Video");
-    }
-
-    #[test]
-    fn test_walk_finds_nested_video_renderers_at_any_depth() {
-        let service = media_service();
-        let data = serde_json::json!({
-            "a": {
-                "b": {
-                    "c": [
-                        {
-                            "d": {
-                                "videoRenderer": {
-                                    "videoId": "deep1",
-                                    "title": { "runs": [{ "text": "Deeply Nested" }] }
-                                }
-                            }
-                        }
-                    ]
-                }
-            }
-        });
-
-        let results = service.extract_video_results(&data);
-        assert_eq!(results.len(), 1);
-        assert_eq!(results[0].video_id, "deep1");
-    }
-
-    #[test]
-    fn test_extract_video_results_empty_data_returns_empty_vec() {
-        let service = media_service();
-        let data = serde_json::json!({});
-
-        let results = service.extract_video_results(&data);
-        assert!(results.is_empty());
-    }
-
-    #[test]
-    fn test_extract_video_results_end_to_end_from_html() {
-        let service = media_service();
-        let html = format!(
-            r#"<html><script>var ytInitialData = {{"contents":[{{"videoRenderer":{{"videoId":"e2e1","title":{{"runs":[{{"text":"E2E Video"}}]}},"ownerText":{{"runs":[{{"text":"E2E Channel"}}]}}}}}}]}};</script></html>"#
-        );
-
-        let json_str = service.extract_yt_initial_data(&html).unwrap();
-        let data: Value = serde_json::from_str(&json_str).unwrap();
-        let results = service.extract_video_results(&data);
-
-        assert_eq!(results.len(), 1);
-        assert_eq!(results[0].video_id, "e2e1");
-        assert_eq!(results[0].title, "E2E Video");
-        assert_eq!(results[0].channel, "E2E Channel");
-        assert_eq!(results[0].url, "https://www.youtube.com/watch?v=e2e1");
     }
 }

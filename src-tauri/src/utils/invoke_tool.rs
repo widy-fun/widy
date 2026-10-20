@@ -4,9 +4,9 @@ use entity::{
         AssistantActionData::{
             BanUser, ChangeChannel, PinMessage, PlayAlert, PlayMedia, UnbanUser, UpdateChatSettings,
         },
-        AssistantActionType, ChanelData, ChatSettingsData, MediaData, PinedMessageData, UserData,
+        AssistantActionType, ChanelData, ChatSettingsData, PinedMessageData, UserData,
     },
-    donations::{Media, MediaType},
+    media::{Media, MediaType},
     messages::MessageType,
 };
 use tauri::{AppHandle, Manager};
@@ -936,25 +936,22 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
                 .cloned()
                 .ok_or(AppError::Custom("Media name empty".to_string()))?;
             let media_service = app.state::<MediaService>();
-            let videos = media_service.search_youtube(app, &name).await?;
+            let youtube_info = media_service.search_youtube(&name).await?;
             let message_id = uuid::Uuid::new_v4();
-            let first_video = videos
-                .first()
-                .ok_or(AppError::Custom("Not found video".to_string()))?;
 
             EventsService::assistant_action(
                 AssistantAction {
                     id: uuid::Uuid::new_v4(),
                     message_id,
                     r#type: AssistantActionType::PlayMedia,
-                    data: PlayMedia(MediaData {
-                        title: first_video.title.clone(),
-                        media: Media {
-                            url: first_video.url.clone(),
-                            media_type: MediaType::Youtube,
-                            expires: None,
-                            temporary_src: Some(first_video.video_id.clone()),
-                        },
+                    data: PlayMedia(Media {
+                        url: youtube_info.url.clone(),
+                        media_type: MediaType::Youtube,
+                        expires: None,
+                        temporary_src: Some(youtube_info.video_id.clone()),
+                        thumbnail_url: youtube_info.thumbnail_url.clone(),
+                        duration: youtube_info.duration.clone(),
+                        title: Some(youtube_info.title.clone()),
                     }),
                 },
                 app,

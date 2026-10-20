@@ -9,6 +9,7 @@ pub mod donations;
 pub mod followers;
 pub mod goals;
 pub mod maption_settings;
+pub mod media;
 pub mod media_settings;
 pub mod messages;
 pub mod nsfw_settings;

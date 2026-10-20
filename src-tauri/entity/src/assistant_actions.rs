@@ -3,7 +3,7 @@
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::{alerts::Alert, donations::Media, rewards::Platform};
+use crate::{alerts::Alert, media::Media, rewards::Platform};
 
 #[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
@@ -76,7 +76,7 @@ pub enum AssistantActionData {
     PinMessage(PinedMessageData),
     ChangeChannel(ChanelData),
     UpdateChatSettings(ChatSettingsData),
-    PlayMedia(MediaData),
+    PlayMedia(Media),
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -100,10 +100,4 @@ pub struct ChanelData {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ChatSettingsData {
     pub platform: Platform,
-}
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct MediaData {
-    pub media: Media,
-    pub title: String,
 }

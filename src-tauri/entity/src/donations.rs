@@ -1,5 +1,5 @@
-use crate::{services::ServiceType, settings::Currency};
-use sea_orm::{entity::prelude::*, FromJsonQueryResult};
+use crate::{media::Media, services::ServiceType, settings::Currency};
+use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[sea_orm::model]
@@ -51,27 +51,3 @@ pub struct Donation {
 }
 
 impl ActiveModelBehavior for ActiveModel {}
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Eq, FromJsonQueryResult)]
-
-pub struct Media {
-    pub url: String,
-    pub media_type: MediaType,
-    pub expires: Option<u64>,
-    pub temporary_src: Option<String>,
-    // pub title: Option<String>,
-    // pub author: Option<String>,
-    // pub thumbnail_url: Option<String>,
-    // pub duration: Option<u64>,
-}
-
-#[derive(Debug, Clone, PartialEq, EnumIter, DeriveActiveEnum, Serialize, Deserialize, Eq)]
-#[sea_orm(rs_type = "String", db_type = "Text")]
-pub enum MediaType {
-    #[sea_orm(string_value = "Youtube")]
-    Youtube,
-    #[sea_orm(string_value = "Twitch")]
-    Twitch,
-    #[sea_orm(string_value = "TikTok")]
-    TikTok,
-}

@@ -1001,6 +1001,7 @@ impl EventsService {
             data: client_message.clone(),
         };
         websocket_broadcaster.broadcast_event_message(&event_message);
+
         let event_message = EventMessage {
             event: AppEvent::Alert,
             data: client_message.clone(),

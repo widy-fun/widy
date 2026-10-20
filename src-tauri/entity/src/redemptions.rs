@@ -4,7 +4,7 @@ use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    donations::Media,
+    media::Media,
     rewards::{Platform, RewardType},
     tts::Tts,
 };

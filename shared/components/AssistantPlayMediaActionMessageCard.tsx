@@ -1,6 +1,6 @@
 import ReplayIcon from "@mui/icons-material/Replay";
 import { Box, Card, IconButton, Typography } from "@mui/material";
-import { AppEvent, type IClientMessage, type IMediaData } from "@widy/sdk";
+import { AppEvent, type IClientMessage, type IMedia } from "@widy/sdk";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import useAppEvents from "../hooks/useAppEvents";
@@ -17,11 +17,11 @@ const AssistantPlayMediaActionMessageCard = ({
 }) => {
 	const { t } = useTranslation();
 	const eventsService = useAppEvents();
-	const mediaData = message.assistant_action?.data as IMediaData;
+	const media = message.assistant_action?.data as IMedia;
 
 	return (
 		<>
-			{mediaData && (
+			{media && (
 				<Card
 					sx={(theme) => ({
 						display: "flex",
@@ -38,8 +38,8 @@ const AssistantPlayMediaActionMessageCard = ({
 					{isMediaPlaying && (
 						<MediaTile
 							message={message}
-							media={mediaData.media}
-							user_name={mediaData.title}
+							media={media}
+							user_name={media.title}
 						/>
 					)}
 					<Box
@@ -47,7 +47,7 @@ const AssistantPlayMediaActionMessageCard = ({
 							width: "3rem",
 							display: "grid",
 							placeItems: "center",
-							background: getColorByMediaType(mediaData.media.media_type),
+							background: getColorByMediaType(media.media_type),
 							minHeight: "100%",
 						}}
 					>
@@ -79,7 +79,7 @@ const AssistantPlayMediaActionMessageCard = ({
 							</Typography>
 						</Box>
 						<div>
-							<span>{mediaData.title}</span>
+							<span>{media.title}</span>
 						</div>
 					</div>
 				</Card>
