@@ -952,6 +952,7 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
                         thumbnail_url: youtube_info.thumbnail_url.clone(),
                         duration: youtube_info.duration.clone(),
                         title: Some(youtube_info.title.clone()),
+                        view_count: youtube_info.view_count,
                     }),
                 },
                 app,

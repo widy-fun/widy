@@ -11,6 +11,7 @@ pub struct Media {
     pub title: Option<String>,
     pub thumbnail_url: Option<String>,
     pub duration: Option<u64>,
+    pub view_count: Option<u64>,
 }
 
 #[derive(

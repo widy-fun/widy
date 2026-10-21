@@ -222,6 +222,7 @@ impl MediaService {
                     thumbnail_url: None,
                     duration: tiktok_info.duration,
                     title: Some(tiktok_info.title),
+                    view_count: Some(tiktok_info.play_count),
                 });
             }
             MediaType::Youtube => {
@@ -267,6 +268,7 @@ impl MediaService {
                     thumbnail_url,
                     title: Some(video_info.video_details.title),
                     duration: Some(duration),
+                    view_count: Some(view_count),
                 });
             }
             MediaType::Kick => {
@@ -296,6 +298,7 @@ impl MediaService {
                         "{} - {}",
                         kick_clip_info.creator.username, kick_clip_info.title
                     )),
+                    view_count: Some(kick_clip_info.views_count),
                 });
             }
         }
