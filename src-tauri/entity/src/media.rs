@@ -25,4 +25,6 @@ pub enum MediaType {
     Twitch,
     #[sea_orm(string_value = "TikTok")]
     TikTok,
+    #[sea_orm(string_value = "Kick")]
+    Kick,
 }

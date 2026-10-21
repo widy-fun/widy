@@ -54,6 +54,8 @@ mod m20261017_144541_add_telegram_bot_service;
 mod m20261017_182112_add_column_twitch_source_to_commands_table;
 mod m20261017_182135_add_column_twitch_action_to_commands_table;
 mod m20261017_203540_add_column_telegram_bot_action_to_commands_table;
+mod m20261021_130926_add_column_kick_to_media_settings_table;
+mod m20261021_131510_add_default_media_settings_for_kick;
 
 pub struct Migrator;
 
@@ -116,6 +118,8 @@ impl MigratorTrait for Migrator {
             Box::new(m20261017_182112_add_column_twitch_source_to_commands_table::Migration),
             Box::new(m20261017_182135_add_column_twitch_action_to_commands_table::Migration),
             Box::new(m20261017_203540_add_column_telegram_bot_action_to_commands_table::Migration),
+            Box::new(m20261021_130926_add_column_kick_to_media_settings_table::Migration),
+            Box::new(m20261021_131510_add_default_media_settings_for_kick::Migration),
         ]
     }
 }

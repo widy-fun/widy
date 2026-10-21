@@ -1,5 +1,6 @@
 import type { IMedia, IMediaSettings } from "@widy/sdk";
 import { MediaType } from "@widy/sdk";
+import Kick from "../components/media/Kick";
 import TikTok from "../components/media/TikTok";
 import Twitch from "../components/media/Twitch";
 import Youtube from "../components/media/Youtube";
@@ -8,6 +9,7 @@ const getElementByMediaType = ({
 	messageId,
 	mediaSettings,
 	media,
+	
 }: {
 	messageId: string;
 	mediaSettings: IMediaSettings;
@@ -36,6 +38,14 @@ const getElementByMediaType = ({
 					media={media}
 					messageId={messageId}
 					mediaPlatformSettings={mediaSettings.tiktok}
+				/>
+			);
+		case MediaType.Kick:
+			return (
+				<Kick
+					media={media}
+					messageId={messageId}
+					mediaPlatformSettings={mediaSettings.kick}
 				/>
 			);
 	}

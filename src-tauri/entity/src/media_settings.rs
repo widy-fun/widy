@@ -12,6 +12,8 @@ pub struct Model {
     pub twitch: MediaPlatformSettings,
     #[sea_orm(column_type = "JsonBinary")]
     pub tiktok: MediaPlatformSettings,
+    #[sea_orm(column_type = "JsonBinary")]
+    pub kick: MediaPlatformSettings,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

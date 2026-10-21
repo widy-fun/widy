@@ -78,7 +78,7 @@ tauri-plugin-upload = "2"
 cpal = "0.18.2"
 foundry-local-sdk = "1.2.3"
 teloxide = "0.17.0"
-rusty_ytdl = "0.7.4"
+rusty_ytdl = { version = "0.7.4", default-features = false, features = ["search", "default-tls"] }
 
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]

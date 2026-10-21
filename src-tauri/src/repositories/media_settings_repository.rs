@@ -24,6 +24,7 @@ impl MediaSettingsRepository for DatabaseService {
             youtube: Set(alert.youtube),
             twitch: Set(alert.twitch),
             tiktok: Set(alert.tiktok),
+            kick: Set(alert.kick),
         })
         .exec(&self.connection)
         .await

@@ -55,6 +55,16 @@ export const mediaSlice = createSlice({
 				state.mediaSettings.tiktok = action.payload;
 			}
 		},
+		setKickSettings: (
+			state,
+			action: {
+				payload: IMediaPlatformSettings;
+			},
+		) => {
+			if (state.mediaSettings) {
+				state.mediaSettings.kick = action.payload;
+			}
+		},
 		setPlayingMediaId: (
 			state,
 			action: {
@@ -81,4 +91,5 @@ export const {
 	setTikTokSettings,
 	setPlayingMediaId,
 	setPausedMediaId,
+	setKickSettings
 } = mediaSlice.actions;

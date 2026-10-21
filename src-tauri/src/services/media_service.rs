@@ -1,5 +1,5 @@
 use super::DatabaseService;
-use crate::{error::AppError, repositories::MediaSettingsRepository};
+use crate::{error::AppError, repositories::MediaSettingsRepository, utils::log_and_wrap_error};
 use entity::{
     media::{Media, MediaType},
     media_settings::MediaPlatformSettings,
@@ -34,6 +34,26 @@ struct TikTokInfo {
     pub play_count: u64,
     pub title: String,
     pub duration: Option<u64>,
+}
+
+#[allow(dead_code)]
+#[derive(Deserialize)]
+struct KickClipInfo {
+    pub playback_url: String,
+    pub title: String,
+    pub views_count: u64,
+    pub thumbnail_url: Option<String>,
+    pub duration: u64,
+    pub creator: KickClipCreator,
+    pub is_mature: bool,
+}
+
+#[allow(dead_code)]
+#[derive(Deserialize)]
+struct KickClipCreator {
+    pub id: u64,
+    pub slug: String,
+    pub username: String,
 }
 
 #[derive(Serialize)]
@@ -156,9 +176,10 @@ impl MediaService {
 
         match url_media.media_type {
             MediaType::Twitch => {
-                if let MessageType::Donation = message_type {
-                    self.check_enabled_and_min_amount(amount, &media_settings.twitch)?;
+                if !media_settings.twitch.enabled {
+                    return None;
                 }
+                self.check_donation_min_amount(amount, &message_type, &media_settings.twitch)?;
 
                 let twitch_clip_info = self.get_twitch_clip_info(&url_media.url, app).await?;
                 let token = match serde_json::from_str::<Token>(
@@ -182,9 +203,10 @@ impl MediaService {
                 });
             }
             MediaType::TikTok => {
-                if let MessageType::Donation = message_type {
-                    self.check_enabled_and_min_amount(amount, &media_settings.tiktok)?;
+                if !media_settings.tiktok.enabled {
+                    return None;
                 }
+                self.check_donation_min_amount(amount, &message_type, &media_settings.tiktok)?;
 
                 let tiktok_info = self.get_tiktok_info(&url_media.url, app).await?;
 
@@ -203,11 +225,19 @@ impl MediaService {
                 });
             }
             MediaType::Youtube => {
-                if let MessageType::Donation = message_type {
-                    self.check_enabled_and_min_amount(amount, &media_settings.youtube)?;
+                if !media_settings.youtube.enabled {
+                    return None;
                 }
-                let video = Video::new(&url_media.url).unwrap();
-                let video_info = video.get_info().await.unwrap();
+                self.check_donation_min_amount(amount, &message_type, &media_settings.youtube)?;
+
+                let video = Video::new(&url_media.url)
+                    .map_err(|e| log_and_wrap_error("Video instance", e))
+                    .ok()?;
+                let video_info = video
+                    .get_info()
+                    .await
+                    .map_err(|e| log_and_wrap_error("Get youtube video", e))
+                    .ok()?;
                 let view_count = video_info
                     .video_details
                     .view_count
@@ -216,7 +246,10 @@ impl MediaService {
                 if media_settings.youtube.min_views > view_count {
                     return None;
                 }
-                let thumbnail = video_info.video_details.thumbnails.last()?;
+                let thumbnail_url = match video_info.video_details.thumbnails.last() {
+                    Some(thumbnail) => Some(thumbnail.url.clone()),
+                    None => None,
+                };
                 let duration = video_info
                     .formats
                     .first()?
@@ -231,26 +264,54 @@ impl MediaService {
                     media_type: url_media.media_type,
                     expires: None,
                     temporary_src: Some(video_info.video_details.video_id),
-                    thumbnail_url: Some(thumbnail.url.clone()),
+                    thumbnail_url,
                     title: Some(video_info.video_details.title),
                     duration: Some(duration),
+                });
+            }
+            MediaType::Kick => {
+                if !media_settings.kick.enabled {
+                    return None;
+                }
+                self.check_donation_min_amount(amount, &message_type, &media_settings.kick)?;
+
+                let kick_clip_info = self
+                    .get_kick_clip_info(&url_media.url, app)
+                    .await
+                    .map_err(|e| log_and_wrap_error("Get kick info", e))
+                    .ok()?;
+
+                if media_settings.kick.min_views > kick_clip_info.views_count {
+                    return None;
+                }
+
+                return Some(Media {
+                    url: url_media.url,
+                    media_type: url_media.media_type,
+                    expires: None,
+                    temporary_src: Some(kick_clip_info.playback_url),
+                    thumbnail_url: kick_clip_info.thumbnail_url,
+                    duration: Some(kick_clip_info.duration),
+                    title: Some(format!(
+                        "{} - {}",
+                        kick_clip_info.creator.username, kick_clip_info.title
+                    )),
                 });
             }
         }
     }
 
-    fn check_enabled_and_min_amount(
+    fn check_donation_min_amount(
         &self,
         amount: &f64,
+        message_type: &MessageType,
         media_platform_settings: &MediaPlatformSettings,
     ) -> Option<bool> {
-        if !media_platform_settings.enabled {
-            return None;
+        if let MessageType::Donation = message_type {
+            if media_platform_settings.min_amount as f64 > *amount {
+                return None;
+            }
         }
-        if media_platform_settings.min_amount as f64 > *amount {
-            return None;
-        }
-
         Some(true)
     }
 
@@ -425,6 +486,57 @@ impl MediaService {
         }
         Err(AppError::Youtube("Not found video".to_string()))
     }
+
+    async fn get_kick_clip_info(
+        &self,
+        url: &str,
+        app: &AppHandle,
+    ) -> Result<KickClipInfo, AppError> {
+        let reqwest_client = app.state::<reqwest::Client>();
+        let response = reqwest_client.get(url).send().await?;
+        let html = response.text().await?;
+        const START: &str = r#"self.__next_f.push([1,""#;
+
+        for part in html.split(START).skip(1) {
+            // end of the JS string literal
+            let Some(end) = part.find(r#""])"#) else {
+                continue;
+            };
+
+            // unescape the JS string (its escapes are JSON-compatible)
+            let literal = format!("\"{}\"", &part[..end]);
+            let Ok(text) = serde_json::from_str::<String>(&literal) else {
+                continue;
+            };
+
+            // props object: ...,null,{"state":{...},"children":"$L10b"}
+            const MARK: &str = r#",null,{"state":"#;
+            let Some(pos) = text.find(MARK) else { continue };
+            let json = &text[pos + ",null,".len()..];
+
+            // stream parser reads the first JSON value and ignores trailing data
+            let Some(Ok(props)) = serde_json::Deserializer::from_str(json)
+                .into_iter::<Value>()
+                .next()
+            else {
+                continue;
+            };
+
+            let Some(queries) = props["state"]["queries"].as_array() else {
+                continue;
+            };
+
+            for q in queries {
+                let key = &q["queryKey"];
+                if key[1] == "details" && key[2] == "getClip" {
+                    let clip = q["state"]["data"]["data"].clone();
+                    return Ok(serde_json::from_value::<KickClipInfo>(clip)?);
+                }
+            }
+        }
+
+        Err(AppError::Custom("clip data not found in HTML".to_string()))
+    }
 }
 
 trait MediaParser {
@@ -456,6 +568,8 @@ impl MediaParser for MediaService {
 
         let tiktok_patterns = [r"tiktok\.com/", r"vm\.tiktok\.com/"];
 
+        let kick_patterns = [r"kick\.com/"];
+
         for pattern in youtube_patterns.iter() {
             if Regex::new(pattern)
                 .expect("Wrong youtube regex")
@@ -480,6 +594,12 @@ impl MediaParser for MediaService {
                 .is_match(url)
             {
                 return Some(MediaType::TikTok);
+            }
+        }
+
+        for pattern in kick_patterns.iter() {
+            if Regex::new(pattern).expect("Wrong kick regex").is_match(url) {
+                return Some(MediaType::Kick);
             }
         }
 

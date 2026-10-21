@@ -19,6 +19,8 @@ import Tiktok from "./components/Tiktok";
 import Twitch from "./components/Twitch";
 import TwitchIcon from "./components/TwitchIcon";
 import Youtube from "./components/Youtube";
+import Kick from "./components/Kick";
+import KickIcon from "./components/KickIcon";
 
 const Media = () => {
 	const [value, setValue] = useState(0);
@@ -105,6 +107,16 @@ const Media = () => {
 								},
 							}}
 						/>
+						<Tab
+							icon={<KickIcon />}
+							iconPosition="start"
+							label={t("media.kick")}
+							sx={{
+								"&.Mui-selected": {
+									color: getColorByMediaType(MediaType.Kick),
+								},
+							}}
+						/>
 					</Tabs>
 				</Box>
 				<div style={{ marginTop: 20 }}>
@@ -116,6 +128,9 @@ const Media = () => {
 					</TabPanel>
 					<TabPanel index={2} value={value}>
 						<Tiktok mediaSettings={mediaSettings} />
+					</TabPanel>
+					<TabPanel index={3} value={value}>
+						<Kick mediaSettings={mediaSettings} />
 					</TabPanel>
 				</div>
 				<div

@@ -24,6 +24,9 @@ const MediaPlatformSettings = ({
 		| ActionCreatorWithPayload<
 				IMediaPlatformSettings,
 				"media/setTikTokSettings"
+		  >|ActionCreatorWithPayload<
+				IMediaPlatformSettings,
+				"media/setKickSettings"
 		  >;
 }) => {
 	const { t } = useTranslation();

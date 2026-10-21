@@ -44,6 +44,7 @@
 		"@widy/sdk": "^1.0.42",
 		"cross-env": "^7.0.3",
 		"dayjs": "^1.11.13",
+		"hls.js": "^1.7.3",
 		"react": "^18.3.1",
 		"react-color": "^2.19.3",
 		"react-custom-roulette": "^1.4.1",
