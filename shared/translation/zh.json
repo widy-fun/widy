@@ -65,7 +65,8 @@
 		"title": "媒体",
 		"youtube": "YouTube",
 		"twitch": "Twitch",
-		"tiktok": "TikTok"
+		"tiktok": "TikTok",
+		"kick": "Kick"
 	},
 	"integration": {
 		"tribute": "显示 Tribute 消息"

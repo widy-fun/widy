@@ -54302,7 +54302,11 @@ const Ir = ({ createdAt: n }) => {
               sx: (a) => ({
                 color: a.palette.primary.main
               }),
-              children: o.alert?.title_template
+              children: r("message.donated", {
+                user_name: o.user_name,
+                currency: o.currency,
+                amount: o.amount
+              })
             }
           ) }),
           /* @__PURE__ */ N.jsx("div", { children: /* @__PURE__ */ N.jsx("span", { children: o.text }) }),
@@ -54420,7 +54424,7 @@ const Ir = ({ createdAt: n }) => {
               sx: (o) => ({
                 color: o.palette.primary.main
               }),
-              children: s.alert?.title_template
+              children: t("message.followed", { user_name: s.user_name })
             }
           ) }),
           /* @__PURE__ */ N.jsxs(
@@ -54537,7 +54541,10 @@ const Ir = ({ createdAt: n }) => {
               sx: (o) => ({
                 color: o.palette.primary.main
               }),
-              children: s.alert?.title_template
+              children: t("message.raided_with", {
+                viewers: s.viewers,
+                user_name: s.from_broadcaster_user_name
+              })
             }
           ) }),
           /* @__PURE__ */ N.jsxs(
@@ -54675,7 +54682,11 @@ const Ir = ({ createdAt: n }) => {
               sx: (a) => ({
                 color: a.palette.primary.main
               }),
-              children: o.alert?.title_template
+              children: r("message.redemption", {
+                user_name: o.user_name,
+                title: o.title,
+                cost: o.cost
+              })
             }
           ) }),
           /* @__PURE__ */ N.jsx("div", { children: /* @__PURE__ */ N.jsx("span", { children: o.user_input }) }),
@@ -54797,7 +54808,11 @@ const Ir = ({ createdAt: n }) => {
               sx: (o) => ({
                 color: o.palette.primary.main
               }),
-              children: s.alert?.title_template
+              children: t("message.redemption", {
+                user_name: s.user_name,
+                title: s.title,
+                cost: s.cost
+              })
             }
           ) }),
           /* @__PURE__ */ N.jsx("div", { children: /* @__PURE__ */ N.jsx("span", { children: s.user_input }) }),
@@ -54919,7 +54934,12 @@ const Ir = ({ createdAt: n }) => {
               sx: (o) => ({
                 color: o.palette.primary.main
               }),
-              children: s.alert?.title_template
+              children: s.is_gift ? t("message.gifted_subscriptions", {
+                user_name: s.user_name,
+                total: s.total
+              }) : t("message.subscribed", {
+                user_name: s.user_name
+              })
             }
           ) }),
           /* @__PURE__ */ N.jsxs(

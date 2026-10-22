@@ -65,7 +65,8 @@
 		"title": "الوسائط",
 		"youtube": "يوتيوب",
 		"twitch": "تويتش",
-		"tiktok": "تيك توك"
+		"tiktok": "تيك توك",
+		"kick": "Kick"
 	},
 	"integration": {
 		"tribute": "عرض رسائل Tribute"

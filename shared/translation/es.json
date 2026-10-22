@@ -65,7 +65,8 @@
 		"title": "Multimedia",
 		"youtube": "YouTube",
 		"twitch": "Twitch",
-		"tiktok": "TikTok"
+		"tiktok": "TikTok",
+		"kick": "Kick"
 	},
 	"integration": {
 		"tribute": "Mostrar mensajes de Tribute"
