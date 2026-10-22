@@ -1,26 +1,8 @@
 use std::sync::LazyLock;
 
 use entity::media::MediaType;
-use regex::{Regex, bytes::RegexSet};
-
-static YOUTUBE: LazyLock<RegexSet> = LazyLock::new(|| {
-    RegexSet::new([
-        r"youtube\.com/watch\?v=",
-        r"youtu\.be/",
-        r"youtube\.com/shorts/",
-    ])
-    .expect("Wrong youtube regex")
-});
-
-static TWITCH: LazyLock<RegexSet> = LazyLock::new(|| {
-    RegexSet::new([r"twitch\.tv/\w+/clip/", r"clips\.twitch\.tv/"]).expect("Wrong twitch regex")
-});
-
-static TIKTOK: LazyLock<RegexSet> =
-    LazyLock::new(|| RegexSet::new([r"tiktok\.com/"]).expect("Wrong tiktok regex"));
-
-static KICK: LazyLock<RegexSet> =
-    LazyLock::new(|| RegexSet::new([r"kick\.com/"]).expect("Wrong kick regex"));
+use regex::Regex;
+use url::Url;
 
 static URL_REGEX: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"https?://[^\s<>]+").expect("Wrong url regex"));
@@ -30,25 +12,32 @@ pub struct UrlMedia {
     pub media_type: MediaType,
 }
 
+fn host_is(host: &str, domain: &str) -> bool {
+    host.strip_suffix(domain)
+        .is_some_and(|prefix| prefix.is_empty() || prefix.ends_with('.'))
+}
+
 pub trait MediaParser {
     fn get_url_media(&self, text: &str) -> Option<UrlMedia> {
-        let url = URL_REGEX.find(text)?.as_str();
-        let media_type = self.get_media_type(url.as_bytes())?;
+        let url = Url::parse(URL_REGEX.find(text)?.as_str()).ok()?;
+        let media_type = self.get_media_type(&url)?;
 
         Some(UrlMedia {
-            url: url.to_owned(),
+            url: url.into(),
             media_type,
         })
     }
 
-    fn get_media_type(&self, url: &[u8]) -> Option<MediaType> {
-        if YOUTUBE.is_match(url) {
+    fn get_media_type(&self, url: &Url) -> Option<MediaType> {
+        let host = url.host_str()?;
+
+        if host_is(host, "youtube.com") || host_is(host, "youtu.be") {
             Some(MediaType::Youtube)
-        } else if TWITCH.is_match(url) {
+        } else if host_is(host, "twitch.tv") {
             Some(MediaType::Twitch)
-        } else if TIKTOK.is_match(url) {
+        } else if host_is(host, "tiktok.com") {
             Some(MediaType::TikTok)
-        } else if KICK.is_match(url) {
+        } else if host_is(host, "kick.com") {
             Some(MediaType::Kick)
         } else {
             None
@@ -64,12 +53,17 @@ mod tests {
 
     impl MediaParser for TestParser {}
 
+    fn media_type(url: &str) -> Option<MediaType> {
+        TestParser.get_media_type(&Url::parse(url).unwrap())
+    }
+
     #[test]
     fn identifies_supported_platform_urls() {
-        let parser = TestParser;
-
         let test_cases = [
-            ("https://www.youtube.com/watch?v=video123", MediaType::Youtube),
+            (
+                "https://www.youtube.com/watch?v=video123",
+                MediaType::Youtube,
+            ),
             ("https://youtu.be/video123", MediaType::Youtube),
             (
                 "https://www.twitch.tv/channel/clip/ClipSlug",
@@ -77,12 +71,13 @@ mod tests {
             ),
             ("https://clips.twitch.tv/ClipSlug", MediaType::Twitch),
             ("https://www.tiktok.com/@user/video/123", MediaType::TikTok),
+            ("https://vm.tiktok.com/abc/", MediaType::TikTok),
             ("https://kick.com/channel/clips/clip_123", MediaType::Kick),
         ];
 
         for (url, expected_type) in test_cases {
             assert_eq!(
-                parser.get_media_type(url.as_bytes()),
+                media_type(url),
                 Some(expected_type),
                 "failed to classify {url}"
             );
@@ -95,10 +90,7 @@ mod tests {
             .get_url_media("Check out this clip: https://kick.com/channel/clips/clip_123")
             .unwrap();
 
-        assert_eq!(
-            parsed.url,
-            "https://kick.com/channel/clips/clip_123"
-        );
+        assert_eq!(parsed.url, "https://kick.com/channel/clips/clip_123");
         assert_eq!(parsed.media_type, MediaType::Kick);
     }
 
@@ -109,20 +101,26 @@ mod tests {
 
     #[test]
     fn returns_none_for_unsupported_url() {
-        assert!(TestParser
-            .get_url_media("https://example.com/video")
-            .is_none());
-        assert_eq!(
-            TestParser.get_media_type(b"https://example.com/video"),
-            None
+        assert!(
+            TestParser
+                .get_url_media("https://example.com/video")
+                .is_none()
         );
+        assert_eq!(media_type("https://example.com/video"), None);
     }
 
     #[test]
-    fn identifies_platform_when_url_is_embedded_in_a_byte_slice() {
-        assert_eq!(
-            TestParser.get_media_type(b"prefix https://www.youtube.com/shorts/video123 suffix"),
-            Some(MediaType::Youtube)
-        );
+    fn rejects_lookalike_hosts() {
+        assert_eq!(media_type("https://evilyoutube.com/watch?v=1"), None);
+        assert_eq!(media_type("https://youtube.com.evil.com/watch?v=1"), None);
+        assert_eq!(media_type("https://example.com/?u=youtube.com"), None);
+    }
+
+    #[test]
+    fn extracts_url_embedded_in_text() {
+        let parsed = TestParser
+            .get_url_media("prefix https://www.youtube.com/shorts/video123 suffix")
+            .unwrap();
+        assert_eq!(parsed.media_type, MediaType::Youtube);
     }
 }
