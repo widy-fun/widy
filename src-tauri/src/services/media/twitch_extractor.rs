@@ -240,18 +240,22 @@ pub trait TwitchClipExtractor {
 
         // https://clips.twitch.tv/ClipSlug
         if host == "clips.twitch.tv" {
-            return segments
+            if let Some(slug) = segments
                 .first()
+                .copied()
                 .filter(|slug| !slug.is_empty())
-                .map(|slug| (*slug).to_owned())
-                .ok_or(TwitchClipError::MissingSlug);
-        }
+                .filter(|slug| *slug != "embed")
+                .map(str::to_owned)
+            {
+                return Ok(slug);
+            }
 
-        // https://clips.twitch.tv/embed?clip=ClipSlug
-        if host == "clips.twitch.tv" {
+            // https://clips.twitch.tv/embed?clip=ClipSlug
             if let Some((_, slug)) = url.query_pairs().find(|(key, _)| key == "clip") {
                 return Ok(slug.into_owned());
             }
+
+            return Err(TwitchClipError::MissingSlug);
         }
 
         // https://www.twitch.tv/channel/clip/ClipSlug
@@ -261,5 +265,62 @@ pub trait TwitchClipExtractor {
             .map(|parts| parts[1].to_owned())
             .filter(|slug| !slug.is_empty())
             .ok_or(TwitchClipError::MissingSlug)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    struct TestExtractor;
+
+    impl TwitchClipExtractor for TestExtractor {
+        fn reqwest_client(&self) -> &reqwest::Client {
+            unreachable!("URL parsing tests do not use an HTTP client")
+        }
+    }
+
+    fn extract_slug(input: &str) -> Result<String, TwitchClipError> {
+        <TestExtractor as TwitchClipExtractor>::extract_slug(input)
+    }
+
+    #[test]
+    fn extracts_slug_from_clips_domain() {
+        assert_eq!(
+            extract_slug("https://clips.twitch.tv/ClipSlug").unwrap(),
+            "ClipSlug"
+        );
+    }
+
+    #[test]
+    fn extracts_slug_from_embed_query_parameter() {
+        assert_eq!(
+            extract_slug("https://clips.twitch.tv/embed?clip=ClipSlug").unwrap(),
+            "ClipSlug"
+        );
+    }
+
+    #[test]
+    fn extracts_slug_from_channel_clip_path_case_insensitively() {
+        assert_eq!(
+            extract_slug("https://www.twitch.tv/channel/CLIP/ClipSlug").unwrap(),
+            "ClipSlug"
+        );
+    }
+
+    #[test]
+    fn rejects_invalid_url() {
+        assert!(matches!(
+            extract_slug("not a URL"),
+            Err(TwitchClipError::InvalidUrl)
+        ));
+    }
+
+    #[test]
+    fn rejects_url_without_slug() {
+        assert!(matches!(
+            extract_slug("https://clips.twitch.tv/"),
+            Err(TwitchClipError::MissingSlug)
+        ));
     }
 }

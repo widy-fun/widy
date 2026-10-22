@@ -271,3 +271,128 @@ pub trait TikTokExtractor {
             .and_then(|v| v.as_i64().or_else(|| v.as_str()?.parse().ok()))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+
+    struct TestExtractor;
+
+    impl TikTokExtractor for TestExtractor {
+        fn reqwest_client(&self) -> &reqwest::Client {
+            unreachable!("parser tests do not use an HTTP client")
+        }
+    }
+
+    fn extract_video_id(url: &Url) -> Option<String> {
+        <TestExtractor as TikTokExtractor>::extract_video_id(url)
+    }
+
+    fn extract_video_id_from_text(input: &str) -> Option<String> {
+        <TestExtractor as TikTokExtractor>::extract_video_id_from_text(input)
+    }
+
+    #[test]
+    fn extracts_video_id_from_video_path() {
+        let url = Url::parse("https://www.tiktok.com/@creator/video/1234567890").unwrap();
+        assert_eq!(extract_video_id(&url).as_deref(), Some("1234567890"));
+    }
+
+    #[test]
+    fn rejects_non_numeric_video_id() {
+        let url = Url::parse("https://www.tiktok.com/@creator/video/not-a-number").unwrap();
+        assert_eq!(extract_video_id(&url), None);
+    }
+
+    #[test]
+    fn extracts_video_id_from_text_with_query_and_fragment() {
+        assert_eq!(
+            extract_video_id_from_text("https://www.tiktok.com/@creator/video/123456?share=1#top")
+                .as_deref(),
+            Some("123456")
+        );
+    }
+
+    #[test]
+    fn rejects_non_numeric_video_id_in_text() {
+        assert_eq!(
+            extract_video_id_from_text("https://www.tiktok.com/@creator/video/abc"),
+            None
+        );
+    }
+
+    #[test]
+    fn extracts_universal_data_script_json() {
+        let html = r#"<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__">{"video":{"id":"123"}}</script>"#;
+        let data = <TestExtractor as TikTokExtractor>::extract_script_json(
+            html,
+            "__UNIVERSAL_DATA_FOR_REHYDRATION__",
+        )
+        .unwrap();
+        assert_eq!(data["video"]["id"], "123");
+    }
+
+    #[test]
+    fn returns_missing_metadata_when_script_is_absent() {
+        let result = <TestExtractor as TikTokExtractor>::extract_script_json(
+            "<html></html>",
+            "__UNIVERSAL_DATA_FOR_REHYDRATION__",
+        );
+        assert!(matches!(result, Err(TikTokError::MissingMetadata)));
+    }
+
+    #[test]
+    fn parses_video_fields_formats_and_thumbnails() {
+        let final_url = Url::parse("https://www.tiktok.com/@creator/video/123").unwrap();
+        let item = json!({
+            "desc": "A sample video",
+            "createTime": 1710000000,
+            "author": {
+                "uniqueId": "creator",
+                "id": "42",
+                "nickname": "Creator"
+            },
+            "stats": {
+                "playCount": "100",
+                "diggCount": 25,
+                "commentCount": 5,
+                "shareCount": 2,
+                "collectCount": 3
+            },
+            "music": {
+                "title": "Track",
+                "authorName": "Artist"
+            },
+            "video": {
+                "width": 1080,
+                "height": 1920,
+                "duration": 15000,
+                "playAddr": {"urlList": ["https://cdn.example/play.mp4"]},
+                "downloadAddr": {"urlList": ["https://cdn.example/download.mp4"]},
+                "cover": {"urlList": ["https://cdn.example/cover.jpg"]},
+                "originCover": {"urlList": ["https://cdn.example/original.jpg"]}
+            }
+        });
+
+        let info = <TestExtractor as TikTokExtractor>::parse_video("123", &final_url, &item)
+            .unwrap();
+
+        assert_eq!(info.id, "123");
+        assert_eq!(info.title.as_deref(), Some("A sample video"));
+        assert_eq!(info.uploader.as_deref(), Some("creator"));
+        assert_eq!(info.uploader_id.as_deref(), Some("42"));
+        assert_eq!(info.channel.as_deref(), Some("Creator"));
+        assert_eq!(info.duration, Some(15.0));
+        assert_eq!(info.view_count, Some(100));
+        assert_eq!(info.like_count, Some(25));
+        assert_eq!(info.track.as_deref(), Some("Track"));
+        assert_eq!(info.artist.as_deref(), Some("Artist"));
+        assert_eq!(info.thumbnails.len(), 2);
+        assert_eq!(info.formats.len(), 2);
+        assert!(!info.formats[0].has_watermark);
+        assert!(info.formats[1].has_watermark);
+        assert_eq!(info.formats[0].width, Some(1080));
+        assert_eq!(info.formats[0].height, Some(1920));
+    }
+}

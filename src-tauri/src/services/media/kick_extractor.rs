@@ -159,3 +159,92 @@ pub trait KickClipExtractor {
         Err(KickClipError::MissingClipId)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    struct TestExtractor;
+
+    impl KickClipExtractor for TestExtractor {
+        fn reqwest_client(&self) -> &reqwest::Client {
+            unreachable!("URL parsing does not use an HTTP client")
+        }
+    }
+
+    fn extract_clip_id(input: &str) -> Result<String, KickClipError> {
+        <TestExtractor as KickClipExtractor>::extract_clip_id(input)
+    }
+
+    #[test]
+    fn extracts_clip_id_from_channel_clip_url() {
+        assert_eq!(
+            extract_clip_id("https://kick.com/channel/clips/clip_01ABC").unwrap(),
+            "clip_01ABC"
+        );
+    }
+
+    #[test]
+    fn extracts_clip_id_after_additional_path_segments() {
+        assert_eq!(
+            extract_clip_id("https://kick.com/channel/featured/clips/clip_01ABC").unwrap(),
+            "clip_01ABC"
+        );
+    }
+
+    #[test]
+    fn prefers_path_clip_id_over_query_parameter() {
+        assert_eq!(
+            extract_clip_id("https://kick.com/channel/clips/clip_path?clip=clip_query").unwrap(),
+            "clip_path"
+        );
+    }
+
+    #[test]
+    fn extracts_clip_id_from_query_parameter() {
+        assert_eq!(
+            extract_clip_id("https://kick.com/channel?clip=clip_01ABC").unwrap(),
+            "clip_01ABC"
+        );
+    }
+
+    #[test]
+    fn skips_unrelated_query_parameters() {
+        assert_eq!(
+            extract_clip_id("https://kick.com/channel?ref=clip_other&clip=clip_01ABC").unwrap(),
+            "clip_01ABC"
+        );
+    }
+
+    #[test]
+    fn rejects_query_parameter_without_clip_prefix() {
+        assert!(matches!(
+            extract_clip_id("https://kick.com/channel?clip=01ABC"),
+            Err(KickClipError::MissingClipId)
+        ));
+    }
+
+    #[test]
+    fn decodes_clip_id_in_query_parameter() {
+        assert_eq!(
+            extract_clip_id("https://kick.com/channel?clip=clip_01ABC%2FDEF").unwrap(),
+            "clip_01ABC/DEF"
+        );
+    }
+
+    #[test]
+    fn rejects_invalid_url() {
+        assert!(matches!(
+            extract_clip_id("not a URL"),
+            Err(KickClipError::InvalidUrl)
+        ));
+    }
+
+    #[test]
+    fn rejects_url_without_clip_id() {
+        assert!(matches!(
+            extract_clip_id("https://kick.com/channel/clips/not-a-clip"),
+            Err(KickClipError::MissingClipId)
+        ));
+    }
+}

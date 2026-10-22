@@ -346,3 +346,144 @@ pub trait YoutubeSearchExtractor {
             .map(str::to_owned)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+
+    struct TestExtractor;
+
+    impl YoutubeSearchExtractor for TestExtractor {
+        fn reqwest_client(&self) -> &reqwest::Client {
+            unreachable!("parser tests do not use an HTTP client")
+        }
+    }
+
+    #[test]
+    fn extracts_initial_data_with_nested_json() {
+        let html = r#"<script>var ytInitialData = {"contents":{"nested":{"text":"brace } quote \""}}};</script>"#;
+        let data =
+            <TestExtractor as YoutubeSearchExtractor>::extract_initial_data(html).unwrap();
+        assert_eq!(data["contents"]["nested"]["text"], "brace } quote \"");
+    }
+
+    #[test]
+    fn returns_missing_search_data_without_marker() {
+        let result =
+            <TestExtractor as YoutubeSearchExtractor>::extract_initial_data("<html></html>");
+        assert!(matches!(
+            result,
+            Err(YoutubeSearchError::MissingSearchData)
+        ));
+    }
+
+    #[test]
+    fn parses_video_renderer_fields() {
+        let renderer = json!({
+            "videoId": "video123",
+            "title": {"runs": [{"text": "A "}, {"text": "video"}]},
+            "ownerText": {"simpleText": "Creator"},
+            "lengthText": {"simpleText": "2:05"},
+            "viewCountText": {"simpleText": "1.2K views"},
+            "publishedTimeText": {"simpleText": "2 days ago"},
+            "thumbnail": {"thumbnails": [
+                {"url": "https://img.example/low.jpg"},
+                {"url": "https://img.example/high.jpg"}
+            ]}
+        });
+
+        let result =
+            <TestExtractor as YoutubeSearchExtractor>::parse_video_renderer(&renderer).unwrap();
+        assert_eq!(result.id, "video123");
+        assert_eq!(result.url, "https://www.youtube.com/watch?v=video123");
+        assert_eq!(result.title.as_deref(), Some("A video"));
+        assert_eq!(result.channel.as_deref(), Some("Creator"));
+        assert_eq!(result.duration, Some(125.0));
+        assert_eq!(result.view_count, Some(1200));
+        assert_eq!(result.published_time.as_deref(), Some("2 days ago"));
+        assert_eq!(result.thumbnail.as_deref(), Some("https://img.example/high.jpg"));
+        assert!(!result.is_short);
+    }
+
+    #[test]
+    fn parses_short_renderer_with_endpoint_video_id() {
+        let renderer = json!({
+            "navigationEndpoint": {"reelWatchEndpoint": {"videoId": "short123"}},
+            "headline": {"simpleText": "A short"},
+            "shortBylineText": {"simpleText": "Short creator"},
+            "lengthText": {"simpleText": "0:30"}
+        });
+
+        let result =
+            <TestExtractor as YoutubeSearchExtractor>::parse_short_renderer(&renderer).unwrap();
+        assert_eq!(result.id, "short123");
+        assert_eq!(result.url, "https://www.youtube.com/shorts/short123");
+        assert_eq!(result.title.as_deref(), Some("A short"));
+        assert_eq!(result.channel.as_deref(), Some("Short creator"));
+        assert_eq!(result.duration, Some(30.0));
+        assert!(result.is_short);
+    }
+
+    #[test]
+    fn collects_nested_results_deduplicated_and_respects_limit() {
+        let data = json!({
+            "first": {"videoRenderer": {
+                "videoId": "video123",
+                "title": {"simpleText": "First"}
+            }},
+            "duplicate": {"videoRenderer": {
+                "videoId": "video123",
+                "title": {"simpleText": "Duplicate"}
+            }},
+            "second": {"reelItemRenderer": {
+                "videoId": "short123",
+                "headline": {"simpleText": "Second"}
+            }}
+        });
+        let mut results = Vec::new();
+        let mut seen = HashSet::new();
+
+        <TestExtractor as YoutubeSearchExtractor>::collect_results(
+            &data,
+            &mut results,
+            &mut seen,
+            10,
+        );
+
+        assert_eq!(results.len(), 2);
+        assert_eq!(results[0].id, "video123");
+        assert_eq!(results[1].id, "short123");
+        assert!(results[1].is_short);
+
+        results.clear();
+        seen.clear();
+        <TestExtractor as YoutubeSearchExtractor>::collect_results(
+            &data,
+            &mut results,
+            &mut seen,
+            1,
+        );
+        assert_eq!(results.len(), 1);
+    }
+
+    #[test]
+    fn parses_duration_and_view_count_formats() {
+        assert_eq!(
+            <TestExtractor as YoutubeSearchExtractor>::parse_duration(Some("1:02:03".into())),
+            Some(3723.0)
+        );
+        assert_eq!(
+            <TestExtractor as YoutubeSearchExtractor>::parse_view_count(Some("2.5M views".into())),
+            Some(2_500_000)
+        );
+        assert_eq!(
+            <TestExtractor as YoutubeSearchExtractor>::parse_view_count(Some("1,234 views".into())),
+            Some(1234)
+        );
+        assert_eq!(
+            <TestExtractor as YoutubeSearchExtractor>::parse_duration(Some("invalid".into())),
+            None
+        );
+    }
+}

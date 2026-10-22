@@ -332,3 +332,149 @@ pub trait YoutubeExtractor {
             .or_else(|| value.as_str()?.parse::<f64>().ok())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+
+    struct TestExtractor;
+
+    impl YoutubeExtractor for TestExtractor {
+        fn reqwest_client(&self) -> &reqwest::Client {
+            unreachable!("parser tests do not use an HTTP client")
+        }
+    }
+
+    fn extract_video_id(input: &str) -> Result<String, YoutubeError> {
+        <TestExtractor as YoutubeExtractor>::extract_video_id(input)
+    }
+
+    #[test]
+    fn extracts_video_id_from_watch_url() {
+        assert_eq!(
+            extract_video_id("https://www.youtube.com/watch?v=video123").unwrap(),
+            "video123"
+        );
+    }
+
+    #[test]
+    fn extracts_video_id_from_short_and_embed_urls() {
+        assert_eq!(
+            extract_video_id("https://youtube.com/shorts/short123").unwrap(),
+            "short123"
+        );
+        assert_eq!(
+            extract_video_id("https://youtube.com/embed/embed123").unwrap(),
+            "embed123"
+        );
+    }
+
+    #[test]
+    fn extracts_video_id_from_short_domain() {
+        assert_eq!(
+            extract_video_id("https://youtu.be/abc123?t=5").unwrap(),
+            "abc123"
+        );
+    }
+
+    #[test]
+    fn rejects_invalid_and_missing_video_ids() {
+        assert!(matches!(
+            extract_video_id("not a URL"),
+            Err(YoutubeError::InvalidUrl)
+        ));
+        assert!(matches!(
+            extract_video_id("https://www.youtube.com/"),
+            Err(YoutubeError::MissingVideoId)
+        ));
+    }
+
+    #[test]
+    fn extracts_player_response_with_nested_json_strings() {
+        let html = r#"<script>ytInitialPlayerResponse = {"videoDetails":{"title":"brace } and quote \"","nested":{"value":1}}};</script>"#;
+        let response =
+            <TestExtractor as YoutubeExtractor>::extract_player_response(html).unwrap();
+        assert_eq!(
+            response["videoDetails"]["title"],
+            "brace } and quote \""
+        );
+        assert_eq!(response["videoDetails"]["nested"]["value"], 1);
+    }
+
+    #[test]
+    fn returns_missing_player_response_when_marker_is_absent() {
+        let result = <TestExtractor as YoutubeExtractor>::extract_player_response("<html></html>");
+        assert!(matches!(result, Err(YoutubeError::MissingPlayerResponse)));
+    }
+
+    #[test]
+    fn parses_video_details_and_formats() {
+        let response = json!({
+            "playabilityStatus": {"status": "OK"},
+            "videoDetails": {
+                "title": "Video title",
+                "shortDescription": "Description",
+                "author": "Channel",
+                "channelId": "channel-id",
+                "lengthSeconds": "120",
+                "viewCount": "9876",
+                "isLiveContent": true,
+                "thumbnail": {"thumbnails": [
+                    {"url": "https://img.example/low.jpg"},
+                    {"url": "https://img.example/high.jpg"}
+                ]}
+            },
+            "microformat": {"playerMicroformatRenderer": {"uploadDate": "2024-01-02"}},
+            "streamingData": {
+                "formats": [{
+                    "itag": 18,
+                    "url": "https://video.example/progressive",
+                    "mimeType": "video/mp4; codecs=\"avc1\"",
+                    "width": 640,
+                    "height": 360,
+                    "bitrate": 500000,
+                    "fps": 30,
+                    "audioQuality": "AUDIO_QUALITY_LOW"
+                }],
+                "adaptiveFormats": [{
+                    "signatureCipher": "url=https%3A%2F%2Fvideo.example%2Fciphered",
+                    "mimeType": "video/mp4"
+                }]
+            }
+        });
+
+        let info = <TestExtractor as YoutubeExtractor>::parse_player_response(
+            "video123",
+            "https://www.youtube.com/watch?v=video123",
+            &response,
+        )
+        .unwrap();
+
+        assert_eq!(info.id, "video123");
+        assert_eq!(info.title.as_deref(), Some("Video title"));
+        assert_eq!(info.description.as_deref(), Some("Description"));
+        assert_eq!(info.channel.as_deref(), Some("Channel"));
+        assert_eq!(info.channel_id.as_deref(), Some("channel-id"));
+        assert_eq!(info.duration, Some(120.0));
+        assert_eq!(info.view_count, Some(9876));
+        assert_eq!(info.upload_date.as_deref(), Some("2024-01-02"));
+        assert_eq!(info.thumbnail.as_deref(), Some("https://img.example/high.jpg"));
+        assert!(info.is_live);
+        assert_eq!(info.formats.len(), 1);
+        assert_eq!(info.formats[0].mime_type.as_deref(), Some("video/mp4"));
+        assert!(info.formats[0].has_audio);
+        assert!(info.formats[0].has_video);
+    }
+
+    #[test]
+    fn reports_unavailable_video() {
+        let response = json!({"playabilityStatus": {"status": "ERROR"}});
+        let result = <TestExtractor as YoutubeExtractor>::parse_player_response(
+            "video123",
+            "https://www.youtube.com/watch?v=video123",
+            &response,
+        );
+        assert!(matches!(result, Err(YoutubeError::Unavailable)));
+    }
+}
