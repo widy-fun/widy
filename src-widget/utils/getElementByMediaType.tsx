@@ -9,7 +9,6 @@ const getElementByMediaType = ({
 	messageId,
 	mediaSettings,
 	media,
-	
 }: {
 	messageId: string;
 	mediaSettings: IMediaSettings;

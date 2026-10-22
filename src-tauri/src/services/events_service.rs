@@ -30,8 +30,8 @@ use crate::{
         SettingsRepository, SubscriptionsRepository, VariablesRepository,
     },
     services::{
-        CommandAuctionAction, DatabaseService, EventMessage, ExchangeRatesService, MediaService,
-        WebSocketBroadcaster, tts::TtsService,
+        CommandAuctionAction, DatabaseService, EventMessage, ExchangeRatesService,
+        WebSocketBroadcaster, media::MediaService, tts::TtsService,
     },
     utils::{get_alert_by_amount, remove_black_listed_words, remove_links, replace_variables},
 };

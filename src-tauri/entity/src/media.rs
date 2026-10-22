@@ -1,7 +1,7 @@
 use sea_orm::{DeriveActiveEnum, EnumIter, FromJsonQueryResult};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize, Eq, FromJsonQueryResult)]
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
 
 pub struct Media {
     pub url: String,
@@ -9,8 +9,9 @@ pub struct Media {
     pub expires: Option<u64>,
     pub temporary_src: Option<String>,
     pub title: Option<String>,
+    pub creator: Option<String>,
     pub thumbnail_url: Option<String>,
-    pub duration: Option<u64>,
+    pub duration: Option<f64>,
     pub view_count: Option<u64>,
 }
 

@@ -27487,7 +27487,10 @@ const wi = Oee({
       currency: e?.currency
     }
   );
-}, zx = (n) => n?.donation?.media || n?.redemption?.media || n?.assistant_action?.data, nte = () => {
+}, zx = (n) => {
+  const e = n?.assistant_action?.data;
+  return n?.donation?.media || n?.redemption?.media || e;
+}, nte = () => {
   const n = zt(), e = M.useRef(null), t = M.useRef(null), r = M.useRef([]), [i, s] = M.useState(), o = M.useCallback(
     ({ message: g }) => {
       if (!g) return;
@@ -52235,7 +52238,6 @@ const Qoe = ({
   media: e,
   messageId: t
 }) => {
-  console.log(n);
   const r = M.useRef(null), i = zt();
   return M.useEffect(() => {
     r.current && (r.current.volume = n.video_volume / 100);

@@ -7,6 +7,8 @@ impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         let media_platform_settings =
             String::from(r#"{"enabled":true,"video_volume":50,"min_amount":0,"min_views":5000}"#);
+        let twitch_media_platform_settings =
+            String::from(r#"{"enabled":true,"video_volume":50,"min_amount":0,"min_views":0}"#);
 
         manager
             .exec_stmt(
@@ -16,7 +18,7 @@ impl MigrationTrait for Migration {
                     .values_panic([
                         1.into(),
                         media_platform_settings.clone().into(),
-                        media_platform_settings.clone().into(),
+                        twitch_media_platform_settings.clone().into(),
                         media_platform_settings.clone().into(),
                     ])
                     .to_owned(),

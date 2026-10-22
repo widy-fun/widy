@@ -15,12 +15,13 @@ use crate::{
     error::AppError,
     repositories::AlertsRepository,
     services::{
-        AppEvent, DatabaseService, EventMessage, EventsService, MediaService, WebSocketBroadcaster,
+        AppEvent, DatabaseService, EventMessage, EventsService, WebSocketBroadcaster,
         assistant::tool_calling_service::ToolCall,
         kick::{
             self, KickService, KickSessionService, PatchChanelBody,
             traits::{KickApi, KickSessionApi},
         },
+        media::{MediaService, YoutubeSearchExtractor},
         twitch::{self, ModifyChannelInformationBody, TwitchService, traits::TwitchApi},
     },
 };
@@ -936,23 +937,27 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
                 .cloned()
                 .ok_or(AppError::Custom("Media name empty".to_string()))?;
             let media_service = app.state::<MediaService>();
-            let youtube_info = media_service.search_youtube(&name).await?;
+            let youtube_search_info = media_service
+                .search_youtube_one(&name)
+                .await?
+                .ok_or(AppError::Media("Not found youtube video".to_string()))?;
+            println!("{:?}", youtube_search_info);
             let message_id = uuid::Uuid::new_v4();
-
             EventsService::assistant_action(
                 AssistantAction {
                     id: uuid::Uuid::new_v4(),
                     message_id,
                     r#type: AssistantActionType::PlayMedia,
                     data: PlayMedia(Media {
-                        url: youtube_info.url.clone(),
+                        url: youtube_search_info.url.clone(),
                         media_type: MediaType::Youtube,
                         expires: None,
-                        temporary_src: Some(youtube_info.video_id.clone()),
-                        thumbnail_url: youtube_info.thumbnail_url.clone(),
-                        duration: youtube_info.duration.clone(),
-                        title: Some(youtube_info.title.clone()),
-                        view_count: youtube_info.view_count,
+                        temporary_src: Some(youtube_search_info.id),
+                        thumbnail_url: youtube_search_info.thumbnail,
+                        duration: youtube_search_info.duration,
+                        title: youtube_search_info.title,
+                        view_count: youtube_search_info.view_count,
+                        creator: youtube_search_info.channel,
                     }),
                 },
                 app,

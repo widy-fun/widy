@@ -4,6 +4,7 @@ use crate::services::claude::ClaudeService;
 use crate::services::fish_audio::FishAudioService;
 use crate::services::gemini::GeminiService;
 use crate::services::kick::{KickBotService, KickService, KickSessionService};
+use crate::services::media::MediaService;
 use crate::services::openai::OpenAIService;
 use crate::services::telegram_bot::telegram_bot_service::TelegramBotService;
 use crate::services::tts::TtsService;
@@ -11,9 +12,9 @@ use crate::services::twitch::traits::TwitchApi;
 use crate::services::twitch::{TwitchBotService, TwitchService};
 use crate::services::{
     AxumService, CommandsService, ConfigService, DatabaseService, DeepLinkDispatcherService,
-    DestreamService, DonatePayService, DonationAlertsService, ExchangeRatesService, MediaService,
-    NsfwService, StreamElementsService, StreamLabsService, TributeService, WebSocketBroadcaster,
-    WidySolService, WidyTonService,
+    DestreamService, DonatePayService, DonationAlertsService, ExchangeRatesService, NsfwService,
+    StreamElementsService, StreamLabsService, TributeService, WebSocketBroadcaster, WidySolService,
+    WidyTonService,
 };
 use crate::utils::copy_assets_to_static;
 use lingua::Language::{
@@ -86,7 +87,7 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
     app.manage(tts_service);
 
     //media
-    let media_service = MediaService::new();
+    let media_service = MediaService::new(reqwest_client.clone());
     app.manage(media_service);
 
     //twitch

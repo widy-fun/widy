@@ -65,6 +65,7 @@ export const mediaSlice = createSlice({
 				state.mediaSettings.kick = action.payload;
 			}
 		},
+
 		setPlayingMediaId: (
 			state,
 			action: {
@@ -91,5 +92,5 @@ export const {
 	setTikTokSettings,
 	setPlayingMediaId,
 	setPausedMediaId,
-	setKickSettings
+	setKickSettings,
 } = mediaSlice.actions;

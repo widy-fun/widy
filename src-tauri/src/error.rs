@@ -11,6 +11,10 @@ use tokio::task::JoinError;
 use xcap::XCapError;
 use zip::result::ZipError;
 
+use crate::services::media::{
+    KickClipError, TikTokError, TwitchClipError, YoutubeError, YoutubeSearchError,
+};
+
 #[derive(Debug, Clone, Error, Serialize)]
 #[serde(tag = "kind", content = "data")]
 pub enum AppError {
@@ -68,8 +72,8 @@ pub enum AppError {
     #[error("TelegramBot error: {0}")]
     TelegramBot(String),
 
-    #[error("Youtube error: {0}")]
-    Youtube(String),
+    #[error("Media error: {0}")]
+    Media(String),
 }
 
 impl From<reqwest::Error> for AppError {
@@ -171,6 +175,36 @@ impl From<RequestError> for AppError {
 
 impl From<VideoError> for AppError {
     fn from(err: VideoError) -> Self {
-        AppError::Youtube(err.to_string())
+        AppError::Media(err.to_string())
+    }
+}
+
+impl From<KickClipError> for AppError {
+    fn from(err: KickClipError) -> Self {
+        AppError::Media(err.to_string())
+    }
+}
+
+impl From<TikTokError> for AppError {
+    fn from(err: TikTokError) -> Self {
+        AppError::Media(err.to_string())
+    }
+}
+
+impl From<TwitchClipError> for AppError {
+    fn from(err: TwitchClipError) -> Self {
+        AppError::Media(err.to_string())
+    }
+}
+
+impl From<YoutubeSearchError> for AppError {
+    fn from(err: YoutubeSearchError) -> Self {
+        AppError::Media(err.to_string())
+    }
+}
+
+impl From<YoutubeError> for AppError {
+    fn from(err: YoutubeError) -> Self {
+        AppError::Media(err.to_string())
     }
 }

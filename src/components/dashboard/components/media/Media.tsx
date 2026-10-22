@@ -14,13 +14,13 @@ import {
 import type { AppState } from "../../../../store";
 import TabPanel from "../../../TabPanel";
 import WidgetUrl from "../alerts/components/WidgetUrl";
+import Kick from "./components/Kick";
+import KickIcon from "./components/KickIcon";
 import TikTokIcon from "./components/TikTokIcon";
 import Tiktok from "./components/Tiktok";
 import Twitch from "./components/Twitch";
 import TwitchIcon from "./components/TwitchIcon";
 import Youtube from "./components/Youtube";
-import Kick from "./components/Kick";
-import KickIcon from "./components/KickIcon";
 
 const Media = () => {
 	const [value, setValue] = useState(0);
