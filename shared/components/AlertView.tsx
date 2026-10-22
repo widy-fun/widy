@@ -35,9 +35,7 @@ const AlertView = ({
 					backgroundColor={backgroundColor}
 					videoSrcObject={videoSrcObject}
 					isShowVideoElement={isShowVideoElement}
-				>
-					{alert.title_template}
-				</Alert>
+				/>
 			);
 		}
 		case MessageType.Follow: {
@@ -50,9 +48,7 @@ const AlertView = ({
 					backgroundColor={backgroundColor}
 					videoSrcObject={videoSrcObject}
 					isShowVideoElement={isShowVideoElement}
-				>
-					{alert.title_template}
-				</Alert>
+				/>
 			);
 		}
 		case MessageType.Subscription: {
@@ -65,9 +61,7 @@ const AlertView = ({
 					backgroundColor={backgroundColor}
 					videoSrcObject={videoSrcObject}
 					isShowVideoElement={isShowVideoElement}
-				>
-					{alert.title_template}
-				</Alert>
+				/>
 			);
 		}
 		case MessageType.GiftSubscription: {
@@ -80,9 +74,7 @@ const AlertView = ({
 					backgroundColor={backgroundColor}
 					videoSrcObject={videoSrcObject}
 					isShowVideoElement={isShowVideoElement}
-				>
-					{alert.title_template}
-				</Alert>
+				/>
 			);
 		}
 		case MessageType.Raid: {
@@ -95,9 +87,7 @@ const AlertView = ({
 					backgroundColor={backgroundColor}
 					videoSrcObject={videoSrcObject}
 					isShowVideoElement={isShowVideoElement}
-				>
-					{alert.title_template}
-				</Alert>
+				/>
 			);
 		}
 		case MessageType.Redemption: {
@@ -110,9 +100,7 @@ const AlertView = ({
 					backgroundColor={backgroundColor}
 					videoSrcObject={videoSrcObject}
 					isShowVideoElement={isShowVideoElement}
-				>
-					{alert.title_template}
-				</Alert>
+				/>
 			);
 		}
 		case MessageType.CommandAction: {
@@ -125,9 +113,7 @@ const AlertView = ({
 					backgroundColor={backgroundColor}
 					videoSrcObject={videoSrcObject}
 					isShowVideoElement={isShowVideoElement}
-				>
-					{alert.title_template}
-				</Alert>
+				/>
 			);
 		}
 		case MessageType.AssistantAction: {
@@ -140,9 +126,7 @@ const AlertView = ({
 					backgroundColor={backgroundColor}
 					videoSrcObject={videoSrcObject}
 					isShowVideoElement={isShowVideoElement}
-				>
-					{alert.title_template}
-				</Alert>
+				/>
 			);
 		}
 	}

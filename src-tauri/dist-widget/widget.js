@@ -26784,18 +26784,17 @@ const wi = Oee({
   backgroundColor: r,
   base: i,
   text: s,
-  children: o,
-  videoSrcObject: a,
-  isShowVideoElement: u
+  videoSrcObject: o,
+  isShowVideoElement: a
 }) => {
-  const c = M.useRef(null), f = n.alert_variant !== Kr.Video && n.alert_variant !== Kr.Audio, h = n.alert_variant === Kr.Video;
+  const u = M.useRef(null), c = n.alert_variant !== Kr.Video && n.alert_variant !== Kr.Audio, f = n.alert_variant === Kr.Video;
   return M.useEffect(() => {
-    const g = c.current;
-    if (!(!g || !a))
-      return g && a && (g.srcObject = a, g.volume = 0, g.play()), () => {
-        g.pause(), g.srcObject = null;
+    const h = u.current;
+    if (!(!h || !o))
+      return h && o && (h.srcObject = o, h.volume = 0, h.play()), () => {
+        h.pause(), h.srcObject = null;
       };
-  }, [a]), /* @__PURE__ */ N.jsxs(
+  }, [o]), /* @__PURE__ */ N.jsxs(
     "div",
     {
       style: {
@@ -26812,7 +26811,7 @@ const wi = Oee({
         fontSize: 25
       },
       children: [
-        f && /* @__PURE__ */ N.jsx(
+        c && /* @__PURE__ */ N.jsx(
           "div",
           {
             style: {
@@ -26827,14 +26826,14 @@ const wi = Oee({
             }
           }
         ),
-        h && /* @__PURE__ */ N.jsx(
+        f && /* @__PURE__ */ N.jsx(
           "video",
           {
-            ref: c,
+            ref: u,
             src: `${i}/${n.video}`,
             style: {
               gridArea: "Media",
-              display: u ? "block" : "none",
+              display: a ? "block" : "none",
               height: n.view_type === en.Overlay ? t : "100%",
               width: n.view_type === en.Overlay ? e : "100%",
               position: n.view_type === en.Overlay ? "absolute" : void 0,
@@ -26847,7 +26846,7 @@ const wi = Oee({
           "div",
           {
             style: {
-              gridArea: f || h ? "Text" : "Media",
+              gridArea: c || f ? "Text" : "Media",
               height: n.view_type === en.Overlay ? t : "100%",
               width: n.view_type === en.Overlay ? e : "100%",
               maxWidth: `${e / 100 * 60}px`,
@@ -26882,7 +26881,7 @@ const wi = Oee({
                     }),
                     textShadow: "2px 2px 2px #000"
                   },
-                  children: o
+                  children: n.title_template
                 }
               ),
               /* @__PURE__ */ N.jsx(
@@ -26941,8 +26940,7 @@ const wi = Oee({
           height: i,
           backgroundColor: s,
           videoSrcObject: o,
-          isShowVideoElement: a,
-          children: n.title_template
+          isShowVideoElement: a
         }
       );
     }
@@ -26956,8 +26954,7 @@ const wi = Oee({
           height: i,
           backgroundColor: s,
           videoSrcObject: o,
-          isShowVideoElement: a,
-          children: n.title_template
+          isShowVideoElement: a
         }
       );
     case qe.Subscription:
@@ -26970,8 +26967,7 @@ const wi = Oee({
           height: i,
           backgroundColor: s,
           videoSrcObject: o,
-          isShowVideoElement: a,
-          children: n.title_template
+          isShowVideoElement: a
         }
       );
     case qe.GiftSubscription:
@@ -26984,8 +26980,7 @@ const wi = Oee({
           height: i,
           backgroundColor: s,
           videoSrcObject: o,
-          isShowVideoElement: a,
-          children: n.title_template
+          isShowVideoElement: a
         }
       );
     case qe.Raid:
@@ -26998,8 +26993,7 @@ const wi = Oee({
           height: i,
           backgroundColor: s,
           videoSrcObject: o,
-          isShowVideoElement: a,
-          children: n.title_template
+          isShowVideoElement: a
         }
       );
     case qe.Redemption:
@@ -27012,8 +27006,7 @@ const wi = Oee({
           height: i,
           backgroundColor: s,
           videoSrcObject: o,
-          isShowVideoElement: a,
-          children: n.title_template
+          isShowVideoElement: a
         }
       );
     case qe.CommandAction:
@@ -27026,8 +27019,7 @@ const wi = Oee({
           height: i,
           backgroundColor: s,
           videoSrcObject: o,
-          isShowVideoElement: a,
-          children: n.title_template
+          isShowVideoElement: a
         }
       );
     case qe.AssistantAction:
@@ -27040,8 +27032,7 @@ const wi = Oee({
           height: i,
           backgroundColor: s,
           videoSrcObject: o,
-          isShowVideoElement: a,
-          children: n.title_template
+          isShowVideoElement: a
         }
       );
   }
@@ -54311,11 +54302,7 @@ const Ir = ({ createdAt: n }) => {
               sx: (a) => ({
                 color: a.palette.primary.main
               }),
-              children: r("message.donated", {
-                user_name: o.user_name,
-                currency: o.currency,
-                amount: o.amount
-              })
+              children: o.alert?.title_template
             }
           ) }),
           /* @__PURE__ */ N.jsx("div", { children: /* @__PURE__ */ N.jsx("span", { children: o.text }) }),
@@ -54433,7 +54420,7 @@ const Ir = ({ createdAt: n }) => {
               sx: (o) => ({
                 color: o.palette.primary.main
               }),
-              children: t("message.followed", { user_name: s.user_name })
+              children: s.alert?.title_template
             }
           ) }),
           /* @__PURE__ */ N.jsxs(
@@ -54550,10 +54537,7 @@ const Ir = ({ createdAt: n }) => {
               sx: (o) => ({
                 color: o.palette.primary.main
               }),
-              children: t("message.raided_with", {
-                viewers: s.viewers,
-                user_name: s.from_broadcaster_user_name
-              })
+              children: s.alert?.title_template
             }
           ) }),
           /* @__PURE__ */ N.jsxs(
@@ -54691,11 +54675,7 @@ const Ir = ({ createdAt: n }) => {
               sx: (a) => ({
                 color: a.palette.primary.main
               }),
-              children: r("message.redemption", {
-                user_name: o.user_name,
-                title: o.title,
-                cost: o.cost
-              })
+              children: o.alert?.title_template
             }
           ) }),
           /* @__PURE__ */ N.jsx("div", { children: /* @__PURE__ */ N.jsx("span", { children: o.user_input }) }),
@@ -54817,11 +54797,7 @@ const Ir = ({ createdAt: n }) => {
               sx: (o) => ({
                 color: o.palette.primary.main
               }),
-              children: t("message.redemption", {
-                user_name: s.user_name,
-                title: s.title,
-                cost: s.cost
-              })
+              children: s.alert?.title_template
             }
           ) }),
           /* @__PURE__ */ N.jsx("div", { children: /* @__PURE__ */ N.jsx("span", { children: s.user_input }) }),
@@ -54943,12 +54919,7 @@ const Ir = ({ createdAt: n }) => {
               sx: (o) => ({
                 color: o.palette.primary.main
               }),
-              children: s.is_gift ? t("message.gifted_subscriptions", {
-                user_name: s.user_name,
-                total: s.total
-              }) : t("message.subscribed", {
-                user_name: s.user_name
-              })
+              children: s.alert?.title_template
             }
           ) }),
           /* @__PURE__ */ N.jsxs(

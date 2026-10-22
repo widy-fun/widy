@@ -1,6 +1,6 @@
 import type { IAlert } from "@widy/sdk";
 import { AlertVariant, MessageType, ViewType } from "@widy/sdk";
-import { type ReactNode, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import computePXSize from "../utils/computePXSize";
 import getGridAutoColumns from "../utils/getGridAutoColumns";
 import getGridAutoRows from "../utils/getGridAutoRows";
@@ -13,7 +13,6 @@ const Alert = ({
 	backgroundColor,
 	base,
 	text,
-	children,
 	videoSrcObject,
 	isShowVideoElement,
 }: {
@@ -23,7 +22,6 @@ const Alert = ({
 	height: number;
 	backgroundColor?: string;
 	text?: string;
-	children: ReactNode;
 	videoSrcObject?: MediaProvider;
 	isShowVideoElement: boolean;
 }) => {
@@ -136,7 +134,7 @@ const Alert = ({
 						textShadow: "2px 2px 2px #000",
 					}}
 				>
-					{children}
+					{alert.title_template}
 				</span>
 
 				<span
