@@ -584,6 +584,7 @@
 		"Audio": "Audio error",
 		"Ort": "Ort error",
 		"TelegramBot": "TelegramBot error",
+		"Media": "Media error",
 		"unknown": "Error"
 	},
 	"tts": {

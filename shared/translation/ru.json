@@ -584,6 +584,7 @@
 		"Audio": "Ошибка аудио",
 		"Ort": "Ошибка ORT",
 		"TelegramBot": "Ошибка бота Telegram",
+		"Media": "Ошибка медиа",
 		"unknown": "Ошибка"
 	},
 	"tts": {

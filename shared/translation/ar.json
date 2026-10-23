@@ -584,6 +584,7 @@
 		"Audio": "خطأ صوتي",
 		"Ort": "خطأ في ONNX Runtime",
 		"TelegramBot": "خطأ في بوت تيليجرام",
+		"Media": "خطأ في الوسائط",
 		"unknown": "خطأ"
 	},
 	"tts": {

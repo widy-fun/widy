@@ -584,6 +584,7 @@
 		"Audio": "ऑडियो त्रुटि",
 		"Ort": "ORT त्रुटि",
 		"TelegramBot": "Telegram बॉट त्रुटि",
+		"Media": "मीडिया त्रुटि",
 		"unknown": "त्रुटि"
 	},
 	"tts": {

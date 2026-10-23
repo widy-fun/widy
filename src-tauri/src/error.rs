@@ -3,7 +3,6 @@ use std::num::ParseIntError;
 use foundry_local_sdk::FoundryLocalError;
 use ndarray::ShapeError;
 use ort::session::builder::SessionBuilder;
-use rusty_ytdl::VideoError;
 use serde::Serialize;
 use teloxide::RequestError;
 use thiserror::Error;
@@ -170,12 +169,6 @@ impl From<ort::Error<SessionBuilder>> for AppError {
 impl From<RequestError> for AppError {
     fn from(err: RequestError) -> Self {
         AppError::TelegramBot(err.to_string())
-    }
-}
-
-impl From<VideoError> for AppError {
-    fn from(err: VideoError) -> Self {
-        AppError::Media(err.to_string())
     }
 }
 
