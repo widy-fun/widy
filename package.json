@@ -1,7 +1,7 @@
 {
 	"name": "widy",
 	"private": true,
-	"version": "0.4.4",
+	"version": "0.4.5",
 	"type": "module",
 	"license": "AGPL-3.0-only",
 	"scripts": {
@@ -41,7 +41,7 @@
 		"@types/google.maps": "^3.65.2",
 		"@vis.gl/react-google-maps": "^1.5.4",
 		"@widy/react": "^1.0.15",
-		"@widy/sdk": "^1.0.42",
+		"@widy/sdk": "^1.0.43",
 		"cross-env": "^7.0.3",
 		"dayjs": "^1.11.13",
 		"hls.js": "^1.7.3",
