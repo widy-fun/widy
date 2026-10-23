@@ -44,6 +44,11 @@ jobs:
           # Those targets are only used on macos runners so it's in an `if` to slightly speed up windows and linux builds.
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
+      - name: Rust cache
+        uses: Swatinem/rust-cache@6720f05bc48b77f96918929a9019fb2203ff71f8
+        with:
+          workspaces: "./src-tauri -> target"
+
       - name: install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-24.04' # This must match the platform value defined above.
         run: |
