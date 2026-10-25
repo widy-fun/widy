@@ -53,7 +53,7 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
                     let twitch_service = app.state::<TwitchService>();
                     let auth = twitch_service.get_auth(app).await?;
                     let chat_messages_buffer =
-                        twitch_service.chat_messages_buffer.lock().unwrap().clone();
+                        { twitch_service.chat_messages_buffer.lock().unwrap().clone() };
                     let message = chat_messages_buffer
                         .iter()
                         .find(|m| m.sender.username == username)
@@ -78,7 +78,7 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
                     let kick_service = app.state::<KickService>();
                     let user_info = kick_service.get_user_info(app).await?;
                     let chat_messages_buffer =
-                        kick_service.chat_messages_buffer.lock().unwrap().clone();
+                        { kick_service.chat_messages_buffer.lock().unwrap().clone() };
                     let message = chat_messages_buffer
                         .iter()
                         .find(|m| m.sender.username == username)
