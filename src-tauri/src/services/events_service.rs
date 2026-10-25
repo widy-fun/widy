@@ -95,15 +95,16 @@ impl EventsService {
 
         let id = Uuid::new_v4();
 
-        let mut exchange_rates_service = exchange_rates_service_mutex.lock().await;
-        let exchanged_amount = exchange_rates_service
-            .calculate_amount_by_currency(
-                settings.currency.clone(),
-                target_currency.clone(),
-                target_amount,
-            )
-            .await;
-
+        let exchanged_amount = {
+            let mut exchange_rates_service = exchange_rates_service_mutex.lock().await;
+            exchange_rates_service
+                .calculate_amount_by_currency(
+                    settings.currency.clone(),
+                    target_currency.clone(),
+                    target_amount,
+                )
+                .await
+        };
         let media = media_service
             .get_media(&message, &exchanged_amount, app, MessageType::Donation)
             .await;
