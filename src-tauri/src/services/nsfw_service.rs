@@ -1,3 +1,4 @@
+use model::events::{AppEvent, EventMessage};
 use std::{
     error::Error,
     sync::{
@@ -17,7 +18,7 @@ use xcap::Window;
 use crate::{
     constants::NSFW_LABELS,
     error::AppError,
-    services::{AppEvent, ConfigService, EventMessage, WebSocketBroadcaster},
+    services::{ConfigService, WebSocketBroadcaster},
     utils::log_and_wrap_error,
 };
 

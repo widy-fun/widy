@@ -4,7 +4,7 @@ use tauri::{AppHandle, Manager};
 use crate::{
     error::AppError,
     repositories::ServicesRepository,
-    services::{DatabaseService, fish_audio::traits::FishAudioApi},
+    services::{DatabaseService, fish_audio::fish_audio_api::FishAudioApi},
 };
 
 pub struct FishAudioService {

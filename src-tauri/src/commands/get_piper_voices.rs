@@ -1,6 +1,6 @@
 use crate::{
     error::AppError,
-    services::tts::{TtsService, traits::PiperTts},
+    services::tts::{PiperTts, TtsService},
 };
 use entity::tts::PiperVoice;
 use tauri::State;

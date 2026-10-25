@@ -1,10 +1,7 @@
 use async_trait::async_trait;
+use model::openai::{ModelsResponse, OpenAIResponse, OpenAIResponsesBody};
 
-use crate::{
-    error::AppError,
-    services::openai::models::{ModelsResponse, OpenAIResponse, OpenAIResponsesBody},
-    utils::send_request,
-};
+use crate::{error::AppError, utils::send_request};
 
 #[async_trait]
 pub trait OpenAiApi: Send + Sync {

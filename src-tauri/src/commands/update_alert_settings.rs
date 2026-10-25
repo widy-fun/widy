@@ -1,10 +1,11 @@
 use entity::alerts::*;
+use model::events::{AppEvent, EventMessage};
 use tauri::State;
 
 use crate::{
     error::AppError,
     repositories::AlertsRepository,
-    services::{AppEvent, DatabaseService, EventMessage, WebSocketBroadcaster},
+    services::{DatabaseService, WebSocketBroadcaster},
 };
 
 #[tauri::command]

@@ -34,9 +34,9 @@ use crate::{
         },
         claude::ClaudeService,
         gemini::GeminiService,
-        kick::{KickService, KickSessionService, traits::KickSessionApi},
+        kick::{KickService, KickSessionApi, KickSessionService},
         openai::OpenAIService,
-        twitch::{TwitchService, traits::TwitchApi},
+        twitch::{TwitchService, twitch_api::TwitchApi},
     },
     utils::{invoke_tool, log_and_wrap_error},
 };

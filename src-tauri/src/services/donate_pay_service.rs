@@ -1,9 +1,10 @@
-use std::sync::{Arc, Mutex};
-
 use entity::services::{DonatePayAuth, ServiceAuth, ServiceType};
 use futures::{SinkExt, StreamExt};
-use serde::{Deserialize, Serialize};
+use model::donate_pay::{
+    EventVars, NotificationType, TokenResponse, UserInfo, UserInfoResponse, WidgetEvent,
+};
 use serde_json::json;
+use std::sync::{Arc, Mutex};
 use tauri::{AppHandle, Manager};
 use tokio_tungstenite::{connect_async, tungstenite::Message};
 use tokio_util::sync::CancellationToken;
@@ -14,75 +15,6 @@ use crate::{
     services::{DatabaseService, EventsService},
     utils::send_request,
 };
-
-#[derive(Debug, Serialize, Deserialize)]
-struct WidgetEvent {
-    pub result: EventResult,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct EventResult {
-    pub channel: String,
-    pub data: EventData,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct EventData {
-    pub data: InnerData,
-    pub offset: u64,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct InnerData {
-    #[serde(rename = "type")]
-    pub event_type: String,
-    pub notification: EventNotification,
-}
-#[derive(Debug, Serialize, Deserialize)]
-enum NotificationType {
-    #[serde(rename = "donation")]
-    Donation,
-    Any,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct EventNotification {
-    #[serde(rename = "type")]
-    pub notification_type: NotificationType,
-    pub user_id: u64,
-    pub vars: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct EventVars {
-    pub name: String,
-    pub comment: Option<String>,
-    pub sum: f64,
-    pub target: String,
-    pub video_link: String,
-    pub video_id: String,
-}
-
-#[derive(Deserialize)]
-struct TokenResponse {
-    token: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-struct UserInfoResponse {
-    pub status: String,
-    pub time: String,
-    pub data: UserInfo,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-struct UserInfo {
-    pub id: u64,
-    pub name: String,
-    pub avatar: String,
-    pub balance: u64,
-    pub cashout_sum: u64,
-}
 
 pub struct DonatePayService {
     cancellation_token: Arc<Mutex<CancellationToken>>,
@@ -153,19 +85,21 @@ impl DonatePayService {
                     .unwrap()
                     .clone()
             };
+            #[cfg(not(feature = "mock"))]
+            let connect_url = "wss://centrifugo.donatepay.ru:443/connection/websocket";
+            #[cfg(feature = "mock")]
+            let connect_url =
+                &std::env::var("DONATE_MOCK_PAY_WS_URL").expect("DONATE_MOCK_PAY_WS_URL not set");
             'connection_loop: loop {
                 log::info!("Connecting to DonatePay websocket");
-                let (mut socket, _) =
-                    match connect_async("wss://centrifugo.donatepay.ru:443/connection/websocket")
-                        .await
-                    {
-                        Ok(socket) => socket,
-                        Err(e) => {
-                            log::error!("Failed to connect: {}", e);
-                            tokio::time::sleep(std::time::Duration::from_secs(5)).await;
-                            continue;
-                        }
-                    };
+                let (mut socket, _) = match connect_async(connect_url).await {
+                    Ok(socket) => socket,
+                    Err(e) => {
+                        log::error!("Failed to connect: {}", e);
+                        tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+                        continue;
+                    }
+                };
 
                 log::info!("DonatePay websocket connected.");
 

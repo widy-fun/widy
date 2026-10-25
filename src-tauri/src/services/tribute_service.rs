@@ -4,40 +4,13 @@ use crate::{
     services::{DatabaseService, EventsService},
     utils::send_request,
 };
-use entity::{
-    services::{ApiKeyAuth, ServiceAuth, ServiceType},
-    settings::Currency,
-};
+use entity::services::{ApiKeyAuth, ServiceAuth, ServiceType};
 use eventsource_client::{self as es, Client};
 use futures::{StreamExt, TryStreamExt};
-use serde::Deserialize;
+use model::tribute::TributeEvent;
 use std::time::Duration;
 use tauri::{AppHandle, Manager};
 use tokio::{pin, sync::broadcast};
-
-#[derive(Debug, Clone, Deserialize)]
-struct TributeEvent {
-    pub id: String,
-    pub data: EventData,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
-struct EventData {
-    pub r#type: EventType,
-    pub donation_id: u64,
-    pub author: u64,
-    pub display_name: Option<String>,
-    pub amount: u64,
-    pub currency: Currency,
-    pub message: Option<String>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-enum EventType {
-    #[serde(rename = "donation")]
-    Donation,
-}
 
 pub struct TributeService {
     sign_out_sender: broadcast::Sender<()>,
@@ -88,26 +61,31 @@ impl TributeService {
         Ok(())
     }
 
-    pub async fn subscribe_to_donation_event(&self, app: AppHandle, api_key: String) {
+    pub async fn subscribe_to_donation_event(&self, app: AppHandle, _api_key: String) {
         tauri::async_runtime::spawn(async move {
             let tribute_service = app.state::<TributeService>();
             let mut sign_out_receiver = tribute_service.sign_out_sender.subscribe();
-            let client = es::ClientBuilder::for_url(&format!(
+            #[cfg(not(feature = "mock"))]
+            let sse_url = format!(
                 "https://proxy.tribute.tg/api/v1/obs/alerts/stream?token={}",
-                api_key
-            ))
-            .map_err(|e| {
-                log::error!("Tribute es build error: {}", e.to_string());
-                e.to_string()
-            })
-            .unwrap()
-            .reconnect(
-                es::ReconnectOptions::reconnect(true)
-                    .retry_initial(true)
-                    .delay(Duration::from_secs(1))
-                    .build(),
-            )
-            .build();
+                _api_key
+            );
+            #[cfg(feature = "mock")]
+            let sse_url =
+                std::env::var("TRIBUTE_MOCK_SSE_URL").expect("TRIBUTE_MOCK_SSE_URL not set");
+            let client = es::ClientBuilder::for_url(&sse_url)
+                .map_err(|e| {
+                    log::error!("Tribute es build error: {}", e.to_string());
+                    e.to_string()
+                })
+                .unwrap()
+                .reconnect(
+                    es::ReconnectOptions::reconnect(true)
+                        .retry_initial(true)
+                        .delay(Duration::from_secs(1))
+                        .build(),
+                )
+                .build();
             let stop_signal = sign_out_receiver.recv();
             pin!(stop_signal);
             let mut stream = client.stream().take_until(stop_signal);

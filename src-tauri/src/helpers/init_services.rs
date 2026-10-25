@@ -8,8 +8,7 @@ use crate::services::media::MediaService;
 use crate::services::openai::OpenAIService;
 use crate::services::telegram_bot::telegram_bot_service::TelegramBotService;
 use crate::services::tts::TtsService;
-use crate::services::twitch::traits::TwitchApi;
-use crate::services::twitch::{TwitchBotService, TwitchService};
+use crate::services::twitch::{TwitchApi, TwitchBotService, TwitchService};
 use crate::services::{
     AxumService, CommandsService, ConfigService, DatabaseService, DeepLinkDispatcherService,
     DestreamService, DonatePayService, DonationAlertsService, ExchangeRatesService, NsfwService,

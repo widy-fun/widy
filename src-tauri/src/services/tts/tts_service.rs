@@ -1,5 +1,12 @@
+use crate::services::fish_audio::FishAudioApi;
+use crate::{
+    error::AppError,
+    services::{fish_audio::FishAudioService, tts::piper_tts::PiperTts},
+    utils::{log_and_wrap_error, save_audio_to_wav_file},
+};
 use entity::tts::{TtsModels, TtsSettings, TtsType};
 use lingua::{Language, LanguageDetector};
+use model::{fish_audio::TtsRequestBody, tts::Piper};
 use msedge_tts::{
     tts::{SpeechConfig, client::connect},
     voice::get_voices_list,
@@ -12,15 +19,6 @@ use std::{
 };
 use tauri::{AppHandle, Manager};
 use tokio::{fs::File, io::AsyncWriteExt};
-
-use crate::{
-    error::AppError,
-    services::{
-        fish_audio::{FishAudioService, models::TtsRequestBody, traits::FishAudioApi},
-        tts::{models::Piper, traits::PiperTts},
-    },
-    utils::{log_and_wrap_error, save_audio_to_wav_file},
-};
 
 #[derive(Clone, Debug)]
 pub struct TtsService {

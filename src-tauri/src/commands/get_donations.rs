@@ -1,9 +1,6 @@
-use crate::{
-    error::AppError,
-    repositories::{DonationSort, DonationsRepository},
-    services::DatabaseService,
-};
+use crate::{error::AppError, repositories::DonationsRepository, services::DatabaseService};
 use entity::donations::Donation;
+use model::DonationSort;
 use tauri::State;
 
 #[tauri::command]

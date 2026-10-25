@@ -1,6 +1,5 @@
 use entity::commands::AuctionAction;
-
-use crate::services::UnifiedChatMessage;
+use model::events::UnifiedChatMessage;
 
 pub fn calc_command_auction_action_amount(
     auction_action: &AuctionAction,

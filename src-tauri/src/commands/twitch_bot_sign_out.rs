@@ -2,7 +2,7 @@ use tauri::{AppHandle, State};
 
 use crate::{
     error::AppError,
-    services::twitch::{TwitchBotService, traits::TwitchApi},
+    services::twitch::{TwitchApi, TwitchBotService},
 };
 
 #[tauri::command]

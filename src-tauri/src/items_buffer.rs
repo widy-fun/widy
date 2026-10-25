@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use crate::services::UnifiedChatMessage;
+use model::events::UnifiedChatMessage;
 
 #[derive(Clone, Debug)]
 pub struct ItemsBuffer<T> {

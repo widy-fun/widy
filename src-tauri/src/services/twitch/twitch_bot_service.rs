@@ -1,4 +1,4 @@
-use crate::{error::AppError, services::twitch::traits::TwitchApi};
+use crate::{error::AppError, services::twitch::twitch_api::TwitchApi};
 use async_trait::async_trait;
 use entity::services::ServiceType;
 use std::sync::{Arc, Mutex, atomic::AtomicU64};

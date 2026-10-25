@@ -2,18 +2,14 @@ use entity::{
     assistant_settings::ToolCallingModel,
     services::{ApiKeyAuth, ServiceAuth, ServiceType},
 };
+use model::gemini::{GeminiTool, InteractionsBody};
 use tauri::{AppHandle, Manager};
 
 use crate::{
     error::AppError,
     repositories::ServicesRepository,
     services::{
-        DatabaseService,
-        assistant::tool_calling_service::ToolCall,
-        gemini::{
-            models::{GeminiTool, InteractionsBody},
-            traits::GeminiApi,
-        },
+        DatabaseService, assistant::tool_calling_service::ToolCall, gemini::gemini_api::GeminiApi,
     },
 };
 

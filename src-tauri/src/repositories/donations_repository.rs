@@ -1,19 +1,12 @@
+use crate::{error::AppError, services::DatabaseService, utils::log_and_wrap_error};
 use async_trait::async_trait;
 use entity::{
     donations::{self, Column, Donation, Entity},
     messages::{self, ClientMessage},
     services::ServiceType,
 };
-use serde::{Deserialize, Serialize};
-
-use crate::{error::AppError, services::DatabaseService, utils::log_and_wrap_error};
+use model::DonationSort;
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter, QueryOrder, QuerySelect};
-
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
-pub enum DonationSort {
-    Newest,
-    Largest,
-}
 
 #[async_trait]
 pub trait DonationsRepository: Send + Sync {

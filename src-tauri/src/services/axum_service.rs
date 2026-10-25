@@ -1,15 +1,12 @@
 use crate::constants::HTTP_WIDGET_PORT;
 use crate::error::AppError;
 use crate::repositories::{
-    AlertsRepository, AucFighterSettingsRepository, DonationSort, DonationsRepository,
-    GoalsRepository, MediaSettingsRepository, MessagesRepository, NsfwRepository,
-    ServicesRepository, SettingsRepository, WidgetsRepository,
+    AlertsRepository, AucFighterSettingsRepository, DonationsRepository, GoalsRepository,
+    MediaSettingsRepository, MessagesRepository, NsfwRepository, ServicesRepository,
+    SettingsRepository, WidgetsRepository,
 };
-use crate::services::kick::traits::KickApi;
-use crate::services::kick::{KickBotService, KickService};
-use crate::services::{
-    AppEvent, ConfigService, DatabaseService, EventMessage, WebSocketBroadcaster,
-};
+use crate::services::kick::{KickApi, KickBotService, KickService};
+use crate::services::{ConfigService, DatabaseService, WebSocketBroadcaster};
 use crate::utils::validate_csp;
 use axum::Json;
 use axum::extract::ws::{Message, WebSocket};
@@ -24,12 +21,13 @@ use axum::{
     response::Response,
     routing::get,
 };
-use entity::goals::GoalType;
 use entity::messages::ClientMessage;
 use entity::services::{ServiceAuth, ServiceType};
 use futures::{sink::SinkExt, stream::StreamExt};
 use http::header;
-use serde::{Deserialize, Serialize};
+use model::axum::{DonationsQuery, GoalsQuery, MessagesQuery};
+use model::events::{AppEvent, EventMessage};
+use model::kick::KickAuthCallbackQuery;
 use std::path::PathBuf;
 use tauri::{AppHandle, Manager};
 use tokio::fs;
@@ -39,53 +37,6 @@ use tower_http::cors::CorsLayer;
 use tower_http::services::{ServeDir, ServeFile};
 use uuid::Uuid;
 type Tx = mpsc::UnboundedSender<Message>;
-
-#[derive(Debug, Clone, Serialize)]
-pub enum GrantType {
-    #[serde(rename = "refresh_token")]
-    RefreshToken,
-    #[serde(rename = "authorization_code")]
-    AuthorizationCode,
-}
-// impl GrantType {
-//     pub fn to_string(t: GrantType) -> String {
-//         match t {
-//             RefreshToken => "refresh_token".to_string(),
-//             AuthorizationCode => "authorization_code".to_string(),
-//         }
-//     }
-// }
-
-#[derive(Debug, Deserialize)]
-struct MessagesQuery {
-    pub limit: u64,
-    pub offset: u64,
-    pub exclude_donations: bool,
-    pub exclude_subscriptions: bool,
-    pub exclude_follows: bool,
-    pub exclude_raids: bool,
-    pub exclude_redemptions: bool,
-    pub exclude_commands_actions: bool,
-    pub exclude_assistant_actions: bool,
-}
-#[derive(Debug, Deserialize)]
-struct GoalsQuery {
-    pub r#type: GoalType,
-}
-
-#[derive(Debug, Deserialize)]
-struct DonationsQuery {
-    from: Option<i64>,
-    to: Option<i64>,
-    limit: u64,
-    sort: DonationSort,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct KickAuthCallbackQuery {
-    pub code: String,
-    pub state: String,
-}
 
 #[derive(Clone)]
 struct AxumState {

@@ -1,10 +1,11 @@
 use entity::goals::*;
+use model::events::{AppEvent, EventMessage};
 use tauri::{AppHandle, Manager, State};
 
 use crate::{
     error::AppError,
     repositories::GoalsRepository,
-    services::{AppEvent, DatabaseService, EventMessage, WebSocketBroadcaster},
+    services::{DatabaseService, WebSocketBroadcaster},
 };
 
 #[tauri::command]

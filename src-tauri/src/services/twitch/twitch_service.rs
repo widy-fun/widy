@@ -1,21 +1,8 @@
 use crate::{
     error::AppError,
+    items_buffer::ItemsBuffer,
     repositories::{RedemptionsRepository, RewardsRepository},
-    services::{
-        BanIssuedBy, BannedTargetUser, ChatFragment, ChatMessageType, CommandsService,
-        DatabaseService, DeletedMessageUser, EventsService, FragmentKind, ReplyInfo, SenderRoles,
-        UnifiedBadge, UnifiedBannedUser, UnifiedChatMessage, UnifiedChatMessageDelete,
-        UnifiedContent, UnifiedMetadata, UnifiedSender,
-        twitch::{
-            models::{
-                BadgeInfo, ChannelBanEvent, ChannelChatMessageDeleteEvent, ChannelChatMessageEvent,
-                Event, EventPayload, NotificationMessage, Payload, StreamOnlineType,
-                SubscriptionType, WebSocketInstruction,
-            },
-            traits::TwitchApi,
-        },
-    },
-    traits::ItemsBuffer,
+    services::{CommandsService, DatabaseService, EventsService, twitch::twitch_api::TwitchApi},
     utils::get_random_alert,
 };
 use async_trait::async_trait;
@@ -32,6 +19,13 @@ use entity::{
     subscriptions::{self},
 };
 use futures::{SinkExt, StreamExt};
+use model::{
+    events::{UnifiedBannedUser, UnifiedChatMessage, UnifiedChatMessageDelete},
+    twitch::{
+        BadgeInfo, Event, EventPayload, NotificationMessage, Payload, StreamOnlineType,
+        SubscriptionType, WebSocketInstruction,
+    },
+};
 use std::sync::{Arc, Mutex, atomic::AtomicU64};
 use tauri::{AppHandle, Manager};
 use tokio_tungstenite::{connect_async, tungstenite::Message};
@@ -56,25 +50,25 @@ pub struct TwitchService {
 
 impl TwitchService {
     pub fn new(client_id: String, reqwest_client: reqwest::Client) -> Self {
-        #[cfg(not(feature = "mock-twitch"))]
+        #[cfg(not(feature = "mock"))]
         let auth_endpoint = "https://id.twitch.tv/oauth2".to_string();
-        #[cfg(feature = "mock-twitch")]
+        #[cfg(feature = "mock")]
         let auth_endpoint = "http://localhost:8080/auth".to_string();
-        #[cfg(not(feature = "mock-twitch"))]
+        #[cfg(not(feature = "mock"))]
         let api_endpoint = "https://api.twitch.tv/helix".to_string();
-        #[cfg(feature = "mock-twitch")]
+        #[cfg(feature = "mock")]
         let api_endpoint = "http://localhost:8080/mock".to_string();
-        #[cfg(not(feature = "mock-twitch"))]
+        #[cfg(not(feature = "mock"))]
         let websocket_eventsub_url =
             "wss://eventsub.wss.twitch.tv/ws?keepalive_timeout_seconds=30".to_string();
-        #[cfg(feature = "mock-twitch")]
+        #[cfg(feature = "mock")]
         let websocket_eventsub_url = "ws://localhost:8081/ws".to_string();
-        #[cfg(not(feature = "mock-twitch"))]
+        #[cfg(not(feature = "mock"))]
         let eventsub_endpoint = api_endpoint.clone();
-        #[cfg(feature = "mock-twitch")]
+        #[cfg(feature = "mock")]
         let eventsub_endpoint = "http://localhost:8081".to_string();
         let scopes="user:read:email channel:read:subscriptions moderator:read:followers channel:manage:redemptions bits:read".to_string();
-        #[cfg(not(feature = "mock-twitch"))]
+        #[cfg(not(feature = "mock"))]
         let scopes = format!(
             "{scopes} user:read:chat user:write:chat user:bot channel:bot moderation:read moderator:manage:chat_messages moderator:manage:banned_users user:edit:broadcast moderator:manage:chat_settings channel:moderate"
         );
@@ -544,183 +538,5 @@ impl TwitchApi for TwitchService {
 
     fn service_type(&self) -> ServiceType {
         self.service_type.clone()
-    }
-}
-
-impl UnifiedChatMessage {
-    fn from_twitch(
-        e: ChannelChatMessageEvent,
-        created_at: String,
-        all_badges_info: &Vec<BadgeInfo>,
-    ) -> Self {
-        let is_broadcaster = e.badges.iter().any(|b| b.set_id == "broadcaster");
-        let is_moderator = e.badges.iter().any(|b| b.set_id == "moderator");
-        let is_subscriber = e.badges.iter().any(|b| b.set_id == "subscriber");
-        let is_vip = e.badges.iter().any(|b| b.set_id == "vip");
-
-        let cheer_bits = e.cheer.as_ref().map(|c| c.bits);
-
-        let message_type = match e.message_type.as_str() {
-            "channel_points_highlighted" => ChatMessageType::ChannelPointsHighlighted,
-            "channel_points_sub_only" => ChatMessageType::ChannelPointsSubOnly,
-            "user_intro" => ChatMessageType::UserIntro,
-            "power_ups_message_effect" => ChatMessageType::PowerUpMessageEffect,
-            "power_ups_gigantified_emote" => ChatMessageType::PowerUpGigantifiedEmote,
-            other => ChatMessageType::Unknown(other.to_string()),
-        };
-
-        let fragments = e
-            .message
-            .fragments
-            .into_iter()
-            .map(|f| ChatFragment {
-                text: f.text.clone(),
-                kind: match f.r#type.as_str() {
-                    "emote" => FragmentKind::Emote {
-                        id: f.emote.as_ref().map(|x| x.id.clone()).unwrap_or_default(),
-                        emote_set_id: f.emote.as_ref().map(|x| x.emote_set_id.clone()),
-                        owner_id: f.emote.as_ref().map(|x| x.owner_id.clone()),
-                        formats: f.emote.map(|x| x.format).unwrap_or_default(),
-                    },
-                    "mention" => FragmentKind::Mention {
-                        user_id: f
-                            .mention
-                            .as_ref()
-                            .map(|x| x.user_id.clone())
-                            .unwrap_or_default(),
-                        username: f
-                            .mention
-                            .as_ref()
-                            .map(|x| x.user_name.clone())
-                            .unwrap_or_default(),
-                        login: f.mention.map(|x| x.user_login).unwrap_or_default(),
-                    },
-                    "cheermote" => FragmentKind::Cheermote {
-                        prefix: f
-                            .cheermote
-                            .as_ref()
-                            .map(|x| x.prefix.clone())
-                            .unwrap_or_default(),
-                        bits: f.cheermote.as_ref().map(|x| x.bits).unwrap_or(0),
-                        tier: f.cheermote.map(|x| x.tier).unwrap_or(0),
-                    },
-                    _ => FragmentKind::Text,
-                },
-            })
-            .collect();
-        let mut is_bot = false;
-        let badges = e
-            .badges
-            .iter()
-            .map(|b| {
-                is_bot = is_bot || b.set_id == "bot-badge";
-                UnifiedBadge {
-                    id: b.id.clone(),
-                    set_id: b.set_id.clone(),
-                    label: Some(b.info.clone()).filter(|i| !i.is_empty()),
-                    image_url: all_badges_info
-                        .iter()
-                        .find(|a| a.set_id == b.set_id)
-                        .and_then(|badge| {
-                            badge
-                                .versions
-                                .first()
-                                .map(|version| version.image_url_1x.clone())
-                        }),
-                }
-            })
-            .collect();
-
-        Self {
-            id: e.message_id,
-            platform: Platform::Twitch,
-            channel_id: e.broadcaster_user_id,
-            channel_name: e.broadcaster_user_login,
-            created_at,
-
-            sender: UnifiedSender {
-                id: e.chatter_user_id,
-                username: e.chatter_user_name,
-                login: e.chatter_user_login,
-                color: Some(e.color).filter(|c| !c.is_empty()),
-                avatar_url: None,
-                channel_url: None,
-                is_verified: None,
-                badges,
-                roles: SenderRoles {
-                    is_broadcaster,
-                    is_moderator,
-                    is_subscriber,
-                    is_verified: false,
-                    is_bot,
-                    is_vip,
-                },
-            },
-
-            content: UnifiedContent {
-                text: e.message.text,
-                fragments,
-                message_type,
-                reply: e.reply.map(|r| ReplyInfo {
-                    parent_message_id: r.parent_message_id,
-                    parent_message_body: r.parent_message_body,
-                    parent_user_id: r.parent_user_id,
-                    parent_username: r.parent_user_name,
-                    thread_message_id: Some(r.thread_message_id),
-                    thread_user_id: Some(r.thread_user_id),
-                }),
-                cheer_bits,
-                donation: None,
-            },
-
-            metadata: UnifiedMetadata {
-                raw_message_ref: None,
-                channel_points_reward_id: e.channel_points_custom_reward_id,
-                source_channel_id: e.source_broadcaster_user_id,
-                source_channel_login: e.source_broadcaster_user_login,
-                source_message_id: e.source_message_id,
-                is_source_only: e.is_source_only,
-                live_chat_id: None,
-                has_display_content: None,
-            },
-        }
-    }
-}
-
-impl From<ChannelChatMessageDeleteEvent> for UnifiedChatMessageDelete {
-    fn from(e: ChannelChatMessageDeleteEvent) -> Self {
-        Self {
-            platform: Platform::Twitch,
-            channel_id: Some(e.broadcaster_user_id),
-            message_id: e.message_id,
-            target_user: Some(DeletedMessageUser {
-                id: e.target_user_id,
-                username: e.target_user_name,
-                login: e.target_user_login,
-            }),
-        }
-    }
-}
-
-impl From<ChannelBanEvent> for UnifiedBannedUser {
-    fn from(e: ChannelBanEvent) -> Self {
-        UnifiedBannedUser {
-            platform: Platform::Twitch,
-            event_id: None,
-            channel_id: Some(e.broadcaster_user_id),
-            target_user: BannedTargetUser {
-                id: e.user_id,
-                username: e.user_login,
-                display_name: Some(e.user_name),
-            },
-            banned_by: Some(BanIssuedBy {
-                id: e.moderator_user_id,
-                username: e.moderator_user_login,
-            }),
-            reason: Some(e.reason).filter(|r| !r.is_empty()),
-            banned_at: Some(e.banned_at),
-            ends_at: Some(e.ends_at),
-            permanent: e.is_permanent,
-        }
     }
 }

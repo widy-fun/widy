@@ -6,6 +6,7 @@ use entity::{
     commands_actions::CommandAction,
     rewards::Platform,
 };
+use model::events::UnifiedChatMessage;
 use serde::Serialize;
 use std::{
     collections::HashMap,
@@ -19,17 +20,14 @@ use uuid::Uuid;
 
 use crate::{
     error::AppError,
+    items_buffer::ChatMessageBuffer,
     repositories::{CommandsRepository, VariablesRepository},
     services::{
-        DatabaseService, EventsService, UnifiedChatMessage,
-        kick::{
-            KickBotService, KickService, KickSessionService,
-            traits::{KickApi, KickSessionApi},
-        },
+        DatabaseService, EventsService,
+        kick::{KickApi, KickBotService, KickService, KickSessionApi, KickSessionService},
         telegram_bot::telegram_bot_service::TelegramBotService,
-        twitch::{TwitchBotService, TwitchService, traits::TwitchApi},
+        twitch::{TwitchBotService, TwitchService, twitch_api::TwitchApi},
     },
-    traits::ChatMessageBuffer,
     utils::{calc_command_auction_action_amount, log_and_wrap_error, replace_variables},
 };
 

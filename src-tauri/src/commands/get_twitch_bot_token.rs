@@ -6,7 +6,7 @@ use crate::{
     repositories::ServicesRepository,
     services::{
         DatabaseService,
-        twitch::{TwitchBotService, traits::TwitchApi},
+        twitch::{TwitchApi, TwitchBotService},
     },
 };
 

@@ -8,6 +8,17 @@ use std::{
 
 use async_trait::async_trait;
 use entity::services::{ServiceAuth, ServiceType, TwitchAuth};
+use model::twitch::{
+    AddTwitchRewardBody, BadgeInfoResponse, BanUserBody, BanUserData, BannedUser,
+    BannedUsersResponse, ChannelBanCondition, ChatMessageCondition, ChattersResponse,
+    CheerCondition, Condition, CreatePollBody, CreatePollResponse, CreatePredictionBody,
+    CreatePredictionResponse, EndPollBody, EndPredictionBody, FollowCondition, GetTopGamesResponse,
+    ModifyChannelInformationBody, RaidCondition, RedemptionCondition, SearchCategoriesResponse,
+    SendChatAnnouncementBody, SendChatMessageBody, StreamOfflineCondition, StreamOnlineCondition,
+    SubscriptionCondition, SubscriptionRequestBody, SubscriptionType, Transport,
+    TwitchDeviceCodeResponse, TwitchRefreshTokenResponse, TwitchTokenInfo, TwitchTokenResponse,
+    UpdateChatSettingsBody,
+};
 use serde::de::DeserializeOwned;
 use tauri::{AppHandle, Manager};
 use tokio_util::sync::CancellationToken;
@@ -17,21 +28,7 @@ use crate::{
     error::AppError,
     load_env,
     repositories::{RewardsRepository, ServicesRepository},
-    services::{
-        DatabaseService,
-        twitch::models::{
-            AddTwitchRewardBody, BadgeInfoResponse, BanUserBody, BanUserData, BannedUser,
-            BannedUsersResponse, ChannelBanCondition, ChatMessageCondition, ChattersResponse,
-            CheerCondition, Condition, CreatePollBody, CreatePollResponse, CreatePredictionBody,
-            CreatePredictionResponse, EndPollBody, EndPredictionBody, FollowCondition,
-            GetTopGamesResponse, ModifyChannelInformationBody, RaidCondition, RedemptionCondition,
-            SearchCategoriesResponse, SendChatAnnouncementBody, SendChatMessageBody,
-            StreamOfflineCondition, StreamOnlineCondition, SubscriptionCondition,
-            SubscriptionRequestBody, SubscriptionType, Transport, TwitchDeviceCodeResponse,
-            TwitchRefreshTokenResponse, TwitchTokenInfo, TwitchTokenResponse,
-            UpdateChatSettingsBody,
-        },
-    },
+    services::DatabaseService,
     utils::send_request,
 };
 
@@ -100,7 +97,7 @@ pub trait TwitchApi: Send + Sync {
             return Ok(auth);
         }
 
-        if cfg!(feature = "mock-twitch") {
+        if cfg!(feature = "mock") {
             return self.get_token_mock().await;
         }
 
@@ -112,7 +109,7 @@ pub trait TwitchApi: Send + Sync {
         app: &AppHandle,
         old_auth: &TwitchAuth,
     ) -> Result<TwitchAuth, AppError> {
-        if cfg!(feature = "mock-twitch") {
+        if cfg!(feature = "mock") {
             return Ok(old_auth.clone());
         }
         let database_service = app.state::<DatabaseService>();
@@ -169,9 +166,9 @@ pub trait TwitchApi: Send + Sync {
         app: &AppHandle,
     ) -> Result<BadgeInfoResponse, AppError> {
         let auth = self.get_auth(app).await?;
-        #[cfg(feature = "mock-twitch")]
+        #[cfg(feature = "mock")]
         let client_id = std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap();
-        #[cfg(not(feature = "mock-twitch"))]
+        #[cfg(not(feature = "mock"))]
         let client_id = self.client_id();
         let request = self
             .reqwest_client()
@@ -190,9 +187,9 @@ pub trait TwitchApi: Send + Sync {
 
     async fn get_global_badges(&self, app: &AppHandle) -> Result<BadgeInfoResponse, AppError> {
         let auth = self.get_auth(app).await?;
-        #[cfg(feature = "mock-twitch")]
+        #[cfg(feature = "mock")]
         let client_id = std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap();
-        #[cfg(not(feature = "mock-twitch"))]
+        #[cfg(not(feature = "mock"))]
         let client_id = self.client_id();
         let request = self
             .reqwest_client()
@@ -209,7 +206,7 @@ pub trait TwitchApi: Send + Sync {
     }
 
     async fn get_token(&self, device_code: String) -> Result<TwitchAuth, AppError> {
-        if cfg!(feature = "mock-twitch") {
+        if cfg!(feature = "mock") {
             return self.get_token_mock().await;
         }
 
@@ -345,9 +342,9 @@ pub trait TwitchApi: Send + Sync {
             should_redemptions_skip_request_queue: reward.should_redemptions_skip_request_queue,
         };
 
-        #[cfg(feature = "mock-twitch")]
+        #[cfg(feature = "mock")]
         let client_id = std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap();
-        #[cfg(not(feature = "mock-twitch"))]
+        #[cfg(not(feature = "mock"))]
         let client_id = self.client_id();
 
         let request = self
@@ -390,9 +387,9 @@ pub trait TwitchApi: Send + Sync {
             .get_reward_by_id(id)
             .await?
             .ok_or(AppError::DbError("Reward not found".to_string()))?;
-        #[cfg(feature = "mock-twitch")]
+        #[cfg(feature = "mock")]
         let client_id = std::env::var("TWITCH_CLIENT_ID_MOCK").unwrap();
-        #[cfg(not(feature = "mock-twitch"))]
+        #[cfg(not(feature = "mock"))]
         let client_id = self.client_id();
 
         let request = self

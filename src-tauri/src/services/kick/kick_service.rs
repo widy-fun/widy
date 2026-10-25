@@ -5,6 +5,14 @@ use entity::{
     services::ServiceType, settings::Currency, subscriptions::Subscription,
 };
 use futures::{SinkExt, StreamExt};
+use model::{
+    events::{UnifiedBannedUser, UnifiedChatMessage},
+    kick::{
+        ChanelInfoResponse, ChatMessageData, Chatroom, Event, EventPayload,
+        GiftedSubscriptionsData, KickAuthSession, KickPushMessage, KicksGiftedData,
+        MessageDeletedData, RewardRedeemedData, StreamHostData, SubscriptionData, UserBannedData,
+    },
+};
 use serde_json::json;
 use std::sync::{Arc, Mutex, MutexGuard, atomic::AtomicU64};
 use tauri::{AppHandle, Manager};
@@ -19,21 +27,8 @@ use uuid::Uuid;
 use crate::{
     error::AppError,
     repositories::RewardsRepository,
-    services::{
-        BanIssuedBy, BannedTargetUser, ChatMessageType, CommandsService, DatabaseService,
-        EventsService, ReplyInfo, SenderRoles, UnifiedBadge, UnifiedBannedUser, UnifiedChatMessage,
-        UnifiedChatMessageDelete, UnifiedContent, UnifiedMetadata, UnifiedSender,
-        kick::{
-            models::{
-                ChanelInfoResponse, ChatMessageData, Chatroom, Event, EventPayload,
-                GiftedSubscriptionsData, KickAuthSession, KickPushMessage, KicksGiftedData,
-                MessageDeletedData, MessageMetadata, RewardRedeemedData, StreamHostData,
-                SubscriptionData, UserBannedData,
-            },
-            traits::KickApi,
-        },
-    },
-    traits::ItemsBuffer,
+    services::{CommandsService, DatabaseService, EventsService, kick::kick_api::KickApi},
+    items_buffer::ItemsBuffer,
     utils::{get_random_alert, log_and_wrap_error},
 };
 
@@ -94,7 +89,10 @@ impl KickService {
         tauri::async_runtime::spawn(async move {
             let kick_service = app.state::<KickService>();
             let cancellation_token = kick_service.cancellation_token();
+            #[cfg(not(feature = "mock"))]
             let connect_url = "wss://realtime.us-east-1.platform.kick.com/connection/websocket";
+            #[cfg(feature = "mock")]
+            let connect_url = &std::env::var("KICK_MOCK_WS_URL").expect("KICK_MOCK_WS_URL not set");
             'connection_loop: loop {
                 log::info!("Connecting to Kick websocket: {}", connect_url);
 
@@ -130,6 +128,7 @@ impl KickService {
 
                            match msg_result {
                                Ok(Message::Text(text)) => {
+                                println!("{text}");
                                     if let Ok(message) = serde_json::from_str::<KickPushMessage>(&text) {
                                         kick_service.handle_subscriptions(message.push.r#pub.data, &app).await;
                                     }
@@ -426,176 +425,5 @@ impl KickApi for KickService {
 
     fn service_type(&self) -> ServiceType {
         self.service_type.clone()
-    }
-}
-
-impl From<ChatMessageData> for UnifiedChatMessage {
-    fn from(k: ChatMessageData) -> Self {
-        let is_broadcaster = k
-            .sender
-            .identity
-            .badges
-            .iter()
-            .any(|b| b.r#type == "broadcaster");
-        let is_moderator = k
-            .sender
-            .identity
-            .badges
-            .iter()
-            .any(|b| b.r#type == "moderator");
-        let is_subscriber = k
-            .sender
-            .identity
-            .badges
-            .iter()
-            .any(|b| b.r#type == "subscriber");
-        let is_vip = k.sender.identity.badges.iter().any(|b| b.r#type == "vip");
-        let mut is_bot = k.sender.identity.badges.iter().any(|b| b.r#type == "bot");
-        is_bot = is_bot || k.sender.slug == "botrix";
-        let badges_v1: Vec<UnifiedBadge> = k
-            .sender
-            .identity
-            .badges
-            .iter()
-            .map(|b| {
-                let image_url = {
-                    if b.r#type == "sub_gifter".to_string() {
-                        Some("https://www.kickdatabase.com/kickBadges/subGifter.svg".to_string())
-                    } else {
-                        Some(format!(
-                            "https://www.kickdatabase.com/kickBadges/{}.svg",
-                            b.r#type.clone()
-                        ))
-                    }
-                };
-                UnifiedBadge {
-                    id: b.r#type.clone(),
-                    set_id: b.r#type.clone(),
-                    label: None,
-                    image_url,
-                }
-            })
-            .collect();
-        let badges_v2: Vec<UnifiedBadge> = k
-            .sender
-            .identity
-            .badges_v2
-            .iter()
-            .map(|b| UnifiedBadge {
-                id: b.name.clone(),
-                set_id: b.badge_type.clone(),
-                label: b
-                    .metadata
-                    .as_ref()
-                    .and_then(|m| m.level)
-                    .map(|l| format!("Level {}", l)),
-                image_url: Some(b.image_url.clone()),
-            })
-            .collect();
-        let badges = [badges_v1, badges_v2].concat();
-        let fragments = EventsService::parse_kick_content(&k.content);
-        let raw_message_ref: Option<String> = match k.metadata.clone() {
-            Some(m) => Some(m.message_ref),
-            _ => None,
-        };
-        let reply = {
-            if let Some(MessageMetadata {
-                original_message: Some(original_message),
-                original_sender: Some(original_sender),
-                ..
-            }) = k.metadata
-            {
-                Some(ReplyInfo {
-                    parent_message_id: original_message.id,
-                    parent_message_body: original_message.content,
-                    parent_user_id: original_sender.id.to_string(),
-                    parent_username: original_sender.username,
-                    thread_message_id: raw_message_ref.clone(),
-                    thread_user_id: Some(k.sender.id.to_string()),
-                })
-            } else {
-                None
-            }
-        };
-        Self {
-            id: k.id,
-            platform: Platform::Kick,
-            channel_id: k.chatroom_id.to_string(),
-            channel_name: k.sender.slug.clone(),
-            created_at: k.created_at,
-
-            sender: UnifiedSender {
-                id: k.sender.id.to_string(),
-                username: k.sender.username,
-                login: k.sender.slug,
-                color: Some(k.sender.identity.color),
-                avatar_url: None,
-                channel_url: None,
-                is_verified: None,
-                badges,
-                roles: SenderRoles {
-                    is_broadcaster,
-                    is_moderator,
-                    is_subscriber,
-                    is_verified: false,
-                    is_bot,
-                    is_vip,
-                },
-            },
-
-            content: UnifiedContent {
-                text: EventsService::strip_kick_emotes(&k.content),
-                fragments,
-                message_type: ChatMessageType::Text,
-                reply,
-                cheer_bits: None,
-                donation: None,
-            },
-
-            metadata: UnifiedMetadata {
-                raw_message_ref: raw_message_ref,
-                channel_points_reward_id: None,
-                source_channel_id: None,
-                source_channel_login: None,
-                source_message_id: None,
-                is_source_only: None,
-                live_chat_id: None,
-                has_display_content: None,
-            },
-        }
-    }
-}
-
-impl MessageDeletedData {
-    pub fn into_unified(self, channel_id: Option<String>) -> UnifiedChatMessageDelete {
-        UnifiedChatMessageDelete {
-            platform: Platform::Kick,
-            channel_id,
-            message_id: self.message.id,
-            target_user: None,
-        }
-    }
-}
-
-impl From<UserBannedData> for UnifiedBannedUser {
-    fn from(d: UserBannedData) -> Self {
-        UnifiedBannedUser {
-            platform: Platform::Kick,
-            event_id: Some(d.id),
-            channel_id: None,
-            target_user: BannedTargetUser {
-                id: d.user.id.to_string(),
-                username: d.user.username,
-                display_name: None,
-            },
-            banned_by: Some(BanIssuedBy {
-                id: d.banned_by.id.to_string(),
-                username: d.banned_by.username,
-            }),
-            reason: None,
-            banned_at: None,
-            ends_at: None,
-            permanent: d.permanent,
-        }
     }
 }

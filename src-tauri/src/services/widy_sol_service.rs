@@ -5,6 +5,7 @@ use anchor_client::{
 use anchor_lang::prelude::*;
 use anchor_lang::{AnchorDeserialize, AnchorSerialize};
 use entity::services::{ServiceAuth, ServiceType, WidyAuth};
+use model::events::{AppEvent, EventMessage};
 use serde::{Deserialize, Serialize};
 use serde_qs;
 use std::sync::{Arc, Mutex};
@@ -15,10 +16,7 @@ use crate::{
     constants::USDT_MULTIPLICATION,
     error::AppError,
     repositories::ServicesRepository,
-    services::{
-        AppEvent, DatabaseService, DeepLinkHandler, EventMessage, EventsService,
-        WebSocketBroadcaster,
-    },
+    services::{DatabaseService, DeepLinkHandler, EventsService, WebSocketBroadcaster},
     utils::log_and_wrap_error,
 };
 

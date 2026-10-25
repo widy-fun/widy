@@ -1,11 +1,8 @@
 use crate::{
     error::AppError,
-    services::fish_audio::{
-        FishAudioService,
-        models::{FishAudioListModelsFilter, FishAudioListModelsResponse},
-        traits::FishAudioApi,
-    },
+    services::fish_audio::{FishAudioService, fish_audio_api::FishAudioApi},
 };
+use model::fish_audio::{FishAudioListModelsFilter, FishAudioListModelsResponse};
 use tauri::{AppHandle, State};
 
 #[tauri::command]

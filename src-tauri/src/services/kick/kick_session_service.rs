@@ -1,6 +1,7 @@
 use std::sync::{Arc, Mutex};
 
 use entity::services::{KickSessionToken, ServiceAuth, ServiceType};
+use model::kick::{ChanelInfoResponse, UserInfo};
 use tauri::{AppHandle, Manager};
 
 use crate::{
@@ -8,11 +9,7 @@ use crate::{
     repositories::ServicesRepository,
     services::{
         DatabaseService,
-        kick::{
-            KickService,
-            models::{ChanelInfoResponse, UserInfo},
-            traits::{KickApi, KickSessionApi},
-        },
+        kick::{KickService, kick_api::KickApi, kick_session_api::KickSessionApi},
     },
 };
 

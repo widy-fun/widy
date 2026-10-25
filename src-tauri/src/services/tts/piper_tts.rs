@@ -8,13 +8,13 @@ use std::{
 use async_trait::async_trait;
 use entity::tts::{PiperVoice, PiperVoices, TtsModels, TtsSettings};
 use lingua::Language;
+use model::tts::{Piper, PiperModelConfig};
 use ndarray::{Array2, arr1};
 use ort::{session::Session, value::Tensor};
 
 use crate::{
     constants::{BOS, EOS, PAD},
     error::AppError,
-    services::tts::models::{Piper, PiperModelConfig},
     utils::log_and_wrap_error,
 };
 

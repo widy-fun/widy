@@ -4,12 +4,12 @@ use crate::{
     services::{DatabaseService, EventsService},
     utils::send_request,
 };
-use entity::{
-    services::{ServiceAuth, ServiceType, TokenAuth},
-    settings::Currency,
-};
+use entity::services::{ServiceAuth, ServiceType, TokenAuth};
 use futures::{SinkExt, StreamExt};
-use serde::{Deserialize, Serialize};
+use model::donation_alerts::{
+    AuthTokenResponse, ChannelsResponse, SubscriptionBody, UserInfo, UserInfoResponse,
+    WebsocketMessage,
+};
 use serde_json::json;
 use std::sync::{Arc, Mutex};
 use tauri::{AppHandle, Manager};
@@ -19,84 +19,6 @@ use tokio_tungstenite::{
 };
 use tokio_util::sync::CancellationToken;
 
-#[derive(Debug, Clone, Deserialize)]
-#[serde(untagged)]
-enum WebsocketMessage {
-    Client(ClientMessage),
-    Donation(DonationMessage),
-}
-#[derive(Debug, Clone, Deserialize)]
-struct ClientMessage {
-    result: ClientMessageResult,
-}
-#[derive(Debug, Clone, Deserialize)]
-struct DonationMessage {
-    result: DonationMessageResult,
-}
-#[derive(Debug, Clone, Deserialize)]
-struct ClientMessageResult {
-    client: String,
-}
-#[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
-struct DonationMessageResult {
-    channel: String,
-    data: DonationMessageData,
-}
-#[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
-struct DonationMessageData {
-    seq: u64,
-    data: Donation,
-}
-#[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
-struct Donation {
-    id: u64,
-    name: String,
-    username: Option<String>,
-    message: Option<String>,
-    message_type: String,
-    payin_system: Option<String>,
-    amount: f64,
-    amount_in_user_currency: f64,
-    currency: Currency,
-    recipient_name: String,
-    is_shown: u8,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-struct ChannelsResponse {
-    channels: Vec<Channel>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-struct Channel {
-    channel: String,
-    token: String,
-}
-#[derive(Debug, Clone, Deserialize)]
-struct UserInfoResponse {
-    data: UserInfo,
-}
-#[derive(Debug, Clone, Serialize)]
-struct SubscriptionBody {
-    channels: Vec<String>,
-    client: String,
-}
-#[derive(Debug, Clone, Deserialize)]
-struct UserInfo {
-    id: u64,
-    socket_connection_token: String,
-}
-#[derive(Debug, Clone, Deserialize)]
-struct AuthTokenResponse {
-    data: AuthToken,
-}
-#[derive(Debug, Clone, Deserialize)]
-struct AuthToken {
-    token: String,
-}
 pub struct DonationAlertsService {
     cancellation_token: Arc<Mutex<CancellationToken>>,
 }
@@ -161,7 +83,11 @@ impl DonationAlertsService {
                     .unwrap()
                     .clone()
             };
+            #[cfg(not(feature = "mock"))]
             let connect_url = "wss://centrifugo.donationalerts.com/connection/websocket";
+            #[cfg(feature = "mock")]
+            let connect_url = &std::env::var("DONATION_ALERTS_MOCK_WS_URL")
+                .expect("DONATION_ALERTS_MOCK_WS_URL not set");
             'connection_loop: loop {
                 log::info!("Connecting to DonationAlerts websocket: {}", connect_url);
                 let (mut socket, _) = match connect_async(connect_url).await {

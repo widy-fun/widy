@@ -2,7 +2,7 @@ use tauri::{AppHandle, State};
 
 use crate::{
     error::AppError,
-    services::kick::{KickBotService, traits::KickApi},
+    services::kick::{KickApi, KickBotService},
 };
 
 #[tauri::command]

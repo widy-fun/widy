@@ -4,18 +4,14 @@ use entity::{
     assistant_settings::ToolCallingModel,
     services::{ApiKeyAuth, ServiceAuth, ServiceType},
 };
+use model::claude::{ClaudeMessage, ClaudeTool, ContentBlock, MessagesBody, MessagesResponse};
 use tauri::{AppHandle, Manager};
 
 use crate::{
     error::AppError,
     repositories::ServicesRepository,
     services::{
-        DatabaseService,
-        assistant::tool_calling_service::ToolCall,
-        claude::{
-            models::{ClaudeMessage, ClaudeTool, ContentBlock, MessagesBody},
-            traits::ClaudeApi,
-        },
+        DatabaseService, assistant::tool_calling_service::ToolCall, claude::claude_api::ClaudeApi,
     },
 };
 
@@ -144,7 +140,7 @@ impl ClaudeService {
                 .map(ClaudeTool::from)
                 .collect();
 
-            let messages_response: crate::services::claude::models::MessagesResponse = self
+            let messages_response: MessagesResponse = self
                 .messages(
                     &reqwest_client,
                     auth.api_key,

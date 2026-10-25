@@ -3,7 +3,7 @@ use uuid::Uuid;
 
 use crate::{
     error::AppError,
-    services::kick::{KickService, traits::KickApi},
+    services::kick::{KickApi, KickService},
 };
 
 #[tauri::command]

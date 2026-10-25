@@ -1,9 +1,6 @@
-use crate::{
-    error::AppError,
-    services::gemini::models::{InteractionResponse, InteractionsBody, ModelsResponse},
-    utils::send_request,
-};
+use crate::{error::AppError, utils::send_request};
 use async_trait::async_trait;
+use model::gemini::{InteractionResponse, InteractionsBody, ModelsResponse};
 
 #[async_trait]
 pub trait GeminiApi: Send + Sync {

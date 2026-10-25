@@ -1,9 +1,10 @@
 use crate::{
     error::AppError,
     repositories::SettingsRepository,
-    services::{AppEvent, DatabaseService, EventMessage, WebSocketBroadcaster},
+    services::{DatabaseService, WebSocketBroadcaster},
 };
 use entity::settings::*;
+use model::events::{AppEvent, EventMessage};
 use tauri::{AppHandle, Manager, State};
 
 #[tauri::command]

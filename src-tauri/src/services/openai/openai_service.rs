@@ -4,18 +4,14 @@ use entity::{
     assistant_settings::ToolCallingModel,
     services::{ApiKeyAuth, ServiceAuth, ServiceType},
 };
+use model::openai::{OpenAIOutput, OpenAIResponsesBody, OpenAITool};
 use tauri::{AppHandle, Manager};
 
 use crate::{
     error::AppError,
     repositories::ServicesRepository,
     services::{
-        DatabaseService,
-        assistant::tool_calling_service::ToolCall,
-        openai::{
-            models::{OpenAIOutput, OpenAIResponsesBody, OpenAITool},
-            traits::OpenAiApi,
-        },
+        DatabaseService, assistant::tool_calling_service::ToolCall, openai::open_ai_api::OpenAiApi,
     },
 };
 

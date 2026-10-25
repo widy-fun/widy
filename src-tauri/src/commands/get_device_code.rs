@@ -1,8 +1,9 @@
+use model::twitch::TwitchDeviceCodeResponse;
 use tauri::State;
 
 use crate::{
     error::AppError,
-    services::twitch::{TwitchDeviceCodeResponse, TwitchService, traits::TwitchApi},
+    services::twitch::{TwitchApi, TwitchService},
 };
 
 #[tauri::command]

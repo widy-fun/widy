@@ -3,14 +3,15 @@ use crate::{
     error::AppError::{self},
     repositories::{DonationsRepository, ServicesRepository},
     services::{
-        AppEvent, DatabaseService, DeepLinkHandler, DeepLinkQueryParams, EventMessage,
-        EventsService, WebSocketBroadcaster, WidyNetwork,
+        DatabaseService, DeepLinkHandler, DeepLinkQueryParams, EventsService, WebSocketBroadcaster,
+        WidyNetwork,
     },
-    traits::ItemsBuffer,
+    items_buffer::ItemsBuffer,
 };
 use base64::{Engine, engine::general_purpose};
 use chrono::Utc;
 use entity::services::{ServiceAuth, ServiceType, WidyAuth};
+use model::events::{AppEvent, EventMessage};
 use serde::Deserialize;
 use std::{
     collections::HashMap,

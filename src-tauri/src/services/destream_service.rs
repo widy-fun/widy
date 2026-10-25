@@ -1,9 +1,6 @@
-use entity::{
-    services::{DestreamAuth, ServiceAuth, ServiceType},
-    settings::Currency,
-};
+use entity::services::{DestreamAuth, ServiceAuth, ServiceType};
 use futures::{SinkExt, StreamExt};
-use serde::Deserialize;
+use model::destream::{DestreamEvent, Donation};
 use std::sync::{Arc, Mutex};
 use tauri::{AppHandle, Manager};
 use tokio_tungstenite::{connect_async, tungstenite::Message};
@@ -16,41 +13,6 @@ use crate::{
     utils::send_request,
 };
 
-#[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
-struct DestreamEvent {
-    pub r#type: u32,
-    pub target: EventTarget,
-    pub arguments: Vec<EventArgument>,
-}
-#[derive(Debug, Clone, Deserialize)]
-struct EventArgument {
-    #[serde(rename = "testData")]
-    pub test_data: Vec<Donation>,
-    pub data: Vec<Donation>,
-}
-#[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
-struct Donation {
-    pub id: String,
-    pub description: Option<String>,
-    pub username: Option<String>,
-    pub moderated: bool,
-    #[serde(rename = "userDisplayCurrencyId")]
-    pub user_display_currency_id: Currency,
-    #[serde(rename = "userDisplayCurrencyAmount")]
-    pub user_display_currency_amount: f64,
-    #[serde(rename = "sourceCurrencyId")]
-    pub source_currency_id: Currency,
-    #[serde(rename = "sourceCurrencyAmount")]
-    pub source_currency_amount: f64,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-enum EventTarget {
-    #[serde(rename = "newDonationsReceived")]
-    NewDonationsReceived,
-}
 pub struct DestreamService {
     cancellation_token: Arc<Mutex<CancellationToken>>,
 }
@@ -103,7 +65,7 @@ impl DestreamService {
         Ok(())
     }
 
-    async fn run_websocket_client(&self, app: AppHandle, overlayid: String) {
+    async fn run_websocket_client(&self, app: AppHandle, _overlayid: String) {
         tauri::async_runtime::spawn(async move {
             let destream_service = app.state::<DestreamService>();
             let handshake = format!(
@@ -116,16 +78,18 @@ impl DestreamService {
                 { destream_service.cancellation_token.lock().unwrap().clone() };
 
             let ping_message = &format!("{}{}", "{\"type\":6}", char::from(30));
-
+            #[cfg(not(feature = "mock"))]
+            let connect_url = format!(
+                "wss://api.destream.net/ws/overlays?overlayid={}",
+                _overlayid
+            );
+            #[cfg(feature = "mock")]
+            let connect_url =
+                std::env::var("DESTREAM_MOCK_WS_URL").expect("DESTREAM_MOCK_WS_URL not set");
             'connection_loop: loop {
                 log::info!("Connecting to Destream websocket");
 
-                let (mut socket, _) = match connect_async(format!(
-                    "wss://api.destream.net/ws/overlays?overlayid={}",
-                    overlayid
-                ))
-                .await
-                {
+                let (mut socket, _) = match connect_async(&connect_url).await {
                     Ok(socket) => socket,
                     Err(e) => {
                         log::error!("Failed to connect: {}", e);

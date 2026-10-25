@@ -1,13 +1,11 @@
 use async_trait::async_trait;
 use entity::services::ServiceType;
+use model::kick::KickAuthSession;
 use std::sync::{Arc, Mutex, MutexGuard, atomic::AtomicU64};
 use tauri::AppHandle;
 use tokio_util::sync::CancellationToken;
 
-use crate::{
-    error::AppError,
-    services::kick::{models::KickAuthSession, traits::KickApi},
-};
+use crate::{error::AppError, services::kick::kick_api::KickApi};
 
 pub struct KickBotService {
     pub kick_bot_client_id: String,

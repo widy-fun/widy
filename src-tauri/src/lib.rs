@@ -12,7 +12,7 @@ use tauri::Manager;
 use tauri_plugin_deep_link::DeepLinkExt;
 use utils::register_shortcuts;
 pub mod error;
-pub mod traits;
+pub mod items_buffer;
 use serde::Serialize;
 
 #[derive(Clone, Debug, Serialize)]

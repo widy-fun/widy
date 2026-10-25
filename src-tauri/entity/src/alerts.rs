@@ -1,4 +1,4 @@
-use sea_orm::{entity::prelude::*, ActiveValue::Set, FromJsonQueryResult, HasOneModel::NotSet};
+use sea_orm::{entity::prelude::*, ActiveHasOne::NotSet, ActiveValue::Set, FromJsonQueryResult};
 use serde::{Deserialize, Serialize};
 
 use crate::{messages::MessageType, tts::TtsSettings};

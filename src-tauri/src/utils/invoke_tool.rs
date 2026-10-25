@@ -9,20 +9,22 @@ use entity::{
     media::{Media, MediaType},
     messages::MessageType,
 };
+use model::{
+    events::{AppEvent, EventMessage},
+    kick::{PatchChanelBody, UpdateChatSettingsBody},
+    twitch::ModifyChannelInformationBody,
+};
 use tauri::{AppHandle, Manager};
 
 use crate::{
     error::AppError,
     repositories::AlertsRepository,
     services::{
-        AppEvent, DatabaseService, EventMessage, EventsService, WebSocketBroadcaster,
+        DatabaseService, EventsService, WebSocketBroadcaster,
         assistant::tool_calling_service::ToolCall,
-        kick::{
-            self, KickService, KickSessionService, PatchChanelBody,
-            traits::{KickApi, KickSessionApi},
-        },
+        kick::{KickApi, KickService, KickSessionApi, KickSessionService},
         media::{MediaService, YoutubeSearchExtractor},
-        twitch::{self, ModifyChannelInformationBody, TwitchService, traits::TwitchApi},
+        twitch::{TwitchApi, TwitchService},
     },
 };
 
@@ -434,7 +436,7 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
                             auth.user_id.clone(),
                             auth.user_id,
                             app,
-                            twitch::UpdateChatSettingsBody {
+                            model::twitch::UpdateChatSettingsBody {
                                 follower_mode: Some(true),
                                 ..Default::default()
                             },
@@ -449,7 +451,7 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
                     let kick_session_service = app.state::<KickSessionService>();
                     kick_session_service
                         .update_chat_settings(
-                            kick::UpdateChatSettingsBody {
+                            UpdateChatSettingsBody {
                                 followers_mode: Some(true),
                                 following_min_duration: Some(1),
                                 ..Default::default()
@@ -493,7 +495,7 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
                             auth.user_id.clone(),
                             auth.user_id,
                             app,
-                            twitch::UpdateChatSettingsBody {
+                            model::twitch::UpdateChatSettingsBody {
                                 follower_mode: Some(false),
                                 ..Default::default()
                             },
@@ -508,7 +510,7 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
                     let kick_session_service = app.state::<KickSessionService>();
                     kick_session_service
                         .update_chat_settings(
-                            kick::UpdateChatSettingsBody {
+                            UpdateChatSettingsBody {
                                 followers_mode: Some(false),
                                 ..Default::default()
                             },
@@ -551,7 +553,7 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
                             auth.user_id.clone(),
                             auth.user_id,
                             app,
-                            twitch::UpdateChatSettingsBody {
+                            model::twitch::UpdateChatSettingsBody {
                                 emote_mode: Some(true),
                                 ..Default::default()
                             },
@@ -566,7 +568,7 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
                     let kick_session_service = app.state::<KickSessionService>();
                     kick_session_service
                         .update_chat_settings(
-                            kick::UpdateChatSettingsBody {
+                            UpdateChatSettingsBody {
                                 emotes_mode: Some(true),
                                 ..Default::default()
                             },
@@ -609,7 +611,7 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
                             auth.user_id.clone(),
                             auth.user_id,
                             app,
-                            twitch::UpdateChatSettingsBody {
+                            model::twitch::UpdateChatSettingsBody {
                                 emote_mode: Some(false),
                                 ..Default::default()
                             },
@@ -624,7 +626,7 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
                     let kick_session_service = app.state::<KickSessionService>();
                     kick_session_service
                         .update_chat_settings(
-                            kick::UpdateChatSettingsBody {
+                            UpdateChatSettingsBody {
                                 emotes_mode: Some(false),
                                 ..Default::default()
                             },
@@ -667,7 +669,7 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
                             auth.user_id.clone(),
                             auth.user_id,
                             app,
-                            twitch::UpdateChatSettingsBody {
+                            model::twitch::UpdateChatSettingsBody {
                                 subscriber_mode: Some(true),
                                 ..Default::default()
                             },
@@ -682,7 +684,7 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
                     let kick_session_service = app.state::<KickSessionService>();
                     kick_session_service
                         .update_chat_settings(
-                            kick::UpdateChatSettingsBody {
+                            UpdateChatSettingsBody {
                                 subscribers_mode: Some(true),
                                 ..Default::default()
                             },
@@ -725,7 +727,7 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
                             auth.user_id.clone(),
                             auth.user_id,
                             app,
-                            twitch::UpdateChatSettingsBody {
+                            model::twitch::UpdateChatSettingsBody {
                                 subscriber_mode: Some(false),
                                 ..Default::default()
                             },
@@ -740,7 +742,7 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
                     let kick_session_service = app.state::<KickSessionService>();
                     kick_session_service
                         .update_chat_settings(
-                            kick::UpdateChatSettingsBody {
+                            UpdateChatSettingsBody {
                                 subscribers_mode: Some(false),
                                 ..Default::default()
                             },
@@ -783,7 +785,7 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
                             auth.user_id.clone(),
                             auth.user_id,
                             app,
-                            twitch::UpdateChatSettingsBody {
+                            model::twitch::UpdateChatSettingsBody {
                                 slow_mode: Some(true),
                                 ..Default::default()
                             },
@@ -798,7 +800,7 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
                     let kick_session_service = app.state::<KickSessionService>();
                     kick_session_service
                         .update_chat_settings(
-                            kick::UpdateChatSettingsBody {
+                            UpdateChatSettingsBody {
                                 slow_mode: Some(true),
                                 message_interval: Some(1),
                                 ..Default::default()
@@ -842,7 +844,7 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
                             auth.user_id.clone(),
                             auth.user_id,
                             app,
-                            twitch::UpdateChatSettingsBody {
+                            model::twitch::UpdateChatSettingsBody {
                                 slow_mode: Some(false),
                                 ..Default::default()
                             },
@@ -857,7 +859,7 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
                     let kick_session_service = app.state::<KickSessionService>();
                     kick_session_service
                         .update_chat_settings(
-                            kick::UpdateChatSettingsBody {
+                            UpdateChatSettingsBody {
                                 slow_mode: Some(false),
                                 ..Default::default()
                             },
