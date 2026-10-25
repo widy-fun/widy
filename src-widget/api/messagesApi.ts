@@ -11,7 +11,7 @@ export const messagesApi = widgetApi.injectEndpoints({
 			infiniteQueryOptions: {
 				initialPageParam: {
 					offset: 0,
-					limit: 100,
+					limit: 30,
 				},
 				getNextPageParam: (
 					lastPage,

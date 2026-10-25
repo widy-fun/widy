@@ -23,6 +23,8 @@ const ENDPOINT: &str = "http://127.0.0.1:3777/events";
     about = "Trigger events and send them to the local server"
 )]
 struct Cli {
+    #[arg(long, default_value_t = 1, help = "Count of events to fire")]
+    count: usize,
     #[command(subcommand)]
     command: Commands,
 }
@@ -38,10 +40,31 @@ enum Commands {
 
 fn main() -> Result<()> {
     let cli = Cli::parse();
+    let client = reqwest::blocking::Client::new();
+
+    for _ in 0..cli.count {
+        let event = create_event(&cli.command)?;
+
+        println!("Sending: {}", serde_json::to_string(&event)?);
+
+        let response = client.post(ENDPOINT).json(&event).send()?;
+        let status = response.status();
+        let text = response.text()?;
+        println!("Response [{status}]: {text}");
+
+        if !status.is_success() {
+            anyhow::bail!("Server returned {status}");
+        }
+    }
+
+    Ok(())
+}
+
+fn create_event(command: &Commands) -> Result<CliEvent> {
     let mocked_message = "Mocked message".to_string();
     let mocked_name = "mocked_name".to_string();
 
-    let event = match cli.command {
+    let event = match command {
         Commands::TributeDonation => CliEvent::TributeDonation(TributeEvent {
             id: Uuid::new_v4().to_string(),
             data: EventData {
@@ -157,22 +180,5 @@ fn main() -> Result<()> {
         }),
     };
 
-    println!("Sending: {}", serde_json::to_string(&event)?);
-
-    let client = reqwest::blocking::Client::new();
-    match client.post(ENDPOINT).json(&event).send() {
-        Ok(resp) => {
-            let status = resp.status();
-            let text = resp.text().unwrap_or_default();
-            println!("Response [{}]: {}", status, text);
-            if !status.is_success() {
-                std::process::exit(1);
-            }
-        }
-        Err(e) => {
-            eprintln!("Request failed: {e}");
-            std::process::exit(1);
-        }
-    }
-    Ok(())
+    Ok(event)
 }
