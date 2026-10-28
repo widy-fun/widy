@@ -68,7 +68,6 @@ fn stage_foundry_local_dlls() {
     let target_dir = manifest_dir
         .parent()
         .expect("src-tauri should have a parent directory")
-        .join("src-tauri")
         .join("target");
 
     let profile = std::env::var("PROFILE").unwrap_or_else(|_| "debug".into());

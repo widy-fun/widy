@@ -34,7 +34,7 @@ anchor-lang = "0.32.1"
 anchor-client = { version = "0.32.1", features = ["async"] }
 solana-sdk = "3.0.0"
 openssl-sys = { version = "0.9.111", features = ["vendored"] }
-tauri-plugin-deep-link = "2"
+tauri-plugin-deep-link = "=2.4.6"
 serde_qs = "0.15"
 eventsource-client = "0.16.2"
 tonlib-core = "0.26.6"
