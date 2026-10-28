@@ -1,5 +1,6 @@
-use crate::{error::AppError, services::assistant::AssistantService};
+use crate::services::assistant::AssistantService;
 use entity::assistant_settings::{ToolCallingModel, ToolCallingProvider};
+use model::error::AppError;
 use tauri::{AppHandle, State};
 
 #[tauri::command]

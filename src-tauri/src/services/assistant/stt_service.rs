@@ -1,19 +1,18 @@
 use std::sync::Arc;
 
-use foundry_local_sdk::{LiveAudioTranscriptionSession, Model, openai::AudioClient};
-use futures::StreamExt;
-use model::events::{AppEvent, EventMessage};
-use tauri::{AppHandle, Manager};
-
 use crate::{
     constants::TARGET_SR,
-    error::AppError,
     services::{
         ConfigService, WebSocketBroadcaster,
         assistant::{AssistantService, AssistantServiceStatus, linear_resampler::LinearResampler},
     },
-    utils::{log_and_wrap_error, save_audio_to_wav_file},
+    utils::save_audio_to_wav_file,
 };
+use foundry_local_sdk::{LiveAudioTranscriptionSession, Model, openai::AudioClient};
+use futures::StreamExt;
+use model::error::{AppError, log_and_wrap_error};
+use model::events::{AppEvent, EventMessage};
+use tauri::{AppHandle, Manager};
 use tokio::{fs, sync::mpsc::Receiver};
 
 pub enum Transcribe {

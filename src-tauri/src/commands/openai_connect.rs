@@ -1,4 +1,5 @@
-use crate::{error::AppError, services::openai::OpenAIService};
+use crate::services::openai::OpenAIService;
+use model::error::AppError;
 use tauri::{AppHandle, State};
 
 #[tauri::command]

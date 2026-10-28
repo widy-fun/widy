@@ -1,5 +1,6 @@
-use crate::{error::AppError, repositories::GoalsRepository, services::DatabaseService};
+use database::{DatabaseService, GoalsRepository};
 use entity::goals::*;
+use model::error::AppError;
 use tauri::State;
 use uuid::Uuid;
 

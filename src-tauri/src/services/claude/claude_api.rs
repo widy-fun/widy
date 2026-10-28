@@ -1,6 +1,7 @@
-use crate::{error::AppError, utils::send_request};
+use crate::utils::send_request;
 use async_trait::async_trait;
 use model::claude::{MessagesBody, MessagesResponse, ModelsResponse};
+use model::error::AppError;
 
 #[async_trait]
 pub trait ClaudeApi: Send + Sync {

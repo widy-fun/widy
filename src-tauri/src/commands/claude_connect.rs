@@ -1,4 +1,5 @@
-use crate::{error::AppError, services::claude::ClaudeService};
+use crate::services::claude::ClaudeService;
+use model::error::AppError;
 use tauri::{AppHandle, State};
 
 #[tauri::command]

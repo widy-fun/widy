@@ -1,9 +1,7 @@
-use crate::{
-    error::AppError,
-    repositories::{MessagesRepository, SettingsRepository},
-    services::{DatabaseService, ExchangeRatesService},
-};
+use crate::services::ExchangeRatesService;
+use database::{DatabaseService, MessagesRepository, SettingsRepository};
 use entity::{donations::Donation, messages::*};
+use model::error::AppError;
 use tauri::State;
 use tokio::sync::Mutex;
 

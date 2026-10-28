@@ -1,8 +1,7 @@
+use crate::services::WidyTonService;
+use model::error::AppError;
 use std::sync::Arc;
-
 use tauri::{AppHandle, State};
-
-use crate::{error::AppError, services::WidyTonService};
 
 #[tauri::command]
 pub async fn widy_ton_sign_out(

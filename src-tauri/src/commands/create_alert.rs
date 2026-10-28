@@ -1,7 +1,7 @@
+use database::{AlertsRepository, DatabaseService};
 use entity::alerts::*;
+use model::error::AppError;
 use tauri::State;
-
-use crate::{error::AppError, repositories::AlertsRepository, services::DatabaseService};
 
 #[tauri::command]
 pub async fn create_alert(

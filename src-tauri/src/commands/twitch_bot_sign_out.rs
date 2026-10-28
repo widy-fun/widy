@@ -1,9 +1,6 @@
+use crate::services::twitch::{TwitchApi, TwitchBotService};
+use model::error::AppError;
 use tauri::{AppHandle, State};
-
-use crate::{
-    error::AppError,
-    services::twitch::{TwitchApi, TwitchBotService},
-};
 
 #[tauri::command]
 pub async fn twitch_bot_sign_out(

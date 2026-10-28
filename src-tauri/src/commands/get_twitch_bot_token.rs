@@ -1,14 +1,8 @@
+use crate::services::twitch::{TwitchApi, TwitchBotService};
+use database::{DatabaseService, ServicesRepository};
 use entity::services::{ServiceAuth, ServiceType};
+use model::error::AppError;
 use tauri::State;
-
-use crate::{
-    error::AppError,
-    repositories::ServicesRepository,
-    services::{
-        DatabaseService,
-        twitch::{TwitchApi, TwitchBotService},
-    },
-};
 
 #[tauri::command]
 pub async fn get_twitch_bot_token(

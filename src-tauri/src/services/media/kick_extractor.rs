@@ -1,24 +1,9 @@
 use async_trait::async_trait;
+use model::error::AppError;
 use serde::Deserialize;
-use thiserror::Error;
 use url::Url;
 
 const KICK_API: &str = "https://kick.com/api/v2";
-
-#[derive(Debug, Error)]
-pub enum KickClipError {
-    #[error("request failed: {0}")]
-    Request(#[from] reqwest::Error),
-
-    #[error("invalid Kick clip URL")]
-    InvalidUrl,
-
-    #[error("clip id was not found")]
-    MissingClipId,
-
-    #[error("clip is unavailable")]
-    Unavailable,
-}
 
 #[derive(Debug, Deserialize)]
 struct KickClipResponse {
@@ -30,11 +15,9 @@ struct KickClip {
     id: Option<String>,
     clip_url: String,
     title: Option<String>,
-
     channel: Option<KickChannel>,
     creator: Option<KickCreator>,
     category: Option<KickCategory>,
-
     thumbnail_url: Option<String>,
     duration: Option<f64>,
     created_at: Option<String>,
@@ -83,7 +66,7 @@ pub struct KickClipInfo {
 pub trait KickClipExtractor {
     fn reqwest_client(&self) -> &reqwest::Client;
 
-    async fn get_kick_clip_info(&self, input_url: &str) -> Result<KickClipInfo, KickClipError> {
+    async fn get_kick_clip_info(&self, input_url: &str) -> Result<KickClipInfo, AppError> {
         let clip_id = Self::extract_clip_id(input_url)?;
 
         let response = self
@@ -131,12 +114,12 @@ pub trait KickClipExtractor {
         })
     }
 
-    fn extract_clip_id(input: &str) -> Result<String, KickClipError> {
-        let url = Url::parse(input).map_err(|_| KickClipError::InvalidUrl)?;
+    fn extract_clip_id(input: &str) -> Result<String, AppError> {
+        let url = Url::parse(input).map_err(|_| AppError::Media("invalid Kick clip URL"))?;
 
         let segments: Vec<_> = url
             .path_segments()
-            .ok_or(KickClipError::InvalidUrl)?
+            .ok_or(AppError::Media("invalid Kick clip URL"))?
             .collect();
 
         // https://kick.com/channel/clips/clip_01ABC...
@@ -156,7 +139,7 @@ pub trait KickClipExtractor {
             return Ok(id.into_owned());
         }
 
-        Err(KickClipError::MissingClipId)
+        Err(AppError::Media("clip id was not found"))
     }
 }
 
@@ -172,7 +155,7 @@ mod tests {
         }
     }
 
-    fn extract_clip_id(input: &str) -> Result<String, KickClipError> {
+    fn extract_clip_id(input: &str) -> Result<String, AppError> {
         <TestExtractor as KickClipExtractor>::extract_clip_id(input)
     }
 
@@ -220,7 +203,7 @@ mod tests {
     fn rejects_query_parameter_without_clip_prefix() {
         assert!(matches!(
             extract_clip_id("https://kick.com/channel?clip=01ABC"),
-            Err(KickClipError::MissingClipId)
+            Err(_)
         ));
     }
 
@@ -234,17 +217,14 @@ mod tests {
 
     #[test]
     fn rejects_invalid_url() {
-        assert!(matches!(
-            extract_clip_id("not a URL"),
-            Err(KickClipError::InvalidUrl)
-        ));
+        assert!(matches!(extract_clip_id("not a URL"), Err(_)));
     }
 
     #[test]
     fn rejects_url_without_clip_id() {
         assert!(matches!(
             extract_clip_id("https://kick.com/channel/clips/not-a-clip"),
-            Err(KickClipError::MissingClipId)
+            Err(_)
         ));
     }
 }

@@ -1,3 +1,11 @@
+use crate::services::{
+    EventsService, WebSocketBroadcaster,
+    assistant::tool_calling_service::ToolCall,
+    kick::{KickApi, KickService, KickSessionApi, KickSessionService},
+    media::{MediaService, YoutubeSearchExtractor},
+    twitch::{TwitchApi, TwitchService},
+};
+use database::{AlertsRepository, DatabaseService};
 use entity::{
     assistant_actions::{
         AssistantAction,
@@ -9,24 +17,13 @@ use entity::{
     media::{Media, MediaType},
     messages::MessageType,
 };
+use model::error::AppError;
 use model::{
     events::{AppEvent, EventMessage},
     kick::{PatchChanelBody, UpdateChatSettingsBody},
     twitch::ModifyChannelInformationBody,
 };
 use tauri::{AppHandle, Manager};
-
-use crate::{
-    error::AppError,
-    repositories::AlertsRepository,
-    services::{
-        DatabaseService, EventsService, WebSocketBroadcaster,
-        assistant::tool_calling_service::ToolCall,
-        kick::{KickApi, KickService, KickSessionApi, KickSessionService},
-        media::{MediaService, YoutubeSearchExtractor},
-        twitch::{TwitchApi, TwitchService},
-    },
-};
 
 pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), AppError> {
     match tool_call.name.as_str() {
@@ -942,8 +939,7 @@ pub async fn invoke_tool(app: &AppHandle, tool_call: ToolCall) -> Result<(), App
             let youtube_search_info = media_service
                 .search_youtube_one(&name)
                 .await?
-                .ok_or(AppError::Media("Not found youtube video".to_string()))?;
-            println!("{:?}", youtube_search_info);
+                .ok_or(AppError::Media("Not found youtube video"))?;
             let message_id = uuid::Uuid::new_v4();
             EventsService::assistant_action(
                 AssistantAction {

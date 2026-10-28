@@ -1,24 +1,22 @@
+use crate::{
+    constants::USDT_MULTIPLICATION,
+    services::{DeepLinkHandler, EventsService, WebSocketBroadcaster},
+};
 use anchor_client::{
     Client, Cluster, EventContext,
     solana_sdk::{commitment_config::CommitmentConfig, signature::Keypair},
 };
 use anchor_lang::prelude::*;
 use anchor_lang::{AnchorDeserialize, AnchorSerialize};
+use database::{DatabaseService, ServicesRepository};
 use entity::services::{ServiceAuth, ServiceType, WidyAuth};
+use model::error::{AppError, log_and_wrap_error};
 use model::events::{AppEvent, EventMessage};
 use serde::{Deserialize, Serialize};
 use serde_qs;
 use std::sync::{Arc, Mutex};
 use tauri::{AppHandle, Manager};
 use tokio::sync::broadcast;
-
-use crate::{
-    constants::USDT_MULTIPLICATION,
-    error::AppError,
-    repositories::ServicesRepository,
-    services::{DatabaseService, DeepLinkHandler, EventsService, WebSocketBroadcaster},
-    utils::log_and_wrap_error,
-};
 
 #[derive(Debug, Clone)]
 #[event]

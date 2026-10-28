@@ -1,7 +1,7 @@
+use database::{DatabaseService, VariablesRepository};
+use model::error::AppError;
 use tauri::State;
 use uuid::Uuid;
-
-use crate::{error::AppError, repositories::VariablesRepository, services::DatabaseService};
 
 #[tauri::command]
 pub async fn delete_variable_by_id(

@@ -1,4 +1,3 @@
-use crate::error::AppError;
 use crate::services::assistant::AssistantService;
 use crate::services::claude::ClaudeService;
 use crate::services::fish_audio::FishAudioService;
@@ -10,16 +9,18 @@ use crate::services::telegram_bot::telegram_bot_service::TelegramBotService;
 use crate::services::tts::TtsService;
 use crate::services::twitch::{TwitchApi, TwitchBotService, TwitchService};
 use crate::services::{
-    AxumService, CommandsService, ConfigService, DatabaseService, DeepLinkDispatcherService,
-    DestreamService, DonatePayService, DonationAlertsService, ExchangeRatesService, NsfwService,
+    AxumService, CommandsService, ConfigService, DeepLinkDispatcherService, DestreamService,
+    DonatePayService, DonationAlertsService, ExchangeRatesService, NsfwService,
     StreamElementsService, StreamLabsService, TributeService, WebSocketBroadcaster, WidySolService,
     WidyTonService,
 };
 use crate::utils::copy_assets_to_static;
+use database::DatabaseService;
 use lingua::Language::{
     Arabic, Chinese, English, French, German, Hindi, Portuguese, Russian, Spanish, Ukrainian,
 };
 use lingua::LanguageDetectorBuilder;
+use model::error::AppError;
 use std::sync::Arc;
 use std::time::Duration;
 use tauri::{AppHandle, Manager};

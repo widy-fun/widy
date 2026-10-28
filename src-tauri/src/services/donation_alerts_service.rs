@@ -1,15 +1,12 @@
-use crate::{
-    error::AppError,
-    repositories::ServicesRepository,
-    services::{DatabaseService, EventsService},
-    utils::send_request,
-};
+use crate::{services::EventsService, utils::send_request};
+use database::{DatabaseService, ServicesRepository};
 use entity::services::{ServiceAuth, ServiceType, TokenAuth};
 use futures::{SinkExt, StreamExt};
 use model::donation_alerts::{
     AuthTokenResponse, ChannelsResponse, SubscriptionBody, UserInfo, UserInfoResponse,
     WebsocketMessage,
 };
+use model::error::AppError;
 use serde_json::json;
 use std::sync::{Arc, Mutex};
 use tauri::{AppHandle, Manager};

@@ -1,11 +1,8 @@
+use crate::services::CommandsService;
+use database::{CommandsRepository, DatabaseService};
+use model::error::AppError;
 use tauri::State;
 use uuid::Uuid;
-
-use crate::{
-    error::AppError,
-    repositories::CommandsRepository,
-    services::{CommandsService, DatabaseService},
-};
 
 #[tauri::command]
 pub async fn delete_command_by_id(

@@ -1,17 +1,11 @@
-use std::sync::{Arc, Mutex};
-
+use database::{DatabaseService, ServicesRepository};
 use entity::services::{KickSessionToken, ServiceAuth, ServiceType};
 use model::kick::{ChanelInfoResponse, UserInfo};
+use std::sync::{Arc, Mutex};
 use tauri::{AppHandle, Manager};
 
-use crate::{
-    error::AppError,
-    repositories::ServicesRepository,
-    services::{
-        DatabaseService,
-        kick::{KickService, kick_api::KickApi, kick_session_api::KickSessionApi},
-    },
-};
+use crate::services::kick::{KickService, kick_api::KickApi, kick_session_api::KickSessionApi};
+use model::error::AppError;
 
 pub struct KickSessionService {
     reqwest_client: reqwest::Client,

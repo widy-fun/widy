@@ -1,19 +1,13 @@
-use std::collections::HashMap;
-
+use crate::services::{assistant::tool_calling_service::ToolCall, openai::open_ai_api::OpenAiApi};
+use database::{DatabaseService, ServicesRepository};
 use entity::{
     assistant_settings::ToolCallingModel,
     services::{ApiKeyAuth, ServiceAuth, ServiceType},
 };
+use model::error::AppError;
 use model::openai::{OpenAIOutput, OpenAIResponsesBody, OpenAITool};
+use std::collections::HashMap;
 use tauri::{AppHandle, Manager};
-
-use crate::{
-    error::AppError,
-    repositories::ServicesRepository,
-    services::{
-        DatabaseService, assistant::tool_calling_service::ToolCall, openai::open_ai_api::OpenAiApi,
-    },
-};
 
 #[derive(Clone)]
 pub struct OpenAIService {

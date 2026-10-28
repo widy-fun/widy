@@ -1,6 +1,6 @@
+use crate::services::claude::ClaudeService;
+use model::error::AppError;
 use tauri::{AppHandle, State};
-
-use crate::{error::AppError, services::claude::ClaudeService};
 
 #[tauri::command]
 pub async fn claude_sign_out(

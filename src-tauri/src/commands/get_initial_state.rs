@@ -1,5 +1,5 @@
-use crate::{InitialState, error::AppError};
-
+use crate::InitialState;
+use model::error::AppError;
 use tauri::State;
 
 #[tauri::command]

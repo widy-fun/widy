@@ -1,11 +1,9 @@
+use crate::utils::validate_csp;
+use database::{DatabaseService, WidgetsRepository};
 use entity::widgets::Manifest;
+use model::error::AppError;
 use tauri::State;
 use uuid::Uuid;
-
-use crate::{
-    error::AppError, repositories::WidgetsRepository, services::DatabaseService,
-    utils::validate_csp,
-};
 
 #[tauri::command]
 pub async fn add_widget(

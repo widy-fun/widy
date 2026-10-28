@@ -1,5 +1,6 @@
-use crate::{error::AppError, repositories::RewardsRepository, services::DatabaseService};
+use database::{DatabaseService, RewardsRepository};
 use entity::rewards::Model;
+use model::error::AppError;
 use tauri::State;
 
 #[tauri::command]

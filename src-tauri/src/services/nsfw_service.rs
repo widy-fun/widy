@@ -1,4 +1,7 @@
-use model::events::{AppEvent, EventMessage};
+use model::{
+    error::log_and_wrap_error,
+    events::{AppEvent, EventMessage},
+};
 use std::{
     error::Error,
     sync::{
@@ -8,19 +11,17 @@ use std::{
 };
 use tokio::sync::Mutex;
 
+use crate::{
+    constants::NSFW_LABELS,
+    services::{ConfigService, WebSocketBroadcaster},
+};
 use image::{ImageBuffer, Rgb, RgbImage, RgbaImage};
+use model::error::AppError;
 use ndarray::{Array4, Axis};
 use ort::{inputs, session::Session, value::Tensor};
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
 use xcap::Window;
-
-use crate::{
-    constants::NSFW_LABELS,
-    error::AppError,
-    services::{ConfigService, WebSocketBroadcaster},
-    utils::log_and_wrap_error,
-};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NsfwDetection {

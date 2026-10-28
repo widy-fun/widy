@@ -1,7 +1,5 @@
-use crate::{
-    error::AppError,
-    services::{NsfwService, WindowInfo},
-};
+use crate::services::{NsfwService, WindowInfo};
+use model::error::AppError;
 use tauri::{AppHandle, State};
 
 #[tauri::command]

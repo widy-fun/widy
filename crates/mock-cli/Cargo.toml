@@ -1,0 +1,19 @@
+[package]
+name = "mock-cli"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+model = { workspace = true }
+entity = { workspace = true }
+database = { workspace = true }
+reqwest = { workspace = true, features = ["json"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+clap = { workspace = true }
+anyhow = { workspace = true }
+uuid = { workspace = true }
+rand = { workspace = true }
+tokio = { workspace = true }
+dirs = { workspace = true }
+openssl-sys = { workspace = true }

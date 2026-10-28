@@ -1,4 +1,5 @@
-use crate::{error::AppError, services::TributeService};
+use crate::services::TributeService;
+use model::error::AppError;
 use tauri::{AppHandle, State};
 
 #[tauri::command]

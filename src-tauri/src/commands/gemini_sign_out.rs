@@ -1,6 +1,6 @@
+use crate::services::gemini::GeminiService;
+use model::error::AppError;
 use tauri::{AppHandle, State};
-
-use crate::{error::AppError, services::gemini::GeminiService};
 
 #[tauri::command]
 pub async fn gemini_sign_out(

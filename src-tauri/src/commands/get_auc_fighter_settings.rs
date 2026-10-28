@@ -1,7 +1,6 @@
-use crate::{
-    error::AppError, repositories::AucFighterSettingsRepository, services::DatabaseService,
-};
+use database::{AucFighterSettingsRepository, DatabaseService};
 use entity::auc_fighter_settings::*;
+use model::error::AppError;
 use tauri::State;
 
 #[tauri::command]

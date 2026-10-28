@@ -1,9 +1,7 @@
-use std::path::{Path, PathBuf};
-
+use model::error::{AppError, log_and_wrap_error};
 use ndarray::{Array2, Array3, Array4};
 use ort::{session::Session, value::TensorRef};
-
-use crate::{error::AppError, utils::log_and_wrap_error};
+use std::path::{Path, PathBuf};
 
 const WAKE_FRAMES: usize = 16;
 const EMBEDDING_FEATURE_DIM: usize = 96;

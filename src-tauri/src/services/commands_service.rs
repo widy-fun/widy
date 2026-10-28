@@ -1,3 +1,13 @@
+use crate::{
+    services::{
+        EventsService,
+        kick::{KickApi, KickBotService, KickService, KickSessionApi, KickSessionService},
+        telegram_bot::telegram_bot_service::TelegramBotService,
+        twitch::{TwitchBotService, TwitchService, twitch_api::TwitchApi},
+    },
+    utils::{calc_command_auction_action_amount, replace_variables},
+};
+use database::{CommandsRepository, DatabaseService, VariablesRepository};
 use entity::{
     commands::{
         Command, KickAction, KickActionType, KickSource, KickSourceType, KickTarget, PostType,
@@ -6,7 +16,8 @@ use entity::{
     commands_actions::CommandAction,
     rewards::Platform,
 };
-use model::events::UnifiedChatMessage;
+use model::error::{AppError, log_and_wrap_error};
+use model::{events::UnifiedChatMessage, items_buffer::ChatMessageBuffer};
 use serde::Serialize;
 use std::{
     collections::HashMap,
@@ -17,19 +28,6 @@ use std::{
 use tauri::{AppHandle, Manager};
 use tokio::{task::AbortHandle, time::interval};
 use uuid::Uuid;
-
-use crate::{
-    error::AppError,
-    items_buffer::ChatMessageBuffer,
-    repositories::{CommandsRepository, VariablesRepository},
-    services::{
-        DatabaseService, EventsService,
-        kick::{KickApi, KickBotService, KickService, KickSessionApi, KickSessionService},
-        telegram_bot::telegram_bot_service::TelegramBotService,
-        twitch::{TwitchBotService, TwitchService, twitch_api::TwitchApi},
-    },
-    utils::{calc_command_auction_action_amount, log_and_wrap_error, replace_variables},
-};
 
 #[derive(Debug, Clone, Serialize)]
 pub struct CommandAuctionAction {

@@ -1,7 +1,7 @@
+use database::{DatabaseService, GoalsRepository};
+use model::error::AppError;
 use tauri::State;
 use uuid::Uuid;
-
-use crate::{error::AppError, repositories::GoalsRepository, services::DatabaseService};
 
 #[tauri::command]
 pub async fn finish_goal(

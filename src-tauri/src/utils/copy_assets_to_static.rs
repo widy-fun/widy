@@ -1,6 +1,5 @@
+use model::error::{AppError, log_and_wrap_error};
 use std::{fs, path::PathBuf};
-
-use crate::{error::AppError, utils::log_and_wrap_error};
 
 pub fn copy_assets_to_static(
     assets_patch: &PathBuf,

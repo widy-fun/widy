@@ -1,7 +1,7 @@
+use database::{AlertsRepository, DatabaseService};
 use entity::messages::MessageType;
+use model::error::AppError;
 use tauri::{AppHandle, Manager};
-
-use crate::{error::AppError, repositories::AlertsRepository, services::DatabaseService};
 
 pub async fn get_random_alert(
     app: &AppHandle,

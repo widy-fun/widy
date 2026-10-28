@@ -1,10 +1,7 @@
+use crate::services::twitch::{TwitchApi, TwitchService};
+use model::error::AppError;
 use tauri::{AppHandle, State};
 use uuid::Uuid;
-
-use crate::{
-    error::AppError,
-    services::twitch::{TwitchApi, TwitchService},
-};
 
 #[tauri::command]
 pub async fn twitch_remove_custom_reward(

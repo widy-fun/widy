@@ -1,16 +1,16 @@
-use crate::services::DatabaseService;
 use crate::services::media::kick_extractor::KickClipExtractor;
 use crate::services::media::media_parser::MediaParser;
 use crate::services::media::tiktok_extractor::TikTokExtractor;
 use crate::services::media::twitch_extractor::TwitchClipExtractor;
 use crate::services::media::youtube_extractor::YoutubeExtractor;
 use crate::services::media::youtube_search_extractor::YoutubeSearchExtractor;
-use crate::{repositories::MediaSettingsRepository, utils::log_and_wrap_error};
+use database::{DatabaseService, MediaSettingsRepository};
 use entity::{
     media::{Media, MediaType},
     media_settings::MediaPlatformSettings,
     messages::MessageType,
 };
+use model::error::log_and_wrap_error;
 use reqwest::Client;
 use tauri::{AppHandle, Manager};
 

@@ -1,6 +1,6 @@
+use crate::services::openai::OpenAIService;
+use model::error::AppError;
 use tauri::{AppHandle, State};
-
-use crate::{error::AppError, services::openai::OpenAIService};
 
 #[tauri::command]
 pub async fn openai_sign_out(

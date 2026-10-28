@@ -1,12 +1,9 @@
+use crate::services::WebSocketBroadcaster;
+use database::{DatabaseService, GoalsRepository};
 use entity::goals::*;
+use model::error::AppError;
 use model::events::{AppEvent, EventMessage};
 use tauri::{AppHandle, Manager, State};
-
-use crate::{
-    error::AppError,
-    repositories::GoalsRepository,
-    services::{DatabaseService, WebSocketBroadcaster},
-};
 
 #[tauri::command]
 pub async fn update_goal_settings(

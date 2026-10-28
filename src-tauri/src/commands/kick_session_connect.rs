@@ -1,4 +1,5 @@
-use crate::{error::AppError, services::kick::KickSessionService};
+use crate::services::kick::KickSessionService;
+use model::error::AppError;
 use tauri::{AppHandle, State};
 
 #[tauri::command]

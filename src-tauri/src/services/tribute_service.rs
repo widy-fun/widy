@@ -1,12 +1,9 @@
-use crate::{
-    error::AppError,
-    repositories::ServicesRepository,
-    services::{DatabaseService, EventsService},
-    utils::send_request,
-};
+use crate::{services::EventsService, utils::send_request};
+use database::{DatabaseService, ServicesRepository};
 use entity::services::{ApiKeyAuth, ServiceAuth, ServiceType};
 use eventsource_client::{self as es, Client};
 use futures::{StreamExt, TryStreamExt};
+use model::error::AppError;
 use model::tribute::TributeEvent;
 use std::time::Duration;
 use tauri::{AppHandle, Manager};

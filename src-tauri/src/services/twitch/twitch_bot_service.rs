@@ -1,6 +1,7 @@
-use crate::{error::AppError, services::twitch::twitch_api::TwitchApi};
+use crate::services::twitch::twitch_api::TwitchApi;
 use async_trait::async_trait;
 use entity::services::ServiceType;
+use model::error::AppError;
 use std::sync::{Arc, Mutex, atomic::AtomicU64};
 use tauri::AppHandle;
 use tokio_util::sync::CancellationToken;

@@ -1,12 +1,10 @@
-use std::path::PathBuf;
-
-use tauri::{AppHandle, Manager, path::BaseDirectory};
-
 use crate::{
     constants::{SQLITE_DB, STATIC_DIR},
-    error::AppError,
     utils::resolve_path,
 };
+use model::error::AppError;
+use std::path::PathBuf;
+use tauri::{AppHandle, Manager, path::BaseDirectory};
 
 #[macro_export]
 macro_rules! load_env {
@@ -60,8 +58,15 @@ impl ConfigService {
         let kick_bot_token_endpoint = load_env!("KICK_BOT_TOKEN_ENDPOINT");
         let kick_bot_redirect_uri = load_env!("KICK_BOT_REDIRECT_URI");
         let app_token = load_env!("APP_TOKEN");
-
+        #[cfg(not(feature = "mock"))]
         let db_path = resolve_path(app, SQLITE_DB, BaseDirectory::AppLocalData, "database")?;
+        #[cfg(feature = "mock")]
+        let db_path = resolve_path(
+            app,
+            "mocked_database.db",
+            BaseDirectory::AppLocalData,
+            "mocked database",
+        )?;
         let widget_path = resolve_path(app, "dist-widget", BaseDirectory::Resource, "widget")?;
         let nsfw_model_path = resolve_path(
             app,

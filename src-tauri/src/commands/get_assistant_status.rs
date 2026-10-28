@@ -1,7 +1,5 @@
-use crate::{
-    error::AppError,
-    services::assistant::{AssistantService, AssistantStatus},
-};
+use crate::services::assistant::{AssistantService, AssistantStatus};
+use model::error::AppError;
 use tauri::State;
 
 #[tauri::command]

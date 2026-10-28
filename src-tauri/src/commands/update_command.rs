@@ -1,11 +1,8 @@
-use std::time::Duration;
-
-use crate::{
-    error::AppError,
-    repositories::CommandsRepository,
-    services::{CommandsService, DatabaseService},
-};
+use crate::services::CommandsService;
+use database::{CommandsRepository, DatabaseService};
 use entity::commands::*;
+use model::error::AppError;
+use std::time::Duration;
 use tauri::{AppHandle, State};
 
 #[tauri::command]

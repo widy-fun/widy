@@ -1,4 +1,5 @@
-use crate::{error::AppError, utils::audio_to_wav_bytes};
+use crate::utils::audio_to_wav_bytes;
+use model::error::AppError;
 
 pub async fn save_audio_to_wav_file(
     audio: &[f32],

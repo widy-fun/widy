@@ -1,11 +1,9 @@
+use crate::utils::send_request;
+use database::{DatabaseService, ServicesRepository};
 use entity::services::{ApiKeyAuth, ServiceAuth, ServiceType};
+use model::error::AppError;
 use model::fish_audio::{FishAudioListModelsFilter, FishAudioListModelsResponse, TtsRequestBody};
 use tauri::{AppHandle, Manager};
-
-use crate::{
-    error::AppError, repositories::ServicesRepository, services::DatabaseService,
-    utils::send_request,
-};
 
 #[async_trait::async_trait]
 pub trait FishAudioApi {

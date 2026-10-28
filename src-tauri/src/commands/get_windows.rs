@@ -1,9 +1,6 @@
+use crate::services::{NsfwService, WindowInfo};
+use model::error::AppError;
 use tauri::State;
-
-use crate::{
-    error::AppError,
-    services::{NsfwService, WindowInfo},
-};
 
 #[tauri::command]
 pub async fn get_windows(

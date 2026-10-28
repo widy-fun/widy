@@ -1,4 +1,5 @@
-use crate::{error::AppError, services::telegram_bot::telegram_bot_service::TelegramBotService};
+use crate::services::telegram_bot::telegram_bot_service::TelegramBotService;
+use model::error::AppError;
 use tauri::{AppHandle, State};
 
 #[tauri::command]

@@ -1,0 +1,45 @@
+use crate::DatabaseService;
+use async_trait::async_trait;
+use entity::{
+    messages::{self, ClientMessage},
+    subscriptions,
+};
+use model::error::{AppError, log_and_wrap_error};
+
+#[async_trait]
+pub trait SubscriptionsRepository: Send + Sync {
+    async fn save_subscribe_message(&self, client_message: ClientMessage) -> Result<(), AppError>;
+}
+
+#[async_trait]
+impl SubscriptionsRepository for DatabaseService {
+    async fn save_subscribe_message(&self, client_message: ClientMessage) -> Result<(), AppError> {
+        if let Some(subscription) = client_message.subscription {
+            subscriptions::ActiveModel::builder()
+                .set_subscribed_at(subscription.subscribed_at)
+                .set_id(subscription.id)
+                .set_played(subscription.played)
+                .set_service(subscription.service)
+                .set_service_id(subscription.service_id)
+                .set_user_name(subscription.user_name)
+                .set_user_id(subscription.user_id)
+                .set_is_gift(subscription.is_gift)
+                .set_is_anonymous(subscription.is_anonymous)
+                .set_tier(subscription.tier)
+                .set_total(subscription.total)
+                .set_cumulative_total(subscription.cumulative_total)
+                .set_alert(subscription.alert)
+                .set_message(
+                    messages::ActiveModel::builder()
+                        .set_id(client_message.id)
+                        .set_type(client_message.r#type)
+                        .set_created_at(client_message.created_at),
+                )
+                .insert(&self.connection)
+                .await
+                .map_err(|e| log_and_wrap_error("Save subscription error", e))?;
+        }
+
+        Ok(())
+    }
+}

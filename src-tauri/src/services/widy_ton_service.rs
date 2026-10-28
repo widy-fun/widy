@@ -1,17 +1,18 @@
 use crate::{
     constants::USDT_MULTIPLICATION,
-    error::AppError::{self},
-    repositories::{DonationsRepository, ServicesRepository},
     services::{
-        DatabaseService, DeepLinkHandler, DeepLinkQueryParams, EventsService, WebSocketBroadcaster,
-        WidyNetwork,
+        DeepLinkHandler, DeepLinkQueryParams, EventsService, WebSocketBroadcaster, WidyNetwork,
     },
-    items_buffer::ItemsBuffer,
 };
 use base64::{Engine, engine::general_purpose};
 use chrono::Utc;
+use database::{DatabaseService, DonationsRepository, ServicesRepository};
 use entity::services::{ServiceAuth, ServiceType, WidyAuth};
-use model::events::{AppEvent, EventMessage};
+use model::error::AppError;
+use model::{
+    events::{AppEvent, EventMessage},
+    items_buffer::ItemsBuffer,
+};
 use serde::Deserialize;
 use std::{
     collections::HashMap,

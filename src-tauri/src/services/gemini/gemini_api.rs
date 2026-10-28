@@ -1,5 +1,6 @@
-use crate::{error::AppError, utils::send_request};
+use crate::utils::send_request;
 use async_trait::async_trait;
+use model::error::AppError;
 use model::gemini::{InteractionResponse, InteractionsBody, ModelsResponse};
 
 #[async_trait]

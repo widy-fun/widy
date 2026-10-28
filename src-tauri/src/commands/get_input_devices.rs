@@ -1,9 +1,6 @@
+use crate::services::assistant::{AssistantService, InputDeviceInfo};
+use model::error::AppError;
 use tauri::{AppHandle, State};
-
-use crate::{
-    error::AppError,
-    services::assistant::{AssistantService, InputDeviceInfo},
-};
 
 #[tauri::command]
 pub async fn get_input_devices(

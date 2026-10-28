@@ -3,33 +3,11 @@ use http::{
     HeaderMap, HeaderValue,
     header::{ACCEPT, ACCEPT_LANGUAGE, USER_AGENT},
 };
+use model::error::AppError;
 use scraper::{Html, Selector};
 use serde::Serialize;
 use serde_json::Value;
-use thiserror::Error;
 use url::Url;
-
-#[allow(dead_code)]
-#[derive(Debug, Error)]
-pub enum TikTokError {
-    #[error("HTTP request failed: {0}")]
-    Http(#[from] reqwest::Error),
-
-    #[error("invalid TikTok URL")]
-    InvalidUrl,
-
-    #[error("TikTok video id was not found")]
-    MissingVideoId,
-
-    #[error("TikTok metadata script was not found")]
-    MissingMetadata,
-
-    #[error("invalid TikTok JSON: {0}")]
-    Json(#[from] serde_json::Error),
-
-    #[error("video metadata is unavailable")]
-    MissingVideoData,
-}
 
 #[derive(Debug, Serialize)]
 pub struct TikTokInfo {
@@ -67,7 +45,7 @@ pub struct VideoFormat {
 pub trait TikTokExtractor {
     fn reqwest_client(&self) -> &reqwest::Client;
 
-    async fn get_tiktok_info(&self, input_url: &str) -> Result<TikTokInfo, TikTokError> {
+    async fn get_tiktok_info(&self, input_url: &str) -> Result<TikTokInfo, AppError> {
         let response = self
             .reqwest_client()
             .get(input_url)
@@ -81,7 +59,7 @@ pub trait TikTokExtractor {
 
         let video_id = Self::extract_video_id(&final_url)
             .or_else(|| Self::extract_video_id_from_text(input_url))
-            .ok_or(TikTokError::MissingVideoId)?;
+            .ok_or(AppError::Media("TikTok video id was not found"))?;
 
         let data = Self::extract_script_json(&html, "__UNIVERSAL_DATA_FOR_REHYDRATION__")?;
 
@@ -90,7 +68,7 @@ pub trait TikTokExtractor {
             .and_then(|v| v.get("webapp.video-detail"))
             .and_then(|v| v.get("itemInfo"))
             .and_then(|v| v.get("itemStruct"))
-            .ok_or(TikTokError::MissingVideoData)?;
+            .ok_or(AppError::Media("video metadata is unavailable"))?;
 
         Self::parse_video(&video_id, &final_url, item)
     }
@@ -147,27 +125,23 @@ pub trait TikTokExtractor {
             .map(str::to_owned)
     }
 
-    fn extract_script_json(html: &str, script_id: &str) -> Result<Value, TikTokError> {
+    fn extract_script_json(html: &str, script_id: &str) -> Result<Value, AppError> {
         let document = Html::parse_document(html);
 
         let selector = Selector::parse(&format!("script#{script_id}"))
-            .map_err(|_| TikTokError::MissingMetadata)?;
+            .map_err(|_| AppError::Media("TikTok metadata script was not found"))?;
 
         let script = document
             .select(&selector)
             .next()
-            .ok_or(TikTokError::MissingMetadata)?;
+            .ok_or(AppError::Media("TikTok metadata script was not found"))?;
 
         let json = script.text().collect::<String>();
 
         Ok(serde_json::from_str(&json)?)
     }
 
-    fn parse_video(
-        video_id: &str,
-        final_url: &Url,
-        item: &Value,
-    ) -> Result<TikTokInfo, TikTokError> {
+    fn parse_video(video_id: &str, final_url: &Url, item: &Value) -> Result<TikTokInfo, AppError> {
         let video = item.get("video").unwrap_or(&Value::Null);
         let author = item.get("author").unwrap_or(&Value::Null);
         let stats = item.get("stats").unwrap_or(&Value::Null);
@@ -324,7 +298,8 @@ mod tests {
 
     #[test]
     fn extracts_universal_data_script_json() {
-        let html = r#"<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__">{"video":{"id":"123"}}</script>"#;
+        let html =
+            r#"<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__">{"video":{"id":"123"}}</script>"#;
         let data = <TestExtractor as TikTokExtractor>::extract_script_json(
             html,
             "__UNIVERSAL_DATA_FOR_REHYDRATION__",
@@ -339,7 +314,7 @@ mod tests {
             "<html></html>",
             "__UNIVERSAL_DATA_FOR_REHYDRATION__",
         );
-        assert!(matches!(result, Err(TikTokError::MissingMetadata)));
+        assert!(matches!(result, Err(_)));
     }
 
     #[test]
@@ -375,8 +350,8 @@ mod tests {
             }
         });
 
-        let info = <TestExtractor as TikTokExtractor>::parse_video("123", &final_url, &item)
-            .unwrap();
+        let info =
+            <TestExtractor as TikTokExtractor>::parse_video("123", &final_url, &item).unwrap();
 
         assert_eq!(info.id, "123");
         assert_eq!(info.title.as_deref(), Some("A sample video"));

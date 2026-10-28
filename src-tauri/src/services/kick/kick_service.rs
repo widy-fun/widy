@@ -1,12 +1,19 @@
+use crate::{
+    services::{CommandsService, EventsService, kick::kick_api::KickApi},
+    utils::get_random_alert,
+};
 use async_trait::async_trait;
 use chrono::Utc;
+use database::{DatabaseService, RewardsRepository};
 use entity::{
     goals::GoalType, messages::MessageType, raids, redemptions::Redemption, rewards::Platform,
     services::ServiceType, settings::Currency, subscriptions::Subscription,
 };
 use futures::{SinkExt, StreamExt};
+use model::error::{AppError, log_and_wrap_error};
 use model::{
     events::{UnifiedBannedUser, UnifiedChatMessage},
+    items_buffer::ItemsBuffer,
     kick::{
         ChanelInfoResponse, ChatMessageData, Chatroom, Event, EventPayload,
         GiftedSubscriptionsData, KickAuthSession, KickPushMessage, KicksGiftedData,
@@ -23,14 +30,6 @@ use tokio_tungstenite::{
 };
 use tokio_util::sync::CancellationToken;
 use uuid::Uuid;
-
-use crate::{
-    error::AppError,
-    repositories::RewardsRepository,
-    services::{CommandsService, DatabaseService, EventsService, kick::kick_api::KickApi},
-    items_buffer::ItemsBuffer,
-    utils::{get_random_alert, log_and_wrap_error},
-};
 
 pub struct KickService {
     pub kick_client_id: String,
@@ -128,7 +127,6 @@ impl KickService {
 
                            match msg_result {
                                Ok(Message::Text(text)) => {
-                                println!("{text}");
                                     if let Ok(message) = serde_json::from_str::<KickPushMessage>(&text) {
                                         kick_service.handle_subscriptions(message.push.r#pub.data, &app).await;
                                     }

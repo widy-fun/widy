@@ -1,11 +1,8 @@
+use crate::services::fish_audio::fish_audio_api::FishAudioApi;
+use database::{DatabaseService, ServicesRepository};
 use entity::services::{ApiKeyAuth, ServiceAuth, ServiceType};
+use model::error::AppError;
 use tauri::{AppHandle, Manager};
-
-use crate::{
-    error::AppError,
-    repositories::ServicesRepository,
-    services::{DatabaseService, fish_audio::fish_audio_api::FishAudioApi},
-};
 
 pub struct FishAudioService {
     reqwest_client: reqwest::Client,

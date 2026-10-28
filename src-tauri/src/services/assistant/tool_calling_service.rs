@@ -5,9 +5,8 @@ use foundry_local_sdk::{
     ChatCompletionRequestUserMessage, ChatCompletionTools, ChatToolChoice, FinishReason, Model,
 };
 use futures::StreamExt;
+use model::error::AppError;
 use serde::{Deserialize, Serialize};
-
-use crate::error::AppError;
 
 #[derive(Default, Debug)]
 pub struct ToolCallState {

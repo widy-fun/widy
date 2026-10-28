@@ -1,12 +1,10 @@
 use crate::{
-    error::AppError,
-    items_buffer::ItemsBuffer,
-    repositories::{RedemptionsRepository, RewardsRepository},
-    services::{CommandsService, DatabaseService, EventsService, twitch::twitch_api::TwitchApi},
+    services::{CommandsService, EventsService, twitch::twitch_api::TwitchApi},
     utils::get_random_alert,
 };
 use async_trait::async_trait;
 use chrono::{SecondsFormat, Utc};
+use database::{DatabaseService, RedemptionsRepository, RewardsRepository};
 use entity::{
     followers::Follow,
     goals::GoalType,
@@ -19,8 +17,10 @@ use entity::{
     subscriptions::{self},
 };
 use futures::{SinkExt, StreamExt};
+use model::error::AppError;
 use model::{
     events::{UnifiedBannedUser, UnifiedChatMessage, UnifiedChatMessageDelete},
+    items_buffer::ItemsBuffer,
     twitch::{
         BadgeInfo, Event, EventPayload, NotificationMessage, Payload, StreamOnlineType,
         SubscriptionType, WebSocketInstruction,

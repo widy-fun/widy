@@ -1,4 +1,5 @@
-use crate::{error::AppError, services::StreamLabsService};
+use crate::services::StreamLabsService;
+use model::error::AppError;
 use tauri::{AppHandle, State};
 
 #[tauri::command]

@@ -5,26 +5,10 @@ use std::{
     sync::{Arc, Mutex},
 };
 
-use cpal::{
-    DeviceId, SampleFormat, Stream,
-    traits::{DeviceTrait, HostTrait, StreamTrait},
-};
-use entity::{
-    assistant_settings::{ToolCallingModel, ToolCallingProvider},
-    messages::MessageType,
-};
-use foundry_local_sdk::{FoundryLocalConfig, FoundryLocalManager, LogLevel, Model};
-use serde::{Deserialize, Serialize};
-use tauri::{AppHandle, Manager};
-use tokio::sync::mpsc::{self, Sender};
-use tokio_util::sync::CancellationToken;
-
 use crate::{
     constants::STREAMING_STT_MODELS,
-    error::AppError,
-    repositories::{AlertsRepository, AssistantSettingsRepository},
     services::{
-        ConfigService, DatabaseService,
+        ConfigService,
         assistant::{
             linear_resampler::LinearResampler,
             stt_service::{SttService, Transcribe},
@@ -38,8 +22,23 @@ use crate::{
         openai::OpenAIService,
         twitch::{TwitchService, twitch_api::TwitchApi},
     },
-    utils::{invoke_tool, log_and_wrap_error},
+    utils::invoke_tool,
 };
+use cpal::{
+    DeviceId, SampleFormat, Stream,
+    traits::{DeviceTrait, HostTrait, StreamTrait},
+};
+use database::{AlertsRepository, AssistantSettingsRepository, DatabaseService};
+use entity::{
+    assistant_settings::{ToolCallingModel, ToolCallingProvider},
+    messages::MessageType,
+};
+use foundry_local_sdk::{FoundryLocalConfig, FoundryLocalManager, LogLevel, Model};
+use model::error::{AppError, log_and_wrap_error};
+use serde::{Deserialize, Serialize};
+use tauri::{AppHandle, Manager};
+use tokio::sync::mpsc::{self, Sender};
+use tokio_util::sync::CancellationToken;
 
 const FRAME_SIZE: usize = 1280;
 

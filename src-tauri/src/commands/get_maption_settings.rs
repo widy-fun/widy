@@ -1,5 +1,6 @@
-use crate::{error::AppError, repositories::MaptionSettingsRepository, services::DatabaseService};
+use database::{DatabaseService, MaptionSettingsRepository};
 use entity::maption_settings::*;
+use model::error::AppError;
 use tauri::State;
 
 #[tauri::command]

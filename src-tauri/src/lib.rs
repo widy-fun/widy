@@ -1,19 +1,15 @@
 pub mod commands;
 pub mod constants;
-pub mod enums;
 pub mod helpers;
-pub mod repositories;
 pub mod services;
 pub mod utils;
 use std::sync::{Arc, Mutex};
-
-use crate::{commands::*, error::AppError, helpers::init_services};
+use crate::{commands::*, helpers::init_services};
 use tauri::Manager;
 use tauri_plugin_deep_link::DeepLinkExt;
 use utils::register_shortcuts;
-pub mod error;
-pub mod items_buffer;
 use serde::Serialize;
+use model::error::AppError;
 
 #[derive(Clone, Debug, Serialize)]
 

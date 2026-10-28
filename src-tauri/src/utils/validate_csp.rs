@@ -1,6 +1,5 @@
 use entity::widgets::Csp;
-
-use crate::error::AppError;
+use model::error::AppError;
 
 fn validate_csp_source(value: &str, is_dev: bool) -> Result<(), AppError> {
     if value.is_empty() {

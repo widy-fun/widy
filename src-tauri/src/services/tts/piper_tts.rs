@@ -5,18 +5,14 @@ use std::{
     sync::{Arc, Mutex},
 };
 
+use crate::constants::{BOS, EOS, PAD};
 use async_trait::async_trait;
 use entity::tts::{PiperVoice, PiperVoices, TtsModels, TtsSettings};
 use lingua::Language;
+use model::error::{AppError, log_and_wrap_error};
 use model::tts::{Piper, PiperModelConfig};
 use ndarray::{Array2, arr1};
 use ort::{session::Session, value::Tensor};
-
-use crate::{
-    constants::{BOS, EOS, PAD},
-    error::AppError,
-    utils::log_and_wrap_error,
-};
 
 #[async_trait]
 pub trait PiperTts: Send + Sync {

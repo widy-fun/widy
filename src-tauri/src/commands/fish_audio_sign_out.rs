@@ -1,6 +1,6 @@
+use crate::services::fish_audio::FishAudioService;
+use model::error::AppError;
 use tauri::{AppHandle, State};
-
-use crate::{error::AppError, services::fish_audio::FishAudioService};
 
 #[tauri::command]
 pub async fn fish_audio_sign_out(

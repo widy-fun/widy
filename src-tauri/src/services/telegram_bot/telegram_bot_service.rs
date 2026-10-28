@@ -1,14 +1,13 @@
-use std::sync::{Arc, Mutex};
-
+use database::{DatabaseService, ServicesRepository};
 use entity::services::{ServiceAuth, ServiceType};
+use model::error::AppError;
+use std::sync::{Arc, Mutex};
 use tauri::{AppHandle, Manager};
 use teloxide::{
     Bot,
     requests::Requester,
     types::{Message, MessageId},
 };
-
-use crate::{error::AppError, repositories::ServicesRepository, services::DatabaseService};
 
 pub struct TelegramBotService {
     bot: Arc<Mutex<Option<Bot>>>,

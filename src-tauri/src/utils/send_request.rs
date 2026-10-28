@@ -1,6 +1,5 @@
+use model::error::{AppError, log_and_wrap_error};
 use serde::de::DeserializeOwned;
-
-use crate::{error::AppError, utils::log_and_wrap_error};
 
 pub async fn send_request<T: DeserializeOwned>(
     request: reqwest::RequestBuilder,

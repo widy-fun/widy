@@ -1,10 +1,10 @@
+use crate::services::ConfigService;
 use entity::widgets::Manifest;
 use futures::StreamExt;
+use model::error::{AppError, log_and_wrap_error};
 use tauri::State;
 use tokio::{fs, io::AsyncWriteExt};
 use uuid::Uuid;
-
-use crate::{error::AppError, services::ConfigService, utils::log_and_wrap_error};
 
 pub async fn download_widget(
     reqwest_client: &State<'_, reqwest::Client>,

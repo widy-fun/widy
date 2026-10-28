@@ -1,7 +1,10 @@
+use crate::utils::send_request;
 use async_trait::async_trait;
 use base64::{Engine, engine::general_purpose::URL_SAFE_NO_PAD};
+use database::{DatabaseService, RewardsRepository, ServicesRepository};
 use entity::services::{KickAuth, ServiceAuth, ServiceType};
 use http::StatusCode;
+use model::error::AppError;
 use model::{
     GrantType,
     kick::{
@@ -27,13 +30,6 @@ use tauri::{AppHandle, Manager};
 use tauri_plugin_opener::OpenerExt;
 use tokio_util::sync::CancellationToken;
 use uuid::Uuid;
-
-use crate::{
-    error::AppError,
-    repositories::{RewardsRepository, ServicesRepository},
-    services::DatabaseService,
-    utils::send_request,
-};
 
 #[async_trait]
 pub trait KickApi: Send + Sync {

@@ -1,7 +1,7 @@
 use async_trait::async_trait;
+use model::error::AppError;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use thiserror::Error;
 use url::Url;
 
 const GQL_URL: &str = "https://gql.twitch.tv/gql";
@@ -11,24 +11,6 @@ const TWITCH_CLIENT_ID: &str = "ue6666qo983tsx6so1t0vnawi233wa";
 
 const SHARE_CLIP_RENDER_STATUS_HASH: &str =
     "2db6a3b20eabf510bd3cf465ae2408834b59eb6b8af89ca73ab1486cacecfb63";
-
-#[derive(Debug, Error)]
-pub enum TwitchClipError {
-    #[error("request failed: {0}")]
-    Request(#[from] reqwest::Error),
-
-    #[error("invalid Twitch clip URL")]
-    InvalidUrl,
-
-    #[error("clip slug not found")]
-    MissingSlug,
-
-    #[error("clip is unavailable")]
-    Unavailable,
-
-    #[error("invalid response: {0}")]
-    Response(String),
-}
 
 #[derive(Debug, Serialize)]
 pub struct TwitchClipInfo {
@@ -133,10 +115,7 @@ struct VideoQuality {
 pub trait TwitchClipExtractor {
     fn reqwest_client(&self) -> &reqwest::Client;
 
-    async fn get_twitch_clip_info(
-        &self,
-        input_url: &str,
-    ) -> Result<TwitchClipInfo, TwitchClipError> {
+    async fn get_twitch_clip_info(&self, input_url: &str) -> Result<TwitchClipInfo, AppError> {
         let slug = Self::extract_slug(input_url)?;
 
         let request = json!({
@@ -167,7 +146,7 @@ pub trait TwitchClipExtractor {
         let clip = response
             .data
             .and_then(|data| data.clip)
-            .ok_or(TwitchClipError::Unavailable)?;
+            .ok_or(AppError::Media("clip is unavailable"))?;
 
         let token = clip.playback_access_token;
 
@@ -225,17 +204,17 @@ pub trait TwitchClipExtractor {
         })
     }
 
-    fn extract_slug(input: &str) -> Result<String, TwitchClipError> {
-        let url = Url::parse(input).map_err(|_| TwitchClipError::InvalidUrl)?;
+    fn extract_slug(input: &str) -> Result<String, AppError> {
+        let url = Url::parse(input).map_err(|_| AppError::Media("invalid Twitch clip URL"))?;
 
         let host = url
             .host_str()
-            .ok_or(TwitchClipError::InvalidUrl)?
+            .ok_or(AppError::Media("invalid Twitch clip URL"))?
             .to_ascii_lowercase();
 
         let segments: Vec<_> = url
             .path_segments()
-            .ok_or(TwitchClipError::InvalidUrl)?
+            .ok_or(AppError::Media("invalid Twitch clip URL"))?
             .collect();
 
         // https://clips.twitch.tv/ClipSlug
@@ -255,7 +234,7 @@ pub trait TwitchClipExtractor {
                 return Ok(slug.into_owned());
             }
 
-            return Err(TwitchClipError::MissingSlug);
+            return Err(AppError::Media("clip slug not found"));
         }
 
         // https://www.twitch.tv/channel/clip/ClipSlug
@@ -264,7 +243,7 @@ pub trait TwitchClipExtractor {
             .find(|parts| parts[0].eq_ignore_ascii_case("clip"))
             .map(|parts| parts[1].to_owned())
             .filter(|slug| !slug.is_empty())
-            .ok_or(TwitchClipError::MissingSlug)
+            .ok_or(AppError::Media("clip slug not found"))
     }
 }
 
@@ -280,7 +259,7 @@ mod tests {
         }
     }
 
-    fn extract_slug(input: &str) -> Result<String, TwitchClipError> {
+    fn extract_slug(input: &str) -> Result<String, AppError> {
         <TestExtractor as TwitchClipExtractor>::extract_slug(input)
     }
 
@@ -310,17 +289,11 @@ mod tests {
 
     #[test]
     fn rejects_invalid_url() {
-        assert!(matches!(
-            extract_slug("not a URL"),
-            Err(TwitchClipError::InvalidUrl)
-        ));
+        assert!(matches!(extract_slug("not a URL"), Err(_)));
     }
 
     #[test]
     fn rejects_url_without_slug() {
-        assert!(matches!(
-            extract_slug("https://clips.twitch.tv/"),
-            Err(TwitchClipError::MissingSlug)
-        ));
+        assert!(matches!(extract_slug("https://clips.twitch.tv/"), Err(_)));
     }
 }

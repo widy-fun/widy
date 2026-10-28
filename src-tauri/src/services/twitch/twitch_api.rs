@@ -6,8 +6,11 @@ use std::{
     time::{SystemTime, UNIX_EPOCH},
 };
 
+use crate::{load_env, utils::send_request};
 use async_trait::async_trait;
+use database::{DatabaseService, RewardsRepository, ServicesRepository};
 use entity::services::{ServiceAuth, ServiceType, TwitchAuth};
+use model::error::AppError;
 use model::twitch::{
     AddTwitchRewardBody, BadgeInfoResponse, BanUserBody, BanUserData, BannedUser,
     BannedUsersResponse, ChannelBanCondition, ChatMessageCondition, ChattersResponse,
@@ -23,14 +26,6 @@ use serde::de::DeserializeOwned;
 use tauri::{AppHandle, Manager};
 use tokio_util::sync::CancellationToken;
 use uuid::Uuid;
-
-use crate::{
-    error::AppError,
-    load_env,
-    repositories::{RewardsRepository, ServicesRepository},
-    services::DatabaseService,
-    utils::send_request,
-};
 
 #[async_trait]
 pub trait TwitchApi: Send + Sync {

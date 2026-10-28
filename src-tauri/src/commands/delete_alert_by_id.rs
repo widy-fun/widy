@@ -1,7 +1,7 @@
+use database::{AlertsRepository, DatabaseService};
+use model::error::AppError;
 use tauri::State;
 use uuid::Uuid;
-
-use crate::{error::AppError, repositories::AlertsRepository, services::DatabaseService};
 
 #[tauri::command]
 pub async fn delete_alert_by_id(

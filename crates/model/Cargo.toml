@@ -1,0 +1,22 @@
+[package]
+name = "model"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+entity = { workspace = true }
+serde = { workspace = true }
+serde_json =  { workspace = true }
+ort =  { workspace = true }
+foundry-local-sdk =  { workspace = true }
+ndarray =  { workspace = true }
+teloxide =  { workspace = true }
+thiserror =  { workspace = true }
+tokio =  { workspace = true }
+xcap =  { workspace = true }
+zip =  { workspace = true }
+cpal =  { workspace = true }
+anchor-client =  { workspace = true }
+sea-orm =  { workspace = true }
+reqwest =  { workspace = true }
+log =  { workspace = true }

@@ -1,9 +1,6 @@
+use crate::services::kick::{KickApi, KickBotService};
+use model::error::AppError;
 use tauri::{AppHandle, State};
-
-use crate::{
-    error::AppError,
-    services::kick::{KickApi, KickBotService},
-};
 
 #[tauri::command]
 pub async fn kick_bot_authorize(

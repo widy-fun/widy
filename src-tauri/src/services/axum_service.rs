@@ -1,12 +1,6 @@
 use crate::constants::HTTP_WIDGET_PORT;
-use crate::error::AppError;
-use crate::repositories::{
-    AlertsRepository, AucFighterSettingsRepository, DonationsRepository, GoalsRepository,
-    MediaSettingsRepository, MessagesRepository, NsfwRepository, ServicesRepository,
-    SettingsRepository, WidgetsRepository,
-};
 use crate::services::kick::{KickApi, KickBotService, KickService};
-use crate::services::{ConfigService, DatabaseService, WebSocketBroadcaster};
+use crate::services::{ConfigService, WebSocketBroadcaster};
 use crate::utils::validate_csp;
 use axum::Json;
 use axum::extract::ws::{Message, WebSocket};
@@ -20,6 +14,11 @@ use axum::{
     extract::{State, WebSocketUpgrade},
     response::Response,
     routing::get,
+};
+use database::{
+    AlertsRepository, AucFighterSettingsRepository, DatabaseService, DonationsRepository,
+    GoalsRepository, MediaSettingsRepository, MessagesRepository, NsfwRepository,
+    ServicesRepository, SettingsRepository, WidgetsRepository,
 };
 use entity::messages::ClientMessage;
 use entity::services::{ServiceAuth, ServiceType};
@@ -37,6 +36,7 @@ use tower_http::cors::CorsLayer;
 use tower_http::services::{ServeDir, ServeFile};
 use uuid::Uuid;
 type Tx = mpsc::UnboundedSender<Message>;
+use model::error::AppError;
 
 #[derive(Clone)]
 struct AxumState {

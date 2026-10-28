@@ -1,10 +1,7 @@
+use crate::services::twitch::{TwitchApi, TwitchBotService};
+use model::error::AppError;
 use model::twitch::TwitchDeviceCodeResponse;
 use tauri::State;
-
-use crate::{
-    error::AppError,
-    services::twitch::{TwitchApi, TwitchBotService},
-};
 
 #[tauri::command]
 pub async fn get_twitch_bot_device_code(

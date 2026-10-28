@@ -1,8 +1,6 @@
-use crate::{
-    error::AppError,
-    services::tts::{PiperTts, TtsService},
-};
+use crate::services::tts::{PiperTts, TtsService};
 use entity::tts::PiperVoice;
+use model::error::AppError;
 use tauri::State;
 
 #[tauri::command]

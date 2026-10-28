@@ -1,17 +1,13 @@
+use crate::{services::EventsService, utils::send_request};
+use database::{DatabaseService, ServicesRepository};
 use entity::services::{DestreamAuth, ServiceAuth, ServiceType};
 use futures::{SinkExt, StreamExt};
 use model::destream::{DestreamEvent, Donation};
+use model::error::AppError;
 use std::sync::{Arc, Mutex};
 use tauri::{AppHandle, Manager};
 use tokio_tungstenite::{connect_async, tungstenite::Message};
 use tokio_util::sync::CancellationToken;
-
-use crate::{
-    error::AppError,
-    repositories::ServicesRepository,
-    services::{DatabaseService, EventsService},
-    utils::send_request,
-};
 
 pub struct DestreamService {
     cancellation_token: Arc<Mutex<CancellationToken>>,

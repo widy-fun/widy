@@ -1,6 +1,6 @@
+use crate::services::DonationAlertsService;
+use model::error::AppError;
 use tauri::{AppHandle, State};
-
-use crate::{error::AppError, services::DonationAlertsService};
 
 #[tauri::command]
 pub async fn donation_alerts_sign_out(

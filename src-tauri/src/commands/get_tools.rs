@@ -1,6 +1,5 @@
 use entity::assistant_settings::Tool;
-
-use crate::error::AppError;
+use model::error::AppError;
 
 #[tauri::command]
 pub async fn get_tools() -> Result<Vec<Tool>, AppError> {

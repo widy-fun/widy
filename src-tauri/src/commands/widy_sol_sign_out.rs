@@ -1,8 +1,7 @@
+use crate::services::WidySolService;
+use model::error::AppError;
 use std::sync::Arc;
-
 use tauri::{AppHandle, State};
-
-use crate::{error::AppError, services::WidySolService};
 
 #[tauri::command]
 pub async fn widy_sol_sign_out(

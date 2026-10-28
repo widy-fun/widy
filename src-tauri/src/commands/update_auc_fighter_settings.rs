@@ -1,9 +1,7 @@
-use crate::{
-    error::AppError,
-    repositories::AucFighterSettingsRepository,
-    services::{DatabaseService, WebSocketBroadcaster},
-};
+use crate::services::WebSocketBroadcaster;
+use database::{AucFighterSettingsRepository, DatabaseService};
 use entity::auc_fighter_settings::*;
+use model::error::AppError;
 use model::events::{AppEvent, EventMessage};
 use tauri::{AppHandle, Manager, State};
 

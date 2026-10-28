@@ -5,7 +5,8 @@ use std::sync::{Arc, Mutex, MutexGuard, atomic::AtomicU64};
 use tauri::AppHandle;
 use tokio_util::sync::CancellationToken;
 
-use crate::{error::AppError, services::kick::kick_api::KickApi};
+use crate::services::kick::kick_api::KickApi;
+use model::error::AppError;
 
 pub struct KickBotService {
     pub kick_bot_client_id: String,

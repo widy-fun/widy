@@ -1,19 +1,15 @@
+use crate::services::EventsService;
+use database::{DatabaseService, ServicesRepository};
 use entity::{
     services::{self, ServiceAuth, ServiceType, StreamLabsAuth},
     settings::Currency,
 };
 use futures::FutureExt;
+use model::error::{AppError, log_and_wrap_error};
 use rust_socketio::{Payload, TransportType, asynchronous::ClientBuilder};
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
 use tokio::sync::broadcast;
-
-use crate::{
-    error::AppError,
-    repositories::ServicesRepository,
-    services::{DatabaseService, EventsService},
-    utils::log_and_wrap_error,
-};
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 struct DonationMessage {

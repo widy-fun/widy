@@ -1,13 +1,9 @@
+use crate::services::ConfigService;
+use database::{DatabaseService, WidgetsRepository};
 use entity::widgets;
+use model::error::{AppError, log_and_wrap_error};
 use tauri::State;
 use tokio::fs;
-
-use crate::{
-    error::AppError,
-    repositories::WidgetsRepository,
-    services::{ConfigService, DatabaseService},
-    utils::log_and_wrap_error,
-};
 
 #[tauri::command]
 pub async fn delete_widget(

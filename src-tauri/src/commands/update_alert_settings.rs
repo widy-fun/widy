@@ -1,12 +1,9 @@
+use crate::services::WebSocketBroadcaster;
+use database::{AlertsRepository, DatabaseService};
 use entity::alerts::*;
+use model::error::AppError;
 use model::events::{AppEvent, EventMessage};
 use tauri::State;
-
-use crate::{
-    error::AppError,
-    repositories::AlertsRepository,
-    services::{DatabaseService, WebSocketBroadcaster},
-};
 
 #[tauri::command]
 pub async fn update_alert_settings(

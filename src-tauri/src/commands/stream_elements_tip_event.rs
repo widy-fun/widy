@@ -1,9 +1,6 @@
+use crate::services::{StreamElementsEvent, StreamElementsService, StreamElementsTip};
+use model::error::AppError;
 use tauri::{AppHandle, State};
-
-use crate::{
-    error::AppError,
-    services::{StreamElementsEvent, StreamElementsService, StreamElementsTip},
-};
 
 #[tauri::command]
 pub async fn stream_elements_tip_event(

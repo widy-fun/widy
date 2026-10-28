@@ -2,12 +2,11 @@ use axum::{
     body::Bytes,
     extract::ws::{Message, Utf8Bytes},
 };
+use model::error::AppError;
 use model::events::EventMessage;
 use std::{collections::HashMap, sync::Mutex};
 use tokio::sync::mpsc;
 use uuid::Uuid;
-
-use crate::error::AppError;
 
 type Tx = mpsc::UnboundedSender<Message>;
 

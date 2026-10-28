@@ -1,6 +1,6 @@
+use database::{AlertsRepository, DatabaseService};
+use model::error::AppError;
 use tauri::{AppHandle, Manager};
-
-use crate::{error::AppError, repositories::AlertsRepository, services::DatabaseService};
 
 pub async fn get_alert_by_amount(
     app: &AppHandle,

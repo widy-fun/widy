@@ -1,7 +1,5 @@
-use crate::{
-    error::AppError,
-    services::{WidyNetwork, WidySolService, WidyTonService},
-};
+use crate::services::{WidyNetwork, WidySolService, WidyTonService};
+use model::error::AppError;
 use std::sync::Arc;
 use tauri::State;
 

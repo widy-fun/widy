@@ -1,8 +1,8 @@
+use crate::services::EventsService;
 use entity::{services::ServiceType, settings::Currency};
+use model::error::AppError;
 use serde::{Deserialize, Serialize};
 use tauri::AppHandle;
-
-use crate::{error::AppError, services::EventsService};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct StreamElementsEvent<T> {

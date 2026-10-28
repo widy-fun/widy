@@ -1,6 +1,5 @@
+use model::error::AppError;
 use tauri::{AppHandle, Manager, path::BaseDirectory};
-
-use crate::error::AppError;
 
 pub fn resolve_path(
     app: &AppHandle,

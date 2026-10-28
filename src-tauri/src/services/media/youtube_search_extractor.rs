@@ -1,24 +1,8 @@
-use std::collections::HashSet;
-
 use async_trait::async_trait;
+use model::error::AppError;
 use serde_json::Value;
-use thiserror::Error;
+use std::collections::HashSet;
 use url::Url;
-
-#[derive(Debug, Error)]
-pub enum YoutubeSearchError {
-    #[error("HTTP request failed: {0}")]
-    Request(#[from] reqwest::Error),
-
-    #[error("invalid search response")]
-    InvalidResponse,
-
-    #[error("search JSON was not found")]
-    MissingSearchData,
-
-    #[error("invalid JSON: {0}")]
-    Json(#[from] serde_json::Error),
-}
 
 #[derive(Debug, Clone)]
 pub struct YoutubeSearchInfo {
@@ -37,13 +21,9 @@ pub struct YoutubeSearchInfo {
 pub trait YoutubeSearchExtractor {
     fn reqwest_client(&self) -> &reqwest::Client;
 
-    async fn search(
-        &self,
-        query: &str,
-        limit: usize,
-    ) -> Result<Vec<YoutubeSearchInfo>, YoutubeSearchError> {
+    async fn search(&self, query: &str, limit: usize) -> Result<Vec<YoutubeSearchInfo>, AppError> {
         let mut url = Url::parse("https://www.youtube.com/results")
-            .map_err(|_| YoutubeSearchError::InvalidResponse)?;
+            .map_err(|_| AppError::Media("invalid search response"))?;
 
         url.query_pairs_mut().append_pair("search_query", query);
 
@@ -72,14 +52,11 @@ pub trait YoutubeSearchExtractor {
         Ok(results)
     }
 
-    async fn search_youtube_one(
-        &self,
-        query: &str,
-    ) -> Result<Option<YoutubeSearchInfo>, YoutubeSearchError> {
+    async fn search_youtube_one(&self, query: &str) -> Result<Option<YoutubeSearchInfo>, AppError> {
         Ok(self.search(query, 1).await?.into_iter().next())
     }
 
-    fn extract_initial_data(html: &str) -> Result<Value, YoutubeSearchError> {
+    fn extract_initial_data(html: &str) -> Result<Value, AppError> {
         let markers = [
             "var ytInitialData = ",
             "ytInitialData = ",
@@ -108,7 +85,7 @@ pub trait YoutubeSearchExtractor {
             }
         }
 
-        Err(YoutubeSearchError::MissingSearchData)
+        Err(AppError::Media("search JSON was not found"))
     }
 
     fn find_json_end(input: &str, start: usize) -> Option<usize> {
@@ -363,8 +340,7 @@ mod tests {
     #[test]
     fn extracts_initial_data_with_nested_json() {
         let html = r#"<script>var ytInitialData = {"contents":{"nested":{"text":"brace } quote \""}}};</script>"#;
-        let data =
-            <TestExtractor as YoutubeSearchExtractor>::extract_initial_data(html).unwrap();
+        let data = <TestExtractor as YoutubeSearchExtractor>::extract_initial_data(html).unwrap();
         assert_eq!(data["contents"]["nested"]["text"], "brace } quote \"");
     }
 
@@ -372,10 +348,7 @@ mod tests {
     fn returns_missing_search_data_without_marker() {
         let result =
             <TestExtractor as YoutubeSearchExtractor>::extract_initial_data("<html></html>");
-        assert!(matches!(
-            result,
-            Err(YoutubeSearchError::MissingSearchData)
-        ));
+        assert!(matches!(result, Err(_)));
     }
 
     #[test]
@@ -402,7 +375,10 @@ mod tests {
         assert_eq!(result.duration, Some(125.0));
         assert_eq!(result.view_count, Some(1200));
         assert_eq!(result.published_time.as_deref(), Some("2 days ago"));
-        assert_eq!(result.thumbnail.as_deref(), Some("https://img.example/high.jpg"));
+        assert_eq!(
+            result.thumbnail.as_deref(),
+            Some("https://img.example/high.jpg")
+        );
         assert!(!result.is_short);
     }
 

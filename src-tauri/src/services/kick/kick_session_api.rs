@@ -1,10 +1,9 @@
-use crate::{
-    error::AppError, repositories::ServicesRepository, services::DatabaseService,
-    utils::send_request,
-};
+use crate::utils::send_request;
 use async_trait::async_trait;
 use chrono::Utc;
+use database::{DatabaseService, ServicesRepository};
 use entity::services::{KickSessionToken, ServiceAuth, ServiceType};
+use model::error::AppError;
 use model::kick::{
     ActiveChattersResponse, BanInfo, ChanelInfoResponse, ChatCommandBody, PinMessageBody,
     SendMessageBody, SendMessageResponse, UpdateChatSettingsBody, UserInfo,

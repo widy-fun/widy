@@ -1,9 +1,9 @@
 use std::path::PathBuf;
 
+use crate::constants::TARGET_SR;
+use model::error::{AppError, log_and_wrap_error};
 use ndarray::{Array1, Array3};
 use ort::{session::Session, value::TensorRef};
-
-use crate::{constants::TARGET_SR, error::AppError, utils::log_and_wrap_error};
 
 const VAD_FRAME: usize = 512;
 

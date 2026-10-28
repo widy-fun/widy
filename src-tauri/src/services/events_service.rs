@@ -1,4 +1,16 @@
+use crate::{
+    services::{
+        CommandAuctionAction, ExchangeRatesService, WebSocketBroadcaster, media::MediaService,
+        tts::TtsService,
+    },
+    utils::{get_alert_by_amount, remove_black_listed_words, remove_links, replace_variables},
+};
 use chrono::Utc;
+use database::{
+    AssistantActionsRepository, CommandsActionsRepository, DatabaseService, DonationsRepository,
+    FollowsRepository, GoalsRepository, RaidsRepository, RedemptionsRepository, SettingsRepository,
+    SubscriptionsRepository, VariablesRepository,
+};
 use entity::{
     alerts::Alert,
     assistant_actions::AssistantAction,
@@ -16,26 +28,13 @@ use entity::{
     tts::{Tts, TtsSettings},
     variables::Variable,
 };
+use model::error::AppError;
 use model::events::{
     AppEvent, EventMessage, UnifiedBannedUser, UnifiedChatMessage, UnifiedChatMessageDelete,
 };
 use tauri::{AppHandle, Manager};
 use tokio::sync::Mutex;
 use uuid::Uuid;
-
-use crate::{
-    error::AppError,
-    repositories::{
-        AssistantActionsRepository, CommandsActionsRepository, DonationsRepository,
-        FollowsRepository, GoalsRepository, RaidsRepository, RedemptionsRepository,
-        SettingsRepository, SubscriptionsRepository, VariablesRepository,
-    },
-    services::{
-        CommandAuctionAction, DatabaseService, ExchangeRatesService, WebSocketBroadcaster,
-        media::MediaService, tts::TtsService,
-    },
-    utils::{get_alert_by_amount, remove_black_listed_words, remove_links, replace_variables},
-};
 
 pub struct EventsService;
 

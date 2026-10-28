@@ -1,5 +1,6 @@
-use crate::{error::AppError, repositories::MediaSettingsRepository, services::DatabaseService};
+use database::{DatabaseService, MediaSettingsRepository};
 use entity::media_settings::*;
+use model::error::AppError;
 use tauri::State;
 
 #[tauri::command]

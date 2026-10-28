@@ -1,6 +1,6 @@
+use crate::services::StreamLabsService;
+use model::error::AppError;
 use tauri::{AppHandle, State};
-
-use crate::{error::AppError, services::StreamLabsService};
 
 #[tauri::command]
 pub async fn stream_labs_sign_out(

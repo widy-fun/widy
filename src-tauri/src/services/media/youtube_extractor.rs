@@ -1,28 +1,7 @@
 use async_trait::async_trait;
+use model::error::AppError;
 use serde_json::Value;
-use thiserror::Error;
 use url::Url;
-
-#[derive(Debug, Error)]
-pub enum YoutubeError {
-    #[error("HTTP request failed: {0}")]
-    Request(#[from] reqwest::Error),
-
-    #[error("invalid YouTube URL")]
-    InvalidUrl,
-
-    #[error("video id was not found")]
-    MissingVideoId,
-
-    #[error("player response was not found")]
-    MissingPlayerResponse,
-
-    #[error("video is unavailable")]
-    Unavailable,
-
-    #[error("invalid JSON: {0}")]
-    Json(#[from] serde_json::Error),
-}
 
 #[derive(Debug)]
 #[allow(dead_code)]
@@ -60,10 +39,7 @@ pub struct YoutubeFormat {
 pub trait YoutubeExtractor {
     fn reqwest_client(&self) -> &reqwest::Client;
 
-    async fn get_youtube_video_info(
-        &self,
-        input_url: &str,
-    ) -> Result<YoutubeVideoInfo, YoutubeError> {
+    async fn get_youtube_video_info(&self, input_url: &str) -> Result<YoutubeVideoInfo, AppError> {
         let video_id = Self::extract_video_id(input_url)?;
 
         let canonical_url = format!("https://www.youtube.com/watch?v={video_id}");
@@ -88,12 +64,12 @@ pub trait YoutubeExtractor {
         Self::parse_player_response(&video_id, &canonical_url, &player_response)
     }
 
-    fn extract_video_id(input: &str) -> Result<String, YoutubeError> {
-        let url = Url::parse(input).map_err(|_| YoutubeError::InvalidUrl)?;
+    fn extract_video_id(input: &str) -> Result<String, AppError> {
+        let url = Url::parse(input).map_err(|_| AppError::Media("invalid YouTube URL"))?;
 
         let host = url
             .host_str()
-            .ok_or(YoutubeError::InvalidUrl)?
+            .ok_or(AppError::Media("invalid YouTube URL"))?
             .to_ascii_lowercase();
 
         let segments: Vec<_> = url.path_segments().map(|v| v.collect()).unwrap_or_default();
@@ -118,10 +94,10 @@ pub trait YoutubeExtractor {
         };
 
         id.filter(|id| !id.is_empty() && id.len() <= 20)
-            .ok_or(YoutubeError::MissingVideoId)
+            .ok_or(AppError::Media("video id was not found"))
     }
 
-    fn extract_player_response(html: &str) -> Result<Value, YoutubeError> {
+    fn extract_player_response(html: &str) -> Result<Value, AppError> {
         let markers = [
             "ytInitialPlayerResponse = ",
             "ytInitialPlayerResponse=",
@@ -146,7 +122,7 @@ pub trait YoutubeExtractor {
             }
         }
 
-        Err(YoutubeError::MissingPlayerResponse)
+        Err(AppError::Media("player response was not found"))
     }
 
     fn find_json_end(input: &str, start: usize) -> Option<usize> {
@@ -191,7 +167,7 @@ pub trait YoutubeExtractor {
         video_id: &str,
         page_url: &str,
         response: &Value,
-    ) -> Result<YoutubeVideoInfo, YoutubeError> {
+    ) -> Result<YoutubeVideoInfo, AppError> {
         let playability = response
             .get("playabilityStatus")
             .and_then(|v| v.get("status"))
@@ -199,12 +175,12 @@ pub trait YoutubeExtractor {
             .unwrap_or("OK");
 
         if playability != "OK" {
-            return Err(YoutubeError::Unavailable);
+            return Err(AppError::Media("video is unavailable"));
         }
 
         let details = response
             .get("videoDetails")
-            .ok_or(YoutubeError::Unavailable)?;
+            .ok_or(AppError::Media("video is unavailable"))?;
 
         let streaming = response
             .get("streamingData")
@@ -346,7 +322,7 @@ mod tests {
         }
     }
 
-    fn extract_video_id(input: &str) -> Result<String, YoutubeError> {
+    fn extract_video_id(input: &str) -> Result<String, AppError> {
         <TestExtractor as YoutubeExtractor>::extract_video_id(input)
     }
 
@@ -380,32 +356,25 @@ mod tests {
 
     #[test]
     fn rejects_invalid_and_missing_video_ids() {
-        assert!(matches!(
-            extract_video_id("not a URL"),
-            Err(YoutubeError::InvalidUrl)
-        ));
+        assert!(matches!(extract_video_id("not a URL"), Err(_)));
         assert!(matches!(
             extract_video_id("https://www.youtube.com/"),
-            Err(YoutubeError::MissingVideoId)
+            Err(_)
         ));
     }
 
     #[test]
     fn extracts_player_response_with_nested_json_strings() {
         let html = r#"<script>ytInitialPlayerResponse = {"videoDetails":{"title":"brace } and quote \"","nested":{"value":1}}};</script>"#;
-        let response =
-            <TestExtractor as YoutubeExtractor>::extract_player_response(html).unwrap();
-        assert_eq!(
-            response["videoDetails"]["title"],
-            "brace } and quote \""
-        );
+        let response = <TestExtractor as YoutubeExtractor>::extract_player_response(html).unwrap();
+        assert_eq!(response["videoDetails"]["title"], "brace } and quote \"");
         assert_eq!(response["videoDetails"]["nested"]["value"], 1);
     }
 
     #[test]
     fn returns_missing_player_response_when_marker_is_absent() {
         let result = <TestExtractor as YoutubeExtractor>::extract_player_response("<html></html>");
-        assert!(matches!(result, Err(YoutubeError::MissingPlayerResponse)));
+        assert!(matches!(result, Err(_)));
     }
 
     #[test]
@@ -459,7 +428,10 @@ mod tests {
         assert_eq!(info.duration, Some(120.0));
         assert_eq!(info.view_count, Some(9876));
         assert_eq!(info.upload_date.as_deref(), Some("2024-01-02"));
-        assert_eq!(info.thumbnail.as_deref(), Some("https://img.example/high.jpg"));
+        assert_eq!(
+            info.thumbnail.as_deref(),
+            Some("https://img.example/high.jpg")
+        );
         assert!(info.is_live);
         assert_eq!(info.formats.len(), 1);
         assert_eq!(info.formats[0].mime_type.as_deref(), Some("video/mp4"));
@@ -475,6 +447,6 @@ mod tests {
             "https://www.youtube.com/watch?v=video123",
             &response,
         );
-        assert!(matches!(result, Err(YoutubeError::Unavailable)));
+        assert!(matches!(result, Err(_)));
     }
 }

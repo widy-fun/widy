@@ -1,11 +1,11 @@
 use crate::services::fish_audio::FishAudioApi;
 use crate::{
-    error::AppError,
     services::{fish_audio::FishAudioService, tts::piper_tts::PiperTts},
-    utils::{log_and_wrap_error, save_audio_to_wav_file},
+    utils::save_audio_to_wav_file,
 };
 use entity::tts::{TtsModels, TtsSettings, TtsType};
 use lingua::{Language, LanguageDetector};
+use model::error::{AppError, log_and_wrap_error};
 use model::{fish_audio::TtsRequestBody, tts::Piper};
 use msedge_tts::{
     tts::{SpeechConfig, client::connect},

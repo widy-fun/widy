@@ -1,9 +1,6 @@
+use crate::services::kick::{KickApi, KickService};
+use model::error::AppError;
 use tauri::{AppHandle, State};
-
-use crate::{
-    error::AppError,
-    services::kick::{KickApi, KickService},
-};
 
 #[tauri::command]
 pub async fn kick_add_custom_reward(

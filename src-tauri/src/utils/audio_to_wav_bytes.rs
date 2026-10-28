@@ -1,8 +1,6 @@
-use std::io::Cursor;
-
 use hound::{SampleFormat, WavSpec, WavWriter};
-
-use crate::error::AppError;
+use model::error::AppError;
+use std::io::Cursor;
 
 pub fn audio_to_wav_bytes(audio: &[f32], sample_rate: u32) -> Result<Vec<u8>, AppError> {
     let spec = WavSpec {

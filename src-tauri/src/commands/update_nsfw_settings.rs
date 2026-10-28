@@ -1,9 +1,7 @@
-use crate::{
-    error::AppError,
-    repositories::NsfwRepository,
-    services::{DatabaseService, WebSocketBroadcaster},
-};
+use crate::services::WebSocketBroadcaster;
+use database::{DatabaseService, NsfwRepository};
 use entity::nsfw_settings::*;
+use model::error::AppError;
 use model::events::{AppEvent, EventMessage};
 use tauri::{AppHandle, Manager, State};
 

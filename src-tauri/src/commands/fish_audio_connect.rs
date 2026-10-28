@@ -1,4 +1,5 @@
-use crate::{error::AppError, services::fish_audio::FishAudioService};
+use crate::services::fish_audio::FishAudioService;
+use model::error::AppError;
 use tauri::{AppHandle, State};
 
 #[tauri::command]

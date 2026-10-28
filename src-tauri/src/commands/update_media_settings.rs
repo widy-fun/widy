@@ -1,12 +1,9 @@
+use crate::services::WebSocketBroadcaster;
+use database::{DatabaseService, MediaSettingsRepository};
 use entity::media_settings::*;
+use model::error::AppError;
 use model::events::{AppEvent, EventMessage};
 use tauri::{AppHandle, Manager, State};
-
-use crate::{
-    error::AppError,
-    repositories::MediaSettingsRepository,
-    services::{DatabaseService, WebSocketBroadcaster},
-};
 
 #[tauri::command]
 pub async fn update_media_settings(

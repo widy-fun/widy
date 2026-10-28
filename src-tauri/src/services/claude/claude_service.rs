@@ -1,19 +1,13 @@
-use std::collections::HashMap;
-
+use crate::services::{assistant::tool_calling_service::ToolCall, claude::claude_api::ClaudeApi};
+use database::{DatabaseService, ServicesRepository};
 use entity::{
     assistant_settings::ToolCallingModel,
     services::{ApiKeyAuth, ServiceAuth, ServiceType},
 };
 use model::claude::{ClaudeMessage, ClaudeTool, ContentBlock, MessagesBody, MessagesResponse};
+use model::error::AppError;
+use std::collections::HashMap;
 use tauri::{AppHandle, Manager};
-
-use crate::{
-    error::AppError,
-    repositories::ServicesRepository,
-    services::{
-        DatabaseService, assistant::tool_calling_service::ToolCall, claude::claude_api::ClaudeApi,
-    },
-};
 
 #[derive(Clone)]
 pub struct ClaudeService {
