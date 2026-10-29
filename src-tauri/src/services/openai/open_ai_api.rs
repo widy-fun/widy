@@ -1,3 +1,4 @@
+use crate::services::openai::OpenAIService;
 use crate::utils::send_request;
 use async_trait::async_trait;
 use model::error::AppError;
@@ -36,5 +37,11 @@ pub trait OpenAiApi: Send + Sync {
         let response = send_request::<OpenAIResponse>(request, "model responses", "OpenAI").await?;
 
         Ok(response)
+    }
+}
+
+impl OpenAiApi for OpenAIService {
+    fn base_api(&self) -> String {
+        self.base_api.clone()
     }
 }

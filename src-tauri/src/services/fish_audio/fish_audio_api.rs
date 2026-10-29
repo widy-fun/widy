@@ -1,3 +1,4 @@
+use crate::services::fish_audio::FishAudioService;
 use crate::utils::send_request;
 use database::{DatabaseService, ServicesRepository};
 use entity::services::{ApiKeyAuth, ServiceAuth, ServiceType};
@@ -92,5 +93,15 @@ pub trait FishAudioApi {
             .await?;
         let bytes = response.bytes().await?;
         Ok(bytes.into())
+    }
+}
+
+impl FishAudioApi for FishAudioService {
+    fn reqwest_client(&self) -> reqwest::Client {
+        self.reqwest_client.clone()
+    }
+
+    fn base_url(&self) -> String {
+        self.base_url.clone()
     }
 }

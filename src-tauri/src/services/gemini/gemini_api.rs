@@ -1,3 +1,4 @@
+use crate::services::gemini::GeminiService;
 use crate::utils::send_request;
 use async_trait::async_trait;
 use model::error::AppError;
@@ -35,5 +36,11 @@ pub trait GeminiApi: Send + Sync {
         let response =
             send_request::<InteractionResponse>(request, "model interactions", "Gemini").await?;
         Ok(response)
+    }
+}
+
+impl GeminiApi for GeminiService {
+    fn base_api(&self) -> String {
+        self.base_api.clone()
     }
 }

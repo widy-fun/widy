@@ -11,7 +11,7 @@ use tauri::{AppHandle, Manager};
 
 #[derive(Clone)]
 pub struct OpenAIService {
-    base_api: String,
+    pub(crate) base_api: String,
     pub tool_calling_models: Vec<ToolCallingModel>,
 }
 
@@ -402,11 +402,5 @@ impl OpenAIService {
             })
             .await?;
         Ok(())
-    }
-}
-
-impl OpenAiApi for OpenAIService {
-    fn base_api(&self) -> String {
-        self.base_api.clone()
     }
 }

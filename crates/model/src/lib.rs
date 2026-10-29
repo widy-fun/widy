@@ -20,6 +20,8 @@ pub mod openai;
 pub mod tribute;
 pub mod tts;
 pub mod twitch;
+pub mod widy_sol;
+pub mod widy_ton;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum DonationSort {

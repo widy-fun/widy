@@ -1,3 +1,4 @@
+use crate::services::media::MediaService;
 use async_trait::async_trait;
 use model::error::AppError;
 use serde::{Deserialize, Serialize};
@@ -244,6 +245,12 @@ pub trait TwitchClipExtractor {
             .map(|parts| parts[1].to_owned())
             .filter(|slug| !slug.is_empty())
             .ok_or(AppError::Media("clip slug not found"))
+    }
+}
+
+impl TwitchClipExtractor for MediaService {
+    fn reqwest_client(&self) -> &reqwest::Client {
+        &self.reqwest_client
     }
 }
 

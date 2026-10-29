@@ -1,3 +1,4 @@
+use crate::services::kick::KickSessionService;
 use crate::utils::send_request;
 use async_trait::async_trait;
 use chrono::Utc;
@@ -219,5 +220,19 @@ pub trait KickSessionApi: Send + Sync {
             .await?;
 
         Ok(())
+    }
+}
+
+impl KickSessionApi for KickSessionService {
+    fn reqwest_client(&self) -> &reqwest::Client {
+        &self.reqwest_client
+    }
+
+    fn user_info(&self) -> Option<UserInfo> {
+        self.user_info.lock().unwrap().clone()
+    }
+
+    fn chanel_info(&self) -> Option<ChanelInfoResponse> {
+        self.chanel_info.lock().unwrap().clone()
     }
 }

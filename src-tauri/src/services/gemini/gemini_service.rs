@@ -10,7 +10,7 @@ use tauri::{AppHandle, Manager};
 
 #[derive(Clone, Debug)]
 pub struct GeminiService {
-    base_api: String,
+    pub(crate) base_api: String,
     pub tool_calling_models: Vec<ToolCallingModel>,
 }
 
@@ -232,11 +232,5 @@ impl GeminiService {
             })
             .await?;
         Ok(())
-    }
-}
-
-impl GeminiApi for GeminiService {
-    fn base_api(&self) -> String {
-        self.base_api.clone()
     }
 }

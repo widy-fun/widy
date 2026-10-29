@@ -4,6 +4,8 @@ use entity::media::MediaType;
 use regex::Regex;
 use url::Url;
 
+use crate::services::media::MediaService;
+
 static URL_REGEX: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"https?://[^\s<>]+").expect("Wrong url regex"));
 
@@ -44,6 +46,8 @@ pub trait MediaParser {
         }
     }
 }
+
+impl MediaParser for MediaService {}
 
 #[cfg(test)]
 mod tests {

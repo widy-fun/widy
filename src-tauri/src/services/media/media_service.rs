@@ -3,7 +3,6 @@ use crate::services::media::media_parser::MediaParser;
 use crate::services::media::tiktok_extractor::TikTokExtractor;
 use crate::services::media::twitch_extractor::TwitchClipExtractor;
 use crate::services::media::youtube_extractor::YoutubeExtractor;
-use crate::services::media::youtube_search_extractor::YoutubeSearchExtractor;
 use database::{DatabaseService, MediaSettingsRepository};
 use entity::{
     media::{Media, MediaType},
@@ -11,7 +10,6 @@ use entity::{
     messages::MessageType,
 };
 use model::error::log_and_wrap_error;
-use reqwest::Client;
 use tauri::{AppHandle, Manager};
 
 #[derive(Debug)]
@@ -197,35 +195,3 @@ impl MediaService {
         Some(true)
     }
 }
-
-impl TikTokExtractor for MediaService {
-    fn reqwest_client(&self) -> &Client {
-        &self.reqwest_client
-    }
-}
-
-impl TwitchClipExtractor for MediaService {
-    fn reqwest_client(&self) -> &Client {
-        &self.reqwest_client
-    }
-}
-
-impl KickClipExtractor for MediaService {
-    fn reqwest_client(&self) -> &Client {
-        &self.reqwest_client
-    }
-}
-
-impl YoutubeSearchExtractor for MediaService {
-    fn reqwest_client(&self) -> &Client {
-        &self.reqwest_client
-    }
-}
-
-impl YoutubeExtractor for MediaService {
-    fn reqwest_client(&self) -> &Client {
-        &self.reqwest_client
-    }
-}
-
-impl MediaParser for MediaService {}

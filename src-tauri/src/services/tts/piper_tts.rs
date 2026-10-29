@@ -5,7 +5,10 @@ use std::{
     sync::{Arc, Mutex},
 };
 
-use crate::constants::{BOS, EOS, PAD};
+use crate::{
+    constants::{BOS, EOS, PAD},
+    services::tts::TtsService,
+};
 use async_trait::async_trait;
 use entity::tts::{PiperVoice, PiperVoices, TtsModels, TtsSettings};
 use lingua::Language;
@@ -218,5 +221,19 @@ pub trait PiperTts: Send + Sync {
             return Ok(voice.key.clone());
         }
         Err(AppError::Piper("Piper tts settings empty".to_string()))
+    }
+}
+
+impl PiperTts for TtsService {
+    fn piper_voices_path(&self) -> PathBuf {
+        self.piper_voices_path.clone()
+    }
+
+    fn piper_path(&self) -> PathBuf {
+        self.piper_path.clone()
+    }
+
+    fn piper_sessions(&self) -> Arc<Mutex<HashMap<String, Piper>>> {
+        self.piper_sessions.clone()
     }
 }

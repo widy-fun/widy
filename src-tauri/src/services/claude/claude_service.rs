@@ -11,7 +11,7 @@ use tauri::{AppHandle, Manager};
 
 #[derive(Clone)]
 pub struct ClaudeService {
-    base_api: String,
+    pub(crate) base_api: String,
     pub tool_calling_models: Vec<ToolCallingModel>,
 }
 
@@ -185,11 +185,5 @@ impl ClaudeService {
             })
             .await?;
         Ok(())
-    }
-}
-
-impl ClaudeApi for ClaudeService {
-    fn base_api(&self) -> String {
-        self.base_api.clone()
     }
 }

@@ -3,6 +3,8 @@ use model::error::AppError;
 use serde::Deserialize;
 use url::Url;
 
+use crate::services::media::MediaService;
+
 const KICK_API: &str = "https://kick.com/api/v2";
 
 #[derive(Debug, Deserialize)]
@@ -140,6 +142,12 @@ pub trait KickClipExtractor {
         }
 
         Err(AppError::Media("clip id was not found"))
+    }
+}
+
+impl KickClipExtractor for MediaService {
+    fn reqwest_client(&self) -> &reqwest::Client {
+        &self.reqwest_client
     }
 }
 

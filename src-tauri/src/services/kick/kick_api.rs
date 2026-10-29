@@ -1,3 +1,4 @@
+use crate::services::kick::{KickBotService, KickService};
 use crate::utils::send_request;
 use async_trait::async_trait;
 use base64::{Engine, engine::general_purpose::URL_SAFE_NO_PAD};
@@ -558,5 +559,87 @@ pub trait KickApi: Send + Sync {
         let database_service = app.state::<DatabaseService>();
         self.set_authorized(&database_service, None, false, true)
             .await
+    }
+}
+
+impl KickApi for KickBotService {
+    fn auth_session(&self) -> MutexGuard<'_, Option<KickAuthSession>> {
+        self.auth_session.lock().unwrap()
+    }
+
+    fn cancellation_token(&self) -> CancellationToken {
+        self.cancellation_token.lock().unwrap().clone()
+    }
+
+    fn kick_token_endpoint(&self) -> String {
+        self.kick_bot_token_endpoint.clone()
+    }
+
+    fn kick_client_id(&self) -> String {
+        self.kick_bot_client_id.clone()
+    }
+
+    fn scopes(&self) -> String {
+        self.scopes.clone()
+    }
+    fn kick_redirect_uri(&self) -> String {
+        self.kick_bot_redirect_uri.clone()
+    }
+
+    fn app_token(&self) -> String {
+        self.app_token.clone()
+    }
+
+    fn expire_at(&self) -> Arc<AtomicU64> {
+        self.expire_at.clone()
+    }
+
+    fn reqwest_client(&self) -> &reqwest::Client {
+        &self.reqwest_client
+    }
+
+    fn service_type(&self) -> ServiceType {
+        self.service_type.clone()
+    }
+}
+
+impl KickApi for KickService {
+    fn auth_session(&self) -> MutexGuard<'_, Option<KickAuthSession>> {
+        self.auth_session.lock().unwrap()
+    }
+
+    fn cancellation_token(&self) -> CancellationToken {
+        self.cancellation_token.lock().unwrap().clone()
+    }
+
+    fn kick_token_endpoint(&self) -> String {
+        self.kick_token_endpoint.clone()
+    }
+
+    fn kick_client_id(&self) -> String {
+        self.kick_client_id.clone()
+    }
+
+    fn scopes(&self) -> String {
+        self.scopes.clone()
+    }
+    fn kick_redirect_uri(&self) -> String {
+        self.kick_redirect_uri.clone()
+    }
+
+    fn app_token(&self) -> String {
+        self.app_token.clone()
+    }
+
+    fn expire_at(&self) -> Arc<AtomicU64> {
+        self.expire_at.clone()
+    }
+
+    fn reqwest_client(&self) -> &reqwest::Client {
+        &self.reqwest_client
+    }
+
+    fn service_type(&self) -> ServiceType {
+        self.service_type.clone()
     }
 }

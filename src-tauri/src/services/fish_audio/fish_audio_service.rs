@@ -5,8 +5,8 @@ use model::error::AppError;
 use tauri::{AppHandle, Manager};
 
 pub struct FishAudioService {
-    reqwest_client: reqwest::Client,
-    base_url: String,
+    pub(crate) reqwest_client: reqwest::Client,
+    pub(crate) base_url: String,
 }
 
 impl FishAudioService {
@@ -59,15 +59,5 @@ impl FishAudioService {
             })
             .await?;
         Ok(())
-    }
-}
-
-impl FishAudioApi for FishAudioService {
-    fn reqwest_client(&self) -> reqwest::Client {
-        self.reqwest_client.clone()
-    }
-
-    fn base_url(&self) -> String {
-        self.base_url.clone()
     }
 }

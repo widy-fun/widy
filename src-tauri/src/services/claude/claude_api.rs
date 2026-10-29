@@ -1,3 +1,4 @@
+use crate::services::claude::ClaudeService;
 use crate::utils::send_request;
 use async_trait::async_trait;
 use model::claude::{MessagesBody, MessagesResponse, ModelsResponse};
@@ -37,5 +38,11 @@ pub trait ClaudeApi: Send + Sync {
         let response =
             send_request::<MessagesResponse>(request, "model messages", "Claude").await?;
         Ok(response)
+    }
+}
+
+impl ClaudeApi for ClaudeService {
+    fn base_api(&self) -> String {
+        self.base_api.clone()
     }
 }

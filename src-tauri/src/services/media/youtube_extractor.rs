@@ -3,6 +3,8 @@ use model::error::AppError;
 use serde_json::Value;
 use url::Url;
 
+use crate::services::media::MediaService;
+
 #[derive(Debug)]
 #[allow(dead_code)]
 pub struct YoutubeVideoInfo {
@@ -306,6 +308,12 @@ pub trait YoutubeExtractor {
         value
             .as_f64()
             .or_else(|| value.as_str()?.parse::<f64>().ok())
+    }
+}
+
+impl YoutubeExtractor for MediaService {
+    fn reqwest_client(&self) -> &reqwest::Client {
+        &self.reqwest_client
     }
 }
 

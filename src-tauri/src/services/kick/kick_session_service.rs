@@ -8,9 +8,9 @@ use crate::services::kick::{KickService, kick_api::KickApi, kick_session_api::Ki
 use model::error::AppError;
 
 pub struct KickSessionService {
-    reqwest_client: reqwest::Client,
-    user_info: Arc<Mutex<Option<UserInfo>>>,
-    chanel_info: Arc<Mutex<Option<ChanelInfoResponse>>>,
+    pub(crate) reqwest_client: reqwest::Client,
+    pub(crate) user_info: Arc<Mutex<Option<UserInfo>>>,
+    pub(crate) chanel_info: Arc<Mutex<Option<ChanelInfoResponse>>>,
 }
 
 impl KickSessionService {
@@ -93,19 +93,5 @@ impl KickSessionService {
             })
             .await?;
         Ok(())
-    }
-}
-
-impl KickSessionApi for KickSessionService {
-    fn reqwest_client(&self) -> &reqwest::Client {
-        &self.reqwest_client
-    }
-
-    fn user_info(&self) -> Option<UserInfo> {
-        self.user_info.lock().unwrap().clone()
-    }
-
-    fn chanel_info(&self) -> Option<ChanelInfoResponse> {
-        self.chanel_info.lock().unwrap().clone()
     }
 }

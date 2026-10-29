@@ -1,7 +1,6 @@
-use async_trait::async_trait;
 use entity::services::ServiceType;
 use model::kick::KickAuthSession;
-use std::sync::{Arc, Mutex, MutexGuard, atomic::AtomicU64};
+use std::sync::{Arc, Mutex, atomic::AtomicU64};
 use tauri::AppHandle;
 use tokio_util::sync::CancellationToken;
 
@@ -15,10 +14,10 @@ pub struct KickBotService {
     pub scopes: String,
     pub app_token: String,
     pub auth_session: Mutex<Option<KickAuthSession>>,
-    expire_at: Arc<AtomicU64>,
-    cancellation_token: Arc<Mutex<CancellationToken>>,
-    reqwest_client: reqwest::Client,
-    service_type: ServiceType,
+    pub(crate) expire_at: Arc<AtomicU64>,
+    pub(crate) cancellation_token: Arc<Mutex<CancellationToken>>,
+    pub(crate) reqwest_client: reqwest::Client,
+    pub(crate) service_type: ServiceType,
 }
 
 impl KickBotService {
@@ -48,47 +47,5 @@ impl KickBotService {
     pub async fn connect(&self, app: &AppHandle) -> Result<(), AppError> {
         let _ = self.get_auth(app).await?;
         Ok(())
-    }
-}
-
-#[async_trait]
-impl KickApi for KickBotService {
-    fn auth_session(&self) -> MutexGuard<'_, Option<KickAuthSession>> {
-        self.auth_session.lock().unwrap()
-    }
-
-    fn cancellation_token(&self) -> CancellationToken {
-        self.cancellation_token.lock().unwrap().clone()
-    }
-
-    fn kick_token_endpoint(&self) -> String {
-        self.kick_bot_token_endpoint.clone()
-    }
-
-    fn kick_client_id(&self) -> String {
-        self.kick_bot_client_id.clone()
-    }
-
-    fn scopes(&self) -> String {
-        self.scopes.clone()
-    }
-    fn kick_redirect_uri(&self) -> String {
-        self.kick_bot_redirect_uri.clone()
-    }
-
-    fn app_token(&self) -> String {
-        self.app_token.clone()
-    }
-
-    fn expire_at(&self) -> Arc<AtomicU64> {
-        self.expire_at.clone()
-    }
-
-    fn reqwest_client(&self) -> &reqwest::Client {
-        &self.reqwest_client
-    }
-
-    fn service_type(&self) -> ServiceType {
-        self.service_type.clone()
     }
 }

@@ -2,7 +2,6 @@ use crate::{
     services::{CommandsService, EventsService, twitch::twitch_api::TwitchApi},
     utils::get_random_alert,
 };
-use async_trait::async_trait;
 use chrono::{SecondsFormat, Utc};
 use database::{DatabaseService, RedemptionsRepository, RewardsRepository};
 use entity::{
@@ -34,18 +33,18 @@ use uuid::Uuid;
 
 #[derive(Clone, Debug)]
 pub struct TwitchService {
-    client_id: String,
-    scopes: String,
+    pub(crate) client_id: String,
+    pub(crate) scopes: String,
     websocket_eventsub_url: String,
-    api_endpoint: String,
-    auth_endpoint: String,
-    eventsub_endpoint: String,
+    pub(crate) api_endpoint: String,
+    pub(crate) auth_endpoint: String,
+    pub(crate) eventsub_endpoint: String,
     pub session_id: Arc<Mutex<Option<String>>>,
     pub chat_messages_buffer: Arc<Mutex<ItemsBuffer<UnifiedChatMessage>>>,
-    expire_at: Arc<AtomicU64>,
-    cancellation_token: Arc<Mutex<CancellationToken>>,
-    reqwest_client: reqwest::Client,
-    service_type: ServiceType,
+    pub(crate) expire_at: Arc<AtomicU64>,
+    pub(crate) cancellation_token: Arc<Mutex<CancellationToken>>,
+    pub(crate) reqwest_client: reqwest::Client,
+    pub(crate) service_type: ServiceType,
 }
 
 impl TwitchService {
@@ -493,50 +492,5 @@ impl TwitchService {
                 WebSocketInstruction::Continue
             }
         }
-    }
-}
-
-#[async_trait]
-impl TwitchApi for TwitchService {
-    fn client_id(&self) -> String {
-        self.client_id.clone()
-    }
-
-    fn expire_at(&self) -> Arc<AtomicU64> {
-        self.expire_at.clone()
-    }
-
-    fn cancellation_token(&self) -> CancellationToken {
-        let guard = self.cancellation_token.lock().unwrap();
-        guard.clone()
-    }
-
-    fn session_id(&self) -> Option<String> {
-        let guard = self.session_id.lock().unwrap();
-        guard.clone()
-    }
-
-    fn eventsub_endpoint(&self) -> String {
-        self.eventsub_endpoint.clone()
-    }
-
-    fn auth_endpoint(&self) -> String {
-        self.auth_endpoint.clone()
-    }
-
-    fn scopes(&self) -> String {
-        self.scopes.clone()
-    }
-
-    fn api_endpoint(&self) -> String {
-        self.api_endpoint.clone()
-    }
-
-    fn reqwest_client(&self) -> &reqwest::Client {
-        &self.reqwest_client
-    }
-
-    fn service_type(&self) -> ServiceType {
-        self.service_type.clone()
     }
 }

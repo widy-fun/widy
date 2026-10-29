@@ -9,6 +9,8 @@ use serde::Serialize;
 use serde_json::Value;
 use url::Url;
 
+use crate::services::media::MediaService;
+
 #[derive(Debug, Serialize)]
 pub struct TikTokInfo {
     pub id: String,
@@ -243,6 +245,12 @@ pub trait TikTokExtractor {
         value
             .get(key)
             .and_then(|v| v.as_i64().or_else(|| v.as_str()?.parse().ok()))
+    }
+}
+
+impl TikTokExtractor for MediaService {
+    fn reqwest_client(&self) -> &reqwest::Client {
+        &self.reqwest_client
     }
 }
 

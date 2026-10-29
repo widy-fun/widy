@@ -2,7 +2,6 @@ use crate::{
     services::{CommandsService, EventsService, kick::kick_api::KickApi},
     utils::get_random_alert,
 };
-use async_trait::async_trait;
 use chrono::Utc;
 use database::{DatabaseService, RewardsRepository};
 use entity::{
@@ -21,7 +20,7 @@ use model::{
     },
 };
 use serde_json::json;
-use std::sync::{Arc, Mutex, MutexGuard, atomic::AtomicU64};
+use std::sync::{Arc, Mutex, atomic::AtomicU64};
 use tauri::{AppHandle, Manager};
 use tokio::net::TcpStream;
 use tokio_tungstenite::{
@@ -39,10 +38,10 @@ pub struct KickService {
     pub app_token: String,
     pub auth_session: Mutex<Option<KickAuthSession>>,
     pub chat_messages_buffer: Arc<Mutex<ItemsBuffer<UnifiedChatMessage>>>,
-    expire_at: Arc<AtomicU64>,
-    cancellation_token: Arc<Mutex<CancellationToken>>,
-    reqwest_client: reqwest::Client,
-    service_type: ServiceType,
+    pub(crate) expire_at: Arc<AtomicU64>,
+    pub(crate) cancellation_token: Arc<Mutex<CancellationToken>>,
+    pub(crate) reqwest_client: reqwest::Client,
+    pub(crate) service_type: ServiceType,
 }
 
 impl KickService {
@@ -381,47 +380,5 @@ impl KickService {
             .map_err(|e| log::error!("Kick chatrooms.v2 subscription error: {}", e.to_string()));
 
         Ok(())
-    }
-}
-
-#[async_trait]
-impl KickApi for KickService {
-    fn auth_session(&self) -> MutexGuard<'_, Option<KickAuthSession>> {
-        self.auth_session.lock().unwrap()
-    }
-
-    fn cancellation_token(&self) -> CancellationToken {
-        self.cancellation_token.lock().unwrap().clone()
-    }
-
-    fn kick_token_endpoint(&self) -> String {
-        self.kick_token_endpoint.clone()
-    }
-
-    fn kick_client_id(&self) -> String {
-        self.kick_client_id.clone()
-    }
-
-    fn scopes(&self) -> String {
-        self.scopes.clone()
-    }
-    fn kick_redirect_uri(&self) -> String {
-        self.kick_redirect_uri.clone()
-    }
-
-    fn app_token(&self) -> String {
-        self.app_token.clone()
-    }
-
-    fn expire_at(&self) -> Arc<AtomicU64> {
-        self.expire_at.clone()
-    }
-
-    fn reqwest_client(&self) -> &reqwest::Client {
-        &self.reqwest_client
-    }
-
-    fn service_type(&self) -> ServiceType {
-        self.service_type.clone()
     }
 }

@@ -1,21 +1,12 @@
-use crate::{
-    constants::USDT_MULTIPLICATION,
-    services::{
-        DeepLinkHandler, DeepLinkQueryParams, EventsService, WebSocketBroadcaster, WidyNetwork,
-    },
-};
+use crate::{constants::USDT_MULTIPLICATION, services::EventsService};
 use base64::{Engine, engine::general_purpose};
 use chrono::Utc;
 use database::{DatabaseService, DonationsRepository, ServicesRepository};
-use entity::services::{ServiceAuth, ServiceType, WidyAuth};
-use model::error::AppError;
-use model::{
-    events::{AppEvent, EventMessage},
-    items_buffer::ItemsBuffer,
-};
-use serde::Deserialize;
+use entity::services::{ServiceAuth, ServiceType};
+use model::items_buffer::ItemsBuffer;
+use model::widy_ton::{Message, MessageContent, Trace, TracesResponse};
+use model::{error::AppError, widy_ton::DonationEvent};
 use std::{
-    collections::HashMap,
     sync::{Arc, Mutex},
     time::Duration,
 };
@@ -26,57 +17,10 @@ use tonlib_core::cell::{BagOfCells, Cell};
 const BASE_INTERVAL: Duration = Duration::from_secs(1);
 const MAX_INTERVAL: Duration = Duration::from_secs(60);
 
-#[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
-struct TracesResponse {
-    traces: Vec<Trace>,
-}
-#[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
-struct Trace {
-    transactions: Option<HashMap<String, Transaction>>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
-struct Transaction {
-    trace_id: Option<String>,
-    out_msgs: Option<Vec<Message>>,
-    emulated: Option<bool>,
-}
-#[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
-struct Message {
-    hash: Option<String>,
-    opcode: Option<String>,
-    message_content: Option<MessageContent>,
-}
-#[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
-struct MessageContent {
-    body: Option<String>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
-struct DonationEvent {
-    op_code: u32,
-    query_id: u64,
-    amount: u64,
-    sender: String,
-    name: String,
-    message: String,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-#[allow(dead_code)]
-struct TonTraceAccounts {
-    accounts: Vec<String>,
-    hash: String,
-}
 trait StringTail {
     fn load_snake_string(&self) -> Result<String, AppError>;
 }
+
 impl StringTail for Cell {
     fn load_snake_string(&self) -> Result<String, AppError> {
         let mut bytes = Vec::new();
@@ -98,78 +42,6 @@ impl StringTail for Cell {
         }
 
         Ok(String::from_utf8(bytes).map_err(|e| AppError::ParseError(e.to_string()))?)
-    }
-}
-
-impl DeepLinkHandler for WidyTonService {
-    fn can_handle(&self, url: &url::Url) -> bool {
-        let Some(query) = url.query() else {
-            return false;
-        };
-        let Ok(query_params) = serde_qs::from_str::<DeepLinkQueryParams>(query) else {
-            return false;
-        };
-
-        url.host_str() == Some("create-donation-account")
-            && query_params.network == WidyNetwork::Ton
-    }
-
-    fn handle(&self, url: &url::Url, app: &AppHandle) {
-        let Some(query) = url.query() else {
-            return;
-        };
-
-        let Ok(query_params) = serde_qs::from_str::<DeepLinkQueryParams>(query) else {
-            ::log::error!("Failed to parse deep link query params");
-            return;
-        };
-
-        let nonce: Arc<Mutex<Option<String>>> = self.nonce.clone();
-
-        let is_nonce_valid = {
-            let mut nonce_guard = nonce.lock().unwrap();
-            if nonce_guard.as_ref() == Some(&query_params.nonce) {
-                *nonce_guard = None;
-                true
-            } else {
-                false
-            }
-        };
-
-        if !is_nonce_valid {
-            return;
-        }
-
-        let app_clone = app.clone();
-
-        tauri::async_runtime::spawn(async move {
-            let widy_ton_service = app_clone.state::<Arc<WidyTonService>>();
-            let database_service = app_clone.state::<DatabaseService>();
-            let websocket_broadcaster = app_clone.state::<WebSocketBroadcaster>();
-
-            let _ = database_service
-                .update_service(entity::services::Model {
-                    id: ServiceType::WidyTon,
-                    auth: Some(ServiceAuth::Widy(WidyAuth {
-                        donation_account_name: query_params.donation_account_name.clone(),
-                        user: query_params.user.clone(),
-                        donation_account_address: query_params.donation_account_address.clone(),
-                    })),
-                    extra: None,
-                    authorized: true,
-                })
-                .await;
-
-            if let Err(e) = widy_ton_service.connect(&app_clone).await {
-                ::log::error!("Service connection error: {}", e);
-                return;
-            }
-
-            websocket_broadcaster.broadcast_event_message(&EventMessage {
-                event: AppEvent::CreateDonationAccount,
-                data: query_params,
-            });
-        });
     }
 }
 

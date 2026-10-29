@@ -4,6 +4,8 @@ use serde_json::Value;
 use std::collections::HashSet;
 use url::Url;
 
+use crate::services::media::MediaService;
+
 #[derive(Debug, Clone)]
 pub struct YoutubeSearchInfo {
     pub id: String,
@@ -321,6 +323,12 @@ pub trait YoutubeSearchExtractor {
             .and_then(|item| item.get("url"))
             .and_then(Value::as_str)
             .map(str::to_owned)
+    }
+}
+
+impl YoutubeSearchExtractor for MediaService {
+    fn reqwest_client(&self) -> &reqwest::Client {
+        &self.reqwest_client
     }
 }
 

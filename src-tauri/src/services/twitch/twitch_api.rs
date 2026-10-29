@@ -6,7 +6,11 @@ use std::{
     time::{SystemTime, UNIX_EPOCH},
 };
 
-use crate::{load_env, utils::send_request};
+use crate::{
+    load_env,
+    services::twitch::{TwitchBotService, TwitchService},
+    utils::send_request,
+};
 use async_trait::async_trait;
 use database::{DatabaseService, RewardsRepository, ServicesRepository};
 use entity::services::{ServiceAuth, ServiceType, TwitchAuth};
@@ -1246,5 +1250,93 @@ pub trait TwitchApi: Send + Sync {
         let database_service = app.state::<DatabaseService>();
         self.set_authorized(&database_service, None, false, true)
             .await
+    }
+}
+
+impl TwitchApi for TwitchBotService {
+    fn client_id(&self) -> String {
+        self.client_id.clone()
+    }
+
+    fn expire_at(&self) -> Arc<AtomicU64> {
+        self.expire_at.clone()
+    }
+
+    fn session_id(&self) -> Option<String> {
+        let guard = self.session_id.lock().unwrap();
+        guard.clone()
+    }
+
+    fn cancellation_token(&self) -> CancellationToken {
+        let guard = self.cancellation_token.lock().unwrap();
+        guard.clone()
+    }
+
+    fn eventsub_endpoint(&self) -> String {
+        self.eventsub_endpoint.clone()
+    }
+
+    fn auth_endpoint(&self) -> String {
+        self.auth_endpoint.clone()
+    }
+
+    fn scopes(&self) -> String {
+        self.scopes.clone()
+    }
+
+    fn api_endpoint(&self) -> String {
+        self.api_endpoint.clone()
+    }
+
+    fn reqwest_client(&self) -> &reqwest::Client {
+        &self.reqwest_client
+    }
+
+    fn service_type(&self) -> ServiceType {
+        self.service_type.clone()
+    }
+}
+
+impl TwitchApi for TwitchService {
+    fn client_id(&self) -> String {
+        self.client_id.clone()
+    }
+
+    fn expire_at(&self) -> Arc<AtomicU64> {
+        self.expire_at.clone()
+    }
+
+    fn cancellation_token(&self) -> CancellationToken {
+        let guard = self.cancellation_token.lock().unwrap();
+        guard.clone()
+    }
+
+    fn session_id(&self) -> Option<String> {
+        let guard = self.session_id.lock().unwrap();
+        guard.clone()
+    }
+
+    fn eventsub_endpoint(&self) -> String {
+        self.eventsub_endpoint.clone()
+    }
+
+    fn auth_endpoint(&self) -> String {
+        self.auth_endpoint.clone()
+    }
+
+    fn scopes(&self) -> String {
+        self.scopes.clone()
+    }
+
+    fn api_endpoint(&self) -> String {
+        self.api_endpoint.clone()
+    }
+
+    fn reqwest_client(&self) -> &reqwest::Client {
+        &self.reqwest_client
+    }
+
+    fn service_type(&self) -> ServiceType {
+        self.service_type.clone()
     }
 }

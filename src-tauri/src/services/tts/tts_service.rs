@@ -23,9 +23,9 @@ use tokio::{fs::File, io::AsyncWriteExt};
 #[derive(Clone, Debug)]
 pub struct TtsService {
     audio_path: PathBuf,
-    piper_voices_path: PathBuf,
-    piper_path: PathBuf,
-    piper_sessions: Arc<Mutex<HashMap<String, Piper>>>,
+    pub(crate) piper_voices_path: PathBuf,
+    pub(crate) piper_path: PathBuf,
+    pub(crate) piper_sessions: Arc<Mutex<HashMap<String, Piper>>>,
 }
 impl TtsService {
     pub fn new(audio_path: &PathBuf, piper_voices_path: &PathBuf, piper_path: &PathBuf) -> Self {
@@ -271,19 +271,5 @@ impl TtsService {
     pub fn detect_language(&self, text: &str, app: &AppHandle) -> Option<Language> {
         let language_detector = app.state::<LanguageDetector>();
         language_detector.detect_language_of(text)
-    }
-}
-
-impl PiperTts for TtsService {
-    fn piper_voices_path(&self) -> PathBuf {
-        self.piper_voices_path.clone()
-    }
-
-    fn piper_path(&self) -> PathBuf {
-        self.piper_path.clone()
-    }
-
-    fn piper_sessions(&self) -> Arc<Mutex<HashMap<String, Piper>>> {
-        self.piper_sessions.clone()
     }
 }
