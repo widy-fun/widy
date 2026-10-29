@@ -85,7 +85,7 @@ enum KickEvent {
 
 #[derive(Subcommand)]
 enum DbAction {
-    Add {
+    Create {
         #[command(subcommand)]
         entity: DbEntity,
     },
@@ -141,7 +141,7 @@ async fn create_database_action(
     database_service: &DatabaseService,
 ) -> Result<()> {
     match action {
-        DbAction::Add { entity } => match entity {
+        DbAction::Create { entity } => match entity {
             DbEntity::Alerts => {
                 let text_style = TextStyle {
                     font_size: 60,
