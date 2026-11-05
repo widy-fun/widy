@@ -28,20 +28,7 @@ jobs:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           lfs: true
-
-      - name: Configure SSH commit signing
-        shell: bash
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: |
-          mkdir -p ~/.ssh
-          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/signing_key
-          chmod 600 ~/.ssh/signing_key
-
-          git config --global gpg.format ssh
-          git config --global user.signingkey ~/.ssh/signing_key
-          git config --global commit.gpgsign true
-
+          
       - name: Pull LFS files
         run: git lfs pull
 

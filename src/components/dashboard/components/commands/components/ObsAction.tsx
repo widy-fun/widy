@@ -1,22 +1,22 @@
-import { InputAdornment, MenuItem, Select, TextField } from "@mui/material";
+import { MenuItem, Select } from "@mui/material";
 import { showSnackBar } from "@widy/react";
-import { AlertSeverity, CommandSourceType, ServiceType } from "@widy/sdk";
+import {
+	AlertSeverity,
+	CommandSourceType,
+	ObsActionType,
+	ServiceType,
+} from "@widy/sdk";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { NumericFormat } from "react-number-format";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import {
-	useGetObsSceneSourcesQuery,
-	useGetObsScenesQuery,
-	useGetObsSourceFiltersQuery,
-} from "../../../../../api/obsApi";
 import { useGetServiceByIdQuery } from "../../../../../api/servicesApi";
 import { DEFAULT_OBS_ACTION } from "../../../../../constants";
 import type { AppState } from "../../../../../store";
 import { setCommand } from "../../../../../store/slices/commandsSlice";
 import LeftRightButtons from "../../../../LeftRightButtons";
 import styles from "../../settings/Settings.module.css";
+import ObsFilterAction from "./ObsFilterAction";
 
 const ObsAction = () => {
 	const { t } = useTranslation();
@@ -24,24 +24,11 @@ const ObsAction = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const [obsAction, setObsAction] = useState(DEFAULT_OBS_ACTION);
-	const { data: obsService } = useGetServiceByIdQuery({
-		id: ServiceType.Obs,
-	});
-	const { data: obsScenes } = useGetObsScenesQuery();
-	const { data: obsSceneSources } = useGetObsSceneSourcesQuery(
+	const { data: obsService } = useGetServiceByIdQuery(
 		{
-			sceneUuid: obsAction.filter?.sceneUuid,
+			id: ServiceType.Obs,
 		},
-		{ skip: !obsAction.filter?.sceneUuid },
-	);
-
-	const { data: obsSourceFilters } = useGetObsSourceFiltersQuery(
-		{
-			sourceUuid: obsAction.filter?.sourceUuid,
-		},
-		{
-			skip: !obsAction.filter?.sourceUuid,
-		},
+		{ refetchOnMountOrArgChange: true },
 	);
 
 	useEffect(() => {
@@ -57,136 +44,30 @@ const ObsAction = () => {
 				<div className={styles.settingsContainer}>
 					<div className={styles.settings}>
 						<div className={styles.label}>
-							<span>{t("obs_action.scene")}:</span>
+							<span>{t("obs_action.type")}:</span>
 						</div>
-						<Select
-							sx={{ width: 150 }}
-							value={obsAction.filter?.sceneName ?? ""}
-							displayEmpty
-						>
-							<MenuItem value="" disabled>
-								<em>{t("none")}</em>
-							</MenuItem>
-							{obsScenes?.responseData.scenes.map((scene) => (
+						<Select sx={{ width: 150 }} value={obsAction.type}>
+							{Object.values(ObsActionType).map((type) => (
 								<MenuItem
-									value={scene.sceneName}
-									key={scene.sceneUuid}
+									value={type}
+									key={type}
 									onClick={() => {
 										setObsAction({
-											...obsAction,
-											filter: {
-												sceneUuid: scene.sceneUuid,
-												sceneName: scene.sceneName,
-											},
+											type,
 										});
 									}}
 								>
-									{scene.sceneName}
+									{t(`obs_action.${type}`)}
 								</MenuItem>
 							))}
 						</Select>
 					</div>
-					<div className={styles.settings}>
-						<div className={styles.label}>
-							<span>{t("obs_action.source")}:</span>
-						</div>
-						<Select
-							sx={{ width: 150 }}
-							value={obsAction.filter?.sourceName ?? ""}
-							displayEmpty
-						>
-							<MenuItem value="" disabled>
-								<em>{t("none")}</em>
-							</MenuItem>
-							{obsSceneSources?.responseData.sceneItems.map((sceneItem) => (
-								<MenuItem
-									value={sceneItem.sourceName}
-									key={sceneItem.sourceUuid}
-									onClick={() => {
-										setObsAction({
-											...obsAction,
-											filter: {
-												...obsAction.filter,
-												sourceUuid: sceneItem.sourceUuid,
-												sourceName: sceneItem.sourceName,
-											},
-										});
-									}}
-								>
-									{sceneItem.sourceName}
-								</MenuItem>
-							))}
-						</Select>
-					</div>
-					<div className={styles.settings}>
-						<div className={styles.label}>
-							<span>{t("obs_action.source_filter")}:</span>
-						</div>
-						<Select
-							sx={{ width: 150 }}
-							value={obsAction.filter?.filterName ?? ""}
-							displayEmpty
-						>
-							<MenuItem value="" disabled>
-								<em>{t("none")}</em>
-							</MenuItem>
-							{obsSourceFilters?.responseData.filters.map((sourceFilter) => (
-								<MenuItem
-									value={sourceFilter.filterName}
-									key={sourceFilter.filterName}
-									onClick={() => {
-										setObsAction({
-											...obsAction,
-											filter: {
-												...obsAction.filter,
-												filterName: sourceFilter.filterName,
-											},
-										});
-									}}
-								>
-									{sourceFilter.filterName}
-								</MenuItem>
-							))}
-						</Select>
-					</div>
-					<div className={styles.settings}>
-						<div className={styles.label}>
-							<span>{t("obs_action.filter_duration")}:</span>
-						</div>
-						<NumericFormat
-							style={{ width: 150 }}
-							inputMode="numeric"
-							autoComplete="off"
-							allowNegative={false}
-							valueIsNumericString
-							decimalScale={0}
-							min={0}
-							isAllowed={({ floatValue }) =>
-								floatValue === undefined || floatValue <= 30000000
-							}
-							customInput={TextField}
-							slotProps={{
-								input: {
-									endAdornment: (
-										<InputAdornment position="end">
-											{t("settings.millis")}
-										</InputAdornment>
-									),
-								},
-							}}
-							onChange={(e) => {
-								const value = Number(e.target.value);
-								setObsAction({
-									...obsAction,
-									filter: {
-										...obsAction.filter,
-										filterDuration: value,
-									},
-								});
-							}}
-							value={obsAction.filter?.filterDuration ?? 0}
+					{obsAction.type === ObsActionType.Filter && (
+						<ObsFilterAction
+							obsAction={obsAction}
+							setObsAction={setObsAction}
 						/>
-					</div>
+					)}
 					<LeftRightButtons
 						onLeft={() => {
 							if (!obsService?.authorized) {

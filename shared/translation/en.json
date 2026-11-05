@@ -713,6 +713,8 @@
 		"scene": "Scene",
 		"source": "Source",
 		"source_filter": "Source filter",
-		"filter_duration": "Filter duration"
+		"filter_duration": "Filter duration",
+		"type": "Type",
+		"Filter": "Filter"
 	}
 }
