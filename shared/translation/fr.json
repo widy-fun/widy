@@ -36,6 +36,9 @@
 	"single_speaker": "Voix unique",
 	"sure_delete": "Voulez-vous vraiment supprimer cette variante ?",
 	"can_use_variables": "Vous pouvez utiliser vos variables",
+	"server_ip": "Adresse IP du serveur",
+	"server_port": "Port du serveur",
+	"password": "Mot de passe",
 	"authorization": {
 		"title": "Autorisation",
 		"code": "Code de demande",
@@ -155,6 +158,7 @@
 		"remove_links": "Supprimer les liens",
 		"language": "Langue",
 		"sec": "s",
+		"millis": "ms",
 		"currency": "Devise",
 		"tts_type": "Type de synthèse vocale"
 	},
@@ -257,7 +261,8 @@
 			"claude": "Utiliser Claude comme fournisseur d'IA pour votre assistant.",
 			"kick_session": "Connecter une session Kick pour accéder aux fonctionnalités de votre chaîne.",
 			"fish_audio": "Connecter Fish Audio pour accéder aux voix de synthèse vocale.",
-			"telegram_bot": "Connecter un bot Telegram pour envoyer des messages sur votre chaîne Telegram."
+			"telegram_bot": "Connecter un bot Telegram pour envoyer des messages sur votre chaîne Telegram.",
+			"obs": "Se connecter à OBS Studio via son serveur WebSocket."
 		}
 	},
 	"twitch": {
@@ -585,6 +590,7 @@
 		"Ort": "Erreur ORT",
 		"TelegramBot": "Erreur du bot Telegram",
 		"Media": "Erreur liée aux médias",
+		"Obs": "Erreur OBS",
 		"unknown": "Erreur"
 	},
 	"tts": {
@@ -700,5 +706,13 @@
 		"name": "Nom",
 		"description": "Description",
 		"value": "Valeur"
+	},
+	"obs_action": {
+		"title": "Actions OBS",
+		"description": "Actions OBS",
+		"scene": "Scène",
+		"source": "Source",
+		"source_filter": "Filtre de source",
+		"filter_duration": "Durée du filtre"
 	}
 }
