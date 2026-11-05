@@ -3,11 +3,11 @@ use database::{DatabaseService, ServicesRepository};
 use entity::services::{ApiKeyAuth, ServiceAuth, ServiceType};
 use eventsource_client::{self as es, Client};
 use futures::{StreamExt, TryStreamExt};
-use model::error::AppError;
+use model::error::{AppError, log_and_wrap_error};
 use model::tribute::TributeEvent;
 use std::time::Duration;
 use tauri::{AppHandle, Manager};
-use tokio::{pin, sync::broadcast};
+use tokio::sync::broadcast;
 
 pub struct TributeService {
     sign_out_sender: broadcast::Sender<()>,
@@ -84,7 +84,7 @@ impl TributeService {
                 )
                 .build();
             let stop_signal = sign_out_receiver.recv();
-            pin!(stop_signal);
+            tokio::pin!(stop_signal);
             let mut stream = client.stream().take_until(stop_signal);
 
             while let Ok(Some(sse)) = stream.try_next().await {
@@ -100,7 +100,8 @@ impl TributeService {
                                 tribute_event.data.message,
                                 &app,
                             )
-                            .await;
+                            .await
+                            .map_err(|e| log_and_wrap_error("Tribute donate event", e));
                         }
                     }
                     _ => {}

@@ -21,7 +21,7 @@ use lingua::Language::{
     Arabic, Chinese, English, French, German, Hindi, Portuguese, Russian, Spanish, Ukrainian,
 };
 use lingua::LanguageDetectorBuilder;
-use model::error::AppError;
+use model::error::{AppError, log_and_wrap_error};
 use std::sync::Arc;
 use std::time::Duration;
 use tauri::{AppHandle, Manager};
@@ -96,7 +96,10 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
         config_service.twitch_client_id.clone(),
         reqwest_client.clone(),
     );
-    let _ = twitch_service.connect(&app).await;
+    let _ = twitch_service
+        .connect(&app)
+        .await
+        .map_err(|e| log_and_wrap_error("Twitch service connect", e));
     app.manage(twitch_service.clone());
 
     //twitch bot
@@ -107,7 +110,10 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
         twitch_service.eventsub_endpoint(),
         reqwest_client.clone(),
     );
-    let _ = twitch_bot_service.connect(&app).await;
+    let _ = twitch_bot_service
+        .connect(&app)
+        .await
+        .map_err(|e| log_and_wrap_error("Twitch bot service connect", e));
     app.manage(twitch_bot_service);
 
     //kick
@@ -118,7 +124,10 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
         config_service.app_token.clone(),
         reqwest_client.clone(),
     );
-    let _ = kick_service.connect(&app).await;
+    let _ = kick_service
+        .connect(&app)
+        .await
+        .map_err(|e| log_and_wrap_error("Kick service connect", e));
     app.manage(kick_service);
 
     //kick bot
@@ -129,12 +138,18 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
         config_service.app_token,
         reqwest_client.clone(),
     );
-    let _ = kick_bot_service.connect(&app).await;
+    let _ = kick_bot_service
+        .connect(&app)
+        .await
+        .map_err(|e| log_and_wrap_error("Kick bot service connect", e));
     app.manage(kick_bot_service);
 
     //kick session
     let kick_session_service = KickSessionService::new(reqwest_client.clone());
-    let _ = kick_session_service.connect(&app).await;
+    let _ = kick_session_service
+        .connect(&app)
+        .await
+        .map_err(|e| log_and_wrap_error("Kick session service connect", e));
     app.manage(kick_session_service);
 
     //stream elements
@@ -143,37 +158,58 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
 
     //widy sol
     let widy_sol_service = Arc::new(WidySolService::new(&config_service.widy_sol_program_id));
-    let _ = widy_sol_service.connect(&app).await;
+    let _ = widy_sol_service
+        .connect(&app)
+        .await
+        .map_err(|e| log_and_wrap_error("WidySol service connect", e));
     app.manage(widy_sol_service.clone());
 
     //widy sol
     let widy_ton_service = Arc::new(WidyTonService::new());
-    let _ = widy_ton_service.connect(&app).await;
+    let _ = widy_ton_service
+        .connect(&app)
+        .await
+        .map_err(|e| log_and_wrap_error("WidyTon service connect", e));
     app.manage(widy_ton_service.clone());
 
     //donation alerts
     let donation_alerts_service = DonationAlertsService::new();
-    let _ = donation_alerts_service.connect(&app).await;
+    let _ = donation_alerts_service
+        .connect(&app)
+        .await
+        .map_err(|e| log_and_wrap_error("DonationAlerts service connect", e));
     app.manage(donation_alerts_service);
 
     //stream labs
     let stream_labs_service = StreamLabsService::new();
-    let _ = stream_labs_service.connect(&app).await;
+    let _ = stream_labs_service
+        .connect(&app)
+        .await
+        .map_err(|e| log_and_wrap_error("StreamLabs service connect", e));
     app.manage(stream_labs_service);
 
     //donate pay
     let donate_pay_service = DonatePayService::new();
-    let _ = donate_pay_service.connect(&app).await;
+    let _ = donate_pay_service
+        .connect(&app)
+        .await
+        .map_err(|e| log_and_wrap_error("DonatePay service connect", e));
     app.manage(donate_pay_service);
 
     //destream
     let destream_service = DestreamService::new();
-    let _ = destream_service.connect(&app).await;
+    let _ = destream_service
+        .connect(&app)
+        .await
+        .map_err(|e| log_and_wrap_error("Destream service connect", e));
     app.manage(destream_service);
 
     //tribute
     let tribute_service = TributeService::new();
-    let _ = tribute_service.connect(&app).await;
+    let _ = tribute_service
+        .connect(&app)
+        .await
+        .map_err(|e| log_and_wrap_error("Tribute service connect", e));
     app.manage(tribute_service);
 
     //deep link
@@ -197,32 +233,50 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
 
     //openai
     let openai_service = OpenAIService::new();
-    let _ = openai_service.connect(&app).await;
+    let _ = openai_service
+        .connect(&app)
+        .await
+        .map_err(|e| log_and_wrap_error("OpenAI service connect", e));
     app.manage(openai_service);
 
     //gemini
     let gemini_service = GeminiService::new();
-    let _ = gemini_service.connect(&app).await;
+    let _ = gemini_service
+        .connect(&app)
+        .await
+        .map_err(|e| log_and_wrap_error("Gemini service connect", e));
     app.manage(gemini_service);
 
     //claude
     let claude_service = ClaudeService::new();
-    let _ = claude_service.connect(&app).await;
+    let _ = claude_service
+        .connect(&app)
+        .await
+        .map_err(|e| log_and_wrap_error("Claude service connect", e));
     app.manage(claude_service);
 
     //fish audio
     let fish_audio_service = FishAudioService::new(reqwest_client.clone());
-    let _ = fish_audio_service.connect(&app).await;
+    let _ = fish_audio_service
+        .connect(&app)
+        .await
+        .map_err(|e| log_and_wrap_error("FishAudio service connect", e));
     app.manage(fish_audio_service);
 
     //telegram bot
     let telegram_bot_service = TelegramBotService::new();
-    let _ = telegram_bot_service.connect(&app).await;
+    let _ = telegram_bot_service
+        .connect(&app)
+        .await
+        .map_err(|e| log_and_wrap_error("TelegramBot service connect", e));
     app.manage(telegram_bot_service);
 
     //obs
     let obs_service = ObsService::new();
-    let _ = obs_service.connect(&app).await;
+    let _ = obs_service
+        .connect(&app)
+        .await
+        .map_err(|e| log_and_wrap_error("Obs service connect", e));
     app.manage(obs_service);
 
     Ok(())

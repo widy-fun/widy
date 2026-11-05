@@ -1,6 +1,6 @@
 use crate::services::EventsService;
 use entity::{services::ServiceType, settings::Currency};
-use model::error::AppError;
+use model::error::{AppError, log_and_wrap_error};
 use serde::{Deserialize, Serialize};
 use tauri::AppHandle;
 
@@ -58,7 +58,8 @@ impl StreamElementsService {
             event.data.message,
             &app,
         )
-        .await?;
+        .await
+        .map_err(|e| log_and_wrap_error("StreamElements donate event", e))?;
         Ok(())
     }
 }
