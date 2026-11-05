@@ -33,6 +33,8 @@ pub struct Model {
     pub twitch_action: Option<TwitchAction>,
     #[sea_orm(column_type = "JsonBinary")]
     pub telegram_bot_action: Option<TelegramBotAction>,
+    #[sea_orm(column_type = "JsonBinary")]
+    pub obs_action: Option<ObsAction>,
     #[sea_orm(has_one)]
     pub alert: HasOne<super::alerts::Entity>,
     pub source_type: CommandSourceType,
@@ -55,6 +57,7 @@ pub struct Command {
     pub chat_bot_action: Option<ChatBotAction>,
     pub tts_settings: Option<TtsSettings>,
     pub auction_action: Option<AuctionAction>,
+    pub obs_action: Option<ObsAction>,
     pub source_type: CommandSourceType,
     pub is_enabled: bool,
     #[sea_orm(nested)]
@@ -105,6 +108,12 @@ pub struct AuctionAction {
     pub subscriber_luck_modifier: f32,
     pub vip_luck_modifier: f32,
     pub moderator_luck_modifier: f32,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
+pub struct ObsAction {
+    pub r#type: ObsActionType,
+    pub filter: Option<ObsFilterAction>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
@@ -185,4 +194,20 @@ pub enum TwitchTarget {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PinMessageTarget {
     pub message: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
+pub enum ObsActionType {
+    Filter,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct ObsFilterAction {
+    pub scene_uuid: Option<Uuid>,
+    pub scene_name: Option<String>,
+    pub source_uuid: Option<Uuid>,
+    pub source_name: Option<String>,
+    pub filter_name: Option<String>,
+    pub filter_duration: Option<u64>,
 }

@@ -78,6 +78,7 @@ cpal = { workspace = true }
 foundry-local-sdk = { workspace = true }
 teloxide = { workspace = true }
 scraper = { workspace = true }
+obws = { workspace = true }
 
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]

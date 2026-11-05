@@ -123,6 +123,27 @@ const CommandActions = ({ isUpdate }: { isUpdate: boolean }) => {
 				}
 				selected={!!command.telegram_bot_action}
 			/>
+			<CommandSourceActionCard
+				title={t("obs_action.title")}
+				description={t("obs_action.description")}
+				path="/dashboard/commands/action/obs"
+				icon={
+					<Box
+						component="img"
+						src={services[ServiceType.Obs].image}
+						alt=""
+						sx={{
+							width: 40,
+							height: 40,
+							objectFit: "contain",
+							borderRadius: 1,
+							backgroundColor: "white",
+							padding: "4px",
+						}}
+					/>
+				}
+				selected={!!command.obs_action}
+			/>
 		</Box>
 	);
 };

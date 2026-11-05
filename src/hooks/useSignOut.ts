@@ -9,6 +9,7 @@ import {
 	useKickBotSignOutMutation,
 	useKickSessionSignOutMutation,
 	useKickSignOutMutation,
+	useObsSignOutMutation,
 	useOpenaiSignOutMutation,
 	useStreamLabsSignOutMutation,
 	useTelegramBotSignOutMutation,
@@ -39,6 +40,7 @@ const useSignOut = (id: ServiceType) => {
 	const [kickSessionSignOut] = useKickSessionSignOutMutation();
 	const [fishAudioSignOut] = useFishAudioSignOutMutation();
 	const [telegramBotSignOut] = useTelegramBotSignOutMutation();
+	const [obsSignOut] = useObsSignOutMutation();
 
 	switch (id) {
 		case ServiceType.Streamelements:
@@ -79,6 +81,8 @@ const useSignOut = (id: ServiceType) => {
 			return fishAudioSignOut;
 		case ServiceType.TelegramBot:
 			return telegramBotSignOut;
+		case ServiceType.Obs:
+			return obsSignOut;
 		default:
 			return () => null;
 	}

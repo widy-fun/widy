@@ -14,6 +14,7 @@ pub mod gemini;
 pub mod kick;
 pub mod media;
 pub mod nsfw_service;
+pub mod obs_service;
 pub mod openai;
 pub mod stream_elements_service;
 pub mod stream_labs_service;

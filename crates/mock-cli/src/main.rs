@@ -17,7 +17,7 @@ use model::{
     donation_alerts::{Donation, DonationMessage, DonationMessageData, DonationMessageResult},
     kick::{
         Event, EventPayload, Gift, KickPub, KickPubData, KickPushMessage, KicksGiftedData,
-        KicksSender,
+        KicksSender, StreamerIsLiveData, StreamerIsLiveLivestream,
     },
     tribute::{EventData, EventType, TributeEvent},
 };
@@ -81,6 +81,7 @@ enum DonatePlatform {
 #[derive(Subcommand)]
 enum KickEvent {
     KicksGifted,
+    StreamerIsLive,
 }
 
 #[derive(Subcommand)]
@@ -310,6 +311,25 @@ fn create_event(kind: &EventKind) -> Result<CliEvent> {
                                 expires_at: "expires_at".to_string(),
                             })?,
                             event: Event::KicksGifted,
+                        },
+                    },
+                },
+            }),
+            KickEvent::StreamerIsLive => CliEvent::Kick(KickPushMessage {
+                push: KickPub {
+                    r#pub: KickPubData {
+                        data: EventPayload {
+                            chanel: Some("mocked_chanel".to_string()),
+                            data: serde_json::to_string(&StreamerIsLiveData {
+                                livestream: StreamerIsLiveLivestream {
+                                    id: rand::random(),
+                                    channel_id: rand::random(),
+                                    session_title: "mocked_title".to_string(),
+                                    source: None,
+                                    created_at: "mocked_created_at".to_string(),
+                                },
+                            })?,
+                            event: Event::StreamerIsLive,
                         },
                     },
                 },

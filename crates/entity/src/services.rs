@@ -61,6 +61,8 @@ pub enum ServiceType {
     FishAudio,
     #[sea_orm(string_value = "TelegramBot")]
     TelegramBot,
+    #[sea_orm(string_value = "Obs")]
+    Obs,
 }
 
 impl ServiceType {
@@ -86,6 +88,7 @@ impl ServiceType {
             ServiceType::KickSession => "KickSession",
             ServiceType::FishAudio => "FishAudio",
             ServiceType::TelegramBot => "TelegramBot",
+            ServiceType::Obs => "Obs",
         }
     }
 }
@@ -111,6 +114,14 @@ pub enum ServiceAuth {
     ApiKey(ApiKeyAuth),
     KickSession(KickSessionToken),
     Token(TokenAuth),
+    Obs(ObsAuth),
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct ObsAuth {
+    pub ip: String,
+    pub port: u16,
+    pub password: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

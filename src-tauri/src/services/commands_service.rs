@@ -2,6 +2,7 @@ use crate::{
     services::{
         EventsService,
         kick::{KickApi, KickBotService, KickService, KickSessionApi, KickSessionService},
+        obs_service::ObsService,
         telegram_bot::telegram_bot_service::TelegramBotService,
         twitch::{TwitchBotService, TwitchService, twitch_api::TwitchApi},
     },
@@ -10,13 +11,20 @@ use crate::{
 use database::{CommandsRepository, DatabaseService, VariablesRepository};
 use entity::{
     commands::{
-        Command, KickAction, KickActionType, KickSource, KickSourceType, KickTarget, PostType,
-        TwitchAction, TwitchActionType, TwitchSource, TwitchSourceType, TwitchTarget,
+        Command, KickAction, KickActionType, KickSource, KickSourceType, KickTarget, ObsAction,
+        ObsActionType, ObsFilterAction, PostType, TwitchAction, TwitchActionType, TwitchSource,
+        TwitchSourceType, TwitchTarget,
     },
     commands_actions::CommandAction,
     rewards::Platform,
 };
-use model::error::{AppError, log_and_wrap_error};
+use model::{
+    error::{AppError, log_and_wrap_error},
+    obs::{
+        ObsRequestData, ObsRequestDataType, ObsRequestType, ObsResponseData,
+        ObsSetSourceFilterEnabledRequest,
+    },
+};
 use model::{events::UnifiedChatMessage, items_buffer::ChatMessageBuffer};
 use serde::Serialize;
 use std::{
@@ -107,10 +115,14 @@ impl CommandsService {
             ..
         } = &command
         {
+            if !chat.platforms.contains(&Platform::Kick) {
+                return Err(AppError::Custom(
+                    "Command is not enabled for this platform".to_string(),
+                ));
+            }
             if !message.sender.roles.has_any_level(&chat.user_levels) {
                 return Err(AppError::Custom("Not allowed".to_string()));
             }
-
             let reply_to_message_id: Option<String> = match command.clone().chat_bot_action {
                 Some(chat_bot) => {
                     if chat_bot.replay {
@@ -183,11 +195,19 @@ impl CommandsService {
 
         if let Command {
             is_enabled: true,
-            chat_source: Some(_),
+            chat_source: Some(chat),
             auction_action: Some(auction_action),
             ..
         } = &command
         {
+            if !chat.platforms.contains(&Platform::Kick) {
+                return Err(AppError::Custom(
+                    "Command is not enabled for this platform".to_string(),
+                ));
+            }
+            if !message.sender.roles.has_any_level(&chat.user_levels) {
+                return Err(AppError::Custom("Not allowed".to_string()));
+            }
             let _ = EventsService::command_auction_action(
                 CommandAuctionAction {
                     amount: calc_command_auction_action_amount(&auction_action, &message),
@@ -198,6 +218,63 @@ impl CommandsService {
                 app,
             )
             .await;
+        }
+
+        if let Command {
+            is_enabled: true,
+            chat_source: Some(chat),
+            obs_action:
+                Some(ObsAction {
+                    r#type: ObsActionType::Filter,
+                    filter:
+                        Some(ObsFilterAction {
+                            source_uuid: Some(source_uuid),
+                            filter_name: Some(filter_name),
+                            filter_duration: Some(filter_duration),
+                            ..
+                        }),
+                }),
+            ..
+        } = &command
+        {
+            if !chat.platforms.contains(&Platform::Kick) {
+                return Err(AppError::Custom(
+                    "Command is not enabled for this platform".to_string(),
+                ));
+            }
+            if !message.sender.roles.has_any_level(&chat.user_levels) {
+                return Err(AppError::Custom("Not allowed".to_string()));
+            }
+            let obs_service = app.state::<ObsService>();
+            let _ = obs_service
+                .send_request::<ObsResponseData>(ObsRequestData {
+                    request_type: ObsRequestType::SetSourceFilterEnabled,
+                    request_id: Uuid::new_v4(),
+                    request_data: Some(ObsRequestDataType::SetSourceFilterEnabled(
+                        ObsSetSourceFilterEnabledRequest {
+                            source_name: None,
+                            source_uuid: Some(source_uuid.clone()),
+                            filter_name: filter_name.clone(),
+                            filter_enabled: true,
+                        },
+                    )),
+                })
+                .await;
+            tokio::time::sleep(Duration::from_millis(*filter_duration)).await;
+            let _ = obs_service
+                .send_request::<ObsResponseData>(ObsRequestData {
+                    request_type: ObsRequestType::SetSourceFilterEnabled,
+                    request_id: Uuid::new_v4(),
+                    request_data: Some(ObsRequestDataType::SetSourceFilterEnabled(
+                        ObsSetSourceFilterEnabledRequest {
+                            source_name: None,
+                            source_uuid: Some(source_uuid.clone()),
+                            filter_name: filter_name.clone(),
+                            filter_enabled: false,
+                        },
+                    )),
+                })
+                .await;
         }
 
         Ok(())
@@ -392,10 +469,14 @@ impl CommandsService {
             ..
         } = &command
         {
+            if !chat.platforms.contains(&Platform::Twitch) {
+                return Err(AppError::Custom(
+                    "Command is not enabled for this platform".to_string(),
+                ));
+            }
             if !message.sender.roles.has_any_level(&chat.user_levels) {
                 return Err(AppError::Custom("Not allowed".to_string()));
             }
-
             let reply_to_message_id: Option<String> = match command.clone().chat_bot_action {
                 Some(chat_bot) => {
                     if chat_bot.replay {
@@ -473,11 +554,19 @@ impl CommandsService {
 
         if let Command {
             is_enabled: true,
-            chat_source: Some(_),
+            chat_source: Some(chat),
             auction_action: Some(auction_action),
             ..
         } = &command
         {
+            if !chat.platforms.contains(&Platform::Twitch) {
+                return Err(AppError::Custom(
+                    "Command is not enabled for this platform".to_string(),
+                ));
+            }
+            if !message.sender.roles.has_any_level(&chat.user_levels) {
+                return Err(AppError::Custom("Not allowed".to_string()));
+            }
             let _ = EventsService::command_auction_action(
                 CommandAuctionAction {
                     amount: calc_command_auction_action_amount(&auction_action, &message),
@@ -488,6 +577,63 @@ impl CommandsService {
                 app,
             )
             .await;
+        }
+
+        if let Command {
+            is_enabled: true,
+            chat_source: Some(chat),
+            obs_action:
+                Some(ObsAction {
+                    r#type: ObsActionType::Filter,
+                    filter:
+                        Some(ObsFilterAction {
+                            source_uuid: Some(source_uuid),
+                            filter_name: Some(filter_name),
+                            filter_duration: Some(filter_duration),
+                            ..
+                        }),
+                }),
+            ..
+        } = &command
+        {
+            if !chat.platforms.contains(&Platform::Twitch) {
+                return Err(AppError::Custom(
+                    "Command is not enabled for this platform".to_string(),
+                ));
+            }
+            if !message.sender.roles.has_any_level(&chat.user_levels) {
+                return Err(AppError::Custom("Not allowed".to_string()));
+            }
+            let obs_service = app.state::<ObsService>();
+            let _ = obs_service
+                .send_request::<ObsResponseData>(ObsRequestData {
+                    request_type: ObsRequestType::SetSourceFilterEnabled,
+                    request_id: Uuid::new_v4(),
+                    request_data: Some(ObsRequestDataType::SetSourceFilterEnabled(
+                        ObsSetSourceFilterEnabledRequest {
+                            source_name: None,
+                            source_uuid: Some(source_uuid.clone()),
+                            filter_name: filter_name.clone(),
+                            filter_enabled: true,
+                        },
+                    )),
+                })
+                .await;
+            tokio::time::sleep(Duration::from_millis(*filter_duration)).await;
+            let _ = obs_service
+                .send_request::<ObsResponseData>(ObsRequestData {
+                    request_type: ObsRequestType::SetSourceFilterEnabled,
+                    request_id: Uuid::new_v4(),
+                    request_data: Some(ObsRequestDataType::SetSourceFilterEnabled(
+                        ObsSetSourceFilterEnabledRequest {
+                            source_name: None,
+                            source_uuid: Some(source_uuid.clone()),
+                            filter_name: filter_name.clone(),
+                            filter_enabled: false,
+                        },
+                    )),
+                })
+                .await;
         }
 
         Ok(())

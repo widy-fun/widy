@@ -43,6 +43,7 @@ impl CommandsRepository for DatabaseService {
             .set_twitch_action(command.twitch_action)
             .set_twitch_source(command.twitch_source)
             .set_telegram_bot_action(command.telegram_bot_action)
+            .set_obs_action(command.obs_action)
             .set_description(command.description)
             .set_source_type(command.source_type)
             .set_timer_source(command.timer_source)
@@ -158,6 +159,7 @@ impl CommandsRepository for DatabaseService {
             twitch_source: Set(command.twitch_source),
             twitch_action: Set(command.twitch_action),
             telegram_bot_action: Set(command.telegram_bot_action),
+            obs_action: Set(command.obs_action),
             tts_settings: Set(command.tts_settings),
             source_type: Set(command.source_type),
             is_enabled: Set(command.is_enabled),

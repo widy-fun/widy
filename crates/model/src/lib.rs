@@ -16,6 +16,7 @@ pub mod gemini;
 pub mod items_buffer;
 pub mod kick;
 pub mod languages;
+pub mod obs;
 pub mod openai;
 pub mod tribute;
 pub mod tts;

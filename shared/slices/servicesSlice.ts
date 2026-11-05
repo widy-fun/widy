@@ -173,6 +173,13 @@ const initialState: ServicesState = {
 			image: "https://www.google.com/s2/favicons?domain=telegram.org&sz=128",
 			description: "services.descriptions.telegram_bot",
 		},
+		[ServiceType.Obs]: {
+			active: false,
+			color: "#0c0c0ce7",
+			authPath: "/obs/server-settings",
+			image: "https://www.google.com/s2/favicons?domain=obsproject.com&sz=128",
+			description: "services.descriptions.obs",
+		},
 	},
 };
 

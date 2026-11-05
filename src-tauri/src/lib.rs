@@ -3,13 +3,13 @@ pub mod constants;
 pub mod helpers;
 pub mod services;
 pub mod utils;
-use std::sync::{Arc, Mutex};
 use crate::{commands::*, helpers::init_services};
+use model::error::AppError;
+use serde::Serialize;
+use std::sync::{Arc, Mutex};
 use tauri::Manager;
 use tauri_plugin_deep_link::DeepLinkExt;
 use utils::register_shortcuts;
-use serde::Serialize;
-use model::error::AppError;
 
 #[derive(Clone, Debug, Serialize)]
 
@@ -193,7 +193,13 @@ pub fn run() {
             update_variable,
             delete_variable_by_id,
             telegram_bot_connect,
-            telegram_bot_sign_out
+            telegram_bot_sign_out,
+            obs_connect,
+            obs_sign_out,
+            get_obs_sources,
+            get_obs_scenes,
+            get_obs_scene_sources,
+            get_obs_source_filters,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -152,6 +152,12 @@ export const api = createApi({
 			}),
 			invalidatesTags: ["Services"],
 		}),
+		obsSignOut: builder.mutation<void, void>({
+			query: () => ({
+				command: "obs_sign_out",
+			}),
+			invalidatesTags: ["Services"],
+		}),
 	}),
 });
 
@@ -174,4 +180,5 @@ export const {
 	useKickSessionSignOutMutation,
 	useFishAudioSignOutMutation,
 	useTelegramBotSignOutMutation,
+	useObsSignOutMutation,
 } = api;

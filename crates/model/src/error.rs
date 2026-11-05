@@ -77,6 +77,9 @@ pub enum AppError {
 
     #[error("Media error: {0}")]
     Media(&'static str),
+
+    #[error("Obs error: {0}")]
+    Obs(String),
 }
 
 impl From<reqwest::Error> for AppError {
@@ -173,5 +176,11 @@ impl From<ort::Error<SessionBuilder>> for AppError {
 impl From<RequestError> for AppError {
     fn from(err: RequestError) -> Self {
         AppError::TelegramBot(err.to_string())
+    }
+}
+
+impl From<obws::error::Error> for AppError {
+    fn from(err: obws::error::Error) -> Self {
+        AppError::Obs(err.to_string())
     }
 }

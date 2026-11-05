@@ -7,6 +7,7 @@ import {
 	ICommand,
 	IKickAction,
 	IKickSource,
+	IObsAction,
 	ISettings,
 	ITelegramBotAction,
 	ITextStyle,
@@ -15,6 +16,7 @@ import {
 	ITwitchSource,
 	KickActionType,
 	KickSourceType,
+	ObsActionType,
 	Platform,
 	PostType,
 	TextAnimation,
@@ -127,6 +129,10 @@ export const DEFAULT_TWITCH_ACTION: ITwitchAction = {
 export const DEFAULT_TELEGRAM_BOT_ACTION: ITelegramBotAction = {
 	channel: "",
 	message: "",
+};
+
+export const DEFAULT_OBS_ACTION: IObsAction = {
+	type: ObsActionType.Filter,
 };
 
 export const DEFAULT_COMMAND: ICommand = {

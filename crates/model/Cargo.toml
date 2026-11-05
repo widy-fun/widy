@@ -21,3 +21,5 @@ sea-orm =  { workspace = true }
 reqwest =  { workspace = true }
 log =  { workspace = true }
 anchor-lang =  { workspace = true }
+obws = { workspace = true }
+uuid = { workspace = true }

@@ -11,6 +11,7 @@ import ChatSource from "./components/commands/components/ChatSource";
 import CreateCommand from "./components/commands/components/CreateCommand";
 import KickAction from "./components/commands/components/KickAction";
 import KickSource from "./components/commands/components/KickSource";
+import ObsAction from "./components/commands/components/ObsAction";
 import TelegramBotAction from "./components/commands/components/TelegramBotAction";
 import TimerSource from "./components/commands/components/TimerSource";
 import TtsAction from "./components/commands/components/TtsAction";
@@ -75,6 +76,7 @@ const DashboardArticle = () => {
 					path="commands/action/telegram-bot"
 					element={<TelegramBotAction />}
 				/>
+				<Route path="commands/action/obs" element={<ObsAction />} />
 			</Routes>
 		</article>
 	);

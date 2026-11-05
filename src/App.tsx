@@ -23,6 +23,7 @@ import Gemini from "./components/gemini/Gemini";
 import Kick from "./components/kick/Kick";
 import KickBot from "./components/kick-bot/KickBot";
 import KickSession from "./components/kick-session/KickSession";
+import Obs from "./components/obs/Obs";
 import OpenAI from "./components/openai/OpenAI";
 import StreamElements from "./components/streamelements/StreamElements";
 import StreamLabs from "./components/streamlabs/StreamLabs";
@@ -127,6 +128,7 @@ function App() {
 					<Route path="/kick-session/*" element={<KickSession />} />
 					<Route path="/fish-audio/*" element={<FishAudio />} />
 					<Route path="/telegram-bot/*" element={<TelegramBot />} />
+					<Route path="/obs/*" element={<Obs />} />
 				</Routes>
 			)}
 			<EmbeddedWidgets />
