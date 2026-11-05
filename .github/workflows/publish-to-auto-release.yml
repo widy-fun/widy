@@ -29,6 +29,18 @@ jobs:
         with:
           lfs: true
 
+      - name: Configure SSH commit signing
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/signing_key
+          chmod 600 ~/.ssh/signing_key
+
+          git config --global gpg.format ssh
+          git config --global user.signingkey ~/.ssh/signing_key
+          git config --global commit.gpgsign true
 
       - name: Pull LFS files
         run: git lfs pull
@@ -143,7 +155,7 @@ jobs:
         with:
           tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: "v__VERSION__"
-          releaseBody: "Refactor media and add kick clips."
+          releaseBody: "Add OBS service and OBS actions."
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
@@ -172,7 +184,7 @@ jobs:
         with:
           tagName: latest # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: "latest"
-          releaseBody: "Refactor media and add kick clips."
+          releaseBody: "Add OBS service and OBS actions."
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
