@@ -1,7 +1,7 @@
 use crate::{
     services::{
         CommandAuctionAction, ExchangeRatesService, WebSocketBroadcaster, media::MediaService,
-        tts::TtsService,
+        obs_service::ObsService, tts::TtsService,
     },
     utils::{get_alert_by_amount, remove_black_listed_words, remove_links, replace_variables},
 };
@@ -19,6 +19,7 @@ use entity::{
     followers::Follow,
     goals::GoalType,
     messages::{ClientMessage, MessageType},
+    obs::{ObsAction, ObsActionType},
     raids::Raid,
     redemptions::Redemption,
     rewards::RewardType,
@@ -338,10 +339,24 @@ impl EventsService {
         redemption: Redemption,
         reward_type: RewardType,
         tts_settings: TtsSettings,
+        obs_action: Option<ObsAction>,
         app: &AppHandle,
     ) -> Result<(), AppError> {
         let tts_service = app.state::<TtsService>();
         let database_service = app.state::<DatabaseService>();
+
+        if reward_type == RewardType::OBS
+            && let Some(obs_action) = obs_action
+        {
+            let obs_service = app.state::<ObsService>();
+            match obs_action.r#type {
+                ObsActionType::Filter if let Some(filter) = &obs_action.filter => {
+                    obs_service.set_filter(filter).await?;
+                }
+                _ => {}
+            }
+        }
+
         let media = match reward_type {
             RewardType::Media => {
                 let media_service = app.state::<MediaService>();

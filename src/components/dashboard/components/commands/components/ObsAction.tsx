@@ -1,11 +1,5 @@
-import { MenuItem, Select } from "@mui/material";
 import { showSnackBar } from "@widy/react";
-import {
-	AlertSeverity,
-	CommandSourceType,
-	ObsActionType,
-	ServiceType,
-} from "@widy/sdk";
+import { AlertSeverity, CommandSourceType, ServiceType } from "@widy/sdk";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,7 +10,7 @@ import type { AppState } from "../../../../../store";
 import { setCommand } from "../../../../../store/slices/commandsSlice";
 import LeftRightButtons from "../../../../LeftRightButtons";
 import styles from "../../settings/Settings.module.css";
-import ObsFilterAction from "./ObsFilterAction";
+import ObsActionSettings from "./ObsActionSettings";
 
 const ObsAction = () => {
 	const { t } = useTranslation();
@@ -42,32 +36,12 @@ const ObsAction = () => {
 			<h1>{t("obs_action.title")}</h1>
 			<div style={{ display: "grid", placeItems: "center" }}>
 				<div className={styles.settingsContainer}>
-					<div className={styles.settings}>
-						<div className={styles.label}>
-							<span>{t("obs_action.type")}:</span>
-						</div>
-						<Select sx={{ width: 150 }} value={obsAction.type}>
-							{Object.values(ObsActionType).map((type) => (
-								<MenuItem
-									value={type}
-									key={type}
-									onClick={() => {
-										setObsAction({
-											type,
-										});
-									}}
-								>
-									{t(`obs_action.${type}`)}
-								</MenuItem>
-							))}
-						</Select>
-					</div>
-					{obsAction.type === ObsActionType.Filter && (
-						<ObsFilterAction
-							obsAction={obsAction}
-							setObsAction={setObsAction}
-						/>
-					)}
+					<ObsActionSettings
+						obs_action={obsAction}
+						onObsActionChange={(obs_action) => {
+							setObsAction(obs_action);
+						}}
+					/>
 					<LeftRightButtons
 						onLeft={() => {
 							if (!obsService?.authorized) {

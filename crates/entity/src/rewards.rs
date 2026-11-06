@@ -3,7 +3,7 @@
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::tts::TtsSettings;
+use crate::{obs::ObsAction, tts::TtsSettings};
 
 #[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
@@ -30,6 +30,8 @@ pub struct Model {
     pub should_redemptions_skip_request_queue: Option<bool>,
     #[sea_orm(column_type = "JsonBinary")]
     pub tts_settings: TtsSettings,
+    #[sea_orm(column_type = "JsonBinary")]
+    pub obs_action: Option<ObsAction>,
     #[sea_orm(has_one)]
     pub alert: HasOne<super::alerts::Entity>,
 }
@@ -56,6 +58,7 @@ pub struct Reward {
     pub global_cooldown_seconds: Option<i64>,
     pub should_redemptions_skip_request_queue: Option<bool>,
     pub tts_settings: TtsSettings,
+    pub obs_action: Option<ObsAction>,
     #[sea_orm(nested)]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub alert: Option<super::alerts::Alert>,
@@ -83,6 +86,8 @@ pub enum RewardType {
     Alert,
     #[sea_orm(string_value = "TTS")]
     TTS,
+    #[sea_orm(string_value = "OBS")]
+    OBS,
 }
 
 impl TryFrom<String> for Platform {

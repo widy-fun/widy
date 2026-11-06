@@ -11,20 +11,14 @@ use crate::{
 use database::{CommandsRepository, DatabaseService, VariablesRepository};
 use entity::{
     commands::{
-        Command, KickAction, KickActionType, KickSource, KickSourceType, KickTarget, ObsAction,
-        ObsActionType, ObsFilterAction, PostType, TwitchAction, TwitchActionType, TwitchSource,
-        TwitchSourceType, TwitchTarget,
+        Command, KickAction, KickActionType, KickSource, KickSourceType, KickTarget, PostType,
+        TwitchAction, TwitchActionType, TwitchSource, TwitchSourceType, TwitchTarget,
     },
     commands_actions::CommandAction,
+    obs::{ObsAction, ObsActionType},
     rewards::Platform,
 };
-use model::{
-    error::{AppError, log_and_wrap_error},
-    obs::{
-        ObsRequestData, ObsRequestDataType, ObsRequestType, ObsResponseData,
-        ObsSetSourceFilterEnabledRequest,
-    },
-};
+use model::error::{AppError, log_and_wrap_error};
 use model::{events::UnifiedChatMessage, items_buffer::ChatMessageBuffer};
 use serde::Serialize;
 use std::{
@@ -226,13 +220,7 @@ impl CommandsService {
             obs_action:
                 Some(ObsAction {
                     r#type: ObsActionType::Filter,
-                    filter:
-                        Some(ObsFilterAction {
-                            source_uuid: Some(source_uuid),
-                            filter_name: Some(filter_name),
-                            filter_duration: Some(filter_duration),
-                            ..
-                        }),
+                    filter: Some(filter),
                 }),
             ..
         } = &command
@@ -246,35 +234,7 @@ impl CommandsService {
                 return Err(AppError::Custom("Not allowed".to_string()));
             }
             let obs_service = app.state::<ObsService>();
-            let _ = obs_service
-                .send_request::<ObsResponseData>(ObsRequestData {
-                    request_type: ObsRequestType::SetSourceFilterEnabled,
-                    request_id: Uuid::new_v4(),
-                    request_data: Some(ObsRequestDataType::SetSourceFilterEnabled(
-                        ObsSetSourceFilterEnabledRequest {
-                            source_name: None,
-                            source_uuid: Some(source_uuid.clone()),
-                            filter_name: filter_name.clone(),
-                            filter_enabled: true,
-                        },
-                    )),
-                })
-                .await;
-            tokio::time::sleep(Duration::from_millis(*filter_duration)).await;
-            let _ = obs_service
-                .send_request::<ObsResponseData>(ObsRequestData {
-                    request_type: ObsRequestType::SetSourceFilterEnabled,
-                    request_id: Uuid::new_v4(),
-                    request_data: Some(ObsRequestDataType::SetSourceFilterEnabled(
-                        ObsSetSourceFilterEnabledRequest {
-                            source_name: None,
-                            source_uuid: Some(source_uuid.clone()),
-                            filter_name: filter_name.clone(),
-                            filter_enabled: false,
-                        },
-                    )),
-                })
-                .await;
+            obs_service.set_filter(filter).await?;
         }
 
         Ok(())
@@ -585,13 +545,7 @@ impl CommandsService {
             obs_action:
                 Some(ObsAction {
                     r#type: ObsActionType::Filter,
-                    filter:
-                        Some(ObsFilterAction {
-                            source_uuid: Some(source_uuid),
-                            filter_name: Some(filter_name),
-                            filter_duration: Some(filter_duration),
-                            ..
-                        }),
+                    filter: Some(filter),
                 }),
             ..
         } = &command
@@ -605,35 +559,7 @@ impl CommandsService {
                 return Err(AppError::Custom("Not allowed".to_string()));
             }
             let obs_service = app.state::<ObsService>();
-            let _ = obs_service
-                .send_request::<ObsResponseData>(ObsRequestData {
-                    request_type: ObsRequestType::SetSourceFilterEnabled,
-                    request_id: Uuid::new_v4(),
-                    request_data: Some(ObsRequestDataType::SetSourceFilterEnabled(
-                        ObsSetSourceFilterEnabledRequest {
-                            source_name: None,
-                            source_uuid: Some(source_uuid.clone()),
-                            filter_name: filter_name.clone(),
-                            filter_enabled: true,
-                        },
-                    )),
-                })
-                .await;
-            tokio::time::sleep(Duration::from_millis(*filter_duration)).await;
-            let _ = obs_service
-                .send_request::<ObsResponseData>(ObsRequestData {
-                    request_type: ObsRequestType::SetSourceFilterEnabled,
-                    request_id: Uuid::new_v4(),
-                    request_data: Some(ObsRequestDataType::SetSourceFilterEnabled(
-                        ObsSetSourceFilterEnabledRequest {
-                            source_name: None,
-                            source_uuid: Some(source_uuid.clone()),
-                            filter_name: filter_name.clone(),
-                            filter_enabled: false,
-                        },
-                    )),
-                })
-                .await;
+            obs_service.set_filter(filter).await?;
         }
 
         Ok(())

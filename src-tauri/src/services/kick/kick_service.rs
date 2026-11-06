@@ -183,6 +183,7 @@ impl KickService {
                             redemption,
                             reward.r#type,
                             reward.tts_settings,
+                            reward.obs_action,
                             &app,
                         )
                         .await;

@@ -14,6 +14,7 @@ import { NumericFormat } from "react-number-format";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { useGetServiceByIdQuery } from "../../../../../api/servicesApi";
+import { DEFAULT_OBS_ACTION } from "../../../../../constants";
 import getDefaultReward from "../../../../../helpers/getDefaultReward";
 import type { AppState } from "../../../../../store";
 import { setReward } from "../../../../../store/slices/rewardsSlice";
@@ -21,6 +22,7 @@ import ColorPicker from "../../../../ColorPicker";
 import LeftRightButtons from "../../../../LeftRightButtons";
 import OnOffSwitch from "../../../../OnOffSwitch";
 import TtsSettings from "../../../../TtsSettings";
+import ObsActionSettings from "../../commands/components/ObsActionSettings";
 import styles from "../../settings/Settings.module.css";
 
 const RewardSettings = ({ onSave }: { onSave: () => Promise<void> }) => {
@@ -147,12 +149,13 @@ const RewardSettings = ({ onSave }: { onSave: () => Promise<void> }) => {
 											setReward({
 												...reward,
 												type,
-												is_user_input_required: type !== RewardType.Alert,
+												is_user_input_required:
+													type !== RewardType.Alert && type !== RewardType.OBS,
 											}),
 										);
 									}}
 								>
-									{type}
+									{t(`reward.${type}`)}
 								</MenuItem>
 							))}
 						</Select>
@@ -244,6 +247,19 @@ const RewardSettings = ({ onSave }: { onSave: () => Promise<void> }) => {
 									setReward({
 										...reward,
 										tts_settings,
+									}),
+								);
+							}}
+						/>
+					)}
+					{reward.type === RewardType.OBS && (
+						<ObsActionSettings
+							obs_action={reward.obs_action ?? DEFAULT_OBS_ACTION}
+							onObsActionChange={(obs_action) => {
+								dispatch(
+									setReward({
+										...reward,
+										obs_action,
 									}),
 								);
 							}}

@@ -3,6 +3,7 @@ import MovieIcon from "@mui/icons-material/Movie";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import { type IReward, RewardType } from "@widy/sdk";
 import AuctionIcon from "../components/dashboard/components/auction/components/AuctionIcon";
+import ObsIcon from "../components/ObsIcon";
 
 const getRewardIconByRewardType = ({
 	reward,
@@ -20,6 +21,8 @@ const getRewardIconByRewardType = ({
 			return <AuctionIcon size={size} />;
 		case RewardType.TTS:
 			return <VolumeUpIcon sx={{ width: size, height: size }} />;
+		case RewardType.OBS:
+			return <ObsIcon size={size} />;
 	}
 };
 export default getRewardIconByRewardType;

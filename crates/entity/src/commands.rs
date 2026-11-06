@@ -3,7 +3,7 @@
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::{rewards::Platform, tts::TtsSettings};
+use crate::{obs::ObsAction, rewards::Platform, tts::TtsSettings};
 
 #[sea_orm::model]
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
@@ -110,12 +110,6 @@ pub struct AuctionAction {
     pub moderator_luck_modifier: f32,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, FromJsonQueryResult)]
-pub struct ObsAction {
-    pub r#type: ObsActionType,
-    pub filter: Option<ObsFilterAction>,
-}
-
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 pub enum UserLevel {
     Streamer,
@@ -194,20 +188,4 @@ pub enum TwitchTarget {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct PinMessageTarget {
     pub message: String,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
-pub enum ObsActionType {
-    Filter,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-#[serde(rename_all = "camelCase")]
-pub struct ObsFilterAction {
-    pub scene_uuid: Option<Uuid>,
-    pub scene_name: Option<String>,
-    pub source_uuid: Option<Uuid>,
-    pub source_name: Option<String>,
-    pub filter_name: Option<String>,
-    pub filter_duration: Option<u64>,
 }

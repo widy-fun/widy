@@ -1,19 +1,26 @@
 use base64::{Engine, engine::general_purpose::STANDARD};
 use database::{DatabaseService, ServicesRepository};
-use entity::services::{
-    Model, ObsAuth, ServiceAuth,
-    ServiceType::{self},
+use entity::{
+    obs::ObsFilterAction,
+    services::{
+        Model, ObsAuth, ServiceAuth,
+        ServiceType::{self},
+    },
 };
 use futures::{SinkExt, StreamExt};
 use model::{
     error::AppError,
-    obs::{HelloData, IdentifyData, ObsData, ObsMessage, ObsRequestData, ObsResponseData},
+    obs::{
+        HelloData, IdentifyData, ObsData, ObsMessage, ObsRequestData, ObsRequestDataType,
+        ObsRequestType, ObsResponseData, ObsSetSourceFilterEnabledRequest,
+    },
 };
 use serde::de::DeserializeOwned;
 use sha2::{Digest, Sha256};
 use std::{
     collections::HashMap,
     sync::{Arc, Mutex},
+    time::Duration,
 };
 use tauri::{AppHandle, Manager};
 use tokio::{
@@ -241,6 +248,41 @@ impl ObsService {
         }
 
         Ok(response)
+    }
+
+    pub async fn set_filter(&self, filter: &ObsFilterAction) -> Result<(), AppError> {
+        if let Some(filter_name) = &filter.filter_name
+            && let Some(filter_duration) = filter.filter_duration
+        {
+            self.send_request::<ObsResponseData>(ObsRequestData {
+                request_type: ObsRequestType::SetSourceFilterEnabled,
+                request_id: Uuid::new_v4(),
+                request_data: Some(ObsRequestDataType::SetSourceFilterEnabled(
+                    ObsSetSourceFilterEnabledRequest {
+                        source_name: None,
+                        source_uuid: filter.source_uuid.clone(),
+                        filter_name: filter_name.clone(),
+                        filter_enabled: true,
+                    },
+                )),
+            })
+            .await?;
+            tokio::time::sleep(Duration::from_millis(filter_duration)).await;
+            self.send_request::<ObsResponseData>(ObsRequestData {
+                request_type: ObsRequestType::SetSourceFilterEnabled,
+                request_id: Uuid::new_v4(),
+                request_data: Some(ObsRequestDataType::SetSourceFilterEnabled(
+                    ObsSetSourceFilterEnabledRequest {
+                        source_name: None,
+                        source_uuid: filter.source_uuid,
+                        filter_name: filter_name.clone(),
+                        filter_enabled: false,
+                    },
+                )),
+            })
+            .await?;
+        }
+        Ok(())
     }
 
     pub async fn sign_out(&self, app: &AppHandle) -> Result<(), AppError> {

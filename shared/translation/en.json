@@ -520,7 +520,12 @@
 		"points_currency_ratio": "Points currency ratio",
 		"is_global_cooldown_enabled": "Is global cooldown enabled",
 		"global_cooldown_seconds": "Global cooldown seconds",
-		"title_exist": "Reward with same title exist"
+		"title_exist": "Reward with same title exist",
+		"Media": "Media",
+		"Auction": "Auction",
+		"Alert": "Alert",
+		"TTS": "TTS",
+		"OBS": "OBS"
 	},
 	"validation": {
 		"required": "Required"

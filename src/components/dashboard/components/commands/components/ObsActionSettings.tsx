@@ -1,6 +1,5 @@
 import { InputAdornment, MenuItem, Select, TextField } from "@mui/material";
-import type { IObsAction } from "@widy/sdk";
-import type { Dispatch, SetStateAction } from "react";
+import { type IObsAction, ObsActionType } from "@widy/sdk";
 import { useTranslation } from "react-i18next";
 import { NumericFormat } from "react-number-format";
 import {
@@ -10,12 +9,12 @@ import {
 } from "../../../../../api/obsApi";
 import styles from "../../settings/Settings.module.css";
 
-const ObsFilterAction = ({
-	obsAction,
-	setObsAction,
+const ObsActionSettings = ({
+	obs_action,
+	onObsActionChange,
 }: {
-	obsAction: IObsAction;
-	setObsAction: Dispatch<SetStateAction<IObsAction>>;
+	obs_action: IObsAction;
+	onObsActionChange: (obsAction: IObsAction) => void;
 }) => {
 	const { t } = useTranslation();
 	const { data: obsScenes } = useGetObsScenesQuery(undefined, {
@@ -23,17 +22,17 @@ const ObsFilterAction = ({
 	});
 	const { data: obsSceneSources } = useGetObsSceneSourcesQuery(
 		{
-			sceneUuid: obsAction.filter?.sceneUuid,
+			sceneUuid: obs_action.filter?.sceneUuid,
 		},
-		{ skip: !obsAction.filter?.sceneUuid, pollingInterval: 1000 },
+		{ skip: !obs_action.filter?.sceneUuid, pollingInterval: 1000 },
 	);
 
 	const { data: obsSourceFilters } = useGetObsSourceFiltersQuery(
 		{
-			sourceUuid: obsAction.filter?.sourceUuid,
+			sourceUuid: obs_action.filter?.sourceUuid,
 		},
 		{
-			skip: !obsAction.filter?.sourceUuid,
+			skip: !obs_action.filter?.sourceUuid,
 			pollingInterval: 1000,
 		},
 	);
@@ -42,11 +41,31 @@ const ObsFilterAction = ({
 		<>
 			<div className={styles.settings}>
 				<div className={styles.label}>
+					<span>{t("obs_action.type")}:</span>
+				</div>
+				<Select sx={{ width: 150 }} value={obs_action.type}>
+					{Object.values(ObsActionType).map((type) => (
+						<MenuItem
+							value={type}
+							key={type}
+							onClick={() => {
+								onObsActionChange({
+									type,
+								});
+							}}
+						>
+							{t(`obs_action.${type}`)}
+						</MenuItem>
+					))}
+				</Select>
+			</div>
+			<div className={styles.settings}>
+				<div className={styles.label}>
 					<span>{t("obs_action.scene")}:</span>
 				</div>
 				<Select
 					sx={{ width: 150 }}
-					value={obsAction.filter?.sceneName ?? ""}
+					value={obs_action.filter?.sceneName ?? ""}
 					displayEmpty
 				>
 					<MenuItem value="" disabled>
@@ -57,8 +76,8 @@ const ObsFilterAction = ({
 							value={scene.sceneName}
 							key={scene.sceneUuid}
 							onClick={() => {
-								setObsAction({
-									...obsAction,
+								onObsActionChange({
+									...obs_action,
 									filter: {
 										sceneUuid: scene.sceneUuid,
 										sceneName: scene.sceneName,
@@ -77,7 +96,7 @@ const ObsFilterAction = ({
 				</div>
 				<Select
 					sx={{ width: 150 }}
-					value={obsAction.filter?.sourceName ?? ""}
+					value={obs_action.filter?.sourceName ?? ""}
 					displayEmpty
 				>
 					<MenuItem value="" disabled>
@@ -88,10 +107,10 @@ const ObsFilterAction = ({
 							value={sceneItem.sourceName}
 							key={sceneItem.sourceUuid}
 							onClick={() => {
-								setObsAction({
-									...obsAction,
+								onObsActionChange({
+									...obs_action,
 									filter: {
-										...obsAction.filter,
+										...obs_action.filter,
 										sourceUuid: sceneItem.sourceUuid,
 										sourceName: sceneItem.sourceName,
 									},
@@ -109,7 +128,7 @@ const ObsFilterAction = ({
 				</div>
 				<Select
 					sx={{ width: 150 }}
-					value={obsAction.filter?.filterName ?? ""}
+					value={obs_action.filter?.filterName ?? ""}
 					displayEmpty
 				>
 					<MenuItem value="" disabled>
@@ -120,10 +139,10 @@ const ObsFilterAction = ({
 							value={sourceFilter.filterName}
 							key={sourceFilter.filterName}
 							onClick={() => {
-								setObsAction({
-									...obsAction,
+								onObsActionChange({
+									...obs_action,
 									filter: {
-										...obsAction.filter,
+										...obs_action.filter,
 										filterName: sourceFilter.filterName,
 									},
 								});
@@ -161,18 +180,18 @@ const ObsFilterAction = ({
 					}}
 					onChange={(e) => {
 						const value = Number(e.target.value);
-						setObsAction({
-							...obsAction,
+						onObsActionChange({
+							...obs_action,
 							filter: {
-								...obsAction.filter,
+								...obs_action.filter,
 								filterDuration: value,
 							},
 						});
 					}}
-					value={obsAction.filter?.filterDuration ?? 0}
+					value={obs_action.filter?.filterDuration ?? 0}
 				/>
 			</div>
 		</>
 	);
 };
-export default ObsFilterAction;
+export default ObsActionSettings;

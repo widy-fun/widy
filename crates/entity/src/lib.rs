@@ -13,6 +13,7 @@ pub mod media;
 pub mod media_settings;
 pub mod messages;
 pub mod nsfw_settings;
+pub mod obs;
 pub mod raids;
 pub mod redemptions;
 pub mod rewards;

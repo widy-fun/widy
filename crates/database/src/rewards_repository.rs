@@ -54,6 +54,7 @@ impl RewardsRepository for DatabaseService {
             .set_is_global_cooldown_enabled(reward.is_global_cooldown_enabled)
             .set_global_cooldown_seconds(reward.global_cooldown_seconds)
             .set_tts_settings(reward.tts_settings)
+            .set_obs_action(reward.obs_action)
             .set_should_redemptions_skip_request_queue(
                 reward.should_redemptions_skip_request_queue,
             );
@@ -149,7 +150,8 @@ impl RewardsRepository for DatabaseService {
             is_global_cooldown_enabled: Set(reward.is_global_cooldown_enabled),
             global_cooldown_seconds: Set(reward.global_cooldown_seconds),
             should_redemptions_skip_request_queue: Set(reward.should_redemptions_skip_request_queue),
-            tts_settings:Set(reward.tts_settings)
+            tts_settings:Set(reward.tts_settings),
+            obs_action:Set(reward.obs_action),
         })
         .exec(&self.connection)
         .await
