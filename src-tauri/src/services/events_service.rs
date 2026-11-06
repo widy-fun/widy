@@ -3,7 +3,10 @@ use crate::{
         CommandAuctionAction, ExchangeRatesService, WebSocketBroadcaster, media::MediaService,
         obs_service::ObsService, tts::TtsService,
     },
-    utils::{get_alert_by_amount, remove_black_listed_words, remove_links, replace_variables},
+    utils::{
+        check_donation_exist, check_if_user_anonymous, get_alert_by_amount, get_audio,
+        get_message_text, remove_black_listed_words, remove_links, replace_variables,
+    },
 };
 use chrono::Utc;
 use database::{
@@ -29,12 +32,11 @@ use entity::{
     tts::{Tts, TtsSettings},
     variables::Variable,
 };
-use model::error::AppError;
+use model::error::{AppError, log_and_wrap_error};
 use model::events::{
     AppEvent, EventMessage, UnifiedBannedUser, UnifiedChatMessage, UnifiedChatMessageDelete,
 };
 use tauri::{AppHandle, Manager};
-use tokio::sync::Mutex;
 use uuid::Uuid;
 
 pub struct EventsService;
@@ -43,7 +45,7 @@ impl EventsService {
     pub async fn goal(
         database_service: &DatabaseService,
         websocket_broadcaster: &WebSocketBroadcaster,
-        amount: u32,
+        amount: i64,
         r#type: GoalType,
     ) -> Result<(), AppError> {
         database_service
@@ -57,7 +59,7 @@ impl EventsService {
                 };
                 websocket_broadcaster.broadcast_event_message(&event_message);
             }
-            Err(_) => todo!(),
+            Err(e) => return Err(e),
         }
         Ok(())
     }
@@ -71,90 +73,40 @@ impl EventsService {
         message: Option<String>,
         app: &AppHandle,
     ) -> Result<(), AppError> {
-        let user_name = match name {
-            Some(name) => match name.as_str() {
-                "" => "Anonymous".to_string(),
-                _ => name,
-            },
-            None => "Anonymous".to_string(),
-        };
         let media_service = app.state::<MediaService>();
         let database_service = app.state::<DatabaseService>();
-        let tts_service = app.state::<TtsService>();
         let websocket_broadcaster = app.state::<WebSocketBroadcaster>();
-        let exchange_rates_service_mutex = app.state::<Mutex<ExchangeRatesService>>();
-
-        database_service
-            .get_donation_by_service_id(service_id.clone())
-            .await?;
-
+        let exchange_rates_service = app.state::<ExchangeRatesService>();
         let settings = database_service
             .get_settings()
             .await?
             .ok_or(AppError::DbError("No settings found".to_string()))?;
 
-        let id = Uuid::new_v4();
+        check_donation_exist(app, &service_id).await?;
 
-        let exchanged_amount = {
-            let mut exchange_rates_service = exchange_rates_service_mutex.lock().await;
-            exchange_rates_service
-                .calculate_amount_by_currency(
-                    settings.currency.clone(),
-                    target_currency.clone(),
-                    target_amount,
-                )
-                .await
-        };
+        let user_name = check_if_user_anonymous(name);
+        let id = Uuid::new_v4();
+        let created_at = Utc::now().timestamp();
+        let message_id = Uuid::new_v4();
+
+        let exchanged_amount = exchange_rates_service
+            .calculate_amount_by_currency(
+                settings.currency.clone(),
+                target_currency.clone(),
+                target_amount,
+            )
+            .await;
         let media = media_service
             .get_media(&message, &exchanged_amount, app, MessageType::Donation)
             .await;
 
-        let text = match message {
-            Some(text) => {
-                let text_without_black_listed_words =
-                    remove_black_listed_words(&text, &settings.black_list);
-
-                if settings.remove_links {
-                    Some(remove_links(&text_without_black_listed_words))
-                } else {
-                    Some(text_without_black_listed_words)
-                }
-            }
-            None => None,
-        };
+        let text = get_message_text(message, &settings.black_list, settings.remove_links);
 
         let mut alert = get_alert_by_amount(app, exchanged_amount, MessageType::Donation)
             .await?
             .ok_or(AppError::Custom("Alert not found".to_string()))?;
 
-        let audio = if let Some(text) = text.clone() {
-            match tts_service
-                .make_audio(
-                    &remove_links(&text),
-                    &id.to_string(),
-                    &app,
-                    alert.tts_settings.clone(),
-                )
-                .await
-            {
-                Ok(audio) => Some(audio),
-                Err(e) => {
-                    log::error!("Make audio error: {}", e.to_string());
-                    let ws_message = EventMessage {
-                        event: AppEvent::MakeAudioError,
-                        data: e,
-                    };
-
-                    websocket_broadcaster.broadcast_event_message(&ws_message);
-                    None
-                }
-            }
-        } else {
-            None
-        };
-
-        let created_at = Utc::now().timestamp();
-        let message_id = Uuid::new_v4();
+        let audio = get_audio(text.clone(), app, &id, &alert).await;
 
         let variables = database_service.get_variables().await?;
         let variables = [
@@ -209,17 +161,19 @@ impl EventsService {
             }),
         };
 
-        Self::goal(
+        let _ = Self::goal(
             &database_service,
             &websocket_broadcaster,
-            exchanged_amount as u32,
+            exchanged_amount as i64,
             entity::goals::GoalType::Donation,
         )
-        .await?;
+        .await
+        .map_err(|e| log_and_wrap_error("Update goal", e));
 
-        database_service
+        let _ = database_service
             .save_donation_message(client_message.clone())
-            .await?;
+            .await
+            .map_err(|e| log_and_wrap_error("Save donation message", e));
 
         let event_message = EventMessage {
             event: AppEvent::Message,
@@ -323,14 +277,16 @@ impl EventsService {
         websocket_broadcaster.broadcast_event_message(&event_message);
         let _ = database_service
             .save_subscribe_message(client_message)
-            .await;
+            .await
+            .map_err(|e| log_and_wrap_error("Save subscribe message", e));
         let _ = Self::goal(
             &database_service,
             &websocket_broadcaster,
-            subscription.total,
+            subscription.total as i64,
             goal_type,
         )
-        .await;
+        .await
+        .map_err(|e| log_and_wrap_error("Update goal", e));
 
         Ok(())
     }
@@ -422,7 +378,8 @@ impl EventsService {
         };
         let _ = database_service
             .save_redemption_message(client_message.clone())
-            .await;
+            .await
+            .map_err(|e| log_and_wrap_error("Save redemption goal", e));
         let event_message = EventMessage {
             event: AppEvent::Message,
             data: client_message.clone(),
@@ -458,7 +415,8 @@ impl EventsService {
         };
         let _ = database_service
             .save_command_action_message(client_message.clone())
-            .await;
+            .await
+            .map_err(|e| log_and_wrap_error("Save command action message", e));
         let event_message = EventMessage {
             event: AppEvent::Message,
             data: client_message.clone(),
@@ -495,7 +453,8 @@ impl EventsService {
 
         let _ = database_service
             .save_assistant_action_message(client_message.clone())
-            .await;
+            .await
+            .map_err(|e| log_and_wrap_error("Save assistant action message", e));
 
         let event_message = EventMessage {
             event: AppEvent::Message,
@@ -567,7 +526,8 @@ impl EventsService {
 
         let _ = database_service
             .save_command_action_message(client_message.clone())
-            .await;
+            .await
+            .map_err(|e| log_and_wrap_error("Save command action message", e));
         let event_message = EventMessage {
             event: AppEvent::Message,
             data: client_message.clone(),
@@ -633,8 +593,13 @@ impl EventsService {
             data: client_message.clone(),
         };
         websocket_broadcaster.broadcast_event_message(&event_message);
-        let _ = database_service.save_follow_message(client_message).await;
-        let _ = Self::goal(&database_service, &websocket_broadcaster, 1, goal_type).await;
+        let _ = database_service
+            .save_follow_message(client_message)
+            .await
+            .map_err(|e| log_and_wrap_error("Save follow message", e));
+        let _ = Self::goal(&database_service, &websocket_broadcaster, 1, goal_type)
+            .await
+            .map_err(|e| log_and_wrap_error("Update goal", e));
         Ok(())
     }
 
@@ -681,7 +646,10 @@ impl EventsService {
             data: client_message.clone(),
         };
         websocket_broadcaster.broadcast_event_message(&event_message);
-        let _ = database_service.save_raid_message(client_message).await;
+        let _ = database_service
+            .save_raid_message(client_message)
+            .await
+            .map_err(|e| log_and_wrap_error("Save raid message", e));
 
         Ok(())
     }

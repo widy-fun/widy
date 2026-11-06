@@ -1,7 +1,7 @@
 use chrono::Utc;
 use entity::settings::Currency;
 use serde::Deserialize;
-use std::{collections::HashMap, fmt::Debug};
+use std::{collections::HashMap, fmt::Debug, sync::Mutex};
 
 #[derive(Debug, Deserialize)]
 struct ExchangeRatesResponse {
@@ -12,11 +12,10 @@ struct ExchangeRatesResponse {
 struct ExchangeRatesData {
     rates: HashMap<String, String>,
 }
-#[derive(Clone, Debug)]
 pub struct ExchangeRatesService {
-    rates: Option<HashMap<String, String>>,
+    rates: Mutex<Option<HashMap<String, String>>>,
     virtual_rates: HashMap<String, String>,
-    fetch_timestamp: i64,
+    fetch_timestamp: Mutex<i64>,
 }
 
 impl ExchangeRatesService {
@@ -31,17 +30,18 @@ impl ExchangeRatesService {
             "100.0".to_string(),
         );
         Self {
-            fetch_timestamp: 0,
-            rates: None,
+            fetch_timestamp: Mutex::new(0),
+            rates: Mutex::new(None),
             virtual_rates,
         }
     }
 
-    pub async fn get_exchange_rates(&mut self) -> Option<HashMap<String, String>> {
+    pub async fn get_exchange_rates(&self) -> Option<HashMap<String, String>> {
         let now_utc = Utc::now();
+        let fetch_timestamp = { self.fetch_timestamp.lock().unwrap().clone() };
 
-        if self.fetch_timestamp + 5 * 3600 > now_utc.timestamp() {
-            return self.rates.clone();
+        if fetch_timestamp + 5 * 3600 > now_utc.timestamp() {
+            return self.rates.lock().unwrap().clone();
         }
 
         let url = "https://api.coinbase.com/v2/exchange-rates?currency=USD";
@@ -61,14 +61,16 @@ impl ExchangeRatesService {
                 return None;
             }
         };
-        self.rates = Some(exchange_rates.data.rates);
-        self.fetch_timestamp = Utc::now().timestamp();
 
-        return self.rates.clone();
+        *self.rates.lock().unwrap() = Some(exchange_rates.data.rates.clone());
+
+        *self.fetch_timestamp.lock().unwrap() = Utc::now().timestamp();
+
+        return Some(exchange_rates.data.rates);
     }
 
     pub async fn calculate_amount_by_currency(
-        &mut self,
+        &self,
         base_currency: Currency,
         target_currency: Currency,
         target_amount: f64,
@@ -104,7 +106,6 @@ impl ExchangeRatesService {
             .unwrap_or(&"1.0".to_string())
             .parse::<f64>()
             .unwrap_or(1.0);
-
         return target_amount / (target_rate / base_rate);
     }
 }

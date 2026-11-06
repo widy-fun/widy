@@ -3,18 +3,15 @@ use database::{DatabaseService, MessagesRepository, SettingsRepository};
 use entity::{donations::Donation, messages::*};
 use model::error::AppError;
 use tauri::State;
-use tokio::sync::Mutex;
 
 #[tauri::command]
 pub async fn get_messages(
     database_service: State<'_, DatabaseService>,
-    exchange_rates_service_mutex: State<'_, Mutex<ExchangeRatesService>>,
+    exchange_rates_service: State<'_, ExchangeRatesService>,
     limit: u64,
     offset: u64,
     filter: MessagesFilter,
 ) -> Result<Vec<ClientMessage>, AppError> {
-    let mut exchange_rates_service = exchange_rates_service_mutex.lock().await;
-
     let mut client_messages = database_service
         .get_messages(
             &limit,

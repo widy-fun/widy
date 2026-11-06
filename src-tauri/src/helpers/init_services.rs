@@ -25,7 +25,6 @@ use model::error::{AppError, log_and_wrap_error};
 use std::sync::Arc;
 use std::time::Duration;
 use tauri::{AppHandle, Manager};
-use tokio::sync::Mutex;
 
 pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
     //http client
@@ -54,9 +53,9 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
     app.manage(database_service);
 
     //exchange
-    let mut exchange_rates_service = ExchangeRatesService::new();
+    let exchange_rates_service = ExchangeRatesService::new();
     exchange_rates_service.get_exchange_rates().await;
-    app.manage(Mutex::new(exchange_rates_service));
+    app.manage(exchange_rates_service);
 
     //ws
     let websocket_broadcaster = WebSocketBroadcaster::new();

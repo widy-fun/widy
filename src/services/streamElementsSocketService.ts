@@ -69,7 +69,6 @@ export default class StreamElementsSocketService extends Subscriptions {
 		switch (data.type) {
 			case StreamElementsEventType.tip: {
 				if (process.env.NODE_ENV !== "development" && data.isMock) return;
-
 				const event = data as IStreamElementsEvent<IStreamElementsTip>;
 				store.dispatch(
 					streamElementsApi.endpoints.streamElementsTipEvent.initiate({
