@@ -520,7 +520,12 @@
 		"points_currency_ratio": "पॉइंट और मुद्रा का अनुपात",
 		"is_global_cooldown_enabled": "क्या वैश्विक कूलडाउन सक्षम है",
 		"global_cooldown_seconds": "वैश्विक कूलडाउन के सेकंड",
-		"title_exist": "इसी शीर्षक वाला पुरस्कार पहले से मौजूद है"
+		"title_exist": "इसी शीर्षक वाला पुरस्कार पहले से मौजूद है",
+		"Media": "मीडिया",
+		"Auction": "नीलामी",
+		"Alert": "अलर्ट",
+		"TTS": "TTS",
+		"OBS": "OBS"
 	},
 	"validation": {
 		"required": "यह आवश्यक है"
@@ -713,6 +718,8 @@
 		"scene": "दृश्य",
 		"source": "सोर्स",
 		"source_filter": "सोर्स फ़िल्टर",
-		"filter_duration": "फ़िल्टर अवधि"
+		"filter_duration": "फ़िल्टर अवधि",
+		"type": "प्रकार",
+		"Filter": "फ़िल्टर"
 	}
 }

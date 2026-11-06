@@ -520,7 +520,12 @@
 		"points_currency_ratio": "Relación entre puntos y moneda",
 		"is_global_cooldown_enabled": "Activar tiempo de espera global",
 		"global_cooldown_seconds": "Duración del tiempo de espera global en segundos",
-		"title_exist": "Ya existe una recompensa con el mismo título"
+		"title_exist": "Ya existe una recompensa con el mismo título",
+		"Media": "Multimedia",
+		"Auction": "Subasta",
+		"Alert": "Alerta",
+		"TTS": "TTS",
+		"OBS": "OBS"
 	},
 	"validation": {
 		"required": "Obligatorio"
@@ -713,6 +718,8 @@
 		"scene": "Escena",
 		"source": "Fuente",
 		"source_filter": "Filtro de fuente",
-		"filter_duration": "Duración del filtro"
+		"filter_duration": "Duración del filtro",
+		"type": "Tipo",
+		"Filter": "Filtro"
 	}
 }

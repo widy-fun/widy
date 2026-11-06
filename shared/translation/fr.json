@@ -520,7 +520,12 @@
 		"points_currency_ratio": "Taux de conversion des points en devise",
 		"is_global_cooldown_enabled": "Activer le délai de recharge global",
 		"global_cooldown_seconds": "Délai de recharge global en secondes",
-		"title_exist": "Une récompense portant le même titre existe déjà"
+		"title_exist": "Une récompense portant le même titre existe déjà",
+		"Media": "Média",
+		"Auction": "Enchère",
+		"Alert": "Alerte",
+		"TTS": "TTS",
+		"OBS": "OBS"
 	},
 	"validation": {
 		"required": "Champ obligatoire"
@@ -713,6 +718,8 @@
 		"scene": "Scène",
 		"source": "Source",
 		"source_filter": "Filtre de source",
-		"filter_duration": "Durée du filtre"
+		"filter_duration": "Durée du filtre",
+		"type": "Type",
+		"Filter": "Filtre"
 	}
 }

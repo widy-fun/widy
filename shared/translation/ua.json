@@ -520,7 +520,12 @@
 		"points_currency_ratio": "Співвідношення балів до валюти",
 		"is_global_cooldown_enabled": "Увімкнути глобальний період очікування",
 		"global_cooldown_seconds": "Тривалість глобального періоду очікування в секундах",
-		"title_exist": "Нагорода з такою назвою вже існує"
+		"title_exist": "Нагорода з такою назвою вже існує",
+		"Media": "Медіа",
+		"Auction": "Аукціон",
+		"Alert": "Сповіщення",
+		"TTS": "TTS",
+		"OBS": "OBS"
 	},
 	"validation": {
 		"required": "Обов'язкове поле"
@@ -713,6 +718,8 @@
 		"scene": "Сцена",
 		"source": "Джерело",
 		"source_filter": "Фільтр джерела",
-		"filter_duration": "Тривалість фільтра"
+		"filter_duration": "Тривалість фільтра",
+		"type": "Тип",
+		"Filter": "Фільтр"
 	}
 }

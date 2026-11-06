@@ -520,7 +520,12 @@
 		"points_currency_ratio": "نسبة النقاط إلى العملة",
 		"is_global_cooldown_enabled": "هل فترة التهدئة العامة مفعّلة؟",
 		"global_cooldown_seconds": "مدة التهدئة العامة بالثواني",
-		"title_exist": "توجد مكافأة بالعنوان نفسه"
+		"title_exist": "توجد مكافأة بالعنوان نفسه",
+		"Media": "الوسائط",
+		"Auction": "المزاد",
+		"Alert": "تنبيه",
+		"TTS": "TTS",
+		"OBS": "OBS"
 	},
 	"validation": {
 		"required": "حقل مطلوب"
@@ -713,6 +718,8 @@
 		"scene": "المشهد",
 		"source": "المصدر",
 		"source_filter": "مرشح المصدر",
-		"filter_duration": "مدة المرشح"
+		"filter_duration": "مدة المرشح",
+		"type": "النوع",
+		"Filter": "مرشح"
 	}
 }

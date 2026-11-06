@@ -520,7 +520,12 @@
 		"points_currency_ratio": "Punkte-Währungs-Verhältnis",
 		"is_global_cooldown_enabled": "Globalen Cooldown aktivieren",
 		"global_cooldown_seconds": "Globale Cooldown-Dauer in Sekunden",
-		"title_exist": "Eine Belohnung mit diesem Titel existiert bereits"
+		"title_exist": "Eine Belohnung mit diesem Titel existiert bereits",
+		"Media": "Medien",
+		"Auction": "Auktion",
+		"Alert": "Benachrichtigung",
+		"TTS": "TTS",
+		"OBS": "OBS"
 	},
 	"validation": {
 		"required": "Pflichtfeld"
@@ -713,6 +718,8 @@
 		"scene": "Szene",
 		"source": "Quelle",
 		"source_filter": "Quellenfilter",
-		"filter_duration": "Filterdauer"
+		"filter_duration": "Filterdauer",
+		"type": "Typ",
+		"Filter": "Filter"
 	}
 }

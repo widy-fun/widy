@@ -520,7 +520,12 @@
 		"points_currency_ratio": "Соотношение баллов и валюты",
 		"is_global_cooldown_enabled": "Включить общую перезарядку",
 		"global_cooldown_seconds": "Длительность общей перезарядки в секундах",
-		"title_exist": "Награда с таким названием уже существует"
+		"title_exist": "Награда с таким названием уже существует",
+		"Media": "Медиа",
+		"Auction": "Аукцион",
+		"Alert": "Оповещение",
+		"TTS": "TTS",
+		"OBS": "OBS"
 	},
 	"validation": {
 		"required": "Обязательное поле"
@@ -713,6 +718,8 @@
 		"scene": "Сцена",
 		"source": "Источник",
 		"source_filter": "Фильтр источника",
-		"filter_duration": "Длительность фильтра"
+		"filter_duration": "Длительность фильтра",
+		"type": "Тип",
+		"Filter": "Фильтр"
 	}
 }

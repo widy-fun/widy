@@ -520,7 +520,12 @@
 		"points_currency_ratio": "点数与货币的兑换比例",
 		"is_global_cooldown_enabled": "是否启用全局冷却",
 		"global_cooldown_seconds": "全局冷却时间（秒）",
-		"title_exist": "已存在同名奖励"
+		"title_exist": "已存在同名奖励",
+		"Media": "媒体",
+		"Auction": "拍卖",
+		"Alert": "提醒",
+		"TTS": "TTS",
+		"OBS": "OBS"
 	},
 	"validation": {
 		"required": "必填项"
@@ -713,6 +718,8 @@
 		"scene": "场景",
 		"source": "来源",
 		"source_filter": "来源筛选器",
-		"filter_duration": "筛选器持续时间"
+		"filter_duration": "筛选器持续时间",
+		"type": "类型",
+		"Filter": "滤镜"
 	}
 }
