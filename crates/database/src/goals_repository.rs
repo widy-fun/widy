@@ -11,7 +11,7 @@ pub trait GoalsRepository: Send + Sync {
     async fn get_goals(&self, limit: u64, offset: u64) -> Result<Vec<Model>, AppError>;
     async fn get_goal_by_id(&self, id: Uuid) -> Result<Option<Model>, AppError>;
     async fn update_goal_settings(&self, goal: Model) -> Result<Model, AppError>;
-    async fn update_goal_amount(&self, amount: i64, r#type: GoalType) -> Result<(), AppError>;
+    async fn update_goal_amount(&self, amount: f64, r#type: GoalType) -> Result<(), AppError>;
     async fn create_goal(&self, goal: Model) -> Result<(), AppError>;
     async fn get_not_ended_goal(&self, r#type: GoalType) -> Result<Option<Model>, AppError>;
     async fn get_not_ended_goals(&self) -> Result<Vec<Model>, AppError>;
@@ -46,7 +46,7 @@ impl GoalsRepository for DatabaseService {
             .await
             .map_err(|e| log_and_wrap_error("Get not ended goals error", e))
     }
-    async fn update_goal_amount(&self, amount: i64, r#type: GoalType) -> Result<(), AppError> {
+    async fn update_goal_amount(&self, amount: f64, r#type: GoalType) -> Result<(), AppError> {
         Entity::update_many()
             .col_expr(
                 Column::CurrentAmount,

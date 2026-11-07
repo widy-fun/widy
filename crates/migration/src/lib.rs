@@ -59,6 +59,7 @@ mod m20261021_131510_add_default_media_settings_for_kick;
 mod m20261029_164332_add_obs_service;
 mod m20261102_130046_add_column_obs_action_to_commands_table;
 mod m20261105_231104_add_column_obs_action_to_rewards_table;
+mod m20261107_063401_change_goals_money_columns_type_to_f64;
 
 pub struct Migrator;
 
@@ -126,6 +127,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20261029_164332_add_obs_service::Migration),
             Box::new(m20261102_130046_add_column_obs_action_to_commands_table::Migration),
             Box::new(m20261105_231104_add_column_obs_action_to_rewards_table::Migration),
+            Box::new(m20261107_063401_change_goals_money_columns_type_to_f64::Migration),
         ]
     }
 }

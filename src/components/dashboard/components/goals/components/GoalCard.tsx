@@ -113,7 +113,8 @@ const GoalCard = ({ goal }: { goal: IGoal }) => {
 						</div>
 						<div>
 							<Typography>
-								{t("goal.raised")}: {currentAmount}/{goal.amount_raise}
+								{t("goal.raised")}: {currentAmount.toFixed()}/
+								{goal.amount_raise}
 							</Typography>
 
 							<WidgetUrl

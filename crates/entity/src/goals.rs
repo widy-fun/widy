@@ -2,15 +2,15 @@ use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::alerts::TextStyle;
-#[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
+#[derive(Clone, Debug, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "goals")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
     pub title: String,
-    pub amount_raise: i64,
-    pub start_raising: i64,
-    pub current_amount: i64,
+    pub amount_raise: f64,
+    pub start_raising: f64,
+    pub current_amount: f64,
     pub end_date: i64,
     pub start_date: i64,
     pub ended: bool,

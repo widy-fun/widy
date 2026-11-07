@@ -28,7 +28,7 @@ const GoalView = ({
 	);
 	const progressBarLayoutText = getProgressBarLayoutText({
 		layout: goal.progress_bar_layout,
-		currentAmount,
+		currentAmount: Number(currentAmount.toFixed()),
 		amountRaise: goal.amount_raise,
 		currentAmountPercent,
 		currency: goal.type === GoalType.Donation ? currency : undefined,

@@ -45,7 +45,7 @@ impl EventsService {
     pub async fn goal(
         database_service: &DatabaseService,
         websocket_broadcaster: &WebSocketBroadcaster,
-        amount: i64,
+        amount: f64,
         r#type: GoalType,
     ) -> Result<(), AppError> {
         database_service
@@ -164,7 +164,7 @@ impl EventsService {
         let _ = Self::goal(
             &database_service,
             &websocket_broadcaster,
-            exchanged_amount as i64,
+            exchanged_amount,
             entity::goals::GoalType::Donation,
         )
         .await
@@ -282,7 +282,7 @@ impl EventsService {
         let _ = Self::goal(
             &database_service,
             &websocket_broadcaster,
-            subscription.total as i64,
+            subscription.total as f64,
             goal_type,
         )
         .await
@@ -597,7 +597,7 @@ impl EventsService {
             .save_follow_message(client_message)
             .await
             .map_err(|e| log_and_wrap_error("Save follow message", e));
-        let _ = Self::goal(&database_service, &websocket_broadcaster, 1, goal_type)
+        let _ = Self::goal(&database_service, &websocket_broadcaster, 1.0, goal_type)
             .await
             .map_err(|e| log_and_wrap_error("Update goal", e));
         Ok(())
