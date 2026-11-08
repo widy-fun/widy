@@ -6,7 +6,7 @@ use model::donation_alerts::{
     AuthTokenResponse, ChannelsResponse, SubscriptionBody, UserInfo, UserInfoResponse,
     WebsocketMessage,
 };
-use model::error::AppError;
+use model::error::{AppError, log_and_wrap_error};
 use serde_json::json;
 use std::sync::{Arc, Mutex};
 use tauri::{AppHandle, Manager};
@@ -180,7 +180,7 @@ impl DonationAlertsService {
                                                     donation.message,
                                                     &app,
                                                 )
-                                                .await;
+                                                .await.map_err(|e| log_and_wrap_error("DonationAlerts donation event", e));
                                             }
                                         }
                                     }

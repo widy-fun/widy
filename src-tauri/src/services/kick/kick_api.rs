@@ -349,7 +349,7 @@ pub trait KickApi: Send + Sync {
                     "Kick reward create error".to_string(),
                 ))?;
 
-        let _ = database_service
+        database_service
             .create_reward(entity::rewards::Reward {
                 external_id: Some(reward_id),
                 ..reward.clone()

@@ -3,7 +3,7 @@ use database::{DatabaseService, ServicesRepository};
 use entity::services::{DestreamAuth, ServiceAuth, ServiceType};
 use futures::{SinkExt, StreamExt};
 use model::destream::{DestreamEvent, Donation};
-use model::error::AppError;
+use model::error::{AppError, log_and_wrap_error};
 use std::sync::{Arc, Mutex};
 use tauri::{AppHandle, Manager};
 use tokio_tungstenite::{connect_async, tungstenite::Message};
@@ -150,7 +150,7 @@ impl DestreamService {
                                                 donation.description,
                                                 &app,
                                             )
-                                            .await;
+                                            .await.map_err(|e| log_and_wrap_error("Destream donation event", e));
                                         }
                                     }
                                 }

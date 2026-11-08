@@ -82,11 +82,10 @@ impl NsfwService {
                                     log::error!("Detect image error: {}", e);
                                 })
                             {
-                                let _ =
-                                    websocket_broadcaster.broadcast_event_message(&EventMessage {
-                                        event: AppEvent::NsfwDetection,
-                                        data: detections,
-                                    });
+                                websocket_broadcaster.broadcast_event_message(&EventMessage {
+                                    event: AppEvent::NsfwDetection,
+                                    data: detections,
+                                });
                             }
                         }
                         Err(e) => {

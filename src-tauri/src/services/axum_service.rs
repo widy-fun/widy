@@ -36,7 +36,7 @@ use tower_http::cors::CorsLayer;
 use tower_http::services::{ServeDir, ServeFile};
 use uuid::Uuid;
 type Tx = mpsc::UnboundedSender<Message>;
-use model::error::AppError;
+use model::error::{AppError, log_and_wrap_error};
 
 #[derive(Clone)]
 struct AxumState {
@@ -327,8 +327,12 @@ impl AxumService {
         let auth = kick_service.tokens(params).await?;
         let _ = database_service
             .update_service_auth(ServiceType::Kick, Some(ServiceAuth::Kick(auth)), true)
-            .await;
-        let _ = kick_service.connect(&state.app.clone()).await;
+            .await
+            .map_err(|e| log_and_wrap_error("Update kick service auth", e));
+        let _ = kick_service
+            .connect(&state.app.clone())
+            .await
+            .map_err(|e| log_and_wrap_error("Kick service connect", e));
         Ok(Redirect::to("https://kick.com"))
     }
 
@@ -341,8 +345,12 @@ impl AxumService {
         let auth = kick_bot_service.tokens(params).await?;
         let _ = database_service
             .update_service_auth(ServiceType::KickBot, Some(ServiceAuth::Kick(auth)), true)
-            .await;
-        let _ = kick_bot_service.connect(&state.app.clone()).await;
+            .await
+            .map_err(|e| log_and_wrap_error("Update kick bot service auth", e));
+        let _ = kick_bot_service
+            .connect(&state.app.clone())
+            .await
+            .map_err(|e| log_and_wrap_error("Kick bot service connect", e));
         Ok(Redirect::to("https://kick.com"))
     }
 

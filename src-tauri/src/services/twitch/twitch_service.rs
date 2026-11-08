@@ -16,7 +16,7 @@ use entity::{
     subscriptions::{self},
 };
 use futures::{SinkExt, StreamExt};
-use model::error::AppError;
+use model::error::{AppError, log_and_wrap_error};
 use model::{
     events::{UnifiedBannedUser, UnifiedChatMessage, UnifiedChatMessageDelete},
     items_buffer::ItemsBuffer,
@@ -251,7 +251,8 @@ impl TwitchService {
                                 reward.obs_action,
                                 &app,
                             )
-                            .await;
+                            .await
+                            .map_err(|e| log_and_wrap_error("Twitch redemption event", e));
                         }
                     }
                 }
@@ -274,7 +275,9 @@ impl TwitchService {
                             .unwrap_or(None),
                     };
 
-                    let _ = EventsService::follow(follow, GoalType::TwitchFollow, app).await;
+                    let _ = EventsService::follow(follow, GoalType::TwitchFollow, app)
+                        .await
+                        .map_err(|e| log_and_wrap_error("Twitch follow event", e));
                 }
             }
             SubscriptionType::ChannelSubscribe => {
@@ -307,7 +310,8 @@ impl TwitchService {
                         GoalType::TwitchSubscription,
                         &app,
                     )
-                    .await;
+                    .await
+                    .map_err(|e| log_and_wrap_error("Twitch subscription event", e));
                 }
             }
             SubscriptionType::ChannelSubscriptionGift => {
@@ -337,7 +341,8 @@ impl TwitchService {
                         GoalType::TwitchSubscription,
                         &app,
                     )
-                    .await;
+                    .await
+                    .map_err(|e| log_and_wrap_error("Twitch subscription event", e));
                 }
             }
             SubscriptionType::ChannelSubscriptionMessage => {
@@ -367,7 +372,8 @@ impl TwitchService {
                         GoalType::TwitchSubscription,
                         &app,
                     )
-                    .await;
+                    .await
+                    .map_err(|e| log_and_wrap_error("Twitch subscription event", e));
                 }
             }
             SubscriptionType::ChannelRaid => {
@@ -388,7 +394,9 @@ impl TwitchService {
                             .await
                             .unwrap_or(None),
                     };
-                    let _ = EventsService::raid(raid, &app).await;
+                    let _ = EventsService::raid(raid, &app)
+                        .await
+                        .map_err(|e| log_and_wrap_error("Twitch raid event", e));
                 }
             }
             SubscriptionType::ChannelCheer => {
@@ -402,7 +410,8 @@ impl TwitchService {
                         event.message,
                         app,
                     )
-                    .await;
+                    .await
+                    .map_err(|e| log_and_wrap_error("Twitch donation event", e));
                 }
             }
             SubscriptionType::ChannelChatMessage => {
@@ -416,8 +425,12 @@ impl TwitchService {
                         let mut chat_messages_buffer = self.chat_messages_buffer.lock().unwrap();
                         chat_messages_buffer.push(message.clone());
                     }
-                    let _ = EventsService::chat_message(message.clone(), app).await;
-                    let _ = CommandsService::twitch_chat_message_trigger(message, app).await;
+                    let _ = EventsService::chat_message(message.clone(), app)
+                        .await
+                        .map_err(|e| log_and_wrap_error("Twitch chat message event", e));
+                    let _ = CommandsService::twitch_chat_message_trigger(message, app)
+                        .await
+                        .map_err(|e| log_and_wrap_error("Twitch chat message trigger", e));
                 }
             }
             SubscriptionType::ChannelChatMessageDelete => {
@@ -426,24 +439,30 @@ impl TwitchService {
                         UnifiedChatMessageDelete::from(event),
                         app,
                     )
-                    .await;
+                    .await
+                    .map_err(|e| log_and_wrap_error("Twitch chat message delete event", e));
                 }
             }
             SubscriptionType::ChannelBan => {
                 if let Event::ChannelBan(event) = payload.event {
                     let _ = EventsService::user_banned_in_chat(UnifiedBannedUser::from(event), app)
-                        .await;
+                        .await
+                        .map_err(|e| log_and_wrap_error("Twitch channel ban event", e));
                 }
             }
             SubscriptionType::StreamOnline => {
                 if let Event::StreamOnline(event) = payload.event {
                     if let StreamOnlineType::Live = event.r#type {
-                        let _ = CommandsService::twitch_stream_online(app).await;
+                        let _ = CommandsService::twitch_stream_online(app)
+                            .await
+                            .map_err(|e| log_and_wrap_error("Twitch stream online event", e));
                     }
                 }
             }
             SubscriptionType::StreamOffline => {
-                let _ = CommandsService::twitch_stream_offline(app).await;
+                let _ = CommandsService::twitch_stream_offline(app)
+                    .await
+                    .map_err(|e| log_and_wrap_error("Twitch stream offline command", e));
             }
             _ => {}
         }

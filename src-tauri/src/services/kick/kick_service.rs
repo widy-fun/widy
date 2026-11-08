@@ -186,7 +186,8 @@ impl KickService {
                             reward.obs_action,
                             &app,
                         )
-                        .await;
+                        .await
+                        .map_err(|e| log_and_wrap_error("Kick redemption event", e));
                     }
                 }
             }
@@ -215,7 +216,8 @@ impl KickService {
                     };
                     let _ =
                         EventsService::subscription(subscription, GoalType::KickSubscription, &app)
-                            .await;
+                            .await
+                            .map_err(|e| log_and_wrap_error("Kick subscription event", e));
                 }
             }
             Event::SubscriptionEvent => {
@@ -243,7 +245,8 @@ impl KickService {
                     };
                     let _ =
                         EventsService::subscription(subscription, GoalType::KickSubscription, &app)
-                            .await;
+                            .await
+                            .map_err(|e| log_and_wrap_error("Kick subscription event", e));
                 }
             }
             Event::StreamHostEvent => {
@@ -266,7 +269,9 @@ impl KickService {
                             .await
                             .unwrap_or(None),
                     };
-                    let _ = EventsService::raid(raid, &app).await;
+                    let _ = EventsService::raid(raid, &app)
+                        .await
+                        .map_err(|e| log_and_wrap_error("Kick raid event", e));
                 }
             }
             Event::KicksGifted => {
@@ -281,7 +286,8 @@ impl KickService {
                         Some(data.message),
                         &app,
                     )
-                    .await;
+                    .await
+                    .map_err(|e| log_and_wrap_error("Kick donate event", e));
                 }
             }
             Event::ChatMessageEvent => {
@@ -292,8 +298,12 @@ impl KickService {
                         let mut chat_messages_buffer = self.chat_messages_buffer.lock().unwrap();
                         chat_messages_buffer.push(message.clone());
                     }
-                    let _ = EventsService::chat_message(message.clone(), app).await;
-                    let _ = CommandsService::kick_chat_message_trigger(message, app).await;
+                    let _ = EventsService::chat_message(message.clone(), app)
+                        .await
+                        .map_err(|e| log_and_wrap_error("Kick chat message event", e));
+                    let _ = CommandsService::kick_chat_message_trigger(message, app)
+                        .await
+                        .map_err(|e| log_and_wrap_error("Kick chat message trigger", e));
                 }
             }
             Event::MessageDeletedEvent => {
@@ -301,21 +311,27 @@ impl KickService {
                 if let Ok(data) = event_data {
                     let _ =
                         EventsService::chat_message_delete(data.into_unified(payload.chanel), app)
-                            .await;
+                            .await
+                            .map_err(|e| log_and_wrap_error("Kick chat message delete", e));
                 }
             }
             Event::UserBannedEvent => {
                 let event_data = serde_json::from_str::<UserBannedData>(&payload.data);
                 if let Ok(data) = event_data {
                     let _ = EventsService::user_banned_in_chat(UnifiedBannedUser::from(data), app)
-                        .await;
+                        .await
+                        .map_err(|e| log_and_wrap_error("Kick user banned event", e));
                 }
             }
             Event::StreamerIsLive => {
-                let _ = CommandsService::kick_stream_start(app).await;
+                let _ = CommandsService::kick_stream_start(app)
+                    .await
+                    .map_err(|e| log_and_wrap_error("Kick start stream command", e));
             }
             Event::StopStreamBroadcast => {
-                let _ = CommandsService::kick_stream_stop(app).await;
+                let _ = CommandsService::kick_stream_stop(app)
+                    .await
+                    .map_err(|e| log_and_wrap_error("Kick stream stop command", e));
             }
             _ => {}
         }

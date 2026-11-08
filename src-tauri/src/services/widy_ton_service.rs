@@ -3,6 +3,7 @@ use base64::{Engine, engine::general_purpose};
 use chrono::Utc;
 use database::{DatabaseService, DonationsRepository, ServicesRepository};
 use entity::services::{ServiceAuth, ServiceType};
+use model::error::log_and_wrap_error;
 use model::items_buffer::ItemsBuffer;
 use model::widy_ton::{Message, MessageContent, Trace, TracesResponse};
 use model::{error::AppError, widy_ton::DonationEvent};
@@ -215,7 +216,8 @@ impl WidyTonService {
                         Some(event.message),
                         &app,
                     )
-                    .await;
+                    .await
+                    .map_err(|e| log_and_wrap_error("WidyTon donate event", e));
                 }
             }
         }

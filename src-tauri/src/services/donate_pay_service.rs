@@ -5,7 +5,7 @@ use futures::{SinkExt, StreamExt};
 use model::donate_pay::{
     EventVars, NotificationType, TokenResponse, UserInfo, UserInfoResponse, WidgetEvent,
 };
-use model::error::AppError;
+use model::error::{AppError, log_and_wrap_error};
 use serde_json::json;
 use std::sync::{Arc, Mutex};
 use tauri::{AppHandle, Manager};
@@ -153,7 +153,7 @@ impl DonatePayService {
                                                 event_vars.comment,
                                                 &app,
                                             )
-                                            .await;
+                                            .await.map_err(|e| log_and_wrap_error("Donate pay donation event", e));
                                         } else {
                                             log::error!(
                                                 "Failed to parse event vars for message: {}",

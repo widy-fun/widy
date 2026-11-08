@@ -89,7 +89,8 @@ impl WidySolService {
                                 message.clone(),
                                 &app,
                             )
-                            .await;
+                            .await
+                            .map_err(|e| log_and_wrap_error("WidySol donate event", e));
                         });
                     }
                 })

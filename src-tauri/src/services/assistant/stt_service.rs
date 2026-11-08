@@ -103,7 +103,8 @@ impl SttService {
                                 TARGET_SR,
                                 &audio_file_path,
                             )
-                            .await;
+                            .await
+                            .map_err(|e| log_and_wrap_error("Save audi file", e));
                             session_buffer.clear();
                             let response = audio_client
                                 .transcribe(audio_file_path.clone())

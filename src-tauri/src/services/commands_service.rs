@@ -135,7 +135,8 @@ impl CommandsService {
                     reply_to_message_id,
                     app,
                 )
-                .await;
+                .await
+                .map_err(|e| log_and_wrap_error("Kick post chat message", e));
         }
 
         if let Command {
@@ -184,7 +185,8 @@ impl CommandsService {
                 app,
                 command_action,
             )
-            .await;
+            .await
+            .map_err(|e| log_and_wrap_error("TTS action", e));
         }
 
         if let Command {
@@ -211,7 +213,8 @@ impl CommandsService {
                 },
                 app,
             )
-            .await;
+            .await
+            .map_err(|e| log_and_wrap_error("Auction action", e));
         }
 
         if let Command {
@@ -262,7 +265,10 @@ impl CommandsService {
             {
                 let variables = database_service.get_variables().await.unwrap_or(vec![]);
                 let message = replace_variables(&target.message, variables);
-                let _ = kick_session_service.pin_message(app, message).await?;
+                let _ = kick_session_service
+                    .pin_message(app, message)
+                    .await
+                    .map_err(|e| log_and_wrap_error("Kick pin message", e));
             }
             if let Command {
                 is_enabled: true,
@@ -275,12 +281,13 @@ impl CommandsService {
             } = command
             {
                 let telegram_bot_service = app.state::<TelegramBotService>();
-                telegram_bot_service
+                let _ = telegram_bot_service
                     .send_message(
                         telegram_bot_action.channel.clone(),
                         telegram_bot_action.message.clone(),
                     )
-                    .await?;
+                    .await
+                    .map_err(|e| log_and_wrap_error("Telegram send message", e));
             }
         }
 
@@ -346,7 +353,8 @@ impl CommandsService {
                         app,
                         Some(true),
                     )
-                    .await?;
+                    .await
+                    .map_err(|e| log_and_wrap_error("Twitch send chat message", e));
             }
             if let Command {
                 is_enabled: true,
@@ -359,12 +367,13 @@ impl CommandsService {
             } = command
             {
                 let telegram_bot_service = app.state::<TelegramBotService>();
-                telegram_bot_service
+                let _ = telegram_bot_service
                     .send_message(
                         telegram_bot_action.channel.clone(),
                         telegram_bot_action.message.clone(),
                     )
-                    .await?;
+                    .await
+                    .map_err(|e| log_and_wrap_error("Telegram send message", e));
             }
         }
 
@@ -459,7 +468,8 @@ impl CommandsService {
                     app,
                     None,
                 )
-                .await;
+                .await
+                .map_err(|e| log_and_wrap_error("Twitch bot send chat message", e));
         }
 
         if let Command {
@@ -536,7 +546,8 @@ impl CommandsService {
                 },
                 app,
             )
-            .await;
+            .await
+            .map_err(|e| log_and_wrap_error("Auction action", e));
         }
 
         if let Command {
@@ -583,7 +594,8 @@ impl CommandsService {
                     message.clone(),
                     timer_source.clone().lines_passed,
                 )
-                .await;
+                .await
+                .map_err(|e| log_and_wrap_error("Kick timer chat message", e));
             }
             if chat_bot.platforms.contains(&Platform::Twitch) {
                 if timer_source.post_type == PostType::Announcement {
@@ -592,14 +604,16 @@ impl CommandsService {
                         message.clone(),
                         timer_source.clone().lines_passed,
                     )
-                    .await;
+                    .await
+                    .map_err(|e| log_and_wrap_error("Twitch timer chat announcement", e));
                 } else {
                     let _ = Self::twitch_timer_chat_message(
                         &app,
                         message.clone(),
                         timer_source.clone().lines_passed,
                     )
-                    .await;
+                    .await
+                    .map_err(|e| log_and_wrap_error("Twitch timer chat message", e));
                 }
             }
         }
@@ -656,7 +670,8 @@ impl CommandsService {
                 &app,
                 command_action,
             )
-            .await;
+            .await
+            .map_err(|e| log_and_wrap_error("TTS action", e));
         }
     }
 
