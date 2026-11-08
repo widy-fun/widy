@@ -85,159 +85,161 @@ impl CommandsService {
         let mut parts = text.splitn(2, char::is_whitespace);
         let trigger = parts.next().unwrap_or("");
         let rest_text = parts.next().unwrap_or("").trim_start();
-        let command = {
-            let commands = commands_service.commands.lock().unwrap();
-            commands
+        let commands: Vec<Command> = {
+            let commands_guard = commands_service.commands.lock().unwrap();
+            commands_guard
                 .iter()
-                .find(|c| {
+                .filter(|c| {
                     c.chat_source
                         .as_ref()
                         .map_or(false, |chat| &chat.trigger == trigger)
                 })
                 .cloned()
+                .collect()
         };
-        let command = command.ok_or(AppError::Custom("Command not found".to_string()))?;
-        let broadcaster_user_id: u64 = message
-            .channel_id
-            .parse()
-            .map_err(|_| AppError::Custom("Channel id parse error".to_string()))?;
+        for command in commands {
+            let broadcaster_user_id: u64 = message
+                .channel_id
+                .parse()
+                .map_err(|_| AppError::Custom("Channel id parse error".to_string()))?;
 
-        if let Command {
-            is_enabled: true,
-            chat_source: Some(chat),
-            chat_bot_action: Some(chat_bot),
-            ..
-        } = &command
-        {
-            if !chat.platforms.contains(&Platform::Kick) {
-                return Err(AppError::Custom(
-                    "Command is not enabled for this platform".to_string(),
-                ));
-            }
-            if !message.sender.roles.has_any_level(&chat.user_levels) {
-                return Err(AppError::Custom("Not allowed".to_string()));
-            }
-            let reply_to_message_id: Option<String> = match command.clone().chat_bot_action {
-                Some(chat_bot) => {
-                    if chat_bot.replay {
-                        Some(message.id.clone())
-                    } else {
-                        None
-                    }
+            if let Command {
+                is_enabled: true,
+                chat_source: Some(chat),
+                chat_bot_action: Some(chat_bot),
+                ..
+            } = &command
+            {
+                if !chat.platforms.contains(&Platform::Kick) {
+                    return Err(AppError::Custom(
+                        "Command is not enabled for this platform".to_string(),
+                    ));
                 }
-                None => None,
-            };
-            let variables = database_service.get_variables().await?;
-            let _ = kick_bot_service
-                .post_chat_message(
-                    replace_variables(&chat_bot.message, variables),
-                    broadcaster_user_id,
-                    reply_to_message_id,
+                if !message.sender.roles.has_any_level(&chat.user_levels) {
+                    return Err(AppError::Custom("Not allowed".to_string()));
+                }
+                let reply_to_message_id: Option<String> = match command.clone().chat_bot_action {
+                    Some(chat_bot) => {
+                        if chat_bot.replay {
+                            Some(message.id.clone())
+                        } else {
+                            None
+                        }
+                    }
+                    None => None,
+                };
+                let variables = database_service.get_variables().await?;
+                let _ = kick_bot_service
+                    .post_chat_message(
+                        replace_variables(&chat_bot.message, variables),
+                        broadcaster_user_id,
+                        reply_to_message_id,
+                        app,
+                    )
+                    .await
+                    .map_err(|e| log_and_wrap_error("Kick post chat message", e));
+            }
+
+            if let Command {
+                is_enabled: true,
+                alert: Some(alert),
+                ..
+            } = &command
+            {
+                let command_action = CommandAction {
+                    id: Uuid::new_v4(),
+                    user_name: message.sender.username.clone(),
+                    user_input: Some(text.clone()),
+                    command_id: command.id,
+                    command_name: command.name.clone(),
+                    message_id: Uuid::new_v4(),
+                    platform: Some(Platform::Kick),
+                    media: None,
+                    tts: None,
+                    alert: Some(alert.clone()),
+                };
+                let _ = EventsService::command_action(command_action, app).await;
+            }
+
+            if let Command {
+                is_enabled: true,
+                tts_settings: Some(tts_settings),
+                ..
+            } = &command
+            {
+                let command_action = CommandAction {
+                    id: Uuid::new_v4(),
+                    user_name: message.sender.username.clone(),
+                    user_input: Some(rest_text.to_string()),
+                    command_id: command.id,
+                    command_name: command.name.clone(),
+                    message_id: Uuid::new_v4(),
+                    platform: Some(Platform::Kick),
+                    media: None,
+                    tts: None,
+                    alert: None,
+                };
+
+                let _ = EventsService::command_tts_action(
+                    rest_text,
+                    tts_settings.clone(),
+                    app,
+                    command_action,
+                )
+                .await
+                .map_err(|e| log_and_wrap_error("TTS action", e));
+            }
+
+            if let Command {
+                is_enabled: true,
+                chat_source: Some(chat),
+                auction_action: Some(auction_action),
+                ..
+            } = &command
+            {
+                if !chat.platforms.contains(&Platform::Kick) {
+                    return Err(AppError::Custom(
+                        "Command is not enabled for this platform".to_string(),
+                    ));
+                }
+                if !message.sender.roles.has_any_level(&chat.user_levels) {
+                    return Err(AppError::Custom("Not allowed".to_string()));
+                }
+                let _ = EventsService::command_auction_action(
+                    CommandAuctionAction {
+                        amount: calc_command_auction_action_amount(&auction_action, &message),
+                        user_name: message.sender.username.clone(),
+                        user_id: message.sender.id.clone(),
+                        platform: Platform::Kick,
+                    },
                     app,
                 )
                 .await
-                .map_err(|e| log_and_wrap_error("Kick post chat message", e));
-        }
-
-        if let Command {
-            is_enabled: true,
-            alert: Some(alert),
-            ..
-        } = &command
-        {
-            let command_action = CommandAction {
-                id: Uuid::new_v4(),
-                user_name: message.sender.username.clone(),
-                user_input: Some(text.clone()),
-                command_id: command.id,
-                command_name: command.name.clone(),
-                message_id: Uuid::new_v4(),
-                platform: Some(Platform::Kick),
-                media: None,
-                tts: None,
-                alert: Some(alert.clone()),
-            };
-            let _ = EventsService::command_action(command_action, app).await;
-        }
-
-        if let Command {
-            is_enabled: true,
-            tts_settings: Some(tts_settings),
-            ..
-        } = &command
-        {
-            let command_action = CommandAction {
-                id: Uuid::new_v4(),
-                user_name: message.sender.username.clone(),
-                user_input: Some(rest_text.to_string()),
-                command_id: command.id,
-                command_name: command.name.clone(),
-                message_id: Uuid::new_v4(),
-                platform: Some(Platform::Kick),
-                media: None,
-                tts: None,
-                alert: None,
-            };
-
-            let _ = EventsService::command_tts_action(
-                rest_text,
-                tts_settings.clone(),
-                app,
-                command_action,
-            )
-            .await
-            .map_err(|e| log_and_wrap_error("TTS action", e));
-        }
-
-        if let Command {
-            is_enabled: true,
-            chat_source: Some(chat),
-            auction_action: Some(auction_action),
-            ..
-        } = &command
-        {
-            if !chat.platforms.contains(&Platform::Kick) {
-                return Err(AppError::Custom(
-                    "Command is not enabled for this platform".to_string(),
-                ));
+                .map_err(|e| log_and_wrap_error("Auction action", e));
             }
-            if !message.sender.roles.has_any_level(&chat.user_levels) {
-                return Err(AppError::Custom("Not allowed".to_string()));
-            }
-            let _ = EventsService::command_auction_action(
-                CommandAuctionAction {
-                    amount: calc_command_auction_action_amount(&auction_action, &message),
-                    user_name: message.sender.username,
-                    user_id: message.sender.id,
-                    platform: Platform::Kick,
-                },
-                app,
-            )
-            .await
-            .map_err(|e| log_and_wrap_error("Auction action", e));
-        }
 
-        if let Command {
-            is_enabled: true,
-            chat_source: Some(chat),
-            obs_action:
-                Some(ObsAction {
-                    r#type: ObsActionType::Filter,
-                    filter: Some(filter),
-                }),
-            ..
-        } = &command
-        {
-            if !chat.platforms.contains(&Platform::Kick) {
-                return Err(AppError::Custom(
-                    "Command is not enabled for this platform".to_string(),
-                ));
+            if let Command {
+                is_enabled: true,
+                chat_source: Some(chat),
+                obs_action:
+                    Some(ObsAction {
+                        r#type: ObsActionType::Filter,
+                        filter: Some(filter),
+                    }),
+                ..
+            } = &command
+            {
+                if !chat.platforms.contains(&Platform::Kick) {
+                    return Err(AppError::Custom(
+                        "Command is not enabled for this platform".to_string(),
+                    ));
+                }
+                if !message.sender.roles.has_any_level(&chat.user_levels) {
+                    return Err(AppError::Custom("Not allowed".to_string()));
+                }
+                let obs_service = app.state::<ObsService>();
+                obs_service.set_filter(filter).await?;
             }
-            if !message.sender.roles.has_any_level(&chat.user_levels) {
-                return Err(AppError::Custom("Not allowed".to_string()));
-            }
-            let obs_service = app.state::<ObsService>();
-            obs_service.set_filter(filter).await?;
         }
 
         Ok(())
@@ -419,158 +421,160 @@ impl CommandsService {
         let mut parts = text.splitn(2, char::is_whitespace);
         let trigger = parts.next().unwrap_or("");
         let rest_text = parts.next().unwrap_or("").trim_start();
-        let command = {
-            let commands = commands_service.commands.lock().unwrap();
-            commands
+        let commands: Vec<Command> = {
+            let commands_guard = commands_service.commands.lock().unwrap();
+            commands_guard
                 .iter()
-                .find(|c| {
+                .filter(|c| {
                     c.chat_source
                         .as_ref()
                         .map_or(false, |chat| &chat.trigger == trigger)
                 })
                 .cloned()
+                .collect()
         };
-        let command = command.ok_or(AppError::Custom("Command not found".to_string()))?;
-        if let Command {
-            is_enabled: true,
-            chat_source: Some(chat),
-            chat_bot_action: Some(chat_bot),
-            ..
-        } = &command
-        {
-            if !chat.platforms.contains(&Platform::Twitch) {
-                return Err(AppError::Custom(
-                    "Command is not enabled for this platform".to_string(),
-                ));
-            }
-            if !message.sender.roles.has_any_level(&chat.user_levels) {
-                return Err(AppError::Custom("Not allowed".to_string()));
-            }
-            let reply_to_message_id: Option<String> = match command.clone().chat_bot_action {
-                Some(chat_bot) => {
-                    if chat_bot.replay {
-                        Some(message.id.clone())
-                    } else {
-                        None
-                    }
+        for command in commands {
+            if let Command {
+                is_enabled: true,
+                chat_source: Some(chat),
+                chat_bot_action: Some(chat_bot),
+                ..
+            } = &command
+            {
+                if !chat.platforms.contains(&Platform::Twitch) {
+                    return Err(AppError::Custom(
+                        "Command is not enabled for this platform".to_string(),
+                    ));
                 }
-                None => None,
-            };
-            let auth = twitch_service.get_auth(app).await?;
-            let bot_auth = twitch_bot_service.get_auth(app).await?;
-            let variables = database_service.get_variables().await?;
-            let _ = twitch_bot_service
-                .send_chat_message(
-                    replace_variables(&chat_bot.message, variables),
-                    auth.user_id,
-                    bot_auth.user_id,
-                    reply_to_message_id,
+                if !message.sender.roles.has_any_level(&chat.user_levels) {
+                    return Err(AppError::Custom("Not allowed".to_string()));
+                }
+                let reply_to_message_id: Option<String> = match command.clone().chat_bot_action {
+                    Some(chat_bot) => {
+                        if chat_bot.replay {
+                            Some(message.id.clone())
+                        } else {
+                            None
+                        }
+                    }
+                    None => None,
+                };
+                let auth = twitch_service.get_auth(app).await?;
+                let bot_auth = twitch_bot_service.get_auth(app).await?;
+                let variables = database_service.get_variables().await?;
+                let _ = twitch_bot_service
+                    .send_chat_message(
+                        replace_variables(&chat_bot.message, variables),
+                        auth.user_id,
+                        bot_auth.user_id,
+                        reply_to_message_id,
+                        app,
+                        None,
+                    )
+                    .await
+                    .map_err(|e| log_and_wrap_error("Twitch bot send chat message", e));
+            }
+
+            if let Command {
+                is_enabled: true,
+                alert: Some(alert),
+                ..
+            } = &command
+            {
+                let command_action = CommandAction {
+                    id: Uuid::new_v4(),
+                    user_name: message.sender.username.clone(),
+                    user_input: Some(text.clone()),
+                    command_id: command.id,
+                    command_name: command.name.clone(),
+                    message_id: Uuid::new_v4(),
+                    platform: Some(Platform::Twitch),
+                    media: None,
+                    tts: None,
+                    alert: Some(alert.clone()),
+                };
+                let _ = EventsService::command_action(command_action, app).await;
+            }
+
+            if let Command {
+                is_enabled: true,
+                tts_settings: Some(tts_settings),
+                ..
+            } = &command
+            {
+                let command_action = CommandAction {
+                    id: Uuid::new_v4(),
+                    user_name: message.sender.username.clone(),
+                    user_input: Some(rest_text.to_string()),
+                    command_id: command.id,
+                    command_name: command.name.clone(),
+                    message_id: Uuid::new_v4(),
+                    platform: Some(Platform::Twitch),
+                    media: None,
+                    tts: None,
+                    alert: None,
+                };
+
+                let _ = EventsService::command_tts_action(
+                    rest_text,
+                    tts_settings.clone(),
                     app,
-                    None,
+                    command_action,
                 )
                 .await
-                .map_err(|e| log_and_wrap_error("Twitch bot send chat message", e));
-        }
-
-        if let Command {
-            is_enabled: true,
-            alert: Some(alert),
-            ..
-        } = &command
-        {
-            let command_action = CommandAction {
-                id: Uuid::new_v4(),
-                user_name: message.sender.username.clone(),
-                user_input: Some(text.clone()),
-                command_id: command.id,
-                command_name: command.name.clone(),
-                message_id: Uuid::new_v4(),
-                platform: Some(Platform::Twitch),
-                media: None,
-                tts: None,
-                alert: Some(alert.clone()),
-            };
-            let _ = EventsService::command_action(command_action, app).await;
-        }
-
-        if let Command {
-            is_enabled: true,
-            tts_settings: Some(tts_settings),
-            ..
-        } = &command
-        {
-            let command_action = CommandAction {
-                id: Uuid::new_v4(),
-                user_name: message.sender.username.clone(),
-                user_input: Some(rest_text.to_string()),
-                command_id: command.id,
-                command_name: command.name.clone(),
-                message_id: Uuid::new_v4(),
-                platform: Some(Platform::Twitch),
-                media: None,
-                tts: None,
-                alert: None,
-            };
-
-            let _ = EventsService::command_tts_action(
-                rest_text,
-                tts_settings.clone(),
-                app,
-                command_action,
-            )
-            .await
-            .map_err(|e| log_and_wrap_error("command tts action", e));
-        }
-
-        if let Command {
-            is_enabled: true,
-            chat_source: Some(chat),
-            auction_action: Some(auction_action),
-            ..
-        } = &command
-        {
-            if !chat.platforms.contains(&Platform::Twitch) {
-                return Err(AppError::Custom(
-                    "Command is not enabled for this platform".to_string(),
-                ));
+                .map_err(|e| log_and_wrap_error("command tts action", e));
             }
-            if !message.sender.roles.has_any_level(&chat.user_levels) {
-                return Err(AppError::Custom("Not allowed".to_string()));
-            }
-            let _ = EventsService::command_auction_action(
-                CommandAuctionAction {
-                    amount: calc_command_auction_action_amount(&auction_action, &message),
-                    user_name: message.sender.username,
-                    user_id: message.sender.id,
-                    platform: Platform::Twitch,
-                },
-                app,
-            )
-            .await
-            .map_err(|e| log_and_wrap_error("Auction action", e));
-        }
 
-        if let Command {
-            is_enabled: true,
-            chat_source: Some(chat),
-            obs_action:
-                Some(ObsAction {
-                    r#type: ObsActionType::Filter,
-                    filter: Some(filter),
-                }),
-            ..
-        } = &command
-        {
-            if !chat.platforms.contains(&Platform::Twitch) {
-                return Err(AppError::Custom(
-                    "Command is not enabled for this platform".to_string(),
-                ));
+            if let Command {
+                is_enabled: true,
+                chat_source: Some(chat),
+                auction_action: Some(auction_action),
+                ..
+            } = &command
+            {
+                if !chat.platforms.contains(&Platform::Twitch) {
+                    return Err(AppError::Custom(
+                        "Command is not enabled for this platform".to_string(),
+                    ));
+                }
+                if !message.sender.roles.has_any_level(&chat.user_levels) {
+                    return Err(AppError::Custom("Not allowed".to_string()));
+                }
+                let _ = EventsService::command_auction_action(
+                    CommandAuctionAction {
+                        amount: calc_command_auction_action_amount(&auction_action, &message),
+                        user_name: message.sender.username.clone(),
+                        user_id: message.sender.id.clone(),
+                        platform: Platform::Twitch,
+                    },
+                    app,
+                )
+                .await
+                .map_err(|e| log_and_wrap_error("Auction action", e));
             }
-            if !message.sender.roles.has_any_level(&chat.user_levels) {
-                return Err(AppError::Custom("Not allowed".to_string()));
+
+            if let Command {
+                is_enabled: true,
+                chat_source: Some(chat),
+                obs_action:
+                    Some(ObsAction {
+                        r#type: ObsActionType::Filter,
+                        filter: Some(filter),
+                    }),
+                ..
+            } = &command
+            {
+                if !chat.platforms.contains(&Platform::Twitch) {
+                    return Err(AppError::Custom(
+                        "Command is not enabled for this platform".to_string(),
+                    ));
+                }
+                if !message.sender.roles.has_any_level(&chat.user_levels) {
+                    return Err(AppError::Custom("Not allowed".to_string()));
+                }
+                let obs_service = app.state::<ObsService>();
+                obs_service.set_filter(filter).await?;
             }
-            let obs_service = app.state::<ObsService>();
-            obs_service.set_filter(filter).await?;
         }
 
         Ok(())
