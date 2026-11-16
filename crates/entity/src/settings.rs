@@ -12,7 +12,6 @@ pub struct Model {
     pub black_list: String,
     pub language: String,
     pub currency: Currency,
-    pub widget_token: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

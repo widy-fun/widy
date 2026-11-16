@@ -17,7 +17,7 @@ use model::{
     donation_alerts::{Donation, DonationMessage, DonationMessageData, DonationMessageResult},
     kick::{
         Event, EventPayload, Gift, KickPub, KickPubData, KickPushMessage, KicksGiftedData,
-        KicksSender, StreamerIsLiveData, StreamerIsLiveLivestream,
+        KicksSender, RewardRedeemedData, StreamerIsLiveData, StreamerIsLiveLivestream,
     },
     tribute::{EventData, EventType, TributeEvent},
 };
@@ -82,6 +82,7 @@ enum DonatePlatform {
 enum KickEvent {
     KicksGifted,
     StreamerIsLive,
+    RedemptionTts,
 }
 
 #[derive(Subcommand)]
@@ -209,7 +210,7 @@ fn create_event(kind: &EventKind) -> Result<CliEvent> {
                     display_name: Some(mocked_name),
                     amount: rand::rng().random_range(100..=100000),
                     currency: Currency::EUR,
-                    message: Some(mocked_message),
+                    message: Some("https://www.youtube.com/watch?v=dQw4w9WgXcQ".to_string()),
                 },
             }),
             DonatePlatform::DonationAlerts => CliEvent::DonationAlertsDonation(DonationMessage {
@@ -330,6 +331,24 @@ fn create_event(kind: &EventKind) -> Result<CliEvent> {
                                 },
                             })?,
                             event: Event::StreamerIsLive,
+                        },
+                    },
+                },
+            }),
+            KickEvent::RedemptionTts => CliEvent::Kick(KickPushMessage {
+                push: KickPub {
+                    r#pub: KickPubData {
+                        data: EventPayload {
+                            chanel: Some("mocked_chanel".to_string()),
+                            data: serde_json::to_string(&RewardRedeemedData {
+                                reward_title: "tts".to_string(),
+                                user_id: rand::random(),
+                                channel_id: rand::random(),
+                                username: mocked_name,
+                                user_input: Some(mocked_message),
+                                reward_background_color: "mocked_background_color".to_string(),
+                            })?,
+                            event: Event::RewardRedeemedEvent,
                         },
                     },
                 },

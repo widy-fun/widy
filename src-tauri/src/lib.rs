@@ -200,6 +200,13 @@ pub fn run() {
             get_obs_scenes,
             get_obs_scene_sources,
             get_obs_source_filters,
+            create_moderator,
+            get_moderators,
+            get_moderator_by_id,
+            update_moderator,
+            delete_moderator_by_id,
+            get_token_by_type,
+            rotate_token,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

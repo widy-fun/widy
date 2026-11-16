@@ -30,6 +30,7 @@ import { goalsSlice } from "./slices/goalsSlice";
 import { lotsSlice } from "./slices/lotsSlice";
 import { mainSlice } from "./slices/mainSlice";
 import { maptionSlice } from "./slices/maptionSlice";
+import { moderatorsSlice } from "./slices/moderatorsSlice.ts";
 import { rewardsSlice } from "./slices/rewardsSlice.ts";
 import { settingsSlice } from "./slices/settingsSlice";
 import { variablesSlice } from "./slices/variablesSlice.ts";
@@ -55,6 +56,7 @@ export const rootReducer = combineReducers({
 	commandsState: commandsSlice.reducer,
 	ttsState: ttsSlice.reducer,
 	variablesState: variablesSlice.reducer,
+	moderatorsState: moderatorsSlice.reducer,
 	[api.reducerPath]: api.reducer,
 	[widgetApi.reducerPath]: widgetApi.reducer,
 });

@@ -43,6 +43,8 @@ export const api = createApi({
 		"FishAudioModels",
 		"Donations",
 		"Variables",
+		"Moderators",
+		"Tokens",
 	],
 	endpoints: (builder) => ({
 		getInitialState: builder.query<IInitialState, void>({

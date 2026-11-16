@@ -60,6 +60,11 @@ mod m20261029_164332_add_obs_service;
 mod m20261102_130046_add_column_obs_action_to_commands_table;
 mod m20261105_231104_add_column_obs_action_to_rewards_table;
 mod m20261107_063401_change_goals_money_columns_type_to_f64;
+mod m20261115_085100_create_table_tokens;
+mod m20261115_085438_add_moderation_and_widget_token_to_tokens_table;
+mod m20261115_091221_drop_column_widget_token_from_settings_table;
+mod m20261115_204425_create_table_moderators;
+mod m20261115_204429_create_table_moderators_logs;
 
 pub struct Migrator;
 
@@ -128,6 +133,11 @@ impl MigratorTrait for Migrator {
             Box::new(m20261102_130046_add_column_obs_action_to_commands_table::Migration),
             Box::new(m20261105_231104_add_column_obs_action_to_rewards_table::Migration),
             Box::new(m20261107_063401_change_goals_money_columns_type_to_f64::Migration),
+            Box::new(m20261115_085100_create_table_tokens::Migration),
+            Box::new(m20261115_085438_add_moderation_and_widget_token_to_tokens_table::Migration),
+            Box::new(m20261115_091221_drop_column_widget_token_from_settings_table::Migration),
+            Box::new(m20261115_204425_create_table_moderators::Migration),
+            Box::new(m20261115_204429_create_table_moderators_logs::Migration),
         ]
     }
 }

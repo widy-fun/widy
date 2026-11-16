@@ -111,7 +111,8 @@
 		"commands": "Commands",
 		"tts": "TTS",
 		"assistant": "Assistant",
-		"variables": "Variables"
+		"variables": "Variables",
+		"moderators": "Moderators"
 	},
 	"messages": {
 		"title": "Last messages"
@@ -721,5 +722,12 @@
 		"filter_duration": "Filter duration",
 		"type": "Type",
 		"Filter": "Filter"
+	},
+	"moderators": {
+		"title": "Moderators",
+		"add": "Add moderator"
+	},
+	"moderator": {
+		"name": "Name"
 	}
 }

@@ -23,6 +23,7 @@ import Gemini from "./components/gemini/Gemini";
 import Kick from "./components/kick/Kick";
 import KickBot from "./components/kick-bot/KickBot";
 import KickSession from "./components/kick-session/KickSession";
+import Moderation from "./components/Moderation";
 import Obs from "./components/obs/Obs";
 import OpenAI from "./components/openai/OpenAI";
 import StreamElements from "./components/streamelements/StreamElements";
@@ -132,6 +133,7 @@ function App() {
 				</Routes>
 			)}
 			<EmbeddedWidgets />
+			<Moderation />
 		</main>
 	);
 }

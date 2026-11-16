@@ -20,6 +20,7 @@ pub mod goals_repository;
 pub mod maption_settings_repository;
 pub mod media_settings_repository;
 pub mod messages_repository;
+pub mod moderators_repository;
 pub mod nsfw_repository;
 pub mod raids_repository;
 pub mod redemptions_repository;
@@ -27,6 +28,7 @@ pub mod rewards_repository;
 pub mod services_repository;
 pub mod settings_repository;
 pub mod subscriptions_repository;
+pub mod tokens_repository;
 pub mod variables_repository;
 pub mod widgets_repository;
 pub use alerts_repository::*;
@@ -44,10 +46,12 @@ pub use media_settings_repository::*;
 pub use messages_repository::*;
 use migration::{Migrator, MigratorTrait};
 use model::error::AppError;
+pub use moderators_repository::*;
 pub use nsfw_repository::*;
 pub use raids_repository::*;
 pub use redemptions_repository::*;
 pub use rewards_repository::*;
+pub use tokens_repository::*;
 
 #[derive(Clone, Debug)]
 pub struct DatabaseService {

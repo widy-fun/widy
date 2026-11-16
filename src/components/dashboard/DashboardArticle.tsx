@@ -20,6 +20,8 @@ import TwitchSource from "./components/commands/components/TwitchSource";
 import UpdateCommandSettings from "./components/commands/components/UpdateCommandSettings";
 import CreateGoal from "./components/goals/components/CreateGoal";
 import UpdateGoalSettings from "./components/goals/components/UpdateGoalSettings";
+import CreateModerator from "./components/moderators/components/CreateModerator";
+import UpdateModerator from "./components/moderators/components/UpdateModerator";
 import CreateReward from "./components/rewards/components/CreateReward";
 import UpdateRewardSettings from "./components/rewards/components/UpdateRewardSettings";
 import CreateVariable from "./components/variables/components/CreateVariable";
@@ -77,6 +79,8 @@ const DashboardArticle = () => {
 					element={<TelegramBotAction />}
 				/>
 				<Route path="commands/action/obs" element={<ObsAction />} />
+				<Route path="moderators/new/moderator" element={<CreateModerator />} />
+				<Route path="moderators/:id" element={<UpdateModerator />} />
 			</Routes>
 		</article>
 	);

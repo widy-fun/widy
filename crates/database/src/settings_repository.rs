@@ -27,7 +27,6 @@ impl SettingsRepository for DatabaseService {
             language: Set(settings.language),
             currency: Set(settings.currency),
             id: Set(1),
-            widget_token: Set(settings.widget_token),
         })
         .exec(&self.connection)
         .await

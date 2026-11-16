@@ -321,6 +321,13 @@ const useInboundBridge = (widget?: IWidget) => {
 						});
 						iframeRef.current?.contentWindow?.postMessage({ id }, "*");
 						break;
+					case "widgets:media:play.send":
+						eventsService.send<MessageId>({
+							event: AppEvent.PlayMedia,
+							data: arg as MessageId,
+						});
+						iframeRef.current?.contentWindow?.postMessage({ id }, "*");
+						break;
 					case "widgets:media:replay.subscription":
 						eventsService.subscribe<IClientMessage>(
 							AppEvent.ReplayMedia,
@@ -368,6 +375,17 @@ const useInboundBridge = (widget?: IWidget) => {
 							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
 						});
 						break;
+					case "widgets:alert:playing.subscription":
+						eventsService.subscribe<MessageId>(
+							AppEvent.AlertPlaying,
+							(data) => {
+								iframeRef.current?.contentWindow?.postMessage(
+									{ id, data },
+									"*",
+								);
+							},
+						);
+						break;
 					case "widgets:tts:replay.subscription":
 						eventsService.subscribe<IClientMessage>(
 							AppEvent.ReplayTts,
@@ -394,6 +412,11 @@ const useInboundBridge = (widget?: IWidget) => {
 							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
 						});
 						break;
+					case "widgets:tts:playing.subscription":
+						eventsService.subscribe<MessageId>(AppEvent.TtsPlaying, (data) => {
+							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
+						});
+						break;
 					case "widgets:media:pause.subscription":
 						eventsService.subscribe<MessageId>(AppEvent.PauseMedia, (data) => {
 							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
@@ -403,6 +426,22 @@ const useInboundBridge = (widget?: IWidget) => {
 						eventsService.subscribe<MessageId>(AppEvent.PlayMedia, (data) => {
 							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
 						});
+						break;
+					case "widgets:media:played.subscription":
+						eventsService.subscribe<MessageId>(AppEvent.MediaPlayed, (data) => {
+							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
+						});
+						break;
+					case "widgets:media:playing.subscription":
+						eventsService.subscribe<MessageId>(
+							AppEvent.MediaPlaying,
+							(data) => {
+								iframeRef.current?.contentWindow?.postMessage(
+									{ id, data },
+									"*",
+								);
+							},
+						);
 						break;
 					case "widgets:media:end.send":
 						eventsService.send<MessageId>({
@@ -436,6 +475,13 @@ const useInboundBridge = (widget?: IWidget) => {
 						eventsService.send<IClientMessage>({
 							event: AppEvent.ReplayMedia,
 							data: arg as IClientMessage,
+						});
+						iframeRef.current?.contentWindow?.postMessage({ id }, "*");
+						break;
+					case "widgets:media:skip.send":
+						eventsService.send<MessageId>({
+							event: AppEvent.SkipMedia,
+							data: arg as MessageId,
 						});
 						iframeRef.current?.contentWindow?.postMessage({ id }, "*");
 						break;

@@ -1,4 +1,5 @@
 import AddLinkIcon from "@mui/icons-material/AddLink";
+import AddModeratorIcon from "@mui/icons-material/AddModerator";
 import CampaignIcon from "@mui/icons-material/Campaign";
 import DataObjectIcon from "@mui/icons-material/DataObject";
 import InfoIcon from "@mui/icons-material/Info";
@@ -24,6 +25,7 @@ import Info from "../components/dashboard/components/info/Info";
 import Maption from "../components/dashboard/components/maption/Maption";
 import Media from "../components/dashboard/components/media/Media";
 import Messages from "../components/dashboard/components/messages/Messages";
+import Moderators from "../components/dashboard/components/moderators/Moderators";
 import Nsfw from "../components/dashboard/components/nsfw/Nsfw";
 import RewardIcon from "../components/dashboard/components/rewards/components/RewardIcon";
 import Rewards from "../components/dashboard/components/rewards/Rewards";
@@ -129,6 +131,12 @@ export const dashboardRouts = [
 		element: <Variables />,
 		icon: <DataObjectIcon />,
 		name: "variables",
+	},
+	{
+		path: "moderators",
+		element: <Moderators />,
+		icon: <AddModeratorIcon />,
+		name: "moderators",
 	},
 	{
 		path: "info",
