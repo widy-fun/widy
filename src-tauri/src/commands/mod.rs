@@ -1,3 +1,4 @@
+pub mod add_moderator_log;
 pub mod add_widget;
 pub mod claude_connect;
 pub mod claude_sign_out;
@@ -43,6 +44,7 @@ pub mod get_maption_settings;
 pub mod get_media_settings;
 pub mod get_messages;
 pub mod get_moderator_by_id;
+pub mod get_moderator_logs;
 pub mod get_moderators;
 pub mod get_not_ended_goal;
 pub mod get_not_ended_goals;
@@ -120,6 +122,7 @@ pub mod update_widget;
 pub mod widy_sol_sign_out;
 pub mod widy_ton_sign_out;
 
+pub use add_moderator_log::*;
 pub use add_widget::*;
 pub use claude_connect::*;
 pub use claude_sign_out::*;
@@ -165,6 +168,7 @@ pub use get_maption_settings::*;
 pub use get_media_settings::*;
 pub use get_messages::*;
 pub use get_moderator_by_id::*;
+pub use get_moderator_logs::*;
 pub use get_moderators::*;
 pub use get_not_ended_goal::*;
 pub use get_not_ended_goals::*;

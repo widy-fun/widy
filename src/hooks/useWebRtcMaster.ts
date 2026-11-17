@@ -6,6 +6,8 @@ import { AppEvent, IClientMessage, IWidgetRequest, MessageId } from "@widy/sdk";
 import Peer, { PeerOptions } from "peerjs";
 import { useEffect, useRef, useState } from "react";
 import useAppEvents from "../../shared/hooks/useAppEvents";
+import { store } from "./../../src-widget/store/index";
+import { moderatorsLogsApi } from "../api/moderatorsLogsApi";
 
 type Unsubscribe = () => void;
 type ConnectionSubscriptions = Map<string, Unsubscribe>;
@@ -92,6 +94,16 @@ const useWebRtcMaster = ({
 						event: sendEvent,
 						data: arg as Payload,
 					});
+					store.dispatch(
+						moderatorsLogsApi.endpoints.addModeratorLog.initiate({
+							moderatorLog: {
+								event_type: SEND_SCOPES[scope],
+								id: crypto.randomUUID(),
+								moderator_id: connectionId,
+								created_at: Math.round(new Date().getTime() / 1000),
+							},
+						}),
+					);
 					api.sendTo(connectionId, { id });
 					return;
 				}

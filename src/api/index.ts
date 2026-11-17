@@ -45,6 +45,7 @@ export const api = createApi({
 		"Variables",
 		"Moderators",
 		"Tokens",
+		"ModeratorsLogs",
 	],
 	endpoints: (builder) => ({
 		getInitialState: builder.query<IInitialState, void>({

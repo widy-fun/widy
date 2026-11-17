@@ -26,7 +26,6 @@ import {
 import { useLayoutEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import useAppEvents from "../../shared/hooks/useAppEvents";
-import appSettingsToWidgetSettings from "../../src/helpers/appSettingsToWidgetSettings";
 import { AppDispatch } from "../../src/store";
 import { alertsApi } from "../api/alertsApi";
 import { aucFighterApi } from "../api/aucFighterApi";
@@ -119,10 +118,7 @@ const useInboundBridge = (widget?: IWidget) => {
 						break;
 					case "widgets:settings.subscription":
 						eventsService.subscribe<ISettings>(AppEvent.Settings, (data) => {
-							iframeRef.current?.contentWindow?.postMessage(
-								{ id, data: appSettingsToWidgetSettings(data) },
-								"*",
-							);
+							iframeRef.current?.contentWindow?.postMessage({ id, data }, "*");
 						});
 						break;
 
@@ -296,7 +292,7 @@ const useInboundBridge = (widget?: IWidget) => {
 						);
 
 						iframeRef.current?.contentWindow?.postMessage(
-							{ id, data: appSettingsToWidgetSettings(data), error },
+							{ id, data, error },
 							"*",
 						);
 						break;

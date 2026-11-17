@@ -21,6 +21,7 @@ import UpdateCommandSettings from "./components/commands/components/UpdateComman
 import CreateGoal from "./components/goals/components/CreateGoal";
 import UpdateGoalSettings from "./components/goals/components/UpdateGoalSettings";
 import CreateModerator from "./components/moderators/components/CreateModerator";
+import ModeratorLogs from "./components/moderators/components/ModeratorLogs";
 import UpdateModerator from "./components/moderators/components/UpdateModerator";
 import CreateReward from "./components/rewards/components/CreateReward";
 import UpdateRewardSettings from "./components/rewards/components/UpdateRewardSettings";
@@ -81,6 +82,7 @@ const DashboardArticle = () => {
 				<Route path="commands/action/obs" element={<ObsAction />} />
 				<Route path="moderators/new/moderator" element={<CreateModerator />} />
 				<Route path="moderators/:id" element={<UpdateModerator />} />
+				<Route path="moderators/logs/:id" element={<ModeratorLogs />} />
 			</Routes>
 		</article>
 	);

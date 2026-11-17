@@ -1,13 +1,13 @@
 use crate::DatabaseService;
 use async_trait::async_trait;
-use entity::{moderators::*, moderators_logs};
+use entity::moderators::*;
 use model::error::{AppError, log_and_wrap_error};
 use sea_orm::{ActiveValue::Set, EntityTrait};
 use uuid::Uuid;
 
 #[async_trait]
 pub trait ModeratorsRepository: Send + Sync {
-    async fn get_moderators(&self) -> Result<Vec<Moderator>, AppError>;
+    async fn get_moderators(&self) -> Result<Vec<Model>, AppError>;
     async fn get_moderator_by_id(&self, id: Uuid) -> Result<Option<Model>, AppError>;
     async fn update_moderator(&self, moderator: Model) -> Result<(), AppError>;
     async fn create_moderator(&self, moderator: Model) -> Result<(), AppError>;
@@ -16,10 +16,8 @@ pub trait ModeratorsRepository: Send + Sync {
 
 #[async_trait]
 impl ModeratorsRepository for DatabaseService {
-    async fn get_moderators(&self) -> Result<Vec<Moderator>, AppError> {
+    async fn get_moderators(&self) -> Result<Vec<Model>, AppError> {
         Entity::find()
-            .left_join(moderators_logs::Entity)
-            .into_partial_model()
             .all(&self.connection)
             .await
             .map_err(|e| log_and_wrap_error("Get moderators error", e))

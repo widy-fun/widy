@@ -9,7 +9,7 @@ const Moderation = () => {
 		type: TokenType.Moderation,
 	});
 
-	const peer = useWebRtcMaster({
+	useWebRtcMaster({
 		allowedConnectionIds: moderators?.map((moderator) => moderator.id),
 		allowedScopes: [
 			"widgets:alert:skip.send",
@@ -33,6 +33,6 @@ const Moderation = () => {
 		peerId: moderatorToken?.token,
 	});
 
-	return <div></div>;
+	return <div style={{ display: "none" }}></div>;
 };
 export default Moderation;

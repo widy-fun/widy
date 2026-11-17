@@ -207,6 +207,8 @@ pub fn run() {
             delete_moderator_by_id,
             get_token_by_type,
             rotate_token,
+            add_moderator_log,
+            get_moderator_logs,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
