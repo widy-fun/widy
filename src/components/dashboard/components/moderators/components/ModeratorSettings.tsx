@@ -24,6 +24,7 @@ const ModeratorSettings = ({ onSave }: { onSave: () => void }) => {
 						</div>
 						<TextField
 							variant="outlined"
+							autoComplete="off"
 							value={moderator.name}
 							slotProps={{
 								htmlInput: {

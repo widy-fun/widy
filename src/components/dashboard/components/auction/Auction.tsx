@@ -1,11 +1,11 @@
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { Box, Tab, Tabs } from "@mui/material";
+import { TabPanel } from "@widy/react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import type { AppState } from "../../../../store";
-import TabPanel from "../../../TabPanel";
 import AuctionSettings from "./components/AuctionSettings";
 import AuctionWheel from "./components/AuctionWheel";
 import Lots from "./components/Lots";

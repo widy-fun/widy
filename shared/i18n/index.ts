@@ -1,5 +1,18 @@
+import {
+	arTranslation,
+	deTranslation,
+	enTranslation,
+	esTranslation,
+	frTranslation,
+	hiTranslation,
+	ptTranslation,
+	ruTranslation,
+	uaTranslation,
+	zhTranslation,
+} from "@widy/react";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import ar from "../translation/ar.json";
 import de from "../translation/de.json";
 import en from "../translation/en.json";
 import es from "../translation/es.json";
@@ -13,31 +26,34 @@ import zh from "../translation/zh.json";
 i18n.use(initReactI18next).init({
 	resources: {
 		en: {
-			translation: en,
+			translation: { ...en, ...enTranslation },
 		},
 		ua: {
-			translation: ua,
+			translation: { ...ua, ...uaTranslation },
 		},
 		ru: {
-			translation: ru,
+			translation: { ...ru, ...ruTranslation },
 		},
 		de: {
-			translation: de,
+			translation: { ...de, ...deTranslation },
 		},
 		es: {
-			translation: es,
+			translation: { ...es, ...esTranslation },
 		},
 		fr: {
-			translation: fr,
+			translation: { ...fr, ...frTranslation },
 		},
 		hi: {
-			translation: hi,
+			translation: { ...hi, ...hiTranslation },
 		},
 		pt: {
-			translation: pt,
+			translation: { ...pt, ...ptTranslation },
 		},
 		zh: {
-			translation: zh,
+			translation: { ...zh, ...zhTranslation },
+		},
+		ar: {
+			translation: { ...ar, ...arTranslation },
 		},
 	},
 	lng: "en",

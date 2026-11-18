@@ -1,9 +1,8 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { messagesSlice } from "@widy/react";
 import { alertsSlice } from "../../shared/slices/alertsSlice";
 import { mediaSlice } from "../../shared/slices/mediaSlice";
-import { messagesSlice } from "../../shared/slices/messagesSlice";
 import { servicesSlice } from "../../shared/slices/servicesSlice";
-import { ttsSlice } from "../../shared/slices/ttsSlice";
 import { widgetApi } from "../api";
 
 export const rootReducer = combineReducers({
@@ -11,7 +10,6 @@ export const rootReducer = combineReducers({
 	alertsState: alertsSlice.reducer,
 	servicesState: servicesSlice.reducer,
 	messagesState: messagesSlice.reducer,
-	ttsState: ttsSlice.reducer,
 	[widgetApi.reducerPath]: widgetApi.reducer,
 });
 

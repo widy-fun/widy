@@ -1,15 +1,26 @@
 import { Skeleton } from "@mui/material";
 import type { TypedUseInfiniteQuery } from "@reduxjs/toolkit/query/react";
-import { showSnackBar } from "@widy/react";
+import {
+	MediaTile,
+	MessageCard,
+	MessageEndAdornment,
+	MessageStartAdornment,
+	MessagesFilter,
+	MessageText,
+	MessageTitle,
+	setPlayingAlertId,
+	setPlayingMediaId,
+	setPlayingTtsId,
+	showSnackBar,
+} from "@widy/react";
 import type { IClientMessage, IMessagesFilter } from "@widy/sdk";
-import { AlertSeverity } from "@widy/sdk";
-import { Fragment, useEffect } from "react";
+import { AlertSeverity, AppEvent } from "@widy/sdk";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroller";
 import { useDispatch, useSelector } from "react-redux";
-import getMessageComponentByMessageType from "../../src/helpers/getMessageComponentByMessageType";
 import type { AppState } from "../../src/store";
-import MessagesFilter from "./MessagesFilter";
+import useAppEvents from "../hooks/useAppEvents";
 
 const InfiniteMessages = ({
 	useGetMessagesInfiniteQuery,
@@ -22,12 +33,13 @@ const InfiniteMessages = ({
 	>;
 }) => {
 	const { t } = useTranslation();
-	const { playingAlertId } = useSelector(
-		(state: AppState) => state.alertsState,
+	const { playingAlertId, filter } = useSelector(
+		(state: AppState) => state.messagesState,
 	);
-	const { playingTtsId } = useSelector((state: AppState) => state.ttsState);
-	const { filter } = useSelector((state: AppState) => state.messagesState);
-	const { playingMediaId } = useSelector((state: AppState) => state.mediaState);
+	const eventsService = useAppEvents();
+	const { playingTtsId, playingMediaId, pausedMediaId } = useSelector(
+		(state: AppState) => state.messagesState,
+	);
 	const { data, fetchNextPage, hasNextPage, isFetchingNextPage, error } =
 		useGetMessagesInfiniteQuery(
 			{
@@ -54,8 +66,7 @@ const InfiniteMessages = ({
 
 	return (
 		<>
-			<MessagesFilter />
-
+			<MessagesFilter filter={filter} t={t} />
 			{!data?.pages[0].length ? (
 				<Skeleton
 					variant="rectangular"
@@ -80,14 +91,81 @@ const InfiniteMessages = ({
 					<div>
 						{data.pages.map((page) =>
 							page.map((message) => (
-								<Fragment key={message.id}>
-									{getMessageComponentByMessageType({
-										message,
-										isAlertPlaying: message.id === playingAlertId,
-										isMediaPlaying: message.id === playingMediaId,
-										isTtsPlaying: message.id === playingTtsId,
-									})}
-								</Fragment>
+								<MessageCard
+									key={message.id}
+									message={message}
+									isAlertPlaying={message.id === playingAlertId}
+									isTtsPlaying={message.id === playingTtsId}
+									onReplayAlert={() => {
+										eventsService.send({
+											event: AppEvent.ReplayAlert,
+											data: message,
+										});
+									}}
+									onSkipAlert={() => {
+										dispatch(setPlayingAlertId(""));
+										eventsService.send({
+											event: AppEvent.SkipAlert,
+											data: message.id,
+										});
+									}}
+									title={<MessageTitle message={message} t={t} />}
+									text={<MessageText message={message} t={t} />}
+									startAdornment={
+										<MessageStartAdornment
+											message={message}
+											isMediaPlaying={message.id === playingMediaId}
+											isAlertPlaying={message.id === playingAlertId}
+											onReplayMedia={() => {
+												eventsService.send({
+													event: AppEvent.ReplayMedia,
+													data: message,
+												});
+											}}
+										/>
+									}
+									endAdornment={<MessageEndAdornment message={message} />}
+									messageMedia={
+										<MediaTile
+											message={message}
+											pausedMediaId={pausedMediaId}
+											onPlayMedia={() => {
+												eventsService.send({
+													event: AppEvent.PlayMedia,
+													data: message.id,
+												});
+											}}
+											onPauseMedia={() => {
+												eventsService.send({
+													event: AppEvent.PauseMedia,
+													data: message.id,
+												});
+											}}
+											onSkipMedia={() => {
+												dispatch(setPlayingMediaId(""));
+												eventsService.send({
+													event: AppEvent.SkipMedia,
+													data: message.id,
+												});
+											}}
+											isMediaPlaying={message.id === playingMediaId}
+										/>
+									}
+									onReplayTts={() => {
+										eventsService.send({
+											event: AppEvent.ReplayTts,
+											data: message,
+										});
+									}}
+									onSkipTts={() => {
+										dispatch(setPlayingTtsId(""));
+										eventsService.send({
+											event: AppEvent.SkipTts,
+											data: message.id,
+										});
+									}}
+									t={t}
+								/>
 							)),
 						)}
 					</div>

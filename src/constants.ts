@@ -10,7 +10,6 @@ import {
 	IObsAction,
 	ISettings,
 	ITelegramBotAction,
-	ITextStyle,
 	ITimerSource,
 	ITwitchAction,
 	ITwitchSource,
@@ -19,8 +18,6 @@ import {
 	ObsActionType,
 	Platform,
 	PostType,
-	TextAnimation,
-	TextAnimationVariant,
 	TwitchActionType,
 	TwitchSourceType,
 	UserLevel,
@@ -37,17 +34,6 @@ export const CHARACTERS = {
 	SAGAT: 10,
 	MBISON: 14,
 	AKUMA: 13,
-};
-export const TEXT_STYLE: ITextStyle = {
-	font_size: 60,
-	text_color: "rgb(255,255,255,1)",
-	bold: true,
-	italics: false,
-	underline: false,
-	letter_spacing: 0,
-	word_spacing: 0,
-	animation: TextAnimation.No,
-	animation_variant: TextAnimationVariant.AllText,
 };
 
 export const SCROLLBAR_STYLES = {

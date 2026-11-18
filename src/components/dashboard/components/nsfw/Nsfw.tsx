@@ -1,9 +1,9 @@
 import SettingsIcon from "@mui/icons-material/Settings";
 import WebAssetIcon from "@mui/icons-material/WebAsset";
 import { Box, Tab, Tabs } from "@mui/material";
+import { TabPanel } from "@widy/react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import TabPanel from "../../../TabPanel";
 import WidgetUrl from "../alerts/components/WidgetUrl";
 import NsfwSettings from "./components/NsfwSettings";
 import NsfwWindow from "./components/NsfwWindow";

@@ -1,8 +1,8 @@
 import { Box, Card, CardContent, Typography } from "@mui/material";
+import { MessageDate } from "@widy/react";
 import { useTranslation } from "react-i18next";
 import InfiniteScroll from "react-infinite-scroller";
 import { useParams } from "react-router";
-import MessageDate from "../../../../../../shared/components/MessageDate";
 import { useGetModeratorLogsInfiniteQuery } from "../../../../../api/moderatorsLogsApi";
 
 const ModeratorLogs = () => {

@@ -7,8 +7,8 @@ import {
 } from "@widy/sdk";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+import getTestAlertMessage from "../../../../../../shared/helpers/getTestAlertMessage";
 import useAppEvents from "../../../../../../shared/hooks/useAppEvents";
-import getTestAlertMessage from "../../../../../../shared/utils/getTestAlertMessage";
 import getDefaultAlert from "../../../../../helpers/getDefaultAlert";
 import getRewardIconByRewardType from "../../../../../helpers/getRewardIconByRewardType";
 import useRemoveReward from "../../../../../hooks/useRemoveReward";

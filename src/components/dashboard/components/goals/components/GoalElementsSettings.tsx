@@ -2,7 +2,7 @@ import { MenuItem, Select } from "@mui/material";
 import { GoalProgressLayout, GoalTextPosition, GoalType } from "@widy/sdk";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
-import getProgressBarLayoutText from "../../../../../../shared/utils/getProgressBarLayoutText";
+import getProgressBarLayoutText from "../../../../../../shared/helpers/getProgressBarLayoutText";
 import { useGetSettingsQuery } from "../../../../../api/settingsApi";
 import type { AppState } from "../../../../../store";
 import { setGoal } from "../../../../../store/slices/goalsSlice";

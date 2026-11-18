@@ -10,7 +10,7 @@ import { WheelVariant } from "@widy/sdk";
 import { memo, useCallback, useRef, useState } from "react";
 import { Wheel } from "react-custom-roulette";
 import { useTranslation } from "react-i18next";
-import getRandomWinnerIndex from "../../../../../../shared/utils/getRandomWinnerIndex";
+import getRandomWinnerIndex from "../../../../../../shared/helpers/getRandomWinnerIndex";
 import calculateLotProbability from "../../../../../helpers/calculateLotProbability";
 import findLotsMinMaxAmount from "../../../../../helpers/findLotsMinMaxAmount";
 import lotsTotalAmount from "../../../../../helpers/lotsTotalAmount";

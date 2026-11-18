@@ -4,7 +4,6 @@ import getDefaultAlert from "../../src/helpers/getDefaultAlert";
 
 interface AlertsState {
 	alert: IAlert;
-	playingAlertId: string;
 }
 
 const initialState: AlertsState = {
@@ -12,7 +11,6 @@ const initialState: AlertsState = {
 		group_id: "1",
 		type: MessageType.Donation,
 	}),
-	playingAlertId: "",
 };
 
 export const alertsSlice = createSlice({
@@ -47,16 +45,7 @@ export const alertsSlice = createSlice({
 				state.alert.message_style = action.payload;
 			}
 		},
-		setPlayingAlertId: (
-			state,
-			action: {
-				payload: string;
-			},
-		) => {
-			state.playingAlertId = action.payload;
-		},
 	},
 });
 
-export const { setAlert, setTitleStyle, setMessageStyle, setPlayingAlertId } =
-	alertsSlice.actions;
+export const { setAlert, setTitleStyle, setMessageStyle } = alertsSlice.actions;

@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useGetAlertsQuery } from "../../../../api/alertsApi";
-import groupAlertsByGroupId from "../../../../utils/groupAlertsByGroupId";
+import groupAlertsByGroupId from "../../../../helpers/groupAlertsByGroupId";
 import AddNewAlertVariantButton from "./components/AddNewAlertVariantButton";
 import AlertsGroup from "./components/AlertsGroup";
 

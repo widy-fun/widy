@@ -2,9 +2,9 @@ import SearchIcon from "@mui/icons-material/Search";
 import SensorsIcon from "@mui/icons-material/Sensors";
 import SensorsOffIcon from "@mui/icons-material/SensorsOff";
 import { Box, Tab, Tabs, TextField } from "@mui/material";
+import { TabPanel } from "@widy/react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import TabPanel from "../../../TabPanel";
 import ConnectedServices from "./components/ConnectedServices";
 import AllServices from "./components/NotConnectedServices";
 

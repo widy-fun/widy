@@ -12,7 +12,7 @@ import OnOffSwitch from "../../../OnOffSwitch";
 import styles from "./Settings.module.css";
 
 const Settings = () => {
-	const { t, i18n } = useTranslation();
+	const { t } = useTranslation();
 	const { settings } = useSelector((state: AppState) => state.settingsState);
 	const dispatch = useDispatch();
 	const [updateSettings] = useUpdateSettingsMutation();
@@ -32,7 +32,6 @@ const Settings = () => {
 									value={language.locale}
 									key={language.locale}
 									onClick={() => {
-										i18n.changeLanguage(language.locale);
 										dispatch(
 											setSettings({
 												...settings,

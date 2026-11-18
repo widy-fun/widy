@@ -4,10 +4,14 @@ import type {
 	ISettings,
 	MessageId,
 } from "@widy/sdk";
-import { AppEvent, AssistantActionType, RewardType } from "@widy/sdk";
+import {
+	AppEvent,
+	AssistantActionType,
+	getMediaFromMessage,
+	RewardType,
+} from "@widy/sdk";
 import { useCallback, useEffect, useRef, useState } from "react";
 import useAppEvents from "../../shared/hooks/useAppEvents";
-import getMediaFromMessage from "../utils/getMediaFromMessage";
 
 const usePlayMedia = () => {
 	const eventsService = useAppEvents();

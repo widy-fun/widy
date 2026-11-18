@@ -5,7 +5,7 @@ import {
 	RewardType,
 	TtsType,
 } from "@widy/sdk";
-import i18n from "../../shared/i18n/i18n";
+import i18n from "../../shared/i18n";
 import getDefaultTtsSettingsByType from "./getDefaultTtsSettingsByType";
 
 const getDefaultReward = (): IReward => {

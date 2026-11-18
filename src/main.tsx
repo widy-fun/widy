@@ -2,10 +2,18 @@ import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import App from "./App";
 import { type AppState, store } from "./store";
-import "../shared/i18n/i18n";
+import "../shared/i18n";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { appLocalDataDir } from "@tauri-apps/api/path";
-import { BridgeContext, dark, showSnackBar } from "@widy/react";
+import {
+	BridgeContext,
+	dark,
+	setPausedMediaId,
+	setPlayingAlertId,
+	setPlayingMediaId,
+	setPlayingTtsId,
+	showSnackBar,
+} from "@widy/react";
 import type {
 	IAucFighterMatchWinner,
 	IClientMessage,
@@ -22,12 +30,6 @@ import { BrowserRouter } from "react-router";
 import { EventsContext } from "../shared/contexts/EventsContext";
 import EventsProvider from "../shared/providers/EventsProvider";
 import { WebsocketEventsService } from "../shared/services/websocketEventsService";
-import { setPlayingAlertId } from "../shared/slices/alertsSlice";
-import {
-	setPausedMediaId,
-	setPlayingMediaId,
-} from "../shared/slices/mediaSlice";
-import { setPlayingTtsId } from "../shared/slices/ttsSlice";
 import { messagesApi } from "./api/messagesApi";
 import { settingsApi } from "./api/settingsApi";
 import { StreamElementsSocketServiceContext } from "./contexts/StreamElementsSocketServiceContext";

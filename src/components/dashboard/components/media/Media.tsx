@@ -1,18 +1,21 @@
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import { Box, Button, Tab, Tabs } from "@mui/material";
-import { showSnackBar } from "@widy/react";
-import { AlertSeverity, type ISerializedAppError, MediaType } from "@widy/sdk";
+import { showSnackBar, TabPanel } from "@widy/react";
+import {
+	AlertSeverity,
+	getColorByMediaType,
+	type ISerializedAppError,
+	MediaType,
+} from "@widy/sdk";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { setMediaSettings } from "../../../../../shared/slices/mediaSlice";
-import getColorByMediaType from "../../../../../shared/utils/getColorByMediaType";
 import {
 	useGetMediaSettingsQuery,
 	useUpdateMediaSettingsMutation,
 } from "../../../../api/mediaApi";
 import type { AppState } from "../../../../store";
-import TabPanel from "../../../TabPanel";
 import WidgetUrl from "../alerts/components/WidgetUrl";
 import Kick from "./components/Kick";
 import KickIcon from "./components/KickIcon";

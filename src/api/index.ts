@@ -1,7 +1,7 @@
 import { type BaseQueryFn, createApi } from "@reduxjs/toolkit/query/react";
 import { type InvokeArgs, invoke } from "@tauri-apps/api/core";
 import { IInitialState, ISerializedAppError } from "@widy/sdk";
-import i18n from "../../shared/i18n/i18n";
+import i18n from "../../shared/i18n";
 
 const tauriBaseQuery =
 	(): BaseQueryFn<

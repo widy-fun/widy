@@ -1,13 +1,13 @@
 import {
 	AlertVariant,
 	AlertVariationConditions,
+	DEFAULT_TEXT_STYLE,
 	IAlert,
 	MessageType,
 	TtsType,
 	ViewType,
 } from "@widy/sdk";
-import i18n from "../../shared/i18n/i18n";
-import { TEXT_STYLE } from "../constants";
+import i18n from "../../shared/i18n";
 import getDefaultAlertTitleTemplate from "./getDefaultAlertTitleTemplate";
 import getDefaultTtsSettingsByType from "./getDefaultTtsSettingsByType";
 
@@ -27,9 +27,9 @@ const getDefaultAlert = ({
 		image: "image.gif",
 		group_id,
 		name: i18n.t("alert.new_variant"),
-		title_style: TEXT_STYLE,
+		title_style: DEFAULT_TEXT_STYLE,
 		title_template: getDefaultAlertTitleTemplate(type),
-		message_style: TEXT_STYLE,
+		message_style: DEFAULT_TEXT_STYLE,
 		variation_conditions: AlertVariationConditions.Random,
 		status: true,
 		type,

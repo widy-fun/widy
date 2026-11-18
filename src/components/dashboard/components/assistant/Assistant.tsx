@@ -1,9 +1,9 @@
 import MicIcon from "@mui/icons-material/Mic";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { Box, Tab, Tabs } from "@mui/material";
+import { TabPanel } from "@widy/react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import TabPanel from "../../../TabPanel";
 import Device from "./commponents/Device";
 import Settings from "./commponents/Settings";
 

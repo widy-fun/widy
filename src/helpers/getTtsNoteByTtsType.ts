@@ -1,5 +1,5 @@
 import { TtsType } from "@widy/sdk";
-import i18n from "../../shared/i18n/i18n";
+import i18n from "../../shared/i18n";
 
 const getTtsNoteByTtsType = (tts_type: TtsType) => {
 	switch (tts_type) {

@@ -1,10 +1,9 @@
 import { Card, Switch, useTheme } from "@mui/material";
 import type { IAlert, IClientMessage } from "@widy/sdk";
-import { AppEvent } from "@widy/sdk";
+import { AppEvent, getColorByMessageType } from "@widy/sdk";
 import { useTranslation } from "react-i18next";
+import getTestAlertMessage from "../../../../../../shared/helpers/getTestAlertMessage";
 import useAppEvents from "../../../../../../shared/hooks/useAppEvents";
-import getColorByMessageType from "../../../../../../shared/utils/getColorByMessageType";
-import getTestAlertMessage from "../../../../../../shared/utils/getTestAlertMessage";
 import {
 	useDeleteAlertByIdMutation,
 	useUpdateAlertSettingsMutation,

@@ -1,4 +1,5 @@
 import { TokenType } from "@widy/sdk";
+import { useEffect } from "react";
 import { useGetModeratorsQuery } from "../api/moderatorsApi";
 import { useGetTokenByTypeQuery } from "../api/tokensApi";
 import useWebRtcMaster from "../hooks/useWebRtcMaster";
@@ -9,7 +10,7 @@ const Moderation = () => {
 		type: TokenType.Moderation,
 	});
 
-	useWebRtcMaster({
+	const peer = useWebRtcMaster({
 		allowedConnectionIds: new Set(moderators?.map((moderator) => moderator.id)),
 		allowedScopes: new Set([
 			"widgets:alert:skip.send",
@@ -32,6 +33,12 @@ const Moderation = () => {
 		]),
 		peerId: moderatorToken?.token,
 	});
+
+	useEffect(() => {
+		if (!moderators?.length && peer) {
+			peer.destroy();
+		}
+	}, [peer, moderators]);
 
 	return <div style={{ display: "none" }}></div>;
 };

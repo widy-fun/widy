@@ -1,9 +1,9 @@
 import SettingsIcon from "@mui/icons-material/Settings";
 import VideogameAssetIcon from "@mui/icons-material/VideogameAsset";
 import { Box, Tab, Tabs } from "@mui/material";
+import { TabPanel } from "@widy/react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import TabPanel from "../../../TabPanel";
 import WidgetUrl from "../alerts/components/WidgetUrl";
 import AucFighterSettings from "./components/AucFighterSettings";
 import Game from "./components/Game";

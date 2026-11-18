@@ -3,14 +3,10 @@ import type { IMediaPlatformSettings, IMediaSettings } from "@widy/sdk";
 
 interface MediaState {
 	mediaSettings: IMediaSettings | null;
-	playingMediaId: string;
-	pausedMediaId: string;
 }
 
 const initialState: MediaState = {
 	mediaSettings: null,
-	playingMediaId: "",
-	pausedMediaId: "",
 };
 
 export const mediaSlice = createSlice({
@@ -65,23 +61,6 @@ export const mediaSlice = createSlice({
 				state.mediaSettings.kick = action.payload;
 			}
 		},
-
-		setPlayingMediaId: (
-			state,
-			action: {
-				payload: string;
-			},
-		) => {
-			state.playingMediaId = action.payload;
-		},
-		setPausedMediaId: (
-			state,
-			action: {
-				payload: string;
-			},
-		) => {
-			state.pausedMediaId = action.payload;
-		},
 	},
 });
 
@@ -90,7 +69,5 @@ export const {
 	setYoutubeSettings,
 	setTwitchSettings,
 	setTikTokSettings,
-	setPlayingMediaId,
-	setPausedMediaId,
 	setKickSettings,
 } = mediaSlice.actions;

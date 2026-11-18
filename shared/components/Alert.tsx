@@ -1,10 +1,10 @@
 import type { IAlert } from "@widy/sdk";
 import { AlertVariant, MessageType, ViewType } from "@widy/sdk";
 import { useEffect, useRef } from "react";
-import computePXSize from "../utils/computePXSize";
-import getGridAutoColumns from "../utils/getGridAutoColumns";
-import getGridAutoRows from "../utils/getGridAutoRows";
-import getGridTemplateAreas from "../utils/getGridTemplateAreas";
+import computePXSize from "../helpers/computePXSize";
+import getGridAutoColumns from "../helpers/getGridAutoColumns";
+import getGridAutoRows from "../helpers/getGridAutoRows";
+import getGridTemplateAreas from "../helpers/getGridTemplateAreas";
 
 const Alert = ({
 	alert,

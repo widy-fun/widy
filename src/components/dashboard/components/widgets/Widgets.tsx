@@ -1,9 +1,9 @@
 import AppsIcon from "@mui/icons-material/Apps";
 import InstallDesktopIcon from "@mui/icons-material/InstallDesktop";
 import { Box, Tab, Tabs } from "@mui/material";
+import { TabPanel } from "@widy/react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import TabPanel from "../../../TabPanel";
 import AllWidgets from "./components/AllWidgets";
 import InstalledWidgets from "./components/InstalledWidgets";
 

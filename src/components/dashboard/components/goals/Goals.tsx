@@ -1,12 +1,16 @@
 import AddIcon from "@mui/icons-material/Add";
 import { Box, Button, useTheme } from "@mui/material";
-import { GoalProgressLayout, GoalTextPosition, GoalType } from "@widy/sdk";
+import {
+	DEFAULT_TEXT_STYLE,
+	GoalProgressLayout,
+	GoalTextPosition,
+	GoalType,
+} from "@widy/sdk";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { useGetNotEndedGoalsQuery } from "../../../../api/goalsApi";
-import { TEXT_STYLE } from "../../../../constants";
 import { setGoal } from "../../../../store/slices/goalsSlice";
 import GoalCard from "./components/GoalCard";
 
@@ -49,9 +53,9 @@ const Goals = () => {
 									goal_amount_limits: true,
 									widget_background: true,
 									widget_background_color: "rgb(0,0,0,0.4)",
-									title_style: TEXT_STYLE,
-									progress_style: TEXT_STYLE,
-									limits_style: TEXT_STYLE,
+									title_style: DEFAULT_TEXT_STYLE,
+									progress_style: DEFAULT_TEXT_STYLE,
+									limits_style: DEFAULT_TEXT_STYLE,
 								}),
 							);
 							navigate("/dashboard/goals/new/goal");

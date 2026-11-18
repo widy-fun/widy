@@ -1,14 +1,12 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import { snackBarSlice } from "@widy/react";
+import { messagesSlice, snackBarSlice } from "@widy/react";
 import { alertsSlice } from "../../shared/slices/alertsSlice";
 import { mediaSlice } from "../../shared/slices/mediaSlice";
-import { messagesSlice } from "../../shared/slices/messagesSlice.ts";
 import { servicesSlice } from "../../shared/slices/servicesSlice.ts";
 import {
 	auctionTimerSlice,
 	maptionTimerSlice,
 } from "../../shared/slices/timerSlice.ts";
-import { ttsSlice } from "../../shared/slices/ttsSlice.ts";
 import { widgetApi } from "../../src-widget/api/index.ts";
 import { api } from "../api";
 import calculateLotsProbabilityMiddleware from "./middlewares/calculateLotsProbabilityMiddleware";
@@ -54,7 +52,6 @@ export const rootReducer = combineReducers({
 	goalsState: goalsSlice.reducer,
 	servicesState: servicesSlice.reducer,
 	commandsState: commandsSlice.reducer,
-	ttsState: ttsSlice.reducer,
 	variablesState: variablesSlice.reducer,
 	moderatorsState: moderatorsSlice.reducer,
 	[api.reducerPath]: api.reducer,

@@ -5,8 +5,8 @@ import {
 	type IGoal,
 } from "@widy/sdk";
 import type { CSSProperties } from "react";
-import computePXSize from "../utils/computePXSize";
-import getProgressBarLayoutText from "../utils/getProgressBarLayoutText";
+import computePXSize from "../helpers/computePXSize";
+import getProgressBarLayoutText from "../helpers/getProgressBarLayoutText";
 
 const GoalView = ({
 	goal,
