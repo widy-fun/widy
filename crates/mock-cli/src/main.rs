@@ -309,7 +309,7 @@ fn create_event(kind: &EventKind) -> Result<CliEvent> {
                                     pinned_time: 1,
                                 },
                                 created_at: "created_at".to_string(),
-                                expires_at: "expires_at".to_string(),
+                                expires_at: Some("expires_at".to_string()),
                             })?,
                             event: Event::KicksGifted,
                         },

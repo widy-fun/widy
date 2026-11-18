@@ -179,7 +179,7 @@ pub struct KicksGiftedData {
     pub sender: KicksSender,
     pub gift: Gift,
     pub created_at: String,
-    pub expires_at: String,
+    pub expires_at: Option<String>,
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
 
@@ -329,7 +329,7 @@ pub struct User {
     pub id: u64,
     pub username: String,
 }
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Default, Deserialize, Serialize)]
 
 pub struct Chatroom {
     pub id: u64,
