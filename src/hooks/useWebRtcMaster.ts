@@ -53,10 +53,12 @@ const useWebRtcMaster = ({
 	allowedScopesRef.current = allowedScopes;
 	allowedConnectionIdsRef.current = allowedConnectionIds;
 	const subscriptionsRef = useRef<Record<string, ConnectionSubscriptions>>({});
-
 	const [webRtcMaster, setWebRtcMaster] = useState<Peer>();
+	const hasAllowedConnections = allowedConnectionIds.size > 0;
+
 	useEffect(() => {
-		if (!peerId) return;
+		if (!peerId || !hasAllowedConnections) return;
+
 		const subscriptions = subscriptionsRef.current;
 		let disposed = false;
 
@@ -117,7 +119,7 @@ const useWebRtcMaster = ({
 						subscribeEvent,
 						(data) => {
 							if (!allowedConnectionIdsRef.current.has(connectionId)) {
-								unsubscribeConnection(id);
+								unsubscribeConnection(connectionId);
 								return;
 							}
 							api.sendTo(connectionId, { id, data });
@@ -156,8 +158,9 @@ const useWebRtcMaster = ({
 				unsubscribeConnection(connectionId);
 			}
 			peer.destroy();
+			setWebRtcMaster(undefined);
 		};
-	}, [peerId]);
+	}, [peerId, hasAllowedConnections]);
 
 	return webRtcMaster;
 };
