@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import App from "./App";
@@ -318,23 +317,21 @@ const streamElementsSocketService = new StreamElementsSocketService();
 const bridge = new WidgetOutboundBridge();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-	<React.StrictMode>
-		<StreamElementsSocketServiceProvider
-			context={StreamElementsSocketServiceContext}
-			streamElementsSocketService={streamElementsSocketService}
-		>
-			<EventsProvider context={EventsContext} eventsService={eventsService}>
-				<BridgeContext.Provider value={bridge}>
-					<BrowserRouter>
-						<ThemeProvider theme={dark}>
-							<Provider store={store}>
-								<CssBaseline />
-								<App />
-							</Provider>
-						</ThemeProvider>
-					</BrowserRouter>
-				</BridgeContext.Provider>
-			</EventsProvider>
-		</StreamElementsSocketServiceProvider>
-	</React.StrictMode>,
+	<StreamElementsSocketServiceProvider
+		context={StreamElementsSocketServiceContext}
+		streamElementsSocketService={streamElementsSocketService}
+	>
+		<EventsProvider context={EventsContext} eventsService={eventsService}>
+			<BridgeContext.Provider value={bridge}>
+				<BrowserRouter>
+					<ThemeProvider theme={dark}>
+						<Provider store={store}>
+							<CssBaseline />
+							<App />
+						</Provider>
+					</ThemeProvider>
+				</BrowserRouter>
+			</BridgeContext.Provider>
+		</EventsProvider>
+	</StreamElementsSocketServiceProvider>,
 );

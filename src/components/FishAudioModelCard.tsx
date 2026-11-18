@@ -79,8 +79,7 @@ const FishAudioModelCard = ({
 			<CardContent sx={{ p: 1.5, "&:last-child": { pb: 1.5 } }}>
 				<Stack
 					direction="row"
-					justifyContent="space-between"
-					alignItems="flex-start"
+					sx={{ justifyContent: "space-between", alignItems: "flex-start" }}
 				>
 					<Box sx={{ minWidth: 0 }}>
 						<Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
@@ -111,9 +110,8 @@ const FishAudioModelCard = ({
 				<Stack
 					direction="row"
 					spacing={1}
-					flexWrap="wrap"
 					useFlexGap
-					sx={{ mt: 0.5, mb: 0.5 }}
+					sx={{ mt: 0.5, mb: 0.5, flexWrap: "wrap" }}
 				>
 					{visibleLanguages.map((language) => (
 						<Chip

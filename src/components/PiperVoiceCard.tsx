@@ -145,8 +145,7 @@ const PiperVoiceCard = ({
 				<CardContent>
 					<Stack
 						direction="row"
-						justifyContent="space-between"
-						alignItems="flex-start"
+						sx={{ justifyContent: "space-between", alignItems: "flex-start" }}
 					>
 						<Box>
 							<Typography variant="subtitle1">{voice.name}</Typography>
@@ -167,8 +166,7 @@ const PiperVoiceCard = ({
 					<Stack
 						direction="row"
 						spacing={1}
-						flexWrap="wrap"
-						sx={{ mt: 1, mb: 1 }}
+						sx={{ mt: 1, mb: 1, flexWrap: "wrap" }}
 					>
 						<Chip
 							label={t(`piper.${voice.quality}`)}

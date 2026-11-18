@@ -10,8 +10,8 @@ const Moderation = () => {
 	});
 
 	useWebRtcMaster({
-		allowedConnectionIds: moderators?.map((moderator) => moderator.id),
-		allowedScopes: [
+		allowedConnectionIds: new Set(moderators?.map((moderator) => moderator.id)),
+		allowedScopes: new Set([
 			"widgets:alert:skip.send",
 			"widgets:alert:replay.send",
 			"widgets:media:replay.send",
@@ -29,7 +29,7 @@ const Moderation = () => {
 			"widgets:media:pause.subscription",
 			"widgets:tts:played.subscription",
 			"widgets:tts:playing.subscription",
-		],
+		]),
 		peerId: moderatorToken?.token,
 	});
 

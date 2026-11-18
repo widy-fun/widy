@@ -53,7 +53,7 @@ anchor-lang = { workspace = true }
 anchor-client = { workspace = true }
 solana-sdk = { workspace = true }
 openssl-sys = { workspace = true }
-tauri-plugin-deep-link = { workspace = true }
+tauri-plugin-deep-link = "2.6.3"
 serde_qs = { workspace = true }
 eventsource-client = { workspace = true }
 tonlib-core = { workspace = true }

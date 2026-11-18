@@ -39,6 +39,8 @@
 	"server_ip": "Server ip",
 	"server_port": "Server port",
 	"password": "Password",
+	"rotate_token": "Rotate token",
+	"sure_rotate_token": "Are you sure you want to rotate this token?",
 	"hide_link": "Hide link",
 	"show_link": "Show link",
 	"logs": "Logs",
@@ -728,7 +730,9 @@
 	},
 	"moderators": {
 		"title": "Moderators",
-		"add": "Add moderator"
+		"add": "Add moderator",
+		"give_link": "Give the link only to the moderator",
+		"p2p": "Its P2P connection doesn't always work. For example, when a VPN is used, the moderator can still see your real IP address"
 	},
 	"moderator": {
 		"name": "Name"

@@ -42,8 +42,8 @@ const useWebRtcMaster = ({
 	peerId,
 	peerOptions,
 }: {
-	allowedScopes?: readonly string[];
-	allowedConnectionIds?: readonly string[];
+	allowedScopes: Set<string>;
+	allowedConnectionIds: Set<string>;
 	peerId?: string;
 	peerOptions?: PeerOptions;
 }) => {
@@ -53,6 +53,7 @@ const useWebRtcMaster = ({
 	allowedScopesRef.current = allowedScopes;
 	allowedConnectionIdsRef.current = allowedConnectionIds;
 	const subscriptionsRef = useRef<Record<string, ConnectionSubscriptions>>({});
+
 	const [webRtcMaster, setWebRtcMaster] = useState<Peer>();
 	useEffect(() => {
 		if (!peerId) return;
@@ -73,9 +74,6 @@ const useWebRtcMaster = ({
 		) => {
 			if (!id) return;
 
-			const connectionIds = allowedConnectionIdsRef.current;
-			if (connectionIds && !connectionIds.includes(connectionId)) return;
-
 			if (unsubscribe) {
 				const connectionSubscriptions = subscriptions[connectionId];
 				connectionSubscriptions?.get(id)?.();
@@ -85,7 +83,7 @@ const useWebRtcMaster = ({
 
 			if (!scope) return;
 			const scopes = allowedScopesRef.current;
-			if (scopes && !scopes.includes(scope)) return;
+			if (!scopes.has(scope)) return;
 
 			try {
 				const sendEvent = SEND_SCOPES[scope];
@@ -117,7 +115,13 @@ const useWebRtcMaster = ({
 
 					const unsubscribeEvent = eventsService.subscribe<Payload>(
 						subscribeEvent,
-						(data) => api.sendTo(connectionId, { id, data }),
+						(data) => {
+							if (!allowedConnectionIdsRef.current.has(connectionId)) {
+								unsubscribeConnection(id);
+								return;
+							}
+							api.sendTo(connectionId, { id, data });
+						},
 					);
 					connectionSubscriptions.set(id, unsubscribeEvent);
 				}
@@ -133,23 +137,26 @@ const useWebRtcMaster = ({
 		bindConnection(peer).then((api) => {
 			if (disposed) return;
 
-			api.on("data", ({ id }, data) =>
-				handleRequest(api, data as IWidgetRequest, id),
-			);
+			api.on("data", ({ id }, data) => {
+				if (!allowedConnectionIdsRef.current.has(id)) return;
+				handleRequest(api, data as IWidgetRequest, id);
+			});
 			api.on("remote.connect", ({ id }) => {
+				if (!allowedConnectionIdsRef.current.has(id)) return;
 				subscriptions[id] ??= new Map();
 			});
-			api.on("remote.disconnect", ({ id }) => unsubscribeConnection(id));
+			api.on("remote.disconnect", ({ id }) => {
+				unsubscribeConnection(id);
+			});
 		});
 
-		// return () => {
-		// 	disposed = true;
-		// 	for (const connectionId of Object.keys(subscriptions)) {
-		// 		unsubscribeConnection(connectionId);
-		// 	}
-
-		// 	peer.destroy();
-		// };
+		return () => {
+			disposed = true;
+			for (const connectionId of Object.keys(subscriptions)) {
+				unsubscribeConnection(connectionId);
+			}
+			peer.destroy();
+		};
 	}, [peerId]);
 
 	return webRtcMaster;
