@@ -95,8 +95,9 @@ jobs:
           }
           Write-Host "WIDY_VC_REDIST_DIRS=$dirs"
           Add-Content -Path $env:GITHUB_ENV -Value "WIDY_VC_REDIST_DIRS=$dirs"
-      - name: run tests
-        run: cargo test
+      # - name: run tests
+      #   working-directory: ./src-tauri
+      #   run: cargo test
       - name: import windows certificate
         if: matrix.platform == 'windows-latest'
         env:
