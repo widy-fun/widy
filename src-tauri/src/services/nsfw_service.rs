@@ -102,7 +102,10 @@ impl NsfwService {
 
     fn build_session(&self, app: &AppHandle) -> Result<Session, AppError> {
         let config_service = app.state::<ConfigService>();
-        Session::builder()
+        let env = ort::init()
+            .build()
+            .map_err(|e| log_and_wrap_error("Build ort env", e))?;
+        Session::builder(&env)
             .map_err(|e| log_and_wrap_error("ort build error", AppError::NSFW(e.to_string())))?
             .commit_from_file(&config_service.nsfw_model_path)
             .map_err(|e| log_and_wrap_error("ort load model error", AppError::NSFW(e.to_string())))

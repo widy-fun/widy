@@ -18,7 +18,10 @@ pub struct VadEngine {
 impl VadEngine {
     pub async fn new(wake_word_path: PathBuf) -> Result<Self, AppError> {
         let vad = tokio::task::spawn_blocking(move || -> Result<Session, AppError> {
-            Ok(Session::builder()?
+            let env = ort::init()
+                .build()
+                .map_err(|e| log_and_wrap_error("Build ort env", e))?;
+            Ok(Session::builder(&env)?
                 .with_log_level(ort::logging::LogLevel::Fatal)?
                 .commit_from_file(wake_word_path.join("silero_vad.onnx"))?)
         })

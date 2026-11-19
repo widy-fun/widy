@@ -58,7 +58,10 @@ impl WakeEngine {
     ) -> Result<Session, AppError> {
         let path = dir.join(filename);
         tokio::task::spawn_blocking(move || -> Result<Session, AppError> {
-            Ok(Session::builder()?
+            let env = ort::init()
+                .build()
+                .map_err(|e| log_and_wrap_error("Build ort env", e))?;
+            Ok(Session::builder(&env)?
                 .with_log_level(ort::logging::LogLevel::Fatal)?
                 .commit_from_file(path)?)
         })

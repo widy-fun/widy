@@ -53,7 +53,10 @@ pub trait PiperTts: Send + Sync {
 
         let model_path_clone = model_path.clone();
         let session = tokio::task::spawn_blocking(move || {
-            Session::builder()
+            let env = ort::init()
+                .build()
+                .map_err(|e| log_and_wrap_error("Build ort env", e))?;
+            Session::builder(&env)
                 .map_err(|e| log_and_wrap_error("ort build error", AppError::Piper(e.to_string())))?
                 .commit_from_file(model_path_clone)
                 .map_err(|e| {
