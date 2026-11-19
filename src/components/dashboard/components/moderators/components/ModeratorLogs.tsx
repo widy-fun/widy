@@ -42,7 +42,7 @@ const ModeratorLogs = () => {
 										"&:last-child": { pb: 2 },
 									}}
 								>
-									<Typography>{log.event_type}</Typography>
+									<Typography>{t(`events.${log.event_type}`)}</Typography>
 									<MessageDate createdAt={log.created_at} />
 								</CardContent>
 							</Card>
