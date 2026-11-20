@@ -131,7 +131,7 @@ impl KickService {
                                             let _ = socket.send(Message::Text(Utf8Bytes::from("{}"))).await;
                                         }
 
-                                        if let Ok(message) = serde_json::from_str::<KickPushMessage>(&text) {
+                                        if let Ok(message) = serde_json::from_str::<KickPushMessage>(&line) {
                                             kick_service.handle_subscriptions(message, &app,).await;
                                         }
                                     }
