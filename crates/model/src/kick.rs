@@ -65,6 +65,7 @@ pub struct KickPushMessage {
 
 pub struct KickPub {
     pub r#pub: KickPubData,
+    pub channel: Option<String>,
 }
 #[derive(Debug, Clone, Deserialize, Serialize)]
 
@@ -74,7 +75,6 @@ pub struct KickPubData {
 #[derive(Debug, Clone, Deserialize, Serialize)]
 
 pub struct EventPayload {
-    pub chanel: Option<String>,
     pub data: String,
     pub event: Event,
 }

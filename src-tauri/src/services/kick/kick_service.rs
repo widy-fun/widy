@@ -14,9 +14,9 @@ use model::{
     events::{UnifiedBannedUser, UnifiedChatMessage},
     items_buffer::ItemsBuffer,
     kick::{
-        ChanelInfoResponse, ChatMessageData, Chatroom, Event, EventPayload,
-        GiftedSubscriptionsData, KickAuthSession, KickPushMessage, KicksGiftedData,
-        MessageDeletedData, RewardRedeemedData, StreamHostData, SubscriptionData, UserBannedData,
+        ChanelInfoResponse, ChatMessageData, Chatroom, Event, GiftedSubscriptionsData,
+        KickAuthSession, KickPushMessage, KicksGiftedData, MessageDeletedData, RewardRedeemedData,
+        StreamHostData, SubscriptionData, UserBannedData,
     },
 };
 use serde_json::json;
@@ -126,14 +126,16 @@ impl KickService {
 
                            match msg_result {
                                Ok(Message::Text(text)) => {
-                                    if let Ok(message) = serde_json::from_str::<KickPushMessage>(&text) {
-                                        kick_service.handle_subscriptions(message.push.r#pub.data, &app).await;
-                                    }
-                                    else if text=="{}" {
-                                        let _ = socket.send(Message::Text(Utf8Bytes::from("{}"))).await;
+                                    for line in text.lines().map(str::trim).filter(|l| !l.is_empty()) {
+                                        if line == "{}" {
+                                            let _ = socket.send(Message::Text(Utf8Bytes::from("{}"))).await;
+                                        }
+
+                                        if let Ok(message) = serde_json::from_str::<KickPushMessage>(&text) {
+                                            kick_service.handle_subscriptions(message, &app,).await;
+                                        }
                                     }
                                 }
-
                                 Ok(Message::Close(_)) => {
                                     log::warn!("Kick closed connection.");
                                     break;
@@ -150,8 +152,9 @@ impl KickService {
         });
     }
 
-    async fn handle_subscriptions(&self, payload: EventPayload, app: &AppHandle) {
+    async fn handle_subscriptions(&self, message: KickPushMessage, app: &AppHandle) {
         let database_service = app.state::<DatabaseService>();
+        let payload = message.push.r#pub.data;
         match payload.event {
             Event::RewardRedeemedEvent => {
                 let event_data = serde_json::from_str::<RewardRedeemedData>(&payload.data);
@@ -309,10 +312,12 @@ impl KickService {
             Event::MessageDeletedEvent => {
                 let event_data = serde_json::from_str::<MessageDeletedData>(&payload.data);
                 if let Ok(data) = event_data {
-                    let _ =
-                        EventsService::chat_message_delete(data.into_unified(payload.chanel), app)
-                            .await
-                            .map_err(|e| log_and_wrap_error("Kick chat message delete", e));
+                    let _ = EventsService::chat_message_delete(
+                        data.into_unified(message.push.channel),
+                        app,
+                    )
+                    .await
+                    .map_err(|e| log_and_wrap_error("Kick chat message delete", e));
                 }
             }
             Event::UserBannedEvent => {

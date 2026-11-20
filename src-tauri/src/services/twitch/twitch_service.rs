@@ -48,22 +48,18 @@ pub struct TwitchService {
 }
 
 impl TwitchService {
-    pub fn new(client_id: String, reqwest_client: reqwest::Client) -> Self {
-        #[cfg(not(feature = "mock"))]
-        let auth_endpoint = "https://id.twitch.tv/oauth2".to_string();
-        #[cfg(feature = "mock")]
-        let auth_endpoint = "http://localhost:8080/auth".to_string();
-        #[cfg(not(feature = "mock"))]
-        let api_endpoint = "https://api.twitch.tv/helix".to_string();
-        #[cfg(feature = "mock")]
-        let api_endpoint = "http://localhost:8080/mock".to_string();
+    pub fn new(
+        client_id: String,
+        reqwest_client: reqwest::Client,
+        auth_endpoint: String,
+        api_endpoint: String,
+        eventsub_endpoint: String,
+    ) -> Self {
         #[cfg(not(feature = "mock"))]
         let websocket_eventsub_url =
             "wss://eventsub.wss.twitch.tv/ws?keepalive_timeout_seconds=30".to_string();
         #[cfg(feature = "mock")]
         let websocket_eventsub_url = "ws://localhost:8081/ws".to_string();
-        #[cfg(not(feature = "mock"))]
-        let eventsub_endpoint = api_endpoint.clone();
         #[cfg(feature = "mock")]
         let eventsub_endpoint = "http://localhost:8081".to_string();
         let scopes="user:read:email channel:read:subscriptions moderator:read:followers channel:manage:redemptions bits:read".to_string();

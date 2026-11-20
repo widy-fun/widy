@@ -8,7 +8,7 @@ use crate::services::obs_service::ObsService;
 use crate::services::openai::OpenAIService;
 use crate::services::telegram_bot::telegram_bot_service::TelegramBotService;
 use crate::services::tts::TtsService;
-use crate::services::twitch::{TwitchApi, TwitchBotService, TwitchService};
+use crate::services::twitch::{TwitchBotService, TwitchService};
 use crate::services::{
     AxumService, CommandsService, ConfigService, DeepLinkDispatcherService, DestreamService,
     DonatePayService, DonationAlertsService, ExchangeRatesService, NsfwService,
@@ -90,24 +90,18 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
     let media_service = MediaService::new(reqwest_client.clone());
     app.manage(media_service);
 
-    //twitch
-    let twitch_service = TwitchService::new(
-        config_service.twitch_client_id.clone(),
-        reqwest_client.clone(),
-    );
-    let _ = twitch_service
-        .connect(&app)
-        .await
-        .map_err(|e| log_and_wrap_error("Twitch service connect", e));
-    app.manage(twitch_service.clone());
+    //commands
+    let commands_service = CommandsService::new();
+    commands_service.start(&app).await?;
+    app.manage(commands_service);
 
     //twitch bot
     let twitch_bot_service = TwitchBotService::new(
-        config_service.twitch_client_id,
-        twitch_service.auth_endpoint(),
-        twitch_service.api_endpoint(),
-        twitch_service.eventsub_endpoint(),
+        config_service.twitch_client_id.clone(),
         reqwest_client.clone(),
+        config_service.twitch_auth_endpoint.clone(),
+        config_service.twitch_api_endpoint.clone(),
+        config_service.twitch_eventsub_endpoint.clone(),
     );
     let _ = twitch_bot_service
         .connect(&app)
@@ -115,26 +109,26 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
         .map_err(|e| log_and_wrap_error("Twitch bot service connect", e));
     app.manage(twitch_bot_service);
 
-    //kick
-    let kick_service = KickService::new(
-        config_service.kick_client_id,
-        config_service.kick_token_endpoint,
-        config_service.kick_redirect_uri,
-        config_service.app_token.clone(),
+    //twitch
+    let twitch_service = TwitchService::new(
+        config_service.twitch_client_id,
         reqwest_client.clone(),
+        config_service.twitch_auth_endpoint.clone(),
+        config_service.twitch_api_endpoint.clone(),
+        config_service.twitch_eventsub_endpoint.clone(),
     );
-    let _ = kick_service
+    let _ = twitch_service
         .connect(&app)
         .await
-        .map_err(|e| log_and_wrap_error("Kick service connect", e));
-    app.manage(kick_service);
+        .map_err(|e| log_and_wrap_error("Twitch service connect", e));
+    app.manage(twitch_service.clone());
 
     //kick bot
     let kick_bot_service = KickBotService::new(
         config_service.kick_bot_client_id,
         config_service.kick_bot_token_endpoint,
         config_service.kick_bot_redirect_uri,
-        config_service.app_token,
+        config_service.app_token.clone(),
         reqwest_client.clone(),
     );
     let _ = kick_bot_service
@@ -150,6 +144,20 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
         .await
         .map_err(|e| log_and_wrap_error("Kick session service connect", e));
     app.manage(kick_session_service);
+
+    //kick
+    let kick_service = KickService::new(
+        config_service.kick_client_id,
+        config_service.kick_token_endpoint,
+        config_service.kick_redirect_uri,
+        config_service.app_token.clone(),
+        reqwest_client.clone(),
+    );
+    let _ = kick_service
+        .connect(&app)
+        .await
+        .map_err(|e| log_and_wrap_error("Kick service connect", e));
+    app.manage(kick_service);
 
     //stream elements
     let stream_elements_service = StreamElementsService::new();
@@ -221,15 +229,6 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
     let nsfw_service = NsfwService::new();
     app.manage(nsfw_service);
 
-    //commands
-    let commands_service = CommandsService::new();
-    commands_service.start(&app).await?;
-    app.manage(commands_service);
-
-    //ai assistant
-    let assistant_service = AssistantService::new();
-    app.manage(assistant_service);
-
     //openai
     let openai_service = OpenAIService::new();
     let _ = openai_service
@@ -277,6 +276,10 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
         .await
         .map_err(|e| log_and_wrap_error("Obs service connect", e));
     app.manage(obs_service);
+
+    //ai assistant
+    let assistant_service = AssistantService::new();
+    app.manage(assistant_service);
 
     Ok(())
 }

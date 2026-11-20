@@ -45,6 +45,9 @@ pub struct ConfigService {
     pub piper_path: PathBuf,
     pub wake_word_path: PathBuf,
     pub foundry_path: PathBuf,
+    pub twitch_auth_endpoint: String,
+    pub twitch_api_endpoint: String,
+    pub twitch_eventsub_endpoint: String,
 }
 
 impl ConfigService {
@@ -105,6 +108,19 @@ impl ConfigService {
             .temp_dir()
             .map_err(|e| AppError::Config(format!("Failed to resolve tmp path: {}", e)))?;
 
+        #[cfg(not(feature = "mock"))]
+        let twitch_auth_endpoint = "https://id.twitch.tv/oauth2".to_string();
+        #[cfg(feature = "mock")]
+        let twitch_auth_endpoint = "http://localhost:8080/auth".to_string();
+        #[cfg(not(feature = "mock"))]
+        let twitch_api_endpoint = "https://api.twitch.tv/helix".to_string();
+        #[cfg(feature = "mock")]
+        let twitch_api_endpoint = "http://localhost:8080/mock".to_string();
+        #[cfg(not(feature = "mock"))]
+        let twitch_eventsub_endpoint = twitch_api_endpoint.clone();
+        #[cfg(feature = "mock")]
+        let twitch_eventsub_endpoint = "http://localhost:8081".to_string();
+
         Ok(Self {
             db_path,
             widget_path,
@@ -128,6 +144,9 @@ impl ConfigService {
             piper_path,
             wake_word_path,
             foundry_path,
+            twitch_auth_endpoint,
+            twitch_api_endpoint,
+            twitch_eventsub_endpoint,
         })
     }
 }

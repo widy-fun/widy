@@ -22,14 +22,13 @@ pub struct TwitchBotService {
 impl TwitchBotService {
     pub fn new(
         client_id: String,
+        reqwest_client: reqwest::Client,
         auth_endpoint: String,
         api_endpoint: String,
         eventsub_endpoint: String,
-        reqwest_client: reqwest::Client,
     ) -> Self {
         let scopes =
             "user:read:email user:read:chat user:write:chat user:bot channel:bot moderator:manage:announcements".to_string();
-
         Self {
             client_id,
             scopes,
