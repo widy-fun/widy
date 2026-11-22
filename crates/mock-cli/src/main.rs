@@ -210,7 +210,9 @@ fn create_event(kind: &EventKind) -> Result<CliEvent> {
                     display_name: Some(mocked_name),
                     amount: rand::rng().random_range(100..=100000),
                     currency: Currency::EUR,
-                    message: Some("https://www.youtube.com/watch?v=dQw4w9WgXcQ".to_string()),
+                    message: Some(
+                        "https://youtube.com/shorts/uVJH1JTx_TY?si=tr-26zJxST0Qpyma".to_string(),
+                    ),
                 },
             }),
             DonatePlatform::DonationAlerts => CliEvent::DonationAlertsDonation(DonationMessage {
@@ -222,7 +224,9 @@ fn create_event(kind: &EventKind) -> Result<CliEvent> {
                             id: rand::random(),
                             name: mocked_name.clone(),
                             username: Some(mocked_name),
-                            message: Some(mocked_message),
+                            message: Some(
+                                "https://www.youtube.com/watch?v=dQw4w9WgXcQ".to_string(),
+                            ),
                             message_type: "donation".to_string(),
                             payin_system: Some("mocked_payin_system".to_string()),
                             amount: rand::rng().random_range(100.0..=100000.0),
@@ -287,9 +291,9 @@ fn create_event(kind: &EventKind) -> Result<CliEvent> {
         EventKind::Kick { event } => match event {
             KickEvent::KicksGifted => CliEvent::Kick(KickPushMessage {
                 push: KickPub {
+                    channel: Some("mocked_chanel".to_string()),
                     r#pub: KickPubData {
                         data: EventPayload {
-                            chanel: Some("mocked_chanel".to_string()),
                             data: serde_json::to_string(&KicksGiftedData {
                                 gift_transaction_id: Uuid::new_v4().to_string(),
                                 message: mocked_message,
@@ -318,9 +322,9 @@ fn create_event(kind: &EventKind) -> Result<CliEvent> {
             }),
             KickEvent::StreamerIsLive => CliEvent::Kick(KickPushMessage {
                 push: KickPub {
+                    channel: Some("mocked_chanel".to_string()),
                     r#pub: KickPubData {
                         data: EventPayload {
-                            chanel: Some("mocked_chanel".to_string()),
                             data: serde_json::to_string(&StreamerIsLiveData {
                                 livestream: StreamerIsLiveLivestream {
                                     id: rand::random(),
@@ -337,9 +341,9 @@ fn create_event(kind: &EventKind) -> Result<CliEvent> {
             }),
             KickEvent::RedemptionTts => CliEvent::Kick(KickPushMessage {
                 push: KickPub {
+                    channel: Some("mocked_chanel".to_string()),
                     r#pub: KickPubData {
                         data: EventPayload {
-                            chanel: Some("mocked_chanel".to_string()),
                             data: serde_json::to_string(&RewardRedeemedData {
                                 reward_title: "tts".to_string(),
                                 user_id: rand::random(),
