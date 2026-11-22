@@ -42,7 +42,6 @@ const ModeratorCard = ({ moderator }: { moderator: IModerator }) => {
 							<Box
 								sx={{
 									display: "flex",
-									alignItems: "center",
 									gap: 0.5,
 								}}
 							>
@@ -52,7 +51,6 @@ const ModeratorCard = ({ moderator }: { moderator: IModerator }) => {
 							<Box
 								sx={{
 									display: "flex",
-									alignItems: "center",
 									gap: 0.5,
 								}}
 							>
