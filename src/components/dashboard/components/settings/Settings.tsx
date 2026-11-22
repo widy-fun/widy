@@ -1,10 +1,14 @@
 import { Button, MenuItem, Select, TextField } from "@mui/material";
 import { showSnackBar } from "@widy/react";
 import { AlertSeverity, Currency, type ISerializedAppError } from "@widy/sdk";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { languages } from "../../../../../shared/i18n/languages";
-import { useUpdateSettingsMutation } from "../../../../api/settingsApi";
+import {
+	useGetSettingsQuery,
+	useUpdateSettingsMutation,
+} from "../../../../api/settingsApi";
 import type { AppState } from "../../../../store";
 import { setSettings } from "../../../../store/slices/settingsSlice";
 import InputSlider from "../../../InputSlider";
@@ -16,163 +20,172 @@ const Settings = () => {
 	const { settings } = useSelector((state: AppState) => state.settingsState);
 	const dispatch = useDispatch();
 	const [updateSettings] = useUpdateSettingsMutation();
+	const { data } = useGetSettingsQuery();
+
+	useEffect(() => {
+		if (data) {
+			dispatch(setSettings(data));
+		}
+	}, [dispatch, data]);
 
 	return (
-		<>
-			<h1>{t("settings.title")}</h1>
-			<div style={{ display: "grid", placeItems: "center" }}>
-				<div className={styles.settingsContainer}>
-					<div className={styles.settings}>
-						<div className={styles.label}>
-							<span>{t("settings.language")}:</span>
+		settings && (
+			<>
+				<h1>{t("settings.title")}</h1>
+				<div style={{ display: "grid", placeItems: "center" }}>
+					<div className={styles.settingsContainer}>
+						<div className={styles.settings}>
+							<div className={styles.label}>
+								<span>{t("settings.language")}:</span>
+							</div>
+							<Select sx={{ width: 150 }} value={settings.language}>
+								{languages.map((language) => (
+									<MenuItem
+										value={language.locale}
+										key={language.locale}
+										onClick={() => {
+											dispatch(
+												setSettings({
+													...settings,
+													language: language.locale,
+												}),
+											);
+										}}
+									>
+										{language.name}
+									</MenuItem>
+								))}
+							</Select>
 						</div>
-						<Select sx={{ width: 150 }} value={settings.language}>
-							{languages.map((language) => (
-								<MenuItem
-									value={language.locale}
-									key={language.locale}
-									onClick={() => {
-										dispatch(
-											setSettings({
-												...settings,
-												language: language.locale,
-											}),
-										);
-									}}
-								>
-									{language.name}
-								</MenuItem>
-							))}
-						</Select>
-					</div>
-					<div className={styles.settings}>
-						<div className={styles.label}>
-							<span>{t("settings.currency")}:</span>
+						<div className={styles.settings}>
+							<div className={styles.label}>
+								<span>{t("settings.currency")}:</span>
+							</div>
+							<Select sx={{ width: 150 }} value={settings.currency}>
+								{Object.values(Currency).map((currency) => (
+									<MenuItem
+										value={currency}
+										key={currency}
+										onClick={() => {
+											dispatch(
+												setSettings({
+													...settings,
+													currency,
+												}),
+											);
+										}}
+									>
+										{currency}
+									</MenuItem>
+								))}
+							</Select>
 						</div>
-						<Select sx={{ width: 150 }} value={settings.currency}>
-							{Object.values(Currency).map((currency) => (
-								<MenuItem
-									value={currency}
-									key={currency}
-									onClick={() => {
-										dispatch(
-											setSettings({
-												...settings,
-												currency,
-											}),
-										);
-									}}
-								>
-									{currency}
-								</MenuItem>
-							))}
-						</Select>
-					</div>
-					<div className={styles.settings}>
-						<div className={styles.label}>
-							<span>{t("settings.pause")}:</span>
-						</div>
+						<div className={styles.settings}>
+							<div className={styles.label}>
+								<span>{t("settings.pause")}:</span>
+							</div>
 
-						<OnOffSwitch
-							checked={settings.alert_paused}
-							onChange={() =>
-								dispatch(
-									setSettings({
-										...settings,
-										alert_paused: !settings.alert_paused,
-									}),
-								)
-							}
-						/>
-					</div>
-
-					<div className={styles.settings}>
-						<div className={styles.label}>
-							<span>{t("settings.moderation_duration")}:</span>
-						</div>
-						<InputSlider
-							sliderValue={settings.moderation_duration}
-							inputValue={settings.moderation_duration / 1000}
-							onChange={(value) => {
-								dispatch(
-									setSettings({
-										...settings,
-										moderation_duration: value,
-									}),
-								);
-							}}
-							min={0}
-							sliderMax={300000}
-							inputMax={300}
-							adornmentText={t("settings.sec")}
-						/>
-					</div>
-					<div className={styles.settings}>
-						<div className={styles.label}>
-							<span>{t("settings.remove_links")}:</span>
-						</div>
-						<OnOffSwitch
-							checked={settings.remove_links}
-							onChange={() =>
-								dispatch(
-									setSettings({
-										...settings,
-										remove_links: !settings.remove_links,
-									}),
-								)
-							}
-						/>
-					</div>
-					<div className={styles.settings}>
-						<div className={styles.label}>
-							<span>{t("settings.black_list")}:</span>
-						</div>
-						<TextField
-							variant="outlined"
-							value={settings.black_list}
-							style={{ width: "100%" }}
-							multiline
-							minRows={6}
-							maxRows={6}
-							onChange={(e) => {
-								dispatch(
-									setSettings({
-										...settings,
-										black_list: e.target.value,
-									}),
-								);
-							}}
-						/>
-					</div>
-					<div style={{ display: "flex", placeContent: "center" }}>
-						<Button
-							variant="contained"
-							onClick={async () => {
-								try {
-									await updateSettings({ settings }).unwrap();
+							<OnOffSwitch
+								checked={settings.alert_paused}
+								onChange={() =>
 									dispatch(
-										showSnackBar({
-											message: t("success"),
-											alertSeverity: AlertSeverity.success,
+										setSettings({
+											...settings,
+											alert_paused: !settings.alert_paused,
 										}),
-									);
-								} catch (error) {
-									const err = error as ISerializedAppError;
-									dispatch(
-										showSnackBar({
-											message: err.message as string,
-											alertSeverity: AlertSeverity.error,
-										}),
-									);
+									)
 								}
-							}}
-						>
-							{t("save")}
-						</Button>
+							/>
+						</div>
+
+						<div className={styles.settings}>
+							<div className={styles.label}>
+								<span>{t("settings.moderation_duration")}:</span>
+							</div>
+							<InputSlider
+								sliderValue={settings.moderation_duration}
+								inputValue={settings.moderation_duration / 1000}
+								onChange={(value) => {
+									dispatch(
+										setSettings({
+											...settings,
+											moderation_duration: value,
+										}),
+									);
+								}}
+								min={0}
+								sliderMax={300000}
+								inputMax={300}
+								adornmentText={t("settings.sec")}
+							/>
+						</div>
+						<div className={styles.settings}>
+							<div className={styles.label}>
+								<span>{t("settings.remove_links")}:</span>
+							</div>
+							<OnOffSwitch
+								checked={settings.remove_links}
+								onChange={() =>
+									dispatch(
+										setSettings({
+											...settings,
+											remove_links: !settings.remove_links,
+										}),
+									)
+								}
+							/>
+						</div>
+						<div className={styles.settings}>
+							<div className={styles.label}>
+								<span>{t("settings.black_list")}:</span>
+							</div>
+							<TextField
+								variant="outlined"
+								value={settings.black_list}
+								style={{ width: "100%" }}
+								multiline
+								minRows={6}
+								maxRows={6}
+								onChange={(e) => {
+									dispatch(
+										setSettings({
+											...settings,
+											black_list: e.target.value,
+										}),
+									);
+								}}
+							/>
+						</div>
+						<div style={{ display: "flex", placeContent: "center" }}>
+							<Button
+								variant="contained"
+								onClick={async () => {
+									try {
+										await updateSettings({ settings }).unwrap();
+										dispatch(
+											showSnackBar({
+												message: t("success"),
+												alertSeverity: AlertSeverity.success,
+											}),
+										);
+									} catch (error) {
+										const err = error as ISerializedAppError;
+										dispatch(
+											showSnackBar({
+												message: err.message as string,
+												alertSeverity: AlertSeverity.error,
+											}),
+										);
+									}
+								}}
+							>
+								{t("save")}
+							</Button>
+						</div>
 					</div>
 				</div>
-			</div>
-		</>
+			</>
+		)
 	);
 };
 export default Settings;

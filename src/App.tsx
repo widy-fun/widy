@@ -35,7 +35,6 @@ import TwitchBot from "./components/twitch-bot/TwitchBot";
 import UpdaterDialog from "./components/UpdaterDialog";
 import Widy from "./components/widy/Widy";
 import useStreamElementsSocketService from "./hooks/useStreamElementsService";
-import { setSettings } from "./store/slices/settingsSlice";
 
 function App() {
 	const eventsService = useAppEvents();
@@ -49,6 +48,7 @@ function App() {
 		pollingInterval: 100,
 		skip: !isLoading,
 	});
+	const [isLanguageSet, setIsLanguageSet] = useState(false);
 
 	useEffect(() => {
 		if (!isLoading) return;
@@ -88,10 +88,9 @@ function App() {
 
 	useEffect(() => {
 		if (settings) {
-			i18n.changeLanguage(settings.language);
-			dispatch(setSettings(settings));
+			i18n.changeLanguage(settings.language).then(() => setIsLanguageSet(true));
 		}
-	}, [i18n, settings, dispatch]);
+	}, [i18n, settings]);
 
 	useEffect(() => {
 		if (!hasNavigated.current) {
@@ -102,38 +101,44 @@ function App() {
 
 	return (
 		<main style={{ display: "grid", height: "100dvh" }}>
-			{settings && <UpdaterDialog />}
-			<AppSnackBar />
 			{isLoading ? (
 				<CircularProgress sx={{ placeSelf: "center" }} />
 			) : (
-				<Routes>
-					<Route path="/streamelements/*" element={<StreamElements />} />
-					<Route path="/streamlabs/*" element={<StreamLabs />} />
-					<Route path="/twitch/*" element={<Twitch />} />
-					<Route path="/twitch-bot/*" element={<TwitchBot />} />
-					<Route path="/kick/*" element={<Kick />} />
-					<Route path="/kick-bot/*" element={<KickBot />} />
-					<Route path="/widy/*" element={<Widy />} />
-					<Route path="/donationalerts/*" element={<DonationAlerts />} />
-					<Route path="/donatepay/*" element={<DonatePay />} />
-					<Route path="/destream/*" element={<Destream />} />
-					<Route path="/donatello/*" element={<Donatello />} />
-					<Route path="/donatik/*" element={<Donatik />} />
-					<Route path="/dashboard/*" element={<Dashboard />} />
-					<Route path="/tribute/*" element={<Tribute />} />
-					<Route path="/widget/:id" element={<WidgetControl />} />
-					<Route path="/gemini/*" element={<Gemini />} />
-					<Route path="/openai/*" element={<OpenAI />} />
-					<Route path="/claude/*" element={<Claude />} />
-					<Route path="/kick-session/*" element={<KickSession />} />
-					<Route path="/fish-audio/*" element={<FishAudio />} />
-					<Route path="/telegram-bot/*" element={<TelegramBot />} />
-					<Route path="/obs/*" element={<Obs />} />
-				</Routes>
+				<>
+					<EmbeddedWidgets />
+					<Moderation />
+					{isLanguageSet && (
+						<>
+							<UpdaterDialog />
+							<Routes>
+								<Route path="/streamelements/*" element={<StreamElements />} />
+								<Route path="/streamlabs/*" element={<StreamLabs />} />
+								<Route path="/twitch/*" element={<Twitch />} />
+								<Route path="/twitch-bot/*" element={<TwitchBot />} />
+								<Route path="/kick/*" element={<Kick />} />
+								<Route path="/kick-bot/*" element={<KickBot />} />
+								<Route path="/widy/*" element={<Widy />} />
+								<Route path="/donationalerts/*" element={<DonationAlerts />} />
+								<Route path="/donatepay/*" element={<DonatePay />} />
+								<Route path="/destream/*" element={<Destream />} />
+								<Route path="/donatello/*" element={<Donatello />} />
+								<Route path="/donatik/*" element={<Donatik />} />
+								<Route path="/dashboard/*" element={<Dashboard />} />
+								<Route path="/tribute/*" element={<Tribute />} />
+								<Route path="/widget/:id" element={<WidgetControl />} />
+								<Route path="/gemini/*" element={<Gemini />} />
+								<Route path="/openai/*" element={<OpenAI />} />
+								<Route path="/claude/*" element={<Claude />} />
+								<Route path="/kick-session/*" element={<KickSession />} />
+								<Route path="/fish-audio/*" element={<FishAudio />} />
+								<Route path="/telegram-bot/*" element={<TelegramBot />} />
+								<Route path="/obs/*" element={<Obs />} />
+							</Routes>
+						</>
+					)}
+				</>
 			)}
-			<EmbeddedWidgets />
-			<Moderation />
+			<AppSnackBar />
 		</main>
 	);
 }

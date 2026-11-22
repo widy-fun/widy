@@ -1,6 +1,5 @@
 import {
 	CommandSourceType,
-	Currency,
 	IAuctionAction,
 	IChatBotAction,
 	IChatSource,
@@ -8,7 +7,6 @@ import {
 	IKickAction,
 	IKickSource,
 	IObsAction,
-	ISettings,
 	ITelegramBotAction,
 	ITimerSource,
 	ITwitchAction,
@@ -153,17 +151,6 @@ export const DEFAULT_AUCTION_ACTION: IAuctionAction = {
 	subscriber_luck_modifier: 1,
 	vip_luck_modifier: 1,
 	moderator_luck_modifier: 1,
-};
-
-export const DEFAULT_SETTINGS: ISettings = {
-	id: 0,
-	moderation_duration: 0,
-	alert_paused: false,
-	remove_links: false,
-	black_list: "",
-	language: "en",
-	currency: Currency.EUR,
-	widget_token: "",
 };
 
 export const NEMOTRON_3_5_ASR_LANGUAGES: Record<string, string> = {
