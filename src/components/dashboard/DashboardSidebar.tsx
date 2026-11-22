@@ -29,6 +29,9 @@ const SideBar = styled("div")(({ theme }: { theme?: AppTheme }) => ({
 		width: MENU_WIDTH_MD,
 	},
 	...SCROLLBAR_STYLES,
+	"&::-webkit-scrollbar-track": {
+		background: theme?.palette.background.default,
+	},
 }));
 const DashboardSidebar = () => {
 	const location = useLocation();
