@@ -15,7 +15,7 @@ const AlertsGroup = ({ alertsGroup }: { alertsGroup: IAlertsGroup }) => {
 				display: "grid",
 				gap: "5px",
 				position: "relative",
-				marginBottom: "10px",
+				marginBottom: 1,
 			}}
 		>
 			<h3>

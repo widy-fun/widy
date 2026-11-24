@@ -34,7 +34,6 @@ const InstalledWidgetCard = ({ widget }: { widget: IWidget }) => {
 				sx={{
 					display: "flex",
 					flexDirection: "column",
-					marginBottom: "16px",
 					padding: "16px",
 					boxSizing: "border-box",
 					minHeight: 150,

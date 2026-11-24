@@ -15,7 +15,6 @@ const CommandCard = ({ command }: { command: ICommand }) => {
 	return (
 		<Card
 			sx={{
-				marginBottom: 1,
 				position: "relative",
 				width: "100%",
 				minHeight: 100,

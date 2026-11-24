@@ -21,7 +21,6 @@ const ModeratorCard = ({ moderator }: { moderator: IModerator }) => {
 			{moderatorToken && (
 				<Card
 					sx={{
-						marginBottom: 1,
 						position: "relative",
 						width: "100%",
 						minHeight: 100,

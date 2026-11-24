@@ -104,7 +104,7 @@ const WidgetCard = ({
 				sx={{
 					display: "flex",
 					flexDirection: "column",
-					marginBottom: "16px",
+					marginBottom: 1,
 					padding: "16px",
 					boxSizing: "border-box",
 					minHeight: 150,

@@ -1,4 +1,4 @@
-import { IManifest, IWidget } from "@widy/sdk";
+import { IManifest, ISerializedAppError, IWidget } from "@widy/sdk";
 import { api } from ".";
 
 export const widgetsApi = api.injectEndpoints({
@@ -15,6 +15,27 @@ export const widgetsApi = api.injectEndpoints({
 				command: "get_widgets",
 			}),
 			providesTags: ["Widgets"],
+		}),
+		getAllWidgets: builder.query<Record<string, IManifest>, void>({
+			queryFn: async () => {
+				try {
+					const response = await fetch(
+						"https://raw.githubusercontent.com/widy-fun/widgets/refs/heads/master/widgets.json",
+					);
+					if (!response.ok) {
+						throw new Error(`HTTP ${response.status}`);
+					}
+					const widgets = (await response.json()) as Record<string, IManifest>;
+					return { data: widgets };
+				} catch (error) {
+					return {
+						error: {
+							kind: "unknown",
+							message: error instanceof Error ? error.message : String(error),
+						} as unknown as ISerializedAppError,
+					};
+				}
+			},
 		}),
 		addWidget: builder.mutation<
 			void,
@@ -56,4 +77,5 @@ export const {
 	useDeleteWidgetMutation,
 	useInstallWidgetMutation,
 	useUpdateWidgetMutation,
+	useGetAllWidgetsQuery,
 } = widgetsApi;

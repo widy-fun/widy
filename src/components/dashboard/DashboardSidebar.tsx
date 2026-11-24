@@ -1,4 +1,5 @@
 import {
+	Badge,
 	List,
 	ListItemButton,
 	ListItemIcon,
@@ -12,6 +13,10 @@ import type { AppTheme } from "@widy/react";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink, useLocation } from "react-router";
+import {
+	useGetAllWidgetsQuery,
+	useGetWidgetsQuery,
+} from "../../api/widgetsApi";
 import { MENU_WIDTH, MENU_WIDTH_MD, SCROLLBAR_STYLES } from "../../constants";
 import { dashboardRouts } from "../../routes/dashboardRouts";
 
@@ -39,12 +44,25 @@ const DashboardSidebar = () => {
 	const theme = useTheme();
 	const matches = useMediaQuery(theme.breakpoints.down("md"));
 	const { t } = useTranslation();
+	const { data: installedWidgets } = useGetWidgetsQuery();
+	const { data: allWidgets } = useGetAllWidgetsQuery();
+	const updatesCount =
+		installedWidgets?.filter((widget) => {
+			if (widget.dev_path) return false;
+			const availableWidget = Object.values(allWidgets ?? {}).find(
+				(manifest) => manifest.id === widget.manifest.id,
+			);
+			return (
+				availableWidget && availableWidget.version !== widget.manifest.version
+			);
+		}).length ?? 0;
 	const isSelected = useCallback(
 		(path: string) => {
 			return currentPath.startsWith(`/dashboard/${path}`);
 		},
 		[currentPath],
 	);
+
 	return (
 		<SideBar>
 			<List sx={{ paddingTop: 0 }}>
@@ -77,7 +95,13 @@ const DashboardSidebar = () => {
 											: theme.palette.primary.contrastText,
 									}}
 								>
-									{navItem.icon}
+									<Badge
+										badgeContent={navItem.path === "widgets" ? updatesCount : 0}
+										color="error"
+										invisible={navItem.path !== "widgets" || updatesCount === 0}
+									>
+										{navItem.icon}
+									</Badge>
 								</ListItemIcon>
 								<ListItemText
 									sx={{
