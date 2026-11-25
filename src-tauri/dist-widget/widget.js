@@ -26136,7 +26136,7 @@ const aie = /* @__PURE__ */ Symbol(), lie = ({ batch: n = xU, hooks: e = {
   }, [v, o]), k = D.useCallback(
     (R) => {
       const P = Wu({ message: R });
-      P && (s.current = [...s.current, R], s.current.length === 1 && S({ message: R, alert: P }));
+      P?.status && (s.current = [...s.current, R], s.current.length === 1 && S({ message: R, alert: P }));
     },
     [S]
   ), w = D.useCallback(

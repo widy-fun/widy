@@ -132,7 +132,7 @@ const usePlayAlert = () => {
 	const handleNewMessage = useCallback(
 		(message: IClientMessage) => {
 			const alert = getAlert({ message });
-			if (alert) {
+			if (alert?.status) {
 				messagesRef.current = [...messagesRef.current, message];
 				if (messagesRef.current.length === 1) {
 					playMessage({ message, alert });
