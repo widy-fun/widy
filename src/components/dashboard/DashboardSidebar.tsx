@@ -76,6 +76,7 @@ const DashboardSidebar = () => {
 						<NavLink
 							to={`/dashboard/${navItem.path}`}
 							style={{ textDecoration: "none" }}
+							preventScrollReset
 						>
 							<ListItemButton
 								sx={{

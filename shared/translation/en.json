@@ -67,7 +67,8 @@
 		"description": "A new version of the app is available. Do you want to update?",
 		"update": "Update",
 		"later": "Later",
-		"downloading": "Downloading..."
+		"downloading": "Downloading...",
+		"check_update": "Check update"
 	},
 	"media": {
 		"title": "Media",

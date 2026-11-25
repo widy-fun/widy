@@ -2,9 +2,15 @@ import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { useTranslation } from "react-i18next";
 import { version } from "../../../../../package.json";
+import {
+	useGetSettingsQuery,
+	useUpdateSettingsMutation,
+} from "../../../../api/settingsApi";
 
 const Info = () => {
 	const { t } = useTranslation();
+	const [updateSettings] = useUpdateSettingsMutation();
+	const { data: settings } = useGetSettingsQuery();
 
 	return (
 		<>
@@ -30,6 +36,21 @@ const Info = () => {
 								sx={{ mr: 1 }}
 							>
 								{t("documentation")}
+							</Button>
+							<Button
+								variant="contained"
+								disabled={!settings}
+								onClick={() => {
+									if (settings) {
+										updateSettings({
+											settings: { ...settings, check_update: true },
+										}).then(() => {
+											location.reload();
+										});
+									}
+								}}
+							>
+								{t("updater.check_update")}
 							</Button>
 						</Box>
 					</CardContent>

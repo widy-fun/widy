@@ -65,6 +65,7 @@ mod m20261115_085438_add_moderation_and_widget_token_to_tokens_table;
 mod m20261115_091221_drop_column_widget_token_from_settings_table;
 mod m20261115_204425_create_table_moderators;
 mod m20261115_204429_create_table_moderators_logs;
+mod m20261125_220748_add_column_check_update_to_settings_table;
 
 pub struct Migrator;
 
@@ -138,6 +139,7 @@ impl MigratorTrait for Migrator {
             Box::new(m20261115_091221_drop_column_widget_token_from_settings_table::Migration),
             Box::new(m20261115_204425_create_table_moderators::Migration),
             Box::new(m20261115_204429_create_table_moderators_logs::Migration),
+            Box::new(m20261125_220748_add_column_check_update_to_settings_table::Migration),
         ]
     }
 }

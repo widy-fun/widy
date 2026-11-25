@@ -109,7 +109,7 @@ function App() {
 					<Moderation />
 					{isLanguageSet && (
 						<>
-							<UpdaterDialog />
+							{settings?.check_update && <UpdaterDialog />}
 							<Routes>
 								<Route path="/streamelements/*" element={<StreamElements />} />
 								<Route path="/streamlabs/*" element={<StreamLabs />} />

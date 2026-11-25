@@ -26,6 +26,7 @@ impl SettingsRepository for DatabaseService {
             black_list: Set(settings.black_list),
             language: Set(settings.language),
             currency: Set(settings.currency),
+            check_update: Set(settings.check_update),
             id: Set(1),
         })
         .exec(&self.connection)
