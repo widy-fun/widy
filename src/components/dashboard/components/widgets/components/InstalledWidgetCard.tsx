@@ -10,8 +10,8 @@ import {
 } from "@widy/sdk";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 import {
 	useDeleteWidgetMutation,
 	useUpdateWidgetMutation,
@@ -38,8 +38,7 @@ const InstalledWidgetCard = ({
 	const [updateWarningOpen, setUpdateWarningOpen] = useState(false);
 	const widgetUrl = `http://localhost:12553/widget/${widget.id}`;
 	const updateAvailable =
-		availableManifest &&
-		availableManifest.version !== widget.manifest.version;
+		availableManifest && availableManifest.version !== widget.manifest.version;
 
 	const handleDelete = () => {
 		deleteWidget({ widget }).unwrap();
