@@ -17,16 +17,21 @@ const NewLotForm = () => {
 	const dispatch = useDispatch();
 
 	return (
-		<div style={{ display: "flex", gap: 5, width: "100%" }}>
+		<div
+			style={{
+				display: "grid",
+				gap: 5,
+				width: "100%",
+				gridTemplateColumns: "1fr 125px auto",
+			}}
+		>
 			<TextField
-				sx={{ width: "100%" }}
 				placeholder={t("lots.new_lot_name")}
 				autoComplete="off"
 				onChange={(e) => setName(e.target.value)}
 				value={name}
 			/>
 			<NumericFormat
-				sx={{ maxWidth: 125 }}
 				placeholder="0"
 				autoComplete="off"
 				customInput={TextField}
