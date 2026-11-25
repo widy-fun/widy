@@ -67,7 +67,8 @@
 		"description": "Une nouvelle version de l'application est disponible. Voulez-vous mettre à jour ?",
 		"update": "Mettre à jour",
 		"later": "Plus tard",
-		"downloading": "Téléchargement..."
+		"downloading": "Téléchargement...",
+		"check_update": "Vérifier les mises à jour"
 	},
 	"media": {
 		"title": "Média",
