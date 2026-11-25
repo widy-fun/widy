@@ -1,5 +1,6 @@
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
-import { openUrl } from "@tauri-apps/plugin-opener";
+import { appLogDir } from "@tauri-apps/api/path";
+import { openPath, openUrl } from "@tauri-apps/plugin-opener";
 import { useTranslation } from "react-i18next";
 import { version } from "../../../../../package.json";
 import {
@@ -38,9 +39,18 @@ const Info = () => {
 								{t("documentation")}
 							</Button>
 							<Button
+								variant="outlined"
+								onClick={async () => {
+									await openPath(await appLogDir());
+								}}
+								sx={{ mr: 1 }}
+							>
+								{t("logs")}
+							</Button>
+							<Button
 								variant="contained"
 								disabled={!settings}
-								onClick={() => {
+								onClick={async () => {
 									if (settings) {
 										updateSettings({
 											settings: { ...settings, check_update: true },
