@@ -118,6 +118,38 @@ jobs:
       - name: build foundry-local-sdk
         working-directory: src-tauri
         run: cargo build -p foundry-local-sdk --release
+      - name: Build release notes
+        id: notes
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
+        with:
+          script: |
+            const fs = require('fs');
+            const read = (path) => JSON.parse(fs.readFileSync(path, 'utf8'));
+
+            const { version } = read('src-tauri/tauri.conf.json');
+            const en = read('changelog.json')[version]?.changes.en;
+
+            if (!en) {
+              core.setFailed(`No "en" changelog found for version ${version}`);
+              return;
+            }
+
+            const titles = {
+              added: '✨ Added',
+              changed: '🔄 Changed',
+              fixed: '🐛 Fixed',
+              removed: '🗑️ Removed',
+            };
+
+            // Section order follows "titles"; missing or empty sections are skipped
+            const body = Object.entries(titles)
+              .filter(([key]) => en[key]?.length)
+              .map(([key, title]) =>
+                `### ${title}\n${en[key].map((item) => `- ${item}`).join('\n')}`
+              )
+              .join('\n\n');
+
+            core.setOutput('body', body);
       - uses: tauri-apps/tauri-action@84b9d35b5fc46c1e45415bdb6144030364f7ebc5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -142,7 +174,7 @@ jobs:
         with:
           tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: "v__VERSION__"
-          releaseBody: "Refactor widgets."
+          releaseBody: ${{ steps.notes.outputs.body }}
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
@@ -171,7 +203,7 @@ jobs:
         with:
           tagName: latest # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: "latest"
-          releaseBody: "Refactor widgets."
+          releaseBody: ${{ steps.notes.outputs.body }}
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
