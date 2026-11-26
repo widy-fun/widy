@@ -10,12 +10,14 @@ import {
 	Stack,
 	Typography,
 } from "@mui/material";
+import { Language } from "@widy/sdk";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
 	useGetSettingsQuery,
 	useUpdateSettingsMutation,
 } from "../api/settingsApi";
+import { useGetChangeLogQuery } from "../api/updateApi";
 import useUpdater from "../hooks/useUpdater";
 
 const formatBytes = (bytes: number) => {
@@ -28,11 +30,18 @@ const formatBytes = (bytes: number) => {
 };
 
 const UpdaterDialog = () => {
+	const { data: changeLog } = useGetChangeLogQuery();
 	const [updateSettings] = useUpdateSettingsMutation();
 	const { data: settings } = useGetSettingsQuery();
 	const [open, setOpen] = useState(false);
 	const { t } = useTranslation();
+	const language = settings?.language ?? Language.en;
 	const { updateApp, update, isUpdating, downloadProgress } = useUpdater();
+	const changeLogEntry = update?.version
+		? changeLog?.[update.version]
+		: undefined;
+	const changes =
+		changeLogEntry?.changes[language] ?? changeLogEntry?.changes.en;
 	const handleClose = () => {
 		if (isUpdating) {
 			return;
@@ -124,6 +133,33 @@ const UpdaterDialog = () => {
 								v{update.version}
 							</Typography>
 						)}
+						{changes && (
+							<Stack spacing={1.5} sx={{ mt: 2 }}>
+								{Object.entries(changes).map(([section, items]) =>
+									items?.length ? (
+										<Box key={section}>
+											<Typography
+												variant="subtitle2"
+												sx={{ fontWeight: 700, mb: 0.5 }}
+											>
+												{t(section)}
+											</Typography>
+											<Stack spacing={0.25}>
+												{items.map((item) => (
+													<Typography
+														key={item}
+														variant="body2"
+														color="text.secondary"
+													>
+														• {item}
+													</Typography>
+												))}
+											</Stack>
+										</Box>
+									) : null,
+								)}
+							</Stack>
+						)}
 					</DialogContent>
 					<DialogActions sx={{ px: 3, pb: 3, gap: 1 }}>
 						<Button
@@ -142,7 +178,7 @@ const UpdaterDialog = () => {
 						<Button
 							onClick={() => updateApp()}
 							variant="contained"
-							sx={{ flex: 1.35, borderRadius: 2 }}
+							sx={{ flex: 1.35 }}
 						>
 							{t("updater.update")}
 						</Button>

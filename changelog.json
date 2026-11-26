@@ -1,1 +1,17 @@
-{}
+{
+    "0.4.11": {
+        "changes": {
+            "en": {
+                "added": [
+                    "Open logs folder button in Info",
+                    "Check update button in Info",
+                    "Change log"
+                ],
+                "fixed": [
+                    "Scroll when navigate in sidebar",
+                    "Alert status check"
+                ]
+            }
+        }
+    }
+}
