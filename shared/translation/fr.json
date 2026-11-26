@@ -44,6 +44,10 @@
 	"hide_link": "Masquer le lien",
 	"show_link": "Afficher le lien",
 	"logs": "Journaux",
+	"added": "Ajouté",
+	"changed": "Modifié",
+	"fixed": "Corrigé",
+	"removed": "Supprimé",
 	"authorization": {
 		"title": "Autorisation",
 		"code": "Code de demande",

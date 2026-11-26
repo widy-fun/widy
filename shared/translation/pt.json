@@ -44,6 +44,10 @@
 	"hide_link": "Ocultar link",
 	"show_link": "Mostrar link",
 	"logs": "Logs",
+	"added": "Adicionado",
+	"changed": "Alterado",
+	"fixed": "Corrigido",
+	"removed": "Removido",
 	"authorization": {
 		"title": "Autorização",
 		"code": "Código de solicitação",

@@ -44,6 +44,10 @@
 	"hide_link": "隐藏链接",
 	"show_link": "显示链接",
 	"logs": "日志",
+	"added": "已添加",
+	"changed": "已更改",
+	"fixed": "已修复",
+	"removed": "已移除",
 	"authorization": {
 		"title": "授权",
 		"code": "请求代码",

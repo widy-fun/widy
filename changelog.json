@@ -7,9 +7,138 @@
                     "Check update button in Info",
                     "Change log"
                 ],
+                "changed": [
+                    "Download update"
+                ],
                 "fixed": [
                     "Scroll when navigate in sidebar",
                     "Alert status check"
+                ]
+            },
+            "ua": {
+                "added": [
+                    "Кнопка відкриття папки журналів у розділі «Інформація»",
+                    "Кнопка перевірки оновлення у розділі «Інформація»",
+                    "Журнал змін"
+                ],
+                "changed": [
+                    "Завантаження оновлення"
+                ],
+                "fixed": [
+                    "Прокрутка під час переходу по бічній панелі",
+                    "Перевірка статусу сповіщення"
+                ]
+            },
+            "ru": {
+                "added": [
+                    "Кнопка открытия папки журналов в разделе «Информация»",
+                    "Кнопка проверки обновления в разделе «Информация»",
+                    "Журнал изменений"
+                ],
+                "changed": [
+                    "Загрузка обновления"
+                ],
+                "fixed": [
+                    "Прокрутка при переходе по боковой панели",
+                    "Проверка статуса оповещения"
+                ]
+            },
+            "es": {
+                "added": [
+                    "Botón para abrir la carpeta de registros en Información",
+                    "Botón para comprobar actualizaciones en Información",
+                    "Registro de cambios"
+                ],
+                "changed": [
+                    "Descarga de la actualización"
+                ],
+                "fixed": [
+                    "Desplazamiento al navegar por la barra lateral",
+                    "Comprobación del estado de la alerta"
+                ]
+            },
+            "de": {
+                "added": [
+                    "Schaltfläche zum Öffnen des Log-Ordners unter „Info“",
+                    "Schaltfläche zur Update-Prüfung unter „Info“",
+                    "Changelog"
+                ],
+                "changed": [
+                    "Update herunterladen"
+                ],
+                "fixed": [
+                    "Scrollen beim Navigieren in der Seitenleiste",
+                    "Prüfung des Alarmstatus"
+                ]
+            },
+            "zh": {
+                "added": [
+                    "信息页面中增加打开日志文件夹的按钮",
+                    "信息页面中增加检查更新的按钮",
+                    "更新日志"
+                ],
+                "changed": [
+                    "下载更新"
+                ],
+                "fixed": [
+                    "侧边栏导航时的滚动问题",
+                    "警报状态检查"
+                ]
+            },
+            "fr": {
+                "added": [
+                    "Bouton pour ouvrir le dossier des journaux dans Informations",
+                    "Bouton pour vérifier les mises à jour dans Informations",
+                    "Journal des modifications"
+                ],
+                "changed": [
+                    "Téléchargement de la mise à jour"
+                ],
+                "fixed": [
+                    "Défilement lors de la navigation dans la barre latérale",
+                    "Vérification du statut des alertes"
+                ]
+            },
+            "hi": {
+                "added": [
+                    "जानकारी में लॉग फ़ोल्डर खोलने का बटन",
+                    "जानकारी में अपडेट जाँचने का बटन",
+                    "परिवर्तन लॉग"
+                ],
+                "changed": [
+                    "अपडेट डाउनलोड"
+                ],
+                "fixed": [
+                    "साइडबार में नेविगेट करते समय स्क्रॉल",
+                    "अलर्ट स्थिति की जाँच"
+                ]
+            },
+            "ar": {
+                "added": [
+                    "زر فتح مجلد السجلات في المعلومات",
+                    "زر التحقق من التحديثات في المعلومات",
+                    "سجل التغييرات"
+                ],
+                "changed": [
+                    "تنزيل التحديث"
+                ],
+                "fixed": [
+                    "التمرير عند التنقل في الشريط الجانبي",
+                    "التحقق من حالة التنبيه"
+                ]
+            },
+            "pt": {
+                "added": [
+                    "Botão para abrir a pasta de logs em Informações",
+                    "Botão para verificar atualizações em Informações",
+                    "Registro de alterações"
+                ],
+                "changed": [
+                    "Download da atualização"
+                ],
+                "fixed": [
+                    "Rolagem ao navegar na barra lateral",
+                    "Verificação do status do alerta"
                 ]
             }
         }
