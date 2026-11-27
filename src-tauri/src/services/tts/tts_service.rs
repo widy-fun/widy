@@ -11,6 +11,7 @@ use msedge_tts::{
     tts::{SpeechConfig, client::connect},
     voice::get_voices_list,
 };
+use rand::seq::IndexedRandom;
 use std::{
     collections::HashMap,
     fs,
@@ -208,13 +209,16 @@ impl TtsService {
                 ));
             }
         };
-        let fish_audio_service = app.state::<FishAudioService>();
-        let reference_id = models
+        let iso_code = language.iso_code_639_1();
+        let models_by_language: Vec<_> = models
             .iter()
-            .find(|m| m.languages.contains(&language.iso_code_639_1().to_string()))
-            .ok_or(AppError::Piper("Not found model".to_string()))?
-            ._id
-            .clone();
+            .filter(|m| m.languages.iter().any(|lang| *lang == iso_code.to_string()))
+            .collect();
+        let fish_audio_service = app.state::<FishAudioService>();
+        let model = models_by_language
+            .choose(&mut rand::rng())
+            .ok_or(AppError::Piper("Not found model".to_string()))?;
+        let reference_id = model._id.clone();
         let audio_bytes = fish_audio_service
             .tts(
                 app,
