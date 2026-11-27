@@ -63,6 +63,9 @@ pub enum AppError {
     #[error("Piper error: {0}")]
     Piper(String),
 
+    #[error("Piper error: {0}")]
+    FishAudio(String),
+
     #[error("STT error: {0}")]
     STT(String),
 

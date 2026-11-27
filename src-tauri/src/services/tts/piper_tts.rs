@@ -16,6 +16,7 @@ use model::error::{AppError, log_and_wrap_error};
 use model::tts::{Piper, PiperModelConfig};
 use ndarray::{Array2, arr1};
 use ort::{session::Session, value::Tensor};
+use rand::seq::IndexedRandom;
 
 #[async_trait]
 pub trait PiperTts: Send + Sync {
@@ -214,12 +215,13 @@ pub trait PiperTts: Send + Sync {
         tts_settings: TtsSettings,
     ) -> Result<String, AppError> {
         if let Some(TtsModels::Piper(voices)) = tts_settings.models {
-            let voice = voices
+            let iso_code = language.iso_code_639_1().to_string().to_lowercase();
+            let voices_by_language: Vec<_> = voices
                 .iter()
-                .find(|voice| {
-                    voice.language.family.to_lowercase()
-                        == language.iso_code_639_1().to_string().to_lowercase()
-                })
+                .filter(|voice| voice.language.family.to_lowercase() == iso_code)
+                .collect();
+            let voice = voices_by_language
+                .choose(&mut rand::rng())
                 .ok_or(AppError::Piper("Not found voice".to_string()))?;
             return Ok(voice.key.clone());
         }
