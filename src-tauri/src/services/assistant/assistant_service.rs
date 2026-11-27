@@ -35,6 +35,7 @@ use entity::{
 };
 use foundry_local_sdk::{FoundryLocalConfig, FoundryLocalManager, LogLevel, Model};
 use model::error::{AppError, log_and_wrap_error};
+use ort::environment::Environment;
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
 use tokio::sync::mpsc::{self, Sender};
@@ -255,9 +256,11 @@ impl AssistantService {
             .cloned()
             .ok_or(AppError::Audio("Not found input device".to_string()))?;
 
-        let wake_engine = WakeEngine::new(config_service.wake_word_path.clone()).await?;
+        let env = app.state::<Environment>().inner();
 
-        let vad_engine = VadEngine::new(config_service.wake_word_path.clone()).await?;
+        let wake_engine = WakeEngine::new(config_service.wake_word_path.clone(), env).await?;
+
+        let vad_engine = VadEngine::new(config_service.wake_word_path.clone(), env.clone()).await?;
 
         let (input_tx, input_rx) = mpsc::channel::<Vec<f32>>(100);
 

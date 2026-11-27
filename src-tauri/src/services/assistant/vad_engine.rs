@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use crate::constants::TARGET_SR;
 use model::error::{AppError, log_and_wrap_error};
 use ndarray::{Array1, Array3};
-use ort::{session::Session, value::TensorRef};
+use ort::{environment::Environment, session::Session, value::TensorRef};
 
 const VAD_FRAME: usize = 512;
 
@@ -16,11 +16,8 @@ pub struct VadEngine {
 }
 
 impl VadEngine {
-    pub async fn new(wake_word_path: PathBuf) -> Result<Self, AppError> {
+    pub async fn new(wake_word_path: PathBuf, env: Environment) -> Result<Self, AppError> {
         let vad = tokio::task::spawn_blocking(move || -> Result<Session, AppError> {
-            let env = ort::init()
-                .build()
-                .map_err(|e| log_and_wrap_error("Build ort env", e))?;
             Ok(Session::builder(&env)?
                 .with_log_level(ort::logging::LogLevel::Fatal)?
                 .commit_from_file(wake_word_path.join("silero_vad.onnx"))?)

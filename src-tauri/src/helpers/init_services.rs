@@ -209,6 +209,10 @@ pub async fn init_services(app: AppHandle) -> Result<(), AppError> {
     let assistant_service = AssistantService::new();
     app.manage(assistant_service);
 
+    //ort environment
+    let env = ort::init().build()?;
+    app.manage(env);
+
     let kick_service = app.state::<KickService>();
     let obs_service = app.state::<ObsService>();
     let telegram_bot_service = app.state::<TelegramBotService>();

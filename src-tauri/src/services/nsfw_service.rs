@@ -18,7 +18,7 @@ use crate::{
 use image::{ImageBuffer, Rgb, RgbImage, RgbaImage};
 use model::error::AppError;
 use ndarray::{Array4, Axis};
-use ort::{inputs, session::Session, value::Tensor};
+use ort::{environment::Environment, inputs, session::Session, value::Tensor};
 use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Manager};
 use xcap::Window;
@@ -102,9 +102,7 @@ impl NsfwService {
 
     fn build_session(&self, app: &AppHandle) -> Result<Session, AppError> {
         let config_service = app.state::<ConfigService>();
-        let env = ort::init()
-            .build()
-            .map_err(|e| log_and_wrap_error("Build ort env", e))?;
+        let env = app.state::<Environment>();
         Session::builder(&env)
             .map_err(|e| log_and_wrap_error("ort build error", AppError::NSFW(e.to_string())))?
             .commit_from_file(&config_service.nsfw_model_path)

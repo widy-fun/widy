@@ -60,7 +60,7 @@ impl TtsService {
                 Err(_) => self.make_google_audio(text, file_name, &language).await,
             },
             TtsType::Piper => {
-                self.make_piper_audio(text, file_name, &language, tts_settings)
+                self.make_piper_audio(text, file_name, &language, tts_settings, app)
                     .await
             }
             TtsType::FishAudio => {
@@ -177,9 +177,10 @@ impl TtsService {
         file_name: &str,
         language: &Language,
         tts_settings: TtsSettings,
+        app: &AppHandle,
     ) -> Result<String, AppError> {
         let voice_key = self.get_voice_key(language, tts_settings)?;
-        let piper = self.build_piper(&voice_key).await?;
+        let piper = self.build_piper(&voice_key, app.clone()).await?;
         let audio = self.piper_synthesize(text, language, piper).await?;
         let audio_file_path = self.audio_path.join(format!("{}.wav", file_name));
         save_audio_to_wav_file(&audio, 22050, audio_file_path.to_str().unwrap())

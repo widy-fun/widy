@@ -15,8 +15,9 @@ use lingua::Language;
 use model::error::{AppError, log_and_wrap_error};
 use model::tts::{Piper, PiperModelConfig};
 use ndarray::{Array2, arr1};
-use ort::{session::Session, value::Tensor};
+use ort::{environment::Environment, session::Session, value::Tensor};
 use rand::seq::IndexedRandom;
+use tauri::{AppHandle, Manager};
 
 #[async_trait]
 pub trait PiperTts: Send + Sync {
@@ -24,7 +25,7 @@ pub trait PiperTts: Send + Sync {
     fn piper_path(&self) -> PathBuf;
     fn piper_sessions(&self) -> Arc<Mutex<HashMap<String, Piper>>>;
 
-    async fn build_piper(&self, voice_key: &str) -> Result<Piper, AppError> {
+    async fn build_piper(&self, voice_key: &str, app: AppHandle) -> Result<Piper, AppError> {
         let sessions_handle = self.piper_sessions();
         {
             let piper_sessions = sessions_handle.lock().unwrap();
@@ -54,9 +55,7 @@ pub trait PiperTts: Send + Sync {
 
         let model_path_clone = model_path.clone();
         let session = tokio::task::spawn_blocking(move || {
-            let env = ort::init()
-                .build()
-                .map_err(|e| log_and_wrap_error("Build ort env", e))?;
+            let env = app.state::<Environment>();
             Session::builder(&env)
                 .map_err(|e| log_and_wrap_error("ort build error", AppError::Piper(e.to_string())))?
                 .commit_from_file(model_path_clone)

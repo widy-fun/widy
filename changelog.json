@@ -3,7 +3,8 @@
         "changes": {
             "en": {
                 "added": [
-                    "Added randomness for selected FishAudio models"
+                    "Added randomness for selected FishAudio models",
+                    "Added randomness for selected piper voices'"
                 ],
                 "changed": [],
                 "fixed": [],

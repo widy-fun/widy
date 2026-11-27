@@ -1,6 +1,6 @@
 use model::error::{AppError, log_and_wrap_error};
 use ndarray::{Array2, Array3, Array4};
-use ort::{session::Session, value::TensorRef};
+use ort::{environment::Environment, session::Session, value::TensorRef};
 use std::path::{Path, PathBuf};
 
 const WAKE_FRAMES: usize = 16;
@@ -22,23 +22,26 @@ pub struct WakeEngine {
 }
 
 impl WakeEngine {
-    pub async fn new(wake_word_path: PathBuf) -> Result<Self, AppError> {
+    pub async fn new(wake_word_path: PathBuf, env: &Environment) -> Result<Self, AppError> {
         let mel = Self::load_session(
             &wake_word_path,
             "melspectrogram.onnx",
             "Build melspectrogram session",
+            env.clone(),
         )
         .await?;
         let embedding = Self::load_session(
             &wake_word_path,
             "embedding_model.onnx",
             "Build embedding session",
+            env.clone(),
         )
         .await?;
         let wake = Self::load_session(
             &wake_word_path,
             "hey_jarvis_v0.1.onnx",
             "Build hey_jarvis session",
+            env.clone(),
         )
         .await?;
 
@@ -55,12 +58,10 @@ impl WakeEngine {
         dir: &Path,
         filename: &str,
         error_context: &'static str,
+        env: Environment,
     ) -> Result<Session, AppError> {
         let path = dir.join(filename);
         tokio::task::spawn_blocking(move || -> Result<Session, AppError> {
-            let env = ort::init()
-                .build()
-                .map_err(|e| log_and_wrap_error("Build ort env", e))?;
             Ok(Session::builder(&env)?
                 .with_log_level(ort::logging::LogLevel::Fatal)?
                 .commit_from_file(path)?)
