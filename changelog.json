@@ -4,10 +4,12 @@
             "en": {
                 "added": [
                     "Added randomness for selected FishAudio models",
-                    "Added randomness for selected piper voices'"
+                    "Added randomness for selected Piper voices'"
                 ],
                 "changed": [],
-                "fixed": [],
+                "fixed": [
+                    "Ort environment build error"
+                ],
                 "removed": []
             }
         }
